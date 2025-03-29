@@ -1,0 +1,782 @@
+/*
+ * Catroid: An on-device visual programming system for Android devices
+ * Copyright (C) 2010-2024 The Catrobat Team
+ * (<http://developer.catrobat.org/credits>)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * An additional term exception under section 7 of the GNU Affero
+ * General Public License, version 3, is available at
+ * http://developer.catrobat.org/license_additional_term
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.catrobat.catroid.io;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
+import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
+
+import org.catrobat.catroid.BuildConfig;
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.NfcTagData;
+import org.catrobat.catroid.common.ProjectData;
+import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.content.BroadcastScript;
+import org.catrobat.catroid.content.EmptyScript;
+import org.catrobat.catroid.content.GroupItemSprite;
+import org.catrobat.catroid.content.GroupSprite;
+import org.catrobat.catroid.content.LegoEV3Setting;
+import org.catrobat.catroid.content.LegoNXTSetting;
+import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.RaspiInterruptScript;
+import org.catrobat.catroid.content.Scene;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Setting;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.StartScript;
+import org.catrobat.catroid.content.UserDefinedScript;
+import org.catrobat.catroid.content.WhenBackgroundChangesScript;
+import org.catrobat.catroid.content.WhenBounceOffScript;
+import org.catrobat.catroid.content.WhenClonedScript;
+import org.catrobat.catroid.content.WhenConditionScript;
+import org.catrobat.catroid.content.WhenGamepadButtonScript;
+import org.catrobat.catroid.content.WhenNfcScript;
+import org.catrobat.catroid.content.WhenScript;
+import org.catrobat.catroid.content.WhenTouchDownScript;
+import org.catrobat.catroid.content.XmlHeader;
+import org.catrobat.catroid.content.actions.AskGemini2Action;
+import org.catrobat.catroid.content.actions.CreateDIalogAction;
+import org.catrobat.catroid.content.actions.HideText3Action;
+import org.catrobat.catroid.content.actions.OpenFilesAction;
+import org.catrobat.catroid.content.actions.ReadBaseAction;
+import org.catrobat.catroid.content.actions.ShowTextFontAction;
+import org.catrobat.catroid.content.backwardcompatibility.LegacyDataContainer;
+import org.catrobat.catroid.content.backwardcompatibility.LegacyProjectWithoutScenes;
+import org.catrobat.catroid.content.backwardcompatibility.ProjectMetaDataParser;
+import org.catrobat.catroid.content.backwardcompatibility.ProjectUntilLanguageVersion0999;
+import org.catrobat.catroid.content.backwardcompatibility.SceneUntilLanguageVersion0999;
+import org.catrobat.catroid.content.bricks.*;
+import org.catrobat.catroid.exceptions.LoadingProjectException;
+import org.catrobat.catroid.formulaeditor.UserList;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.userbrick.UserDefinedBrickData;
+import org.catrobat.catroid.userbrick.UserDefinedBrickInput;
+import org.catrobat.catroid.userbrick.UserDefinedBrickLabel;
+import org.catrobat.catroid.utils.StringFinder;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import androidx.annotation.VisibleForTesting;
+
+import static org.catrobat.catroid.common.Constants.CODE_XML_FILE_NAME;
+import static org.catrobat.catroid.common.Constants.IMAGE_DIRECTORY_NAME;
+import static org.catrobat.catroid.common.Constants.SOUND_DIRECTORY_NAME;
+import static org.catrobat.catroid.common.Constants.TMP_CODE_XML_FILE_NAME;
+import static org.catrobat.catroid.common.FlavoredConstants.DEFAULT_ROOT_DIRECTORY;
+
+public final class XstreamSerializer {
+
+	private static XstreamSerializer instance;
+	private static final String TAG = XstreamSerializer.class.getSimpleName();
+	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n";
+	private static final String PROGRAM_NAME_START_TAG = "<programName>";
+	private static final String PROGRAM_NAME_END_TAG = "</programName>";
+
+	private BackwardCompatibleCatrobatLanguageXStream xstream;
+	private Lock loadSaveLock = new ReentrantLock();
+
+	private XstreamSerializer() {
+		prepareXstream(Project.class, Scene.class);
+	}
+
+	public static XstreamSerializer getInstance() {
+		if (instance == null) {
+			instance = new XstreamSerializer();
+		}
+		return instance;
+	}
+
+	private void prepareXstream(Class projectClass, Class sceneClass) {
+		xstream = new BackwardCompatibleCatrobatLanguageXStream(
+				new PureJavaReflectionProvider(new FieldDictionary(new CatroidFieldKeySorter())));
+
+		xstream.allowTypesByWildcard(new String[] {"org.catrobat.catroid.**"});
+
+		xstream.processAnnotations(projectClass);
+		xstream.processAnnotations(sceneClass);
+
+		xstream.processAnnotations(Sprite.class);
+		xstream.processAnnotations(XmlHeader.class);
+		xstream.processAnnotations(Setting.class);
+		xstream.processAnnotations(UserVariableBrickWithFormula.class);
+		xstream.processAnnotations(UserListBrick.class);
+		xstream.processAnnotations(UserDefinedBrickData.class);
+		xstream.processAnnotations(UserDefinedBrickInput.class);
+		xstream.processAnnotations(UserDefinedBrickLabel.class);
+
+		xstream.registerConverter(new XStreamConcurrentFormulaHashMapConverter());
+		xstream.registerConverter(new XStreamUserDataHashMapConverter());
+		xstream.registerConverter(new XStreamUserVariableConverter(xstream.getMapper(), xstream.getReflectionProvider(),
+				xstream.getClassLoaderReference()));
+		xstream.registerConverter(new XStreamFormulaElementConverter(xstream.getMapper(), xstream.getReflectionProvider()));
+
+		xstream.registerConverter(new XStreamBrickConverter(xstream.getMapper(), xstream.getReflectionProvider()));
+		xstream.registerConverter(new XStreamScriptConverter(xstream.getMapper(), xstream.getReflectionProvider()));
+		xstream.registerConverter(new XStreamSpriteConverter(xstream.getMapper(), xstream.getReflectionProvider()));
+		xstream.registerConverter(new XStreamSettingConverter(xstream.getMapper(), xstream.getReflectionProvider()));
+
+		xstream.omitField(sceneClass, "originalWidth");
+		xstream.omitField(sceneClass, "originalHeight");
+
+		xstream.omitField(Sprite.class, "userBricks");
+
+		xstream.omitField(LegacyDataContainer.class, "userBrickVariableList");
+
+		xstream.omitField(CameraBrick.class, "spinnerValues");
+		xstream.omitField(ChooseCameraBrick.class, "spinnerValues");
+		xstream.omitField(FlashBrick.class, "spinnerValues");
+
+		xstream.omitField(SetNfcTagBrick.class, "nfcTagNdefDefaultType");
+
+		xstream.omitField(SpeakAndWaitBrick.class, "speechFile");
+		xstream.omitField(SpeakAndWaitBrick.class, "duration");
+
+		xstream.omitField(StopScriptBrick.class, "spinnerValue");
+
+		xstream.omitField(ShowTextBrick.class, "userVariableName");
+		xstream.omitField(HideTextBrick.class, "userVariableName");
+		xstream.omitField(HideTextBrick.class, "formulaList");
+		xstream.omitField(HideTextBrick.class, "userDataList");
+
+		xstream.omitField(SayBubbleBrick.class, "type");
+		xstream.omitField(SayBubbleBrick.class, "type");
+
+		xstream.omitField(ThinkBubbleBrick.class, "type");
+		xstream.omitField(ThinkForBubbleBrick.class, "type");
+
+		xstream.omitField(StartScript.class, "isUserScript");
+		xstream.omitField(WhenScript.class, "action");
+
+		xstream.omitField(RaspiInterruptScript.class, "receivedMessage");
+
+		xstream.omitField(FadeParticleEffectBrick.class, "formulaList");
+		xstream.omitField(ParticleEffectAdditivityBrick.class, "formulaList");
+		xstream.omitField(SetParticleColorBrick.class, "formulaList");
+
+		xstream.alias("look", LookData.class);
+		xstream.alias("sound", SoundInfo.class);
+		xstream.alias("nfcTag", NfcTagData.class);
+		xstream.alias("userVariable", UserVariable.class);
+		xstream.alias("userList", UserList.class);
+
+		xstream.alias("script", Script.class);
+		xstream.alias("object", Sprite.class);
+		xstream.alias("object", GroupSprite.class);
+		xstream.alias("object", GroupItemSprite.class);
+
+		xstream.alias("script", StartScript.class);
+		xstream.alias("script", WhenClonedScript.class);
+		xstream.alias("script", WhenScript.class);
+		xstream.alias("script", WhenConditionScript.class);
+		xstream.alias("script", WhenNfcScript.class);
+		xstream.alias("script", BroadcastScript.class);
+		xstream.alias("script", RaspiInterruptScript.class);
+		xstream.alias("script", WhenTouchDownScript.class);
+		xstream.alias("script", WhenBackgroundChangesScript.class);
+		xstream.alias("script", UserDefinedScript.class);
+		xstream.alias("script", EmptyScript.class);
+
+		xstream.alias("brick", AddItemToUserListBrick.class);
+		xstream.alias("brick", PostWebRequestBrick.class);
+		xstream.alias("brick", SetGeminiKeyBrick.class);
+		xstream.alias("brick", AskGeminiBrick.class);
+		xstream.alias("brick", AskGemini2Brick.class);
+		xstream.alias("brick", SetDnsBrick.class);
+		xstream.alias("brick", StringToTableBrick.class);
+		xstream.alias("brick", CreateVarBrick.class);
+		xstream.alias("brick", DeleteVarBrick.class);
+		xstream.alias("brick", DeleteVarsBrick.class);
+		xstream.alias("brick", ShowToastBlock.class);
+		xstream.alias("brick", SplitBrick.class);
+		xstream.alias("brick", CreateTableBrick.class);
+		xstream.alias("brick", InsertTableBrick.class);
+		xstream.alias("brick", DeleteTableBrick.class);
+		xstream.alias("brick", DeleteAllTablesBrick.class);
+		xstream.alias("brick", SoundFileBrick.class);
+		xstream.alias("brick", SoundFilesBrick.class);
+		xstream.alias("brick", LookFileBrick.class);
+		xstream.alias("brick", SaveLookFilesBrick.class);
+		xstream.alias("brick", SetLookFilesBrick.class);
+		xstream.alias("brick", SaveLookBrick.class);
+		xstream.alias("brick", SceneIdBrick.class);
+		xstream.alias("brick", FileUrlBrick.class);
+		xstream.alias("brick", FilesUrlBrick.class);
+		xstream.alias("brick", StartServerBrick.class);
+		xstream.alias("brick", SendServerBrick.class);
+		xstream.alias("brick", StopServerBrick.class);
+		xstream.alias("brick", ListenServerBrick.class);
+		xstream.alias("brick", ConnectServerBrick.class);
+		xstream.alias("brick", ScreenShotBrick.class);
+		xstream.alias("brick", CreateWebUrlBrick.class);
+		xstream.alias("brick", CreateWebFileBrick.class);
+		xstream.alias("brick", DeleteWebBrick.class);
+		xstream.alias("brick", DividePolandBrick.class);
+		xstream.alias("brick", ListenMicroBrick.class);
+		xstream.alias("brick", CopyTextBrick.class);
+		xstream.alias("brick", RunJSBrick.class);
+		xstream.alias("brick", AskBrick.class);
+		xstream.alias("brick", AskSpeechBrick.class);
+		xstream.alias("brick", BroadcastBrick.class);
+		xstream.alias("brick", BroadcastReceiverBrick.class);
+		xstream.alias("brick", BroadcastWaitBrick.class);
+		xstream.alias("brick", ChangeBrightnessByNBrick.class);
+		xstream.alias("brick", ChangeColorByNBrick.class);
+		xstream.alias("brick", ChangeTransparencyByNBrick.class);
+		xstream.alias("brick", ChangeSizeByNBrick.class);
+		xstream.alias("brick", ChangeVariableBrick.class);
+		xstream.alias("brick", ChangeTempoByNBrick.class);
+		xstream.alias("brick", ChangeVolumeByNBrick.class);
+		xstream.alias("brick", ChangeXByNBrick.class);
+		xstream.alias("brick", ChangeYByNBrick.class);
+		xstream.alias("brick", ClearBackgroundBrick.class);
+		xstream.alias("brick", ClearGraphicEffectBrick.class);
+		xstream.alias("brick", ClearUserListBrick.class);
+		xstream.alias("brick", CloneBrick.class);
+		xstream.alias("brick", ComeToFrontBrick.class);
+		xstream.alias("brick", DeleteItemOfUserListBrick.class);
+		xstream.alias("brick", DeleteThisCloneBrick.class);
+		xstream.alias("brick", ForeverBrick.class);
+		xstream.alias("brick", GlideToBrick.class);
+		xstream.alias("brick", GoNStepsBackBrick.class);
+		xstream.alias("brick", HideBrick.class);
+		xstream.alias("brick", HideTextBrick.class);
+
+		xstream.alias("brick", IfLogicBeginBrick.class);
+		xstream.alias("brick", IfLogicElseBrick.class);
+		xstream.alias("brick", IfLogicEndBrick.class);
+		xstream.alias("brick", IfThenLogicBeginBrick.class);
+		xstream.alias("brick", IfThenLogicEndBrick.class);
+
+		xstream.alias("brick", UserDefinedBrick.class);
+		xstream.alias("brick", UserDefinedReceiverBrick.class);
+		xstream.alias("brick", ReportBrick.class);
+		xstream.alias("brick", IfOnEdgeBounceBrick.class);
+		xstream.alias("brick", InsertItemIntoUserListBrick.class);
+		xstream.alias("brick", FlashBrick.class);
+		xstream.alias("brick", ChooseCameraBrick.class);
+		xstream.alias("brick", CameraBrick.class);
+		xstream.alias("brick", LegoNxtMotorMoveBrick.class);
+		xstream.alias("brick", LegoNxtMotorStopBrick.class);
+		xstream.alias("brick", LegoNxtMotorTurnAngleBrick.class);
+		xstream.alias("brick", LegoNxtPlayToneBrick.class);
+		xstream.alias("brick", LoopEndBrick.class);
+		xstream.alias("brick", LoopEndlessBrick.class);
+		xstream.alias("brick", LookRequestBrick.class);
+		xstream.alias("brick", PaintNewLookBrick.class);
+		xstream.alias("brick", EditLookBrick.class);
+		xstream.alias("brick", DeleteLookBrick.class);
+		xstream.alias("brick", CopyLookBrick.class);
+		xstream.alias("brick", BackgroundRequestBrick.class);
+		xstream.alias("brick", MoveNStepsBrick.class);
+		xstream.alias("brick", NextLookBrick.class);
+		xstream.alias("brick", NoteBrick.class);
+		xstream.alias("brick", PenDownBrick.class);
+		xstream.alias("brick", PenUpBrick.class);
+		xstream.alias("brick", PlaceAtBrick.class);
+		xstream.alias("brick", GoToBrick.class);
+		xstream.alias("brick", PlaySoundBrick.class);
+		xstream.alias("brick", PlaySoundAndWaitBrick.class);
+		xstream.alias("brick", PlaySoundAtBrick.class);
+		xstream.alias("brick", PauseForBeatsBrick.class);
+		xstream.alias("brick", PlayNoteForBeatsBrick.class);
+		xstream.alias("brick", PointInDirectionBrick.class);
+		xstream.alias("brick", PointToBrick.class);
+		xstream.alias("brick", PreviousLookBrick.class);
+		xstream.alias("brick", RepeatBrick.class);
+		xstream.alias("brick", RepeatUntilBrick.class);
+		xstream.alias("brick", ForVariableFromToBrick.class);
+		xstream.alias("brick", ForItemInUserListBrick.class);
+		xstream.alias("brick", ReplaceItemInUserListBrick.class);
+		xstream.alias("brick", SceneTransitionBrick.class);
+		xstream.alias("brick", SceneStartBrick.class);
+		xstream.alias("brick", SetBrightnessBrick.class);
+		xstream.alias("brick", SetCameraFocusPointBrick.class);
+		xstream.alias("brick", SetColorBrick.class);
+		xstream.alias("brick", SetTransparencyBrick.class);
+		xstream.alias("brick", SetLookBrick.class);
+		xstream.alias("brick", SetLookByIndexBrick.class);
+		xstream.alias("brick", SetBackgroundBrick.class);
+		xstream.alias("brick", SetBackgroundByIndexBrick.class);
+		xstream.alias("brick", SetBackgroundAndWaitBrick.class);
+		xstream.alias("brick", SetBackgroundByIndexAndWaitBrick.class);
+		xstream.alias("brick", SetInstrumentBrick.class);
+		xstream.alias("brick", SetTempoBrick.class);
+		xstream.alias("brick", PlayDrumForBeatsBrick.class);
+		xstream.alias("brick", SetPenColorBrick.class);
+		xstream.alias("brick", SetPenSizeBrick.class);
+		xstream.alias("brick", SetRotationStyleBrick.class);
+		xstream.alias("brick", SetSizeToBrick.class);
+		xstream.alias("brick", SetWidthBrick.class);
+		xstream.alias("brick", SetHeightBrick.class);
+		xstream.alias("brick", ChangeWidthBrick.class);
+		xstream.alias("brick", ChangeHeightBrick.class);
+		xstream.alias("brick", SetVariableBrick.class);
+		xstream.alias("brick", SetVolumeToBrick.class);
+		xstream.alias("brick", SetXBrick.class);
+		xstream.alias("brick", SetYBrick.class);
+		xstream.alias("brick", ShowBrick.class);
+		xstream.alias("brick", ShowTextBrick.class);
+		xstream.alias("brick", SpeakBrick.class);
+		xstream.alias("brick", SpeakAndWaitBrick.class);
+		xstream.alias("brick", StartListeningBrick.class);
+		xstream.alias("brick", StampBrick.class);
+		xstream.alias("brick", StopSoundBrick.class);
+		xstream.alias("brick", StopAllSoundsBrick.class);
+		xstream.alias("brick", SetListeningLanguageBrick.class);
+		xstream.alias("brick", ThinkBubbleBrick.class);
+		xstream.alias("brick", SayBubbleBrick.class);
+		xstream.alias("brick", ThinkForBubbleBrick.class);
+		xstream.alias("brick", SayForBubbleBrick.class);
+		xstream.alias("brick", TurnLeftBrick.class);
+		xstream.alias("brick", TurnRightBrick.class);
+		xstream.alias("brick", VibrationBrick.class);
+		xstream.alias("brick", WaitBrick.class);
+		xstream.alias("brick", WaitUntilBrick.class);
+		xstream.alias("brick", WhenBrick.class);
+		xstream.alias("brick", WhenConditionBrick.class);
+		xstream.alias("brick", WhenBackgroundChangesBrick.class);
+		xstream.alias("brick", WhenStartedBrick.class);
+		xstream.alias("brick", WhenClonedBrick.class);
+		xstream.alias("brick", WriteVariableOnDeviceBrick.class);
+		xstream.alias("brick", ReadVariableFromFileBrick.class);
+		xstream.alias("brick", WriteListOnDeviceBrick.class);
+		xstream.alias("brick", ReadVariableFromDeviceBrick.class);
+		xstream.alias("brick", WriteVariableToFileBrick.class);
+		xstream.alias("brick", ReadListFromDeviceBrick.class);
+		xstream.alias("brick", StopScriptBrick.class);
+		xstream.alias("brick", WebRequestBrick.class);
+		xstream.alias("brick", StoreCSVIntoUserListBrick.class);
+		xstream.alias("brick", ResetTimerBrick.class);
+		xstream.alias("brick", EmptyEventBrick.class);
+
+		xstream.alias("brick", WhenNfcBrick.class);
+		xstream.alias("brick", SetNfcTagBrick.class);
+
+		xstream.alias("brick", DronePlayLedAnimationBrick.class);
+		xstream.alias("brick", DroneTakeOffLandBrick.class);
+		xstream.alias("brick", DroneMoveForwardBrick.class);
+		xstream.alias("brick", DroneMoveBackwardBrick.class);
+		xstream.alias("brick", DroneMoveUpBrick.class);
+		xstream.alias("brick", DroneMoveDownBrick.class);
+		xstream.alias("brick", DroneMoveLeftBrick.class);
+		xstream.alias("brick", DroneMoveRightBrick.class);
+		xstream.alias("brick", DroneTurnLeftBrick.class);
+		xstream.alias("brick", DroneTurnRightBrick.class);
+		xstream.alias("brick", DroneSwitchCameraBrick.class);
+		xstream.alias("brick", DroneEmergencyBrick.class);
+
+		xstream.alias("brick", PhiroMotorMoveBackwardBrick.class);
+		xstream.alias("brick", PhiroMotorMoveForwardBrick.class);
+		xstream.alias("brick", PhiroMotorStopBrick.class);
+		xstream.alias("brick", PhiroPlayToneBrick.class);
+		xstream.alias("brick", PhiroRGBLightBrick.class);
+		xstream.alias("brick", PhiroIfLogicBeginBrick.class);
+
+		xstream.alias("brick", LegoEv3PlayToneBrick.class);
+		xstream.alias("brick", LegoEv3MotorMoveBrick.class);
+		xstream.alias("brick", LegoEv3MotorStopBrick.class);
+		xstream.alias("brick", LegoEv3SetLedBrick.class);
+
+		xstream.alias("brick", ArduinoSendPWMValueBrick.class);
+		xstream.alias("brick", ArduinoSendDigitalValueBrick.class);
+
+		xstream.alias("brick", RaspiSendDigitalValueBrick.class);
+		xstream.alias("brick", RaspiIfLogicBeginBrick.class);
+		xstream.alias("brick", RaspiPwmBrick.class);
+
+		xstream.alias("script", WhenGamepadButtonScript.class);
+		xstream.alias("brick", WhenGamepadButtonBrick.class);
+
+		xstream.alias("brick", AssertEqualsBrick.class);
+		xstream.alias("brick", FinishStageBrick.class);
+		xstream.alias("brick", AssertUserListsBrick.class);
+		xstream.alias("brick", ExitStageBrick.class);
+		xstream.alias("brick", ParameterizedBrick.class);
+		xstream.alias("brick", ParameterizedEndBrick.class);
+
+		xstream.alias("brick", OpenUrlBrick.class);
+		xstream.alias("brick", TapAtBrick.class);
+		xstream.alias("brick", TapForBrick.class);
+		xstream.alias("brick", TouchAndSlideBrick.class);
+		xstream.alias("brick", DroneFlipBrick.class);
+		xstream.alias("brick", JumpingSumoAnimationsBrick.class);
+		xstream.alias("brick", JumpingSumoJumpHighBrick.class);
+		xstream.alias("brick", JumpingSumoJumpLongBrick.class);
+		xstream.alias("brick", JumpingSumoMoveBackwardBrick.class);
+		xstream.alias("brick", JumpingSumoMoveForwardBrick.class);
+		xstream.alias("brick", JumpingSumoNoSoundBrick.class);
+		xstream.alias("brick", JumpingSumoRotateLeftBrick.class);
+		xstream.alias("brick", JumpingSumoRotateRightBrick.class);
+		xstream.alias("brick", JumpingSumoSoundBrick.class);
+		xstream.alias("brick", JumpingSumoTakingPictureBrick.class);
+		xstream.alias("brick", JumpingSumoTurnBrick.class);
+		xstream.alias("brick", LegoEv3MotorTurnAngleBrick.class);
+		xstream.alias("brick", SetTextBrick.class);
+		xstream.alias("brick", ShowTextColorSizeAlignmentBrick.class);
+		xstream.alias("brick", ShowTextFontBrick.class);
+		xstream.alias("brick", SquareBrick.class);
+		xstream.alias("brick", DelSquareBrick.class);
+		xstream.alias("brick", ShowTextRotationBrick.class);
+		xstream.alias("brick", OrientationBrick.class);
+		xstream.alias("brick", CreateDialogBrick.class);
+		xstream.alias("brick", SetPositiveBrick.class);
+		xstream.alias("brick", SetNegativeBrick.class);
+		xstream.alias("brick", SetNeutralBrick.class);
+		xstream.alias("brick", AddEditBrick.class);
+		xstream.alias("brick", AddRadioBrick.class);
+		xstream.alias("brick", SetCallbackBrick.class);
+		xstream.alias("brick", ShowDialogBrick.class);
+		xstream.alias("brick", RegexBrick.class);
+		xstream.alias("brick", RunLuaBrick.class);
+		xstream.alias("brick", LookToTableBrick.class);
+		xstream.alias("brick", LookFromTableBrick.class);
+		xstream.alias("brick", WriteBaseBrick.class);
+		xstream.alias("brick", WriteToFilesBrick.class);
+		xstream.alias("brick", ReadFromFilesBrick.class);
+		xstream.alias("brick", DeleteFilesBrick.class);
+		xstream.alias("brick", OpenFileBrick.class);
+		xstream.alias("brick", MoveFilesBrick.class);
+		xstream.alias("brick", MoveDownloadsBrick.class);
+		xstream.alias("brick", OpenFilesBrick.class);
+		xstream.alias("brick", ReadBaseBrick.class);
+		xstream.alias("brick", DeleteBaseBrick.class);
+		xstream.alias("brick", BigAskBrick.class);
+		xstream.alias("brick", ZipBrick.class);
+		xstream.alias("brick", UnzipBrick.class);
+		xstream.alias("brick", ShowText3Brick.class);
+		xstream.alias("brick", ShowTextFontAction.class);
+		xstream.alias("brick", HideText3Brick.class);
+		xstream.alias("brick", StitchBrick.class);
+		xstream.alias("brick", RunningStitchBrick.class);
+		xstream.alias("brick", StopRunningStitchBrick.class);
+		xstream.alias("brick", ZigZagStitchBrick.class);
+		xstream.alias("brick", TripleStitchBrick.class);
+		xstream.alias("brick", SetThreadColorBrick.class);
+		xstream.alias("brick", SewUpBrick.class);
+		xstream.alias("brick", WriteEmbroideryToFileBrick.class);
+		xstream.alias("brick", WaitTillIdleBrick.class);
+		xstream.alias("brick", WhenRaspiPinChangedBrick.class);
+		xstream.alias("brick", WhenTouchDownBrick.class);
+
+		xstream.alias("script", WhenBounceOffScript.class);
+		xstream.alias("brick", WhenBounceOffBrick.class);
+
+		xstream.alias("brick", SetBounceBrick.class);
+		xstream.alias("brick", SetFrictionBrick.class);
+		xstream.alias("brick", SetGravityBrick.class);
+		xstream.alias("brick", SetMassBrick.class);
+		xstream.alias("brick", SetPhysicsObjectTypeBrick.class);
+		xstream.alias("brick", SetVelocityBrick.class);
+		xstream.alias("brick", TurnLeftSpeedBrick.class);
+		xstream.alias("brick", TurnRightSpeedBrick.class);
+
+		xstream.alias("setting", LegoNXTSetting.class);
+		xstream.alias("nxtPort", LegoNXTSetting.NXTPort.class);
+
+		xstream.alias("setting", LegoEV3Setting.class);
+		xstream.alias("ev3Port", LegoEV3Setting.EV3Port.class);
+
+		xstream.alias("brick", FadeParticleEffectBrick.class);
+		xstream.alias("brick", ParticleEffectAdditivityBrick.class);
+		xstream.alias("brick", SetParticleColorBrick.class);
+	}
+
+	public Project loadProject(File projectDir, Context context) throws IOException, LoadingProjectException {
+		cleanUpTmpCodeFile(projectDir);
+
+		File xmlFile = new File(projectDir, CODE_XML_FILE_NAME);
+		if (!xmlFile.exists()) {
+			throw new FileNotFoundException(xmlFile.getAbsolutePath() + " does not exist.");
+		}
+		xmlFile.setLastModified(System.currentTimeMillis());
+
+		try {
+			loadSaveLock.lock();
+
+			Project project;
+			ProjectData projectMetaData = new ProjectMetaDataParser(xmlFile).getProjectMetaData();
+
+			if (!projectMetaData.hasScenes()) {
+				new File(projectDir, IMAGE_DIRECTORY_NAME).mkdir();
+				new File(projectDir, SOUND_DIRECTORY_NAME).mkdir();
+
+				prepareXstream(LegacyProjectWithoutScenes.class, Scene.class);
+				LegacyProjectWithoutScenes projectWithoutScenes =
+						(LegacyProjectWithoutScenes) xstream.getProjectFromXML(xmlFile);
+				prepareXstream(Project.class, Scene.class);
+
+				project = projectWithoutScenes.toProject(context);
+			} else if (projectMetaData.getLanguageVersion() < 0.9991) {
+				prepareXstream(ProjectUntilLanguageVersion0999.class, SceneUntilLanguageVersion0999.class);
+				ProjectUntilLanguageVersion0999 legacyProject =
+						(ProjectUntilLanguageVersion0999) xstream.getProjectFromXML(xmlFile);
+				prepareXstream(Project.class, Scene.class);
+
+				project = legacyProject.toProject();
+			} else {
+				prepareXstream(Project.class, Scene.class);
+				project = (Project) xstream.getProjectFromXML(xmlFile);
+
+				for (Scene scene : project.getSceneList()) {
+					scene.setProject(project);
+				}
+			}
+			project.checkForInvisibleSprites();
+			project.setDirectory(projectDir);
+			setFileReferences(project);
+			return project;
+		} catch (Exception e) {
+			throw new LoadingProjectException("Cannot load project from " + projectDir.getAbsolutePath()
+					+ "\nException: " + e.getLocalizedMessage());
+		} finally {
+			loadSaveLock.unlock();
+		}
+	}
+
+	public static boolean renameProject(File xmlFile, String destinationName) throws IOException {
+		if (!xmlFile.exists()) {
+			throw new FileNotFoundException(xmlFile + " does not exist.");
+		}
+
+		String currentXml = Files.asCharSource(xmlFile, Charsets.UTF_8).read();
+		StringFinder stringFinder = new StringFinder();
+
+		String sourceName = stringFinder.findBetween(currentXml, PROGRAM_NAME_START_TAG,
+				PROGRAM_NAME_END_TAG);
+
+		if (sourceName == null) {
+			return false;
+		}
+
+		destinationName = getXMLEncodedString(destinationName);
+
+		if (sourceName.equals(destinationName)) {
+			return true;
+		}
+
+		String sourceProjectNameTag = PROGRAM_NAME_START_TAG + sourceName + PROGRAM_NAME_END_TAG;
+		String destinationProjectNameTag = PROGRAM_NAME_START_TAG + destinationName + PROGRAM_NAME_END_TAG;
+		String newXml = currentXml.replace(sourceProjectNameTag, destinationProjectNameTag);
+
+		if (currentXml.equals(newXml)) {
+			Log.e(TAG, "Cannot find projectNameTag in code.xml");
+			return false;
+		}
+
+		StorageOperations.writeToFile(xmlFile, newXml);
+		return true;
+	}
+
+	private static String getXMLEncodedString(String sourceName) {
+		sourceName = new XStream().toXML(sourceName);
+		sourceName = sourceName.replace("<string>", "");
+		sourceName = sourceName.replace("</string>", "");
+		return sourceName;
+	}
+
+	private static void setFileReferences(Project project) {
+		for (Scene scene : project.getSceneList()) {
+			File imageDir = new File(scene.getDirectory(), IMAGE_DIRECTORY_NAME);
+			File soundDir = new File(scene.getDirectory(), SOUND_DIRECTORY_NAME);
+
+			for (Sprite sprite : scene.getSpriteList()) {
+				for (Iterator<LookData> iterator = sprite.getLookList().iterator(); iterator.hasNext(); ) {
+					LookData lookData = iterator.next();
+					File lookFile = new File(imageDir, lookData.getXstreamFileName());
+
+					if (lookFile.exists()) {
+						lookData.setFile(lookFile);
+					} else {
+						iterator.remove();
+					}
+				}
+
+				for (Iterator<SoundInfo> iterator = sprite.getSoundList().iterator(); iterator.hasNext(); ) {
+					SoundInfo soundInfo = iterator.next();
+					File soundFile = new File(soundDir, soundInfo.getXstreamFileName());
+
+					if (soundFile.exists()) {
+						soundInfo.setFile(soundFile);
+					} else {
+						iterator.remove();
+					}
+				}
+			}
+		}
+	}
+	private boolean unnecessaryChanges(String currentXml, String previousXml) {
+		String formulaYRegex = "<formula category=\".*Y.*\">";
+		String formulaXRegex = "<formula category=\".*X.*\">";
+		Pattern formulaYPattern = Pattern.compile(formulaYRegex, Pattern.CASE_INSENSITIVE);
+		Pattern formulaXPattern = Pattern.compile(formulaXRegex, Pattern.CASE_INSENSITIVE);
+		Matcher currentFormulaYMatcher = formulaYPattern.matcher(currentXml);
+		Matcher previousFormulaXMatcher = formulaXPattern.matcher(previousXml);
+		currentFormulaYMatcher.find();
+		previousFormulaXMatcher.find();
+		if (previousFormulaXMatcher.matches() && currentFormulaYMatcher.matches() && (currentXml.indexOf(previousFormulaXMatcher.group(0)) == previousXml.indexOf(currentFormulaYMatcher.group(0)))) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean saveProject(Project project) {
+		if (project == null) {
+			return false;
+		}
+
+		try {
+			cleanUpTmpCodeFile(project.getDirectory());
+		} catch (LoadingProjectException e) {
+			return false;
+		}
+
+		loadSaveLock.lock();
+		if (BuildConfig.FLAVOR.equals("pocketCodeBeta")) {
+			project.getXmlHeader().setApplicationBuildType("debug");
+		} else {
+			project.getXmlHeader().setApplicationBuildType(BuildConfig.BUILD_TYPE);
+		}
+
+		try {
+			String currentXml = XML_HEADER.concat(xstream.toXML(project));
+			File tmpCodeFile = new File(project.getDirectory(), TMP_CODE_XML_FILE_NAME);
+			File currentCodeFile = new File(project.getDirectory(), CODE_XML_FILE_NAME);
+
+			if (currentCodeFile.exists()) {
+				try {
+					String previousXml = Files.asCharSource(currentCodeFile, Charsets.UTF_8).read();
+
+					if (previousXml.equals(currentXml)) {
+						Log.d(TAG, "Project version is the same. Do not update " + currentCodeFile.getName());
+						return false;
+					} else {
+						String languageRegex = "<catrobatLanguageVersion>.*</catrobatLanguageVersion>";
+						Pattern languagePattern = Pattern.compile(languageRegex, Pattern.CASE_INSENSITIVE);
+						Matcher currentLanguageMatcher = languagePattern.matcher(currentXml);
+						Matcher previousLanguageMatcher = languagePattern.matcher(previousXml);
+						currentLanguageMatcher.find();
+						previousLanguageMatcher.find();
+						if (Objects.equals(currentLanguageMatcher.group(0),
+								previousLanguageMatcher.group(0)) && (!unnecessaryChanges(currentXml, previousXml))) {
+							ProjectManager.getInstance().changedProject(project.getName());
+						}
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "Opening project at " + currentCodeFile.getAbsolutePath() + " failed.", e);
+					return false;
+				}
+			}
+
+			StorageOperations.createDir(DEFAULT_ROOT_DIRECTORY);
+			StorageOperations.createDir(project.getDirectory());
+
+			for (Scene scene : project.getSceneList()) {
+				StorageOperations.createSceneDirectory(scene.getDirectory());
+			}
+			StorageOperations.writeToFile(tmpCodeFile, currentXml);
+
+			if (currentCodeFile.exists() && !currentCodeFile.delete()) {
+				Log.e(TAG, "Cannot delete " + currentCodeFile.getName());
+			}
+
+			if (!tmpCodeFile.renameTo(currentCodeFile)) {
+				Log.e(TAG, "Cannot rename code.xml for " + project.getName());
+			}
+
+			return true;
+		} catch (Exception exception) {
+			Log.e(TAG, "Saving project " + project.getName() + " failed.", exception);
+			return false;
+		} finally {
+			loadSaveLock.unlock();
+		}
+	}
+
+	private void cleanUpTmpCodeFile(File projectDir) throws LoadingProjectException {
+		loadSaveLock.lock();
+
+		File tmpXmlFile = new File(projectDir, TMP_CODE_XML_FILE_NAME);
+		File actualXmlFile = new File(projectDir, CODE_XML_FILE_NAME);
+
+		try {
+			if (tmpXmlFile.exists()) {
+				if (actualXmlFile.exists()) {
+					tmpXmlFile.delete();
+				} else {
+					if (!tmpXmlFile.renameTo(actualXmlFile)) {
+						throw new LoadingProjectException(CODE_XML_FILE_NAME + " did not exist. But wait, renaming "
+								+ tmpXmlFile.getAbsolutePath() + " failed too.");
+					}
+				}
+			}
+		} finally {
+			loadSaveLock.unlock();
+		}
+	}
+
+	public String getXmlAsStringFromProject(Project project) {
+		loadSaveLock.lock();
+		String xmlString;
+		try {
+			prepareXstream(project.getClass(), project.getSceneList().get(0).getClass());
+			xmlString = xstream.toXML(project);
+			prepareXstream(Project.class, Scene.class);
+		} finally {
+			loadSaveLock.unlock();
+		}
+		return xmlString;
+	}
+
+	public static String extractDefaultSceneNameFromXml(File projectDir) {
+		File xmlFile = new File(projectDir, CODE_XML_FILE_NAME);
+
+		StringFinder stringFinder = new StringFinder();
+
+		try {
+			String xml = Files.asCharSource(xmlFile, Charsets.UTF_8).read();
+			return stringFinder.findBetween(xml, "<scenes>\\s*<scene>\\s*<name>", "</name>");
+		} catch (IOException e) {
+			Log.e(TAG, Log.getStackTraceString(e));
+		}
+		return null;
+	}
+
+	@VisibleForTesting
+	public BackwardCompatibleCatrobatLanguageXStream getXstream() {
+		return xstream;
+	}
+}
