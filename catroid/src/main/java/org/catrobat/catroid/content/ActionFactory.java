@@ -994,6 +994,15 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createTestAction(Sprite sprite, SequenceAction sequence,
+										Formula formula) {
+		TestAction action = action(TestAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFormula(formula);
+		return action;
+	}
+
 	public Action createStringToTableAction(Sprite sprite, SequenceAction sequence,
 										Formula str, Formula x, Formula y, Formula name) {
 		StringToTableAction action = action(StringToTableAction.class);

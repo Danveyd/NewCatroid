@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_test">Тест</string>
     <string formatted="false" name="formula_editor_object_look_height">высота образа</string>
     <string formatted="false" name="formula_editor_object_look_width">ширина образа</string>
     <string formatted="false" name="brick_string_to_table">Разделить</string>

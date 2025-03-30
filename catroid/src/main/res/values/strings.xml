@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_test">Test</string>
     <string formatted="false" name="formula_editor_object_look_height">look height</string>
     <string formatted="false" name="formula_editor_object_look_width">look width</string>
     <string formatted="false" name="brick_string_to_table">Split</string>

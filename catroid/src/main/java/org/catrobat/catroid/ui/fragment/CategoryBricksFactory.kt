@@ -276,6 +276,7 @@ import org.catrobat.catroid.content.bricks.StoreCSVIntoUserListBrick
 import org.catrobat.catroid.content.bricks.StringToTableBrick
 import org.catrobat.catroid.content.bricks.TapAtBrick
 import org.catrobat.catroid.content.bricks.TapForBrick
+import org.catrobat.catroid.content.bricks.TestBrick
 import org.catrobat.catroid.content.bricks.ThinkBubbleBrick
 import org.catrobat.catroid.content.bricks.ThinkForBubbleBrick
 import org.catrobat.catroid.content.bricks.TouchAndSlideBrick
@@ -396,6 +397,7 @@ open class CategoryBricksFactory {
         ifConditionFormulaElement.setRightChild(FormulaElement(FormulaElement.ElementType.NUMBER, "2", null))
         val ifConditionFormula = Formula(ifConditionFormulaElement)
         val controlBrickList: MutableList<Brick> = ArrayList()
+        controlBrickList.add(TestBrick("Ababuy!"))
         controlBrickList.add(WaitBrick(BrickValues.WAIT))
         controlBrickList.add(NoteBrick(context.getString(R.string.brick_note_default_value)))
         controlBrickList.add(ForeverBrick())
