@@ -4,6 +4,6 @@ class GlobalManager {
     companion object {
         var stopSounds: Boolean = true
         var saveScenes: Boolean = true
-        var TestGitVar: String = "Ababuy! Xz"
+        //var TestGitVar: String = "Ababuy! Xz"
     }
 }
