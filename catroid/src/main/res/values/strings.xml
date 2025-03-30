@@ -1355,7 +1355,6 @@
 
     <string formatted="false" name="brick_collision_receive">When you bounce off</string>
     <string formatted="false" name="collision_with_anything">any edge, actor, or object</string>
-
     <string formatted="false" name="brick_broadcast_receive">When you receive</string>
     <string formatted="false" name="brick_broadcast">Broadcast</string>
     <string formatted="false" name="brick_broadcast_wait">Broadcast and wait</string>
@@ -2159,6 +2158,7 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="formula_editor_sensor_gamepad_right_pressed">gamepad right pressed</string>
     <string formatted="false" name="formula_editor_sensor_stage_width">stage width</string>
     <string formatted="false" name="formula_editor_sensor_stage_height">stage height</string>
+    <string formatted="false" name="formula_editor_sensor_battary">battery percentage</string>
     <string formatted="false" name="formula_editor_phiro_sensor_front_left">phiro front left sensor</string>
     <string formatted="false" name="formula_editor_phiro_sensor_front_right">phiro front right sensor</string>
     <string formatted="false" name="formula_editor_phiro_sensor_side_left">phiro side left sensor</string>

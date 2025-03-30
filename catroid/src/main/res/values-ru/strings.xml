@@ -184,6 +184,7 @@
     <string formatted="false" name="formula_editor_function_reverse_parametr">(\'olleH\')</string>
     <string formatted="false" name="formula_editor_sensor_stage_width">ширина экрана</string>
     <string formatted="false" name="formula_editor_sensor_stage_height">высота экрана</string>
+    <string formatted="false" name="formula_editor_sensor_battary">заряд батареи</string>
     <string formatted="false" name="formula_editor_sensor_micro">громкость микрофона</string>
     <string formatted="false" name="formula_editor_sensor_ip">айпи локального сервера</string>
     <string formatted="false" name="formula_editor_sensor_port">порт локального сервера</string>

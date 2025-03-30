@@ -288,6 +288,8 @@ public class InternToExternGenerator {
 				R.string.formula_editor_sensor_stage_width);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.STAGE_HEIGHT.name(),
 				R.string.formula_editor_sensor_stage_height);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.BATTARY.name(),
+				R.string.formula_editor_sensor_battary);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.MICRO.name(),
 				R.string.formula_editor_sensor_micro);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.IP.name(),

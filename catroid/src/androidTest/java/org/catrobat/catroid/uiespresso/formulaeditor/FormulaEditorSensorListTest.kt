@@ -760,7 +760,8 @@ class FormulaEditorSensorListTest(
             listOf(str(R.string.formula_editor_sensor_longitude), "", ""),
             listOf(str(R.string.formula_editor_sensor_location_accuracy), "", ""),
             listOf(str(R.string.formula_editor_sensor_altitude), "", ""),
-            listOf(str(R.string.formula_editor_sensor_user_language), "", "")
+            listOf(str(R.string.formula_editor_sensor_user_language), "", ""),
+            listOf(str(R.string.formula_editor_sensor_battary), "", ""),
         )
 
         private val listOfTouch = listOf(

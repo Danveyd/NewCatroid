@@ -23,6 +23,8 @@
 package org.catrobat.catroid.formulaeditor;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -30,6 +32,7 @@ import android.hardware.SensorEventListener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -382,6 +385,15 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth();
 			case STAGE_HEIGHT:
 				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight();
+			case BATTARY:
+				IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+				Intent batteryStatus = CatroidApplication.getAppContext().registerReceiver(null, intentFilter);
+
+				int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+				int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+				// Вычисляем процент заряда батареи
+				return (int) ((level * 100) / (float) scale);
 			case MICRO:
 				return VolumeManager.Companion.getVolume();
 			case IP:

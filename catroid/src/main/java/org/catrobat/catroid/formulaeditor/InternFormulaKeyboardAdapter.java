@@ -650,6 +650,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildSensor(Sensors.STAGE_WIDTH);
 			case R.string.formula_editor_sensor_stage_height:
 				return buildSensor(Sensors.STAGE_HEIGHT);
+			case R.string.formula_editor_sensor_battary:
+				return buildSensor(Sensors.BATTARY);
 			case R.string.formula_editor_sensor_micro:
 				return buildSensor(Sensors.MICRO);
 			case R.string.formula_editor_sensor_ip:
