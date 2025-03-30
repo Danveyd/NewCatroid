@@ -397,7 +397,7 @@ open class CategoryBricksFactory {
         ifConditionFormulaElement.setRightChild(FormulaElement(FormulaElement.ElementType.NUMBER, "2", null))
         val ifConditionFormula = Formula(ifConditionFormulaElement)
         val controlBrickList: MutableList<Brick> = ArrayList()
-        controlBrickList.add(TestBrick("Ababuy!"))
+        //controlBrickList.add(TestBrick("Ababuy!"))
         controlBrickList.add(WaitBrick(BrickValues.WAIT))
         controlBrickList.add(NoteBrick(context.getString(R.string.brick_note_default_value)))
         controlBrickList.add(ForeverBrick())
