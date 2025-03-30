@@ -994,6 +994,31 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createSetStopSoundsAction(Sprite sprite, SequenceAction sequence,
+										Formula formula) {
+		SetStopSoundsAction action = action(SetStopSoundsAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFormula(formula);
+		return action;
+	}
+
+	public Action createSetSaveScenesAction(Sprite sprite, SequenceAction sequence,
+											Formula formula) {
+		SetSaveScenesAction action = action(SetSaveScenesAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFormula(formula);
+		return action;
+	}
+
+	public Action createClearSceneAction(String sceneName, Sprite sprite) {
+		ClearSceneAction action = action(ClearSceneAction.class);
+		action.setScene(sceneName);
+		action.setSprite(sprite);
+		return action;
+	}
+
 	public Action createTestAction(Sprite sprite, SequenceAction sequence,
 										Formula formula) {
 		TestAction action = action(TestAction.class);

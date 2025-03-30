@@ -64,6 +64,7 @@ import org.catrobat.catroid.content.bricks.ChangeYByNBrick
 import org.catrobat.catroid.content.bricks.ChooseCameraBrick
 import org.catrobat.catroid.content.bricks.ClearBackgroundBrick
 import org.catrobat.catroid.content.bricks.ClearGraphicEffectBrick
+import org.catrobat.catroid.content.bricks.ClearSceneBrick
 import org.catrobat.catroid.content.bricks.ClearUserListBrick
 import org.catrobat.catroid.content.bricks.CloneBrick
 import org.catrobat.catroid.content.bricks.ComeToFrontBrick
@@ -235,7 +236,9 @@ import org.catrobat.catroid.content.bricks.SetPenSizeBrick
 import org.catrobat.catroid.content.bricks.SetPhysicsObjectTypeBrick
 import org.catrobat.catroid.content.bricks.SetPositiveBrick
 import org.catrobat.catroid.content.bricks.SetRotationStyleBrick
+import org.catrobat.catroid.content.bricks.SetSaveScenesBrick
 import org.catrobat.catroid.content.bricks.SetSizeToBrick
+import org.catrobat.catroid.content.bricks.SetStopSoundsBrick
 import org.catrobat.catroid.content.bricks.SetTempoBrick
 import org.catrobat.catroid.content.bricks.SetThreadColorBrick
 import org.catrobat.catroid.content.bricks.SetTransparencyBrick
@@ -411,6 +414,9 @@ open class CategoryBricksFactory {
         controlBrickList.add(SceneTransitionBrick(null))
         controlBrickList.add(SceneStartBrick(null))
         controlBrickList.add(SceneIdBrick("1"))
+        controlBrickList.add(ClearSceneBrick(null))
+        controlBrickList.add(SetSaveScenesBrick(1))
+        controlBrickList.add(SetStopSoundsBrick(1))
         if (SettingsFragment.isPhiroSharedPreferenceEnabled(context)) {
             controlBrickList.add(PhiroIfLogicBeginBrick())
         }
@@ -521,6 +527,7 @@ open class CategoryBricksFactory {
             soundBrickList.add(StartListeningBrick())
             soundBrickList.add(SetListeningLanguageBrick())
         }
+        soundBrickList.add(SetStopSoundsBrick(1))
         soundBrickList.add(SetInstrumentBrick())
         soundBrickList.add(PlayNoteForBeatsBrick(BrickValues.DEFAULT_NOTE, BrickValues.PAUSED_BEATS_INT))
         soundBrickList.add(PlayDrumForBeatsBrick(BrickValues.PAUSED_BEATS_INT))
