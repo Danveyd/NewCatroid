@@ -6,4 +6,3 @@ class GlobalManager {
         var saveScenes: Boolean = true
     }
 }
-//Буква Ъ - самая главная тут.
