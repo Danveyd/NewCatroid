@@ -1361,7 +1361,7 @@
     <string formatted="false" name="brick_broadcast_wait">Broadcast and wait</string>
     <string formatted="false" name="brick_scene_transition">Continue scene</string>
     <string formatted="false" name="brick_scene_start">Start scene</string>
-    <string formatted="false" name="brick_note">Note</string>
+    <string formatted="false" name="brick_note"></string>
     <string formatted="false" name="brick_think_bubble">Think</string>
     <string formatted="false" name="brick_say_bubble">Say</string>
     <string formatted="false" name="brick_think_say_for_text">for</string>
