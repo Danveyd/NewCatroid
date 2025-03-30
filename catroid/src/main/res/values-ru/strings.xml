@@ -1334,6 +1334,7 @@
     <string formatted="false" name="brick_scene_transition">Продолжить сцену</string>
     <string formatted="false" name="brick_scene_start">Запустить сцену</string>
     <string formatted="false" name="brick_note"></string>
+    <string formatted="false" name="project_options_custom_resolution">Пользовательское разрешение</string>
     <string formatted="false" name="brick_think_bubble">Думать</string>
     <string formatted="false" name="brick_say_bubble">Cказать</string>
     <string formatted="false" name="brick_think_say_for_text">в течении</string>

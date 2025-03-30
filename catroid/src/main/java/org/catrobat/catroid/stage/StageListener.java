@@ -426,6 +426,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -451,6 +457,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName, Boolean stopSounds) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -478,6 +490,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName, Boolean stopSounds, Boolean save) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -511,6 +529,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName, Boolean stopSound) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -544,6 +568,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName, Boolean stopSound, Boolean save) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -579,6 +609,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
 		if (newScene == null) {
@@ -608,6 +644,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startSceneById(Integer sceneId) {
+		XmlHeader xmlh = project.getXmlHeader();
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
+
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneById(sceneId);
 		String sceneName = ProjectManager.getInstance().getCurrentProject().getSceneNameById(sceneId);
 

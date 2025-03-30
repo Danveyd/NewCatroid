@@ -1362,6 +1362,7 @@
     <string formatted="false" name="brick_scene_transition">Continue scene</string>
     <string formatted="false" name="brick_scene_start">Start scene</string>
     <string formatted="false" name="brick_note"></string>
+    <string formatted="false" name="project_options_custom_resolution">User resolution</string>
     <string formatted="false" name="brick_think_bubble">Think</string>
     <string formatted="false" name="brick_say_bubble">Say</string>
     <string formatted="false" name="brick_think_say_for_text">for</string>

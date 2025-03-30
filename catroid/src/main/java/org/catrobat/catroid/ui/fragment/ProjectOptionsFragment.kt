@@ -155,6 +155,7 @@ class ProjectOptionsFragment : Fragment() {
         setupNotesAndCreditsInputLayout()
         addTags()
         setupProjectAspectRatio()
+        setupCustomResolution()
         setupProjectUpload()
         setupProjectSaveExternal()
         //setupProjectSaveApk()
@@ -217,6 +218,15 @@ class ProjectOptionsFragment : Fragment() {
         }
     }
 
+    private fun setupCustomResolution() {
+        binding.projectOptionsCustomResolution.apply {
+            isChecked = project?.xmlHeader?.customResolution == true
+            setOnCheckedChangeListener { _, isChecked ->
+                handleCustomResolutionChecked(isChecked)
+            }
+        }
+    }
+
     private fun setupProjectUpload() {
         binding.projectOptionsUpload.setOnClickListener {
             projectUpload()
@@ -271,6 +281,10 @@ class ProjectOptionsFragment : Fragment() {
         } else {
             ScreenModes.STRETCH
         }
+    }
+
+    private fun handleCustomResolutionChecked(checked: Boolean) {
+        project?.xmlHeader?.setCustomResolution(checked)
     }
 
     private fun handleDeleteButtonPressed() {

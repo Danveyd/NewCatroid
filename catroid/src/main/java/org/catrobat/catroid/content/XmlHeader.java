@@ -47,6 +47,8 @@ public class XmlHeader implements Serializable {
 
 	public ScreenModes screenMode = ScreenModes.STRETCH;
 
+	public Boolean customResolution = false;
+
 	private double catrobatLanguageVersion;
 	private boolean landscapeMode;
 	private boolean isCastProject = false;
@@ -224,6 +226,14 @@ public class XmlHeader implements Serializable {
 
 	public ScreenModes getScreenMode() {
 		return this.screenMode;
+	}
+
+	public void setCustomResolution(Boolean screenMode) {
+		this.customResolution = screenMode;
+	}
+
+	public Boolean getCustomResolution() {
+		return this.customResolution;
 	}
 
 	public boolean islandscapeMode() {

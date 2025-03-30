@@ -398,6 +398,10 @@ public class Project implements Serializable {
 		return xmlHeader.getScreenMode();
 	}
 
+	public Boolean getCustomResolution() {
+		return xmlHeader.getCustomResolution();
+	}
+
 	public void setScreenMode(ScreenModes screenMode) {
 		xmlHeader.setScreenMode(screenMode);
 	}

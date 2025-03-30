@@ -42,6 +42,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Setting;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.WhenBounceOffScript;
+import org.catrobat.catroid.content.XmlHeader;
 import org.catrobat.catroid.content.backwardcompatibility.BrickTreeBuilder;
 import org.catrobat.catroid.content.bricks.ArduinoSendPWMValueBrick;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -172,6 +173,10 @@ public final class ProjectManager {
 		}
 		if (project.getCatrobatLanguageVersion() <= 1.03) {
 			ProjectManager.updateDirectionProperty(project);
+		}
+		if (project.getCatrobatLanguageVersion() <= 1.13) {
+			XmlHeader xmlh = project.getXmlHeader();
+			xmlh.setCustomResolution(false);
 		}
 
 		project.setCatrobatLanguageVersion(CURRENT_CATROBAT_LANGUAGE_VERSION);
