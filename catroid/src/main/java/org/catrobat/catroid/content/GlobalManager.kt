@@ -5,5 +5,6 @@ class GlobalManager {
         var stopSounds: Boolean = true
         var saveScenes: Boolean = true
         //var TestGitVar: String = "Ababuy! Xz"
+        //чозапиздец как этим пользоваться
     }
 }
