@@ -460,6 +460,11 @@ public class Project implements Serializable {
 
 
 	public Rectangle getScreenRectangle() {
+		XmlHeader xmlh = xmlHeader;
+		if(xmlh.customResolution) {
+			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
+			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
+		}
 		int virtualScreenWidth = xmlHeader.virtualScreenWidth;
 		int virtualScreenHeight = xmlHeader.virtualScreenHeight;
 		return new Rectangle(-virtualScreenWidth / 2, -virtualScreenHeight / 2, virtualScreenWidth, virtualScreenHeight);

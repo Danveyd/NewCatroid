@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.common.ScreenModes;
+import org.catrobat.catroid.common.ScreenValues;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -113,10 +114,16 @@ public class XmlHeader implements Serializable {
 	}
 
 	public int getVirtualScreenHeight() {
+		if(customResolution) {
+			return ScreenValues.currentScreenResolution.getHeight();
+		}
 		return virtualScreenHeight;
 	}
 
 	public int getVirtualScreenWidth() {
+		if(customResolution) {
+			return ScreenValues.currentScreenResolution.getWidth();
+		}
 		return virtualScreenWidth;
 	}
 
