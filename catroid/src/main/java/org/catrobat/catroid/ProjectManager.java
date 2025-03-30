@@ -608,8 +608,8 @@ public final class ProjectManager {
 	}
 
 	public boolean isCurrentProjectLandscapeMode() {
-		int virtualScreenWidth = getCurrentProject().getXmlHeader().virtualScreenWidth;
-		int virtualScreenHeight = getCurrentProject().getXmlHeader().virtualScreenHeight;
+		int virtualScreenWidth = getCurrentProject().getXmlHeader().getVirtualScreenWidth();
+		int virtualScreenHeight = getCurrentProject().getXmlHeader().getVirtualScreenHeight();
 
 		return virtualScreenWidth > virtualScreenHeight;
 	}

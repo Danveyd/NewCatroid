@@ -369,8 +369,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		ScreenValueHandler.updateScreenWidthAndHeight(getContext());
 
 		Resolution projectResolution = new Resolution(
-				ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth,
-				ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight);
+				ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth(),
+				ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight());
 
 		ScreenValues.currentScreenResolution =
 				ScreenValues.currentScreenResolution.flipToFit(projectResolution);

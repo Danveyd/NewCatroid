@@ -379,9 +379,9 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 			case USER_LANGUAGE:
 				return userLocaleTag;
 			case STAGE_WIDTH:
-				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
+				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth();
 			case STAGE_HEIGHT:
-				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight;
+				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight();
 			case MICRO:
 				return VolumeManager.Companion.getVolume();
 			case IP:

@@ -24,10 +24,13 @@ package org.catrobat.catroid.content;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BroadcastMessageContainer;
 import org.catrobat.catroid.common.Constants;
@@ -460,13 +463,8 @@ public class Project implements Serializable {
 
 
 	public Rectangle getScreenRectangle() {
-		XmlHeader xmlh = xmlHeader;
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
-		int virtualScreenWidth = xmlHeader.virtualScreenWidth;
-		int virtualScreenHeight = xmlHeader.virtualScreenHeight;
+		int virtualScreenWidth = xmlHeader.getVirtualScreenWidth();
+		int virtualScreenHeight = xmlHeader.getVirtualScreenHeight();
 		return new Rectangle(-virtualScreenWidth / 2, -virtualScreenHeight / 2, virtualScreenWidth, virtualScreenHeight);
 	}
 

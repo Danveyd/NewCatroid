@@ -22,10 +22,12 @@
  */
 package org.catrobat.catroid.stage;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -54,6 +56,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.camera.CameraManager;
 import org.catrobat.catroid.common.LookData;
@@ -261,17 +264,17 @@ public class StageListener implements ApplicationListener {
 
 		float shortDisplaySide;
 		if (project.getXmlHeader().islandscapeMode()) {
-			shortDisplaySide = project.getXmlHeader().virtualScreenHeight;
+			shortDisplaySide = project.getXmlHeader().getVirtualScreenHeight();
 		} else {
-			shortDisplaySide = project.getXmlHeader().virtualScreenWidth;
+			shortDisplaySide = project.getXmlHeader().getVirtualScreenWidth();
 		}
 
 		return AXIS_FONT_SIZE_SCALE_FACTOR * shortDisplaySide / tempAxisLabelLayout.height;
 	}
 
 	private void createNewStage() {
-		virtualWidth = project.getXmlHeader().virtualScreenWidth;
-		virtualHeight = project.getXmlHeader().virtualScreenHeight;
+		virtualWidth = project.getXmlHeader().getVirtualScreenWidth();
+		virtualHeight = project.getXmlHeader().getVirtualScreenHeight();
 
 		virtualWidthHalf = virtualWidth / 2;
 		virtualHeightHalf = virtualHeight / 2;
@@ -426,11 +429,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -457,11 +455,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName, Boolean stopSounds) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -490,11 +483,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void transitionToScene(String sceneName, Boolean stopSounds, Boolean save) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -529,11 +517,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName, Boolean stopSound) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -568,11 +551,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName, Boolean stopSound, Boolean save) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -609,11 +587,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startScene(String sceneName) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
 
@@ -644,11 +617,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void startSceneById(Integer sceneId) {
-		XmlHeader xmlh = project.getXmlHeader();
-		if(xmlh.customResolution) {
-			xmlh.setVirtualScreenWidth(ScreenValues.currentScreenResolution.getWidth());
-			xmlh.setVirtualScreenHeight(ScreenValues.currentScreenResolution.getHeight());
-		}
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneById(sceneId);
 		String sceneName = ProjectManager.getInstance().getCurrentProject().getSceneNameById(sceneId);

@@ -45,7 +45,7 @@ class IfOnEdgeBouncePhysicsAction : TemporalAction() {
     }
 
     private val virtualScreenWidth = ProjectManager.getInstance().currentProject.xmlHeader.virtualScreenWidth
-    private val vsHeight = ProjectManager.getInstance().currentProject.xmlHeader.virtualScreenHeight
+    private val vsHeight = ProjectManager.getInstance().currentProject.xmlHeader.getVirtualScreenHeight()
 
     lateinit var sprite: Sprite
     lateinit var physicsWorld: PhysicsWorld

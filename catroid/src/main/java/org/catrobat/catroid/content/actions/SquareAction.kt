@@ -65,7 +65,7 @@ class SquareAction() : TemporalAction() {
         val stage = StageActivity.stageListener.stage
 
         scope?.project?.xmlHeader?.virtualScreenWidth?.div(2)?.let { scrX ->
-            scope?.project?.xmlHeader?.virtualScreenHeight?.div(2)?.let { scrY ->
+            scope?.project?.xmlHeader?.getVirtualScreenHeight()?.div(2)?.let { scrY ->
                 SquareController.instance.createOrUpdateSquare(
                     name,
                     pos_x + scrX,

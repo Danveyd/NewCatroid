@@ -53,8 +53,8 @@ class PlotActor : Actor() {
         )
         bufferBatch = SpriteBatch()
         camera = OrthographicCamera(
-            header.virtualScreenWidth.toFloat(),
-            header.virtualScreenHeight.toFloat()
+            header.getVirtualScreenWidth().toFloat(),
+            header.getVirtualScreenHeight().toFloat()
         )
         (bufferBatch as SpriteBatch).setProjectionMatrix(camera.combined)
         screenRatio = calculateScreenRatio()

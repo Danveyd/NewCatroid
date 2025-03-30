@@ -80,8 +80,8 @@ class ImportFromPocketPaintLauncher(private val activity: Activity) : ImportLaun
 
         val currentProject = ProjectManager.getInstance().currentProject
         val bitmap = Bitmap.createBitmap(
-            currentProject.xmlHeader.virtualScreenWidth,
-            currentProject.xmlHeader.virtualScreenHeight, Bitmap.Config.ARGB_8888
+            currentProject.xmlHeader.getVirtualScreenWidth(),
+            currentProject.xmlHeader.getVirtualScreenHeight(), Bitmap.Config.ARGB_8888
         )
         return StorageOperations.compressBitmapToPng(bitmap, File(POCKET_PAINT_CACHE_DIRECTORY, pocketPaintImageFileName))
     }

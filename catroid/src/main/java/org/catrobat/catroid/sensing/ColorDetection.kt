@@ -57,9 +57,9 @@ abstract class ColorDetection(
     protected var bufferHeight = 0
     protected var cameraBitmap: Bitmap? = null
     protected val virtualHeight = ProjectManager.getInstance().currentProject.xmlHeader
-        .virtualScreenHeight
+        .getVirtualScreenHeight()
     protected val virtualWidth = ProjectManager.getInstance().currentProject.xmlHeader
-        .virtualScreenWidth
+        .getVirtualScreenWidth()
 
     protected fun isLookInvalid(): Boolean =
         look.width <= Float.MIN_VALUE || look.height <= Float.MIN_VALUE

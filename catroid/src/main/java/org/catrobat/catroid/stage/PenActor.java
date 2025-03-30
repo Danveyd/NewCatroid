@@ -50,9 +50,9 @@ public class PenActor extends Actor {
 
 	public PenActor() {
 		XmlHeader header = ProjectManager.getInstance().getCurrentProject().getXmlHeader();
-		buffer = new FrameBuffer(Pixmap.Format.RGBA8888, header.virtualScreenWidth, header.virtualScreenHeight, false);
+		buffer = new FrameBuffer(Pixmap.Format.RGBA8888, header.getVirtualScreenWidth(), header.getVirtualScreenHeight(), false);
 		bufferBatch = new SpriteBatch();
-		camera = new OrthographicCamera(header.virtualScreenWidth, header.virtualScreenHeight);
+		camera = new OrthographicCamera(header.getVirtualScreenWidth(), header.getVirtualScreenHeight());
 		bufferBatch.setProjectionMatrix(camera.combined);
 		screenRatio = calculateScreenRatio();
 		reset();

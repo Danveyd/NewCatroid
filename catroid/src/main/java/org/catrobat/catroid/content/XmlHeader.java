@@ -22,12 +22,18 @@
  */
 package org.catrobat.catroid.content;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.WindowManager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.common.ScreenModes;
 import org.catrobat.catroid.common.ScreenValues;
+import org.luaj.vm2.ast.Str;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -115,15 +121,33 @@ public class XmlHeader implements Serializable {
 
 	public int getVirtualScreenHeight() {
 		if(customResolution) {
-			return ScreenValues.currentScreenResolution.getHeight();
+			WindowManager windowManager = (WindowManager) CatroidApplication.getAppContext().getSystemService(Context.WINDOW_SERVICE);
+			DisplayMetrics displayMetrics = new DisplayMetrics();
+			windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+			int width = displayMetrics.widthPixels;
+			int height = displayMetrics.heightPixels;
+			Log.d("CustomRes", "Y: " + String.valueOf(height));
+			virtualScreenHeight = height;
+			return height;
 		}
+		Log.d("CustomRes", "def: Y: " + String.valueOf(virtualScreenHeight));
 		return virtualScreenHeight;
 	}
 
 	public int getVirtualScreenWidth() {
 		if(customResolution) {
-			return ScreenValues.currentScreenResolution.getWidth();
+			WindowManager windowManager = (WindowManager) CatroidApplication.getAppContext().getSystemService(Context.WINDOW_SERVICE);
+			DisplayMetrics displayMetrics = new DisplayMetrics();
+			windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+			int width = displayMetrics.widthPixels;
+			int height = displayMetrics.heightPixels;
+			Log.d("CustomRes", "X: " + String.valueOf(width));
+			virtualScreenWidth = width;
+			return width;
 		}
+		Log.d("CustomRes", "def: X: " + String.valueOf(virtualScreenWidth));
 		return virtualScreenWidth;
 	}
 

@@ -192,8 +192,8 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 		frameLayout = findViewById(R.id.frame_container);
 
 		Resolution projectResolution = new Resolution(
-				currentProject.getXmlHeader().virtualScreenWidth,
-				currentProject.getXmlHeader().virtualScreenHeight);
+				currentProject.getXmlHeader().getVirtualScreenWidth(),
+				currentProject.getXmlHeader().getVirtualScreenHeight());
 
 		switch (currentProject.getScreenMode()) {
 			case MAXIMIZE:
