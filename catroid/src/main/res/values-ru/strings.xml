@@ -83,7 +83,7 @@
     <string formatted="false" name="brick_clear_scene">Очистить кэш сцены</string>
     <string formatted="false" name="brick_set_stop_sounds">Задать остановку звуков</string>
     <string formatted="false" name="brick_set_save_scenes">Задать сохранение сцен</string>
-    <string formatted="false" name="brick_test">Тест</string>
+    <string formatted="false" name="brick_test">Показать панель интерфейса</string>
     <string formatted="false" name="formula_editor_object_look_height">высота образа</string>
     <string formatted="false" name="formula_editor_object_look_width">ширина образа</string>
     <string formatted="false" name="brick_string_to_table">Разделить</string>

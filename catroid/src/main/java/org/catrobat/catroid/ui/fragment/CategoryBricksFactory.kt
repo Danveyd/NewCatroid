@@ -402,6 +402,7 @@ open class CategoryBricksFactory {
         val controlBrickList: MutableList<Brick> = ArrayList()
         //controlBrickList.add(TestBrick("Ababuy!"))
         controlBrickList.add(WaitBrick(BrickValues.WAIT))
+        controlBrickList.add(TestBrick())
         controlBrickList.add(NoteBrick(context.getString(R.string.brick_note_default_value)))
         controlBrickList.add(ForeverBrick())
         controlBrickList.add(IfLogicBeginBrick(ifConditionFormula))

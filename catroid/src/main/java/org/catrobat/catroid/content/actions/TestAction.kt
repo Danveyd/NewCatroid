@@ -1,51 +1,27 @@
-/*
- * Catroid: An on-device visual programming system for Android devices
- * Copyright (C) 2010-2024 The Catrobat Team
- * (<http://developer.catrobat.org/credits>)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * An additional term exception under section 7 of the GNU Affero
- * General Public License, version 3, is available at
- * http://developer.catrobat.org/license_additional_term
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package org.catrobat.catroid.content.actions
 
-import android.widget.Toast
-import android.content.Context
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import android.app.Activity
-import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.stage.StageActivity.IntentListener
-import android.util.Log
-import org.catrobat.catroid.CatroidApplication
-import org.catrobat.catroid.R
-
+import android.os.Build
+import android.view.View
+import android.view.WindowInsets
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
-import java.util.ArrayList
 
-class TestAction() : TemporalAction() {
+class TestAction(private val activity: Activity) : TemporalAction() {
     var scope: Scope? = null
     var formula: Formula? = null
 
     override fun update(percent: Float) {
-        val string: String = formula?.interpretString(scope) ?: ""
-
-        val context = CatroidApplication.getAppContext()
-        val params = ArrayList<Any>(listOf(string))
-        StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
+        // Для Android 11 и выше (API 30+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            activity.window.insetsController?.show(
+                WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars()
+            )
+        } else {
+            // Для старых версий Android (до API 30)
+            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
     }
 }
+

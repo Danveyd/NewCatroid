@@ -46,10 +46,6 @@
             style="@style/BrickText.SingleLine"
             android:text="@string/brick_test" />
 
-        <TextView
-            android:id="@+id/brick_test_edit_text"
-            style="@style/BrickEditText" />
-
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
