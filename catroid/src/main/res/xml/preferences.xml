@@ -150,10 +150,18 @@
         android:summary="@string/preference_description_test_bricks"
         android:title="@string/preference_title_enable_test_bricks" />
 
+    <!-- https://www.meme-arsenal.com/memes/d3d151ea76e2feed9edb2d82e14133ff.jpg -->
+
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="setting_enable_crash_reports"
         android:summary="@string/preference_description_crash_reports"
         android:title="@string/preference_title_enable_crash_reports" />
+
+
+    <Preference
+        android:key="example_key"
+        android:title="Долго ж мы тебя искали)))"
+        android:summary=":)" />
 
 </PreferenceScreen>
