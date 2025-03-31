@@ -83,7 +83,7 @@
     <string formatted="false" name="brick_clear_scene">Clear scene cache</string>
     <string formatted="false" name="brick_set_stop_sounds">Set \"Stop Sounds\" to</string>
     <string formatted="false" name="brick_set_save_scenes">Set \"Save scenes\" to</string>
-    <string formatted="false" name="brick_test">Test</string>
+    <string formatted="false" name="brick_test">Show system interface</string>
     <string formatted="false" name="formula_editor_object_look_height">look height</string>
     <string formatted="false" name="formula_editor_object_look_width">look width</string>
     <string formatted="false" name="brick_string_to_table">Split</string>

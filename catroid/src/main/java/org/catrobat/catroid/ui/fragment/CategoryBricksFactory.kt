@@ -402,7 +402,6 @@ open class CategoryBricksFactory {
         val controlBrickList: MutableList<Brick> = ArrayList()
         //controlBrickList.add(TestBrick("Ababuy!"))
         controlBrickList.add(WaitBrick(BrickValues.WAIT))
-        controlBrickList.add(TestBrick())
         controlBrickList.add(NoteBrick(context.getString(R.string.brick_note_default_value)))
         controlBrickList.add(ForeverBrick())
         controlBrickList.add(IfLogicBeginBrick(ifConditionFormula))
@@ -725,6 +724,7 @@ open class CategoryBricksFactory {
         //deviceBrickList.add(DeleteWebBrick("myWebView"))
         deviceBrickList.add(ScreenShotBrick())
         deviceBrickList.add(ResetTimerBrick())
+        deviceBrickList.add(TestBrick())
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {

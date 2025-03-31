@@ -10,7 +10,6 @@ import org.catrobat.catroid.formulaeditor.Formula
 
 class TestAction(private val activity: Activity) : TemporalAction() {
     var scope: Scope? = null
-    var formula: Formula? = null
 
     override fun update(percent: Float) {
         // Для Android 11 и выше (API 30+)

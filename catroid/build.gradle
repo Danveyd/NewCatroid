@@ -150,6 +150,7 @@ android {
 
         buildConfigField "boolean", "FEATURE_LIST_AS_BASIC_DATATYPE", "false"
 
+        buildConfigField "boolean", "FEATURE_1_APRIL", "true"
         buildConfigField "boolean", "FEATURE_AI_SENSORS_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "false"
         buildConfigField "boolean", "FEATURE_ARDUINO_ENABLED", "true"
