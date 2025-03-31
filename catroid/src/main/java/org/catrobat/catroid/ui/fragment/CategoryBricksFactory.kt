@@ -32,6 +32,7 @@ import org.catrobat.catroid.content.RaspiInterruptScript
 import org.catrobat.catroid.content.WhenBounceOffScript
 import org.catrobat.catroid.content.WhenConditionScript
 import org.catrobat.catroid.content.WhenGamepadButtonScript
+import org.catrobat.catroid.content.actions.hideStatusBarAction
 import org.catrobat.catroid.content.bricks.AddEditBrick
 import org.catrobat.catroid.content.bricks.AddItemToUserListBrick
 import org.catrobat.catroid.content.bricks.AddRadioBrick
@@ -115,6 +116,7 @@ import org.catrobat.catroid.content.bricks.GlideToBrick
 import org.catrobat.catroid.content.bricks.GoNStepsBackBrick
 import org.catrobat.catroid.content.bricks.GoToBrick
 import org.catrobat.catroid.content.bricks.HideBrick
+import org.catrobat.catroid.content.bricks.HideStatusBarBrick
 import org.catrobat.catroid.content.bricks.HideText3Brick
 import org.catrobat.catroid.content.bricks.HideTextBrick
 import org.catrobat.catroid.content.bricks.IfLogicBeginBrick
@@ -710,6 +712,7 @@ open class CategoryBricksFactory {
     protected fun setupDeviceCategoryList(context: Context, isBackgroundSprite: Boolean): List<Brick> {
         val deviceBrickList: MutableList<Brick> = ArrayList()
         deviceBrickList.add(ShowToastBlock("Hello World"))
+        deviceBrickList.add(HideStatusBarBrick())
         deviceBrickList.add(CopyTextBrick("Котлета"))
         deviceBrickList.add(ListenMicroBrick("100"))
         //deviceBrickList.add(DividePolandBrick())

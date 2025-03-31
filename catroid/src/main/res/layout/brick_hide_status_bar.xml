@@ -37,7 +37,7 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-        android:id="@+id/brick_show_toast_layout"
+        android:id="@+id/brick_hide_status_bar_layout"
         style="@style/BrickContainer.Device.Small">
 
         <include layout="@layout/icon_brick_category_device" />
@@ -45,16 +45,8 @@
         <TextView
             android:id="@+id/brick_show_toast_label"
             style="@style/BrickText.SingleLine"
-            android:text="@string/brick_show_toast" />
+            android:text="@string/hide_status_bar" />
 
-        <TextView
-            android:id="@+id/brick_show_toast_edit_text"
-            style="@style/BrickEditText" />
-
-        <TextView
-            android:id="@+id/brick_show_toast_textview"
-            style="@style/BrickText.SingleLine"
-            android:text="@string/brick_show_toast2" />
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
