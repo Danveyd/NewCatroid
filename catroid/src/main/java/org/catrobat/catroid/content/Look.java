@@ -78,6 +78,7 @@ public class Look extends Image {
 	private boolean simultaneousMovementXY = false;
 	private int lookListIndexBeforeLookRequest = -1;
 	protected LookData lookData;
+	public LookData lookData2 = null;
 	protected Sprite sprite;
 	protected float alpha = 1f;
 	protected float brightness = 1f;
@@ -345,24 +346,48 @@ public class Look extends Image {
 	}
 
 	public synchronized void refreshTextures(boolean refreshShader) {
-		if (lookData == null) {
-			setBounds(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 0f, 0f);
-			setDrawable(null);
-			return;
-		}
-		pixmap = lookData.getPixmap();
-		if (pixmap != null) {
-			float newX = getX() - (pixmap.getWidth() - getWidth()) / 2f;
-			float newY = getY() - (pixmap.getHeight() - getHeight()) / 2f;
-			setSize(pixmap.getWidth(), pixmap.getHeight());
-			setPosition(newX, newY);
-			setOrigin(getWidth() / 2f, getHeight() / 2f);
-			TextureRegion region = lookData.getTextureRegion();
-			TextureRegionDrawable drawable = new TextureRegionDrawable(region);
-			setDrawable(drawable);
-			flipLookDataIfNeeded(getRotationMode());
-			if (refreshShader) {
-				refreshShader();
+		if(lookData2 != null) {
+			if (lookData == null) {
+				setBounds(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 0f, 0f);
+				setDrawable(null);
+				return;
+			}
+			pixmap = lookData2.getPixmap();
+			//Pixmap pixmap2 = lookData2.getPixmap();
+			if (pixmap != null) {
+				float newX = getX() - (pixmap.getWidth() - getWidth()) / 2f;
+				float newY = getY() - (pixmap.getHeight() - getHeight()) / 2f;
+				setSize(pixmap.getWidth(), pixmap.getHeight());
+				setPosition(newX, newY);
+				setOrigin(getWidth() / 2f, getHeight() / 2f);
+				TextureRegion region = lookData2.getTextureRegion();
+				TextureRegionDrawable drawable = new TextureRegionDrawable(region);
+				setDrawable(drawable);
+				flipLookDataIfNeeded(getRotationMode());
+				if (refreshShader) {
+					refreshShader();
+				}
+			}
+		} else {
+			if (lookData == null) {
+				setBounds(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 0f, 0f);
+				setDrawable(null);
+				return;
+			}
+			pixmap = lookData.getPixmap();
+			if (pixmap != null) {
+				float newX = getX() - (pixmap.getWidth() - getWidth()) / 2f;
+				float newY = getY() - (pixmap.getHeight() - getHeight()) / 2f;
+				setSize(pixmap.getWidth(), pixmap.getHeight());
+				setPosition(newX, newY);
+				setOrigin(getWidth() / 2f, getHeight() / 2f);
+				TextureRegion region = lookData.getTextureRegion();
+				TextureRegionDrawable drawable = new TextureRegionDrawable(region);
+				setDrawable(drawable);
+				flipLookDataIfNeeded(getRotationMode());
+				if (refreshShader) {
+					refreshShader();
+				}
 			}
 		}
 	}
@@ -379,6 +404,11 @@ public class Look extends Image {
 
 	public synchronized void setLookData(LookData lookData) {
 		this.lookData = lookData;
+		refreshTextures(false);
+	}
+
+	public synchronized void setLookData2(LookData lookData) {
+		this.lookData2 = lookData;
 		refreshTextures(false);
 	}
 
@@ -500,6 +530,7 @@ public class Look extends Image {
 		boolean facingWrongDirection = mode == ROTATION_STYLE_LEFT_RIGHT_ONLY && (orientedLeft ^ isFlipped());
 		if (differentModeButFlipped || facingWrongDirection) {
 			getLookData().getTextureRegion().flip(true, false);
+			lookData2.getTextureRegion().flip(true, false);
 		}
 	}
 
@@ -563,6 +594,7 @@ public class Look extends Image {
 				boolean needsFlipping = (isFlipped() && orientedRight) || (!isFlipped() && orientedLeft);
 				if (needsFlipping && lookData != null) {
 					lookData.getTextureRegion().flip(true, false);
+					lookData2.getTextureRegion().flip(true, false);
 				}
 				break;
 			case ROTATION_STYLE_ALL_AROUND:
@@ -773,28 +805,49 @@ public class Look extends Image {
 	}
 
 	public Polygon[] getCurrentCollisionPolygon() {
-		Polygon[] originalPolygons;
-		if (getLookData() == null) {
-			originalPolygons = new Polygon[0];
-		} else {
-			CollisionInformation collisionInformation = getLookData().getCollisionInformation();
+		if(lookData2 != null) {
+			Polygon[] originalPolygons;
+			CollisionInformation collisionInformation = lookData2.getCollisionInformation();
 			if (collisionInformation.collisionPolygons == null) {
 				collisionInformation.loadCollisionPolygon();
 			}
 			originalPolygons = collisionInformation.collisionPolygons;
-		}
 
-		Polygon[] transformedPolygons = new Polygon[originalPolygons.length];
+			Polygon[] transformedPolygons = new Polygon[originalPolygons.length];
 
-		for (int p = 0; p < transformedPolygons.length; p++) {
-			Polygon poly = new Polygon(originalPolygons[p].getTransformedVertices());
-			poly.translate(getX(), getY());
-			poly.setRotation(getRotation());
-			poly.setScale(getScaleX(), getScaleY());
-			poly.setOrigin(getOriginX(), getOriginY());
-			transformedPolygons[p] = poly;
+			for (int p = 0; p < transformedPolygons.length; p++) {
+				Polygon poly = new Polygon(originalPolygons[p].getTransformedVertices());
+				poly.translate(getX(), getY());
+				poly.setRotation(getRotation());
+				poly.setScale(getScaleX(), getScaleY());
+				poly.setOrigin(getOriginX(), getOriginY());
+				transformedPolygons[p] = poly;
+			}
+			return transformedPolygons;
+		} else {
+			Polygon[] originalPolygons;
+			if (getLookData() == null) {
+				originalPolygons = new Polygon[0];
+			} else {
+				CollisionInformation collisionInformation = getLookData().getCollisionInformation();
+				if (collisionInformation.collisionPolygons == null) {
+					collisionInformation.loadCollisionPolygon();
+				}
+				originalPolygons = collisionInformation.collisionPolygons;
+			}
+
+			Polygon[] transformedPolygons = new Polygon[originalPolygons.length];
+
+			for (int p = 0; p < transformedPolygons.length; p++) {
+				Polygon poly = new Polygon(originalPolygons[p].getTransformedVertices());
+				poly.translate(getX(), getY());
+				poly.setRotation(getRotation());
+				poly.setScale(getScaleX(), getScaleY());
+				poly.setOrigin(getOriginX(), getOriginY());
+				transformedPolygons[p] = poly;
+			}
+			return transformedPolygons;
 		}
-		return transformedPolygons;
 	}
 
 	void notifyAllWaiters() {

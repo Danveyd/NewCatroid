@@ -325,6 +325,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", SetColorBrick.class);
 		xstream.alias("brick", SetTransparencyBrick.class);
 		xstream.alias("brick", SetLookBrick.class);
+		xstream.alias("brick", SetHitboxBrick.class);
 		xstream.alias("brick", SetLookByIndexBrick.class);
 		xstream.alias("brick", SetBackgroundBrick.class);
 		xstream.alias("brick", SetBackgroundByIndexBrick.class);

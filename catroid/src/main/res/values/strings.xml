@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_set_hitbox">Set look, but keep hitbox</string>
     <string formatted="false" name="ogurec">А ты любишь огурцы?</string>
     <string formatted="false" name="only_numbers">Only numbers and fractional numbers allowed here</string>
     <string formatted="false" name="project_physics_height">Physics height area</string>

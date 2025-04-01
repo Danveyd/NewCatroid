@@ -584,6 +584,14 @@ public class ActionFactory extends Actions {
 		return createSetLookAction(sprite, lookData, false);
 	}
 
+	public Action createSetHitboxAction(Sprite sprite, SequenceAction sequence, LookData lookData) {
+		SetHitboxAction action = Actions.action(SetHitboxAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setLookData(lookData);
+		return action;
+	}
+
 	public Action createSetLookAction(Sprite sprite, LookData lookData, boolean wait) {
 		SetLookAction action = Actions.action(SetLookAction.class);
 		action.setSprite(sprite);

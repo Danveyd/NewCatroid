@@ -223,6 +223,7 @@ import org.catrobat.catroid.content.bricks.SetFrictionBrick
 import org.catrobat.catroid.content.bricks.SetGeminiKeyBrick
 import org.catrobat.catroid.content.bricks.SetGravityBrick
 import org.catrobat.catroid.content.bricks.SetHeightBrick
+import org.catrobat.catroid.content.bricks.SetHitboxBrick
 import org.catrobat.catroid.content.bricks.SetInstrumentBrick
 import org.catrobat.catroid.content.bricks.SetListeningLanguageBrick
 import org.catrobat.catroid.content.bricks.SetLookBrick
@@ -489,6 +490,7 @@ open class CategoryBricksFactory {
         motionBrickList.add(VibrationBrick(BrickValues.VIBRATE_SECONDS))
         motionBrickList.add(SetPhysicsObjectTypeBrick(BrickValues.PHYSIC_TYPE))
         if (!isBackgroundSprite) motionBrickList.add(WhenBounceOffBrick(WhenBounceOffScript(null)))
+        motionBrickList.add(SetHitboxBrick())
         motionBrickList.add(SetVelocityBrick(BrickValues.PHYSIC_VELOCITY))
         motionBrickList.add(TurnLeftSpeedBrick(BrickValues.PHYSIC_TURN_DEGREES))
         motionBrickList.add(TurnRightSpeedBrick(BrickValues.PHYSIC_TURN_DEGREES))
