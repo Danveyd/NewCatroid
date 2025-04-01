@@ -994,6 +994,14 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createHideStatusBarAction(Sprite sprite, SequenceAction sequence
+										) {
+		hideStatusBarAction action = action(hideStatusBarAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		return action;
+	}
+
 	public Action createSetStopSoundsAction(Sprite sprite, SequenceAction sequence,
 										Formula formula) {
 		SetStopSoundsAction action = action(SetStopSoundsAction.class);
@@ -1019,12 +1027,10 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
-	public Action createTestAction(Sprite sprite, SequenceAction sequence,
-										Formula formula) {
+	public Action createTestAction(Sprite sprite, SequenceAction sequence) {
 		TestAction action = action(TestAction.class);
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
-		action.setFormula(formula);
 		return action;
 	}
 

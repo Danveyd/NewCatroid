@@ -38,17 +38,13 @@
 
     <org.catrobat.catroid.ui.BrickLayout
         android:id="@+id/brick_test_layout"
-        style="@style/BrickContainer.Arduino.Small">
+        style="@style/BrickContainer.Device.Small">
 
-        <include layout="@layout/icon_brick_category_arduino" />
+        <include layout="@layout/icon_brick_category_device" />
 
         <TextView
             style="@style/BrickText.SingleLine"
             android:text="@string/brick_test" />
-
-        <TextView
-            android:id="@+id/brick_test_edit_text"
-            style="@style/BrickEditText" />
 
     </org.catrobat.catroid.ui.BrickLayout>
 

@@ -1,6 +1,6 @@
 /*
  * Catroid: An on-device visual programming system for Android devices
- * Copyright (C) 2010-2022 The Catrobat Team
+ * Copyright (C) 2010-2024 The Catrobat Team
  * (<http://developer.catrobat.org/credits>)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,26 +20,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.catrobat.catroid.content.bricks;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
+import org.catrobat.catroid.formulaeditor.Formula;
 
-public class TestBrick extends BrickBaseType {
-
+public class HideStatusBarBrick extends FormulaBrick {
     private static final long serialVersionUID = 1L;
 
-    public TestBrick() {
+    public HideStatusBarBrick() {
+
     }
 
     @Override
     public int getViewResource() {
-        return R.layout.brick_test;
+        return R.layout.brick_hide_status_bar;
     }
 
     @Override
     public void addActionToSequence(Sprite sprite, ScriptSequenceAction sequence) {
-        sequence.addAction(sprite.getActionFactory().createTestAction(sprite, sequence));
+        sequence.addAction(sprite.getActionFactory().createHideStatusBarAction(sprite, sequence));
     }
 }
