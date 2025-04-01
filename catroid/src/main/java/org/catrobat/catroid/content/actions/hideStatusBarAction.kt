@@ -39,14 +39,8 @@ import java.util.ArrayList
 
 class hideStatusBarAction() : TemporalAction() {
     var scope: Scope? = null
-    var formula: Formula? = null
 
     override fun update(percent: Float) {
-        val string: String = formula?.interpretString(scope) ?: ""
-
-        val context = CatroidApplication.getAppContext()
-        val params = ArrayList<Any>(listOf(string))
-        StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
 
     }
 }
