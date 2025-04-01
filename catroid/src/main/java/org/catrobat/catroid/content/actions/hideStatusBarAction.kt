@@ -27,9 +27,12 @@ import android.widget.Toast
 import android.content.Context
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import android.app.Activity
+import android.os.Build
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.IntentListener
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.R
 
@@ -41,6 +44,21 @@ class hideStatusBarAction() : TemporalAction() {
     var scope: Scope? = null
 
     override fun update(percent: Float) {
+        val activity = StageActivity.activeStageActivity.get()
+        activity?.runOnUiThread {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                activity.window.insetsController?.hide(
+                    WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars()
+                )
+            } else {
+                // Для старых версий Android (до API 30)
+                activity.window.decorView.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        )
+            }
+        }
 
     }
 }

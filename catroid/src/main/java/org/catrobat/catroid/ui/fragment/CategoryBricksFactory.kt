@@ -711,7 +711,6 @@ open class CategoryBricksFactory {
     protected fun setupDeviceCategoryList(context: Context, isBackgroundSprite: Boolean): List<Brick> {
         val deviceBrickList: MutableList<Brick> = ArrayList()
         deviceBrickList.add(ShowToastBlock("Hello World"))
-        deviceBrickList.add(HideStatusBarBrick())
         deviceBrickList.add(CopyTextBrick("Котлета"))
         deviceBrickList.add(ListenMicroBrick("100"))
         //deviceBrickList.add(DividePolandBrick())
@@ -728,6 +727,7 @@ open class CategoryBricksFactory {
         deviceBrickList.add(ScreenShotBrick())
         deviceBrickList.add(ResetTimerBrick())
         deviceBrickList.add(TestBrick())
+        deviceBrickList.add(HideStatusBarBrick())
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {

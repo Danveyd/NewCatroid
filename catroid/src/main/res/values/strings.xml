@@ -2473,7 +2473,7 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="dialog_disable_hints_button_hide">HIDE</string>
     <string formatted="false" name="dialog_disable_hints_button_show">SHOW</string>
 
-    <string formatted="false" name="hide_status_bar">Hide status-bar</string>
+    <string formatted="false" name="hide_status_bar">Hide system interface</string>
     <!--  -->
 
     <!-- Crash report dialog -->
