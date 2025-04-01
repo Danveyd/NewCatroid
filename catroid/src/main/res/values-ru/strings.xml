@@ -78,6 +78,9 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="only_numbers">Здесь разрешены только дробные и обычные числа</string>
+    <string formatted="false" name="project_physics_height">Область ширины физики</string>
+    <string formatted="false" name="project_physics_width">Область высоты физики</string>
     <string formatted="false" name="brick_play_files_wait">Воспроизвести звук из проекта</string>
     <string formatted="false" name="brick_play_files_wait2">и ждать</string>
     <string formatted="false" name="brick_clear_scene">Очистить кэш сцены</string>

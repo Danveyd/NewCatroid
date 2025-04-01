@@ -94,6 +94,24 @@ public class InputWatcher {
 			return error;
 		}
 
+		@Nullable
+		public String validatePhysicsInput(String input, Context context) {
+			String error = null;
+			if (input.isEmpty()) {
+				return context.getString(R.string.name_empty);
+			}
+
+			input = input.trim();
+
+			if (input.isEmpty()) {
+				error = context.getString(R.string.name_consists_of_spaces_only);
+			} else if (!input.matches("-?\\d+(\\.\\d+)?")) {
+				error = context.getString(R.string.only_numbers);
+			}
+
+			return error;
+		}
+
 		protected boolean isNameUnique(String name) {
 			return !scope.contains(name);
 		}

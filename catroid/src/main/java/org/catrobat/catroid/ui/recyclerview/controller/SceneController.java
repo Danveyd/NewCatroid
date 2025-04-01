@@ -105,7 +105,7 @@ public class SceneController {
 			throw new IOException("Directory for Scene " + name + " could not be created.");
 		}
 
-		scene.setPhysicsWorld(new PhysicsWorld());
+		scene.setPhysicsWorld(new PhysicsWorld(dstProject));
 
 		for (Sprite sprite : sceneToCopy.getSpriteList()) {
 			scene.getSpriteList().add(spriteController.copy(sprite, dstProject, scene));

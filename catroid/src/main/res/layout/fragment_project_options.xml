@@ -186,6 +186,62 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="end">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/project_options_physics_width_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/project_physics_width"
+                android:paddingEnd="@dimen/dialog_content_area_padding"
+                android:paddingStart="@dimen/dialog_content_area_padding"
+                android:paddingTop="@dimen/dialog_content_area_padding_top"
+                app:errorEnabled="true"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/project_options_physics_width"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:selectAllOnFocus="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="end">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/project_options_physics_height_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/project_physics_height"
+                android:paddingEnd="@dimen/dialog_content_area_padding"
+                android:paddingStart="@dimen/dialog_content_area_padding"
+                android:paddingTop="@dimen/dialog_content_area_padding_top"
+                app:errorEnabled="true"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/project_options_physics_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:selectAllOnFocus="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="wrap_content"

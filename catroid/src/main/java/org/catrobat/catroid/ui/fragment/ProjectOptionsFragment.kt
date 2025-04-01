@@ -116,6 +116,7 @@ import org.koin.android.ext.android.inject
 import java.io.OutputStream
 import com.android.apksig.ApkSigner
 import com.android.apksig.internal.x509.Certificate
+import org.catrobat.catroid.content.XmlHeader
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
@@ -151,6 +152,7 @@ class ProjectOptionsFragment : Fragment() {
         sceneName = projectManager.currentlyEditedScene.name
 
         setupNameInputLayout()
+        setupPhysicsInputLayout()
         setupDescriptionInputLayout()
         setupNotesAndCreditsInputLayout()
         addTags()
@@ -179,6 +181,36 @@ class ProjectOptionsFragment : Fragment() {
                         null
                     }
                     binding.projectOptionsNameLayout.error = error
+                }
+            })
+        }
+    }
+
+    private fun setupPhysicsInputLayout() {
+        val xml: XmlHeader? = project?.xmlHeader
+        binding.projectOptionsPhysicsWidthLayout.editText?.apply {
+            setText(xml?.getPhysicsWidthArea().toString())
+            addTextChangedListener(object : NewProjectNameTextWatcher<Nameable>() {
+                override fun afterTextChanged(s: Editable?) {
+                    val error = if (s.toString() != project!!.name) {
+                        validatePhysicsInput(s.toString(), getContext())
+                    } else {
+                        null
+                    }
+                    binding.projectOptionsPhysicsWidthLayout.error = error
+                }
+            })
+        }
+        binding.projectOptionsPhysicsHeightLayout.editText?.apply {
+            setText(xml?.getPhysicsHeightArea().toString())
+            addTextChangedListener(object : NewProjectNameTextWatcher<Nameable>() {
+                override fun afterTextChanged(s: Editable?) {
+                    val error = if (s.toString() != project!!.name) {
+                        validatePhysicsInput(s.toString(), getContext())
+                    } else {
+                        null
+                    }
+                    binding.projectOptionsPhysicsHeightLayout.error = error
                 }
             })
         }
@@ -324,6 +356,7 @@ class ProjectOptionsFragment : Fragment() {
     private fun saveProject() {
         project ?: return
         setProjectName()
+        setPhysicsArea()
         saveDescription()
         saveCreditsAndNotes()
         saveProjectSerial(project, requireContext())
@@ -356,6 +389,16 @@ class ProjectOptionsFragment : Fragment() {
             project = projectManager.currentProject
             projectManager.currentlyEditedScene = project!!.getSceneByName(sceneName)
         }
+    }
+
+    private fun setPhysicsArea() {
+        val width = binding.projectOptionsPhysicsWidthLayout.editText?.text.toString().toFloat()
+        val height = binding.projectOptionsPhysicsHeightLayout.editText?.text.toString().toFloat()
+        project ?: return
+
+        val xml = project?.xmlHeader
+        xml?.setPhysicsWidthArea(width)
+        xml?.setPhysicsHeightArea(height)
     }
 
     fun saveDescription() {

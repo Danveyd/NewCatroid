@@ -174,9 +174,13 @@ public final class ProjectManager {
 		if (project.getCatrobatLanguageVersion() <= 1.03) {
 			ProjectManager.updateDirectionProperty(project);
 		}
+		XmlHeader xmlh = project.getXmlHeader();
 		if (project.getCatrobatLanguageVersion() <= 1.13) {
-			XmlHeader xmlh = project.getXmlHeader();
 			xmlh.setCustomResolution(false);
+		}
+		if (project.getCatrobatLanguageVersion() <= 1.14) {
+			xmlh.setPhysicsWidthArea(3.0f);
+			xmlh.setPhysicsHeightArea(2.0f);
 		}
 
 		project.setCatrobatLanguageVersion(CURRENT_CATROBAT_LANGUAGE_VERSION);

@@ -52,6 +52,12 @@ public class XmlHeader implements Serializable {
 	@XStreamAlias("screenHeight")
 	public int virtualScreenHeight = 0;
 
+	@XStreamAlias("physicsWidthArea")
+	public float physicsWidthArea = 3.0f;
+
+	@XStreamAlias("physicsHeightArea")
+	public float physicsHeightArea = 2.0f;
+
 	public ScreenModes screenMode = ScreenModes.STRETCH;
 
 	public Boolean customResolution = false;
@@ -225,6 +231,22 @@ public class XmlHeader implements Serializable {
 
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
+	}
+
+	public void setPhysicsWidthArea(float value) {
+		physicsWidthArea = value;
+	}
+
+	public void setPhysicsHeightArea(float value) {
+		physicsHeightArea = value;
+	}
+
+	public float getPhysicsWidthArea() {
+		return physicsWidthArea;
+	}
+
+	public float getPhysicsHeightArea() {
+		return physicsHeightArea;
 	}
 
 	public String getApplicationVersion() {

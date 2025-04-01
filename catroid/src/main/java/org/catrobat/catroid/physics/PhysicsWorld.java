@@ -34,7 +34,9 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Look;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.XmlHeader;
 import org.catrobat.catroid.physics.shapebuilder.PhysicsShapeBuilder;
 
 import java.util.ArrayList;
@@ -59,8 +61,8 @@ public class PhysicsWorld {
 	public static final short MASK_TO_BOUNCE = -1; // collides with everything
 	public static final short MASK_NO_COLLISION = 0; // collides with NOBODY
 
-	public static final float ACTIVE_AREA_WIDTH_FACTOR = 3.0f;
-	public static final float ACTIVE_AREA_HEIGHT_FACTOR = 2.0f;
+	public static float ACTIVE_AREA_WIDTH_FACTOR = 3.0f;
+	public static float ACTIVE_AREA_HEIGHT_FACTOR = 2.0f;
 
 	public static final float RATIO = 10.0f;
 	public static final int VELOCITY_ITERATIONS = 3;
@@ -81,11 +83,14 @@ public class PhysicsWorld {
 
 	private PhysicsShapeBuilder physicsShapeBuilder = PhysicsShapeBuilder.getInstance();
 
-	public PhysicsWorld() {
-		this(ScreenValues.currentScreenResolution.getWidth(), ScreenValues.currentScreenResolution.getHeight());
+	public PhysicsWorld(Project project) {
+		this(ScreenValues.currentScreenResolution.getWidth(), ScreenValues.currentScreenResolution.getHeight(), project);
 	}
 
-	public PhysicsWorld(int width, int height) {
+	public PhysicsWorld(int width, int height, Project project) {
+		XmlHeader xml = project.getXmlHeader();
+		ACTIVE_AREA_WIDTH_FACTOR = xml.getPhysicsWidthArea();
+		ACTIVE_AREA_HEIGHT_FACTOR = xml.getPhysicsHeightArea();
 		boundaryBox = new PhysicsBoundaryBox(world);
 		boundaryBox.create(width, height);
 		activeArea = new Vector2(width * ACTIVE_AREA_WIDTH_FACTOR, height * ACTIVE_AREA_HEIGHT_FACTOR);
