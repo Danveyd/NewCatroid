@@ -63,6 +63,7 @@ import org.catrobat.catroid.content.bricks.ChangeWidthBrick
 import org.catrobat.catroid.content.bricks.ChangeXByNBrick
 import org.catrobat.catroid.content.bricks.ChangeYByNBrick
 import org.catrobat.catroid.content.bricks.ChooseCameraBrick
+import org.catrobat.catroid.content.bricks.ChooseFileBrick
 import org.catrobat.catroid.content.bricks.ClearBackgroundBrick
 import org.catrobat.catroid.content.bricks.ClearGraphicEffectBrick
 import org.catrobat.catroid.content.bricks.ClearSceneBrick
@@ -730,6 +731,7 @@ open class CategoryBricksFactory {
         deviceBrickList.add(ResetTimerBrick())
         deviceBrickList.add(TestBrick())
         deviceBrickList.add(HideStatusBarBrick())
+        //deviceBrickList.add(ChooseFileBrick())
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {

@@ -111,6 +111,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	public static final int REQUEST_START_STAGE = 101;
 
+	private static final List<IntentListener> intentListeners2 = new ArrayList<>();
+
 	public static final int REGISTER_INTENT = 0;
 	private static final int PERFORM_INTENT = 1;
 	public static final int SHOW_DIALOG = 2;
@@ -253,6 +255,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	AndroidGraphics getGdxGraphics() {
 		return graphics;
 	}
+
+
 
 	void setupAskHandler() {
 		final StageActivity currentStage = this;
@@ -458,8 +462,19 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		this.startActivityForResult(queuedIntent, intentKey);
 	}
 
+	public static void addIntentListener(IntentListener listener) {
+		intentListeners2.add(listener);
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		for (IntentListener listener : intentListeners2) {
+			if (listener.onIntentResult(requestCode, resultCode, data)) {
+				return; // Если обработано, прекращаем вызовы
+			}
+		}
+
 		if (resultCode == TestResult.STAGE_ACTIVITY_TEST_SUCCESS
 				|| resultCode == TestResult.STAGE_ACTIVITY_TEST_FAIL) {
 			String message = data.getStringExtra(TEST_RESULT_MESSAGE);
@@ -473,7 +488,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		if (intentListeners.indexOfKey(requestCode) >= 0) {
 			IntentListener asker = intentListeners.get(requestCode);
 			if (data != null) {
-				asker.onIntentResult(resultCode, data);
+				asker.onIntentResult(requestCode, resultCode, data);
 			}
 			intentListeners.remove(requestCode);
 		} else {
@@ -504,7 +519,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	public interface IntentListener {
 		Intent getTargetIntent();
-		void onIntentResult(int resultCode, Intent data); //don't do heavy processing here
+		boolean onIntentResult(int requestCode, int resultCode, Intent data); //don't do heavy processing here
 	}
 
 	@Override

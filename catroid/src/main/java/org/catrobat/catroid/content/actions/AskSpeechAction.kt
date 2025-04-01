@@ -95,16 +95,18 @@ class AskSpeechAction : Action(), IntentListener {
         return createRecognitionIntent(question)
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent): Boolean {
         when (resultCode) {
             Activity.RESULT_OK -> {
                 val matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 Log.d(TAG, "Speech recognition results: $matches")
                 setAnswerText(matches?.elementAtOrNull(0) ?: "")
+                return true
             }
             Activity.RESULT_CANCELED, Activity.RESULT_FIRST_USER -> setAnswerText("")
             else -> Log.e(TAG, "unhandled speech recognizer resultCode $resultCode")
         }
+        return false
     }
 
     companion object {

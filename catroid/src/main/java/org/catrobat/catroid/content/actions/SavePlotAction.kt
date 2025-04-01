@@ -162,11 +162,13 @@ class SavePlotAction : TemporalAction(), IntentListener {
         return Intent.createChooser(intent, title)
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent?) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 writeSVGPlotaToUri(it)
             }
+            return true
         }
+        return false
     }
 }

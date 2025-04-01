@@ -175,7 +175,7 @@ class ReadVariableFromFileAction : Action(), IntentListener {
         return Intent.createChooser(intent, title)
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent?) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 readUriContentAndWriteToVariable(it)
@@ -183,6 +183,9 @@ class ReadVariableFromFileAction : Action(), IntentListener {
                     deleteFileWithUri(it)
                 }
             }
+            return true // Возвращаем true, если обработка выполнена
         }
+        return false // Возвращаем false, если событие не обработано
     }
+
 }

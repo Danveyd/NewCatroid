@@ -214,7 +214,7 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
         return Intent.createChooser(intent, title)
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent?) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 val content: String = when (val value = userVariable?.value ?: 0) {
@@ -223,6 +223,8 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
                 }
                 writeToUri(it, content)
             }
+            return true
         }
+        return false
     }
 }

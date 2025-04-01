@@ -2019,6 +2019,16 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createChooseFileAction(Sprite sprite, SequenceAction sequence,
+										 Integer type, UserVariable variable) {
+		ChooseFileAction action = action(ChooseFileAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setFileType(type);
+		action.setVariable(variable);
+
+		return action;
+	}
+
 	public Action createSetBackCameraAction() {
 		ChooseCameraAction action = action(ChooseCameraAction.class);
 		action.setBackCamera();

@@ -66,14 +66,16 @@ class EditLookAction : PocketPaintAction() {
         }
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent?) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         val stageActivity = StageActivity.activeStageActivity.get()
         if (resultCode == Activity.RESULT_OK && stageActivity != null) {
             setLookData()
+            return true
         }
         LookRequester.anyAsked = false
         responseReceived = true
         stageActivity?.onResume()
+        return false
     }
 
     @VisibleForTesting

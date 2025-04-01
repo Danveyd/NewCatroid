@@ -80,7 +80,7 @@ class PaintNewLookAction : PocketPaintAction() {
             bitmap, File(Constants.POCKET_PAINT_CACHE_DIRECTORY, pocketPaintImageFileName))
     }
 
-    override fun onIntentResult(resultCode: Int, data: Intent?) {
+    override fun onIntentResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (resultCode == Activity.RESULT_OK) {
             val file = LookRequester.getFile()
             if (file != null) {
@@ -92,6 +92,7 @@ class PaintNewLookAction : PocketPaintAction() {
         }
         StageActivity.activeStageActivity.get()?.onResume()
         responseReceived = true
+        return false
     }
 
     @VisibleForTesting
