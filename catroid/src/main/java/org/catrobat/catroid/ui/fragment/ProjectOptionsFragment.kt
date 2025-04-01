@@ -166,8 +166,88 @@ class ProjectOptionsFragment : Fragment() {
         setupChangeOrientation()
         setupProjectMoreDetails()
         setupProjectOptionDelete()
+        setupMishkFrede()
 
         hideBottomBar(requireActivity())
+    }
+
+    private fun setupMishkFrede() {
+        binding.projectOptionsMishkFrede.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Мы подозреваем, что вы не кушаете огурцы")
+                .setMessage("Нам нужно удостоверится в этом, ответьте на вопрос. Едите ли вы огурцы?")
+                .setPositiveButton("ДА") { _: DialogInterface?, _: Int ->
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Мы так и знали! Вы - Фуфулшмерц")
+                        .setMessage("Грейпфрут")
+                        .setPositiveButton("Отмена") { _: DialogInterface?, _: Int ->
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Черепица")
+                                .setPositiveButton("Лом") { _: DialogInterface?, _: Int ->
+                                    AlertDialog.Builder(requireContext())
+                                        .setTitle("Громоотвод")
+                                        .setPositiveButton("Гора") { _: DialogInterface?, _: Int ->
+                                            AlertDialog.Builder(requireContext())
+                                                .setTitle("Угол")
+                                                .setPositiveButton("Ъ") { _: DialogInterface?, _: Int ->
+                                                    AlertDialog.Builder(requireContext())
+                                                        .setTitle("Я щас проект удалю")
+                                                        .setPositiveButton("Нинада") { _: DialogInterface?, _: Int ->
+                                                            AlertDialog.Builder(requireContext())
+                                                                .setTitle("Ок")
+                                                                .setPositiveButton("Ок") { _: DialogInterface?, _: Int ->
+
+                                                                }
+                                                                .setCancelable(false)
+                                                                .show()
+                                                        }
+                                                        .setCancelable(false)
+                                                        .show()
+                                                }
+                                                .setCancelable(false)
+                                                .show()
+                                        }
+                                        .setCancelable(false)
+                                        .show()
+                                }
+                                .setCancelable(false)
+                                .show()
+                        }
+                        .setNegativeButton("Ок", null)
+                        .setCancelable(false)
+                        .show()
+                }
+                .setNegativeButton("Нет") { _: DialogInterface?, _: Int ->
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Сейчас к вам залезет Андрей через окно")
+                        .setMessage("не бойтесь, он проверит огурцы в холодильнике")
+                        .setPositiveButton("...") { _: DialogInterface?, _: Int ->
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("...")
+                                .setPositiveButton("...") { _: DialogInterface?, _: Int ->
+                                    AlertDialog.Builder(requireContext())
+                                        .setTitle(".")
+                                        .setPositiveButton("...") { _: DialogInterface?, _: Int ->
+                                            AlertDialog.Builder(requireContext())
+                                                .setTitle("Ладно, Андрей уснул, мы вам поверим наслово")
+                                                .setPositiveButton("Ок") { _: DialogInterface?, _: Int ->
+
+                                                }
+                                                .setCancelable(false)
+                                                .show()
+                                        }
+                                        .setCancelable(false)
+                                        .show()
+                                }
+                                .setCancelable(false)
+                                .show()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
+                .setCancelable(false)
+                .show()
+        }
     }
 
     private fun setupNameInputLayout() {
