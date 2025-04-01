@@ -890,7 +890,7 @@ open class CategoryBricksFactory {
 
     private fun setupNeuralCategoryList(context: Context): List<Brick> {
         val neuralBrickList: MutableList<Brick> = ArrayList()
-        neuralBrickList.add(SetDnsBrick("dns.comss.one"))
+        //neuralBrickList.add(SetDnsBrick("dns.comss.one"))
         neuralBrickList.add(SetGeminiKeyBrick("api_key"))
         neuralBrickList.add(AskGeminiBrick("Hello!"))
         neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-2.0-flash-exp"))
@@ -907,7 +907,11 @@ open class CategoryBricksFactory {
         internetBrickList.add(WriteBaseBrick("firebase_id", "key", "hello"))
         internetBrickList.add(ReadBaseBrick("firebase_id", "key"))
         internetBrickList.add(DeleteBaseBrick("firebase_id", "key"))
-        internetBrickList.add(SetDnsBrick("dns.comss.one"))
+        internetBrickList.add(WebRequestBrick(context.getString(R.string.brick_web_request_default_value)))
+        internetBrickList.add(PostWebRequestBrick("https://api.calfire.com/v2/texts?limit=50&offset=200",
+            "Content-Type:application/json",
+            "{\nusername=password\n}"))
+        //internetBrickList.add(SetDnsBrick("dns.comss.one"))
         return internetBrickList
     }
 

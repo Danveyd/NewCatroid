@@ -44,6 +44,6 @@ class StartServerAction() : TemporalAction() {
 
     override fun update(percent: Float) {
         val portStr: String = port?.interpretString(scope) ?: "1234"
-        LocalServer.start(portStr)
+        LocalServer.startOrJoin(null, portStr)
     }
 }

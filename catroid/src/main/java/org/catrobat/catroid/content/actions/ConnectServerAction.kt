@@ -46,6 +46,6 @@ class ConnectServerAction() : TemporalAction() {
     override fun update(percent: Float) {
         val portStr: String = port?.interpretString(scope) ?: "1234"
         val ipStr: String = ip?.interpretString(scope) ?: "127.0.0.1"
-        LocalServer.connect(ipStr, portStr)
+        LocalServer.startOrJoin(ipStr, portStr)
     }
 }

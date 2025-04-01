@@ -1,20 +1,11 @@
 package org.catrobat.catroid.content
 
 import android.util.Log
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.net.ServerSocket
-import java.net.Socket
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.catrobat.catroid.stage.StageActivity
-import java.net.InetAddress
-import java.net.NetworkInterface
-import java.util.ArrayList
+import kotlinx.coroutines.*
+import java.io.*
+import java.net.*
 
 class LocalServer private constructor() {
-
     companion object {
         private var serverSocket: ServerSocket? = null
         private var clientSocket: Socket? = null
@@ -22,111 +13,101 @@ class LocalServer private constructor() {
         private var connectedPort: String? = null
         private var connectedIP: String? = null
         private var receivedValue: String = ""
+        private var isRunning = false
 
-        fun toast(gval: String) {
-            val params = ArrayList<Any>(listOf(gval))
-            StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
-        }
-        // Запускает сервер на указанном порту
-        fun start(port: String) {
+        fun startOrJoin(ip: String?, port: String) {
             GlobalScope.launch {
                 try {
-                    serverSocket = ServerSocket(port.toInt())
-                    connectedPort = port
-                    connectedIP = NetworkInterface.getNetworkInterfaces().toList()
-                        .flatMap { it.inetAddresses.toList() }
-                        .firstOrNull { it is InetAddress && !it.isLoopbackAddress && it.address.size == 4 }?.hostAddress
-                    //toast("Сервер запущен на порту: $port")
-                    Log.d("Server", "Сервер запущен на порту: $port")
-
-                    while (true) {
-                        clientSocket = serverSocket!!.accept()
-                        // Новая корутина для обработки каждого клиента
-                        //toast("Клиент подключился: ${clientSocket?.inetAddress}")
-                        Log.d("Server", "Клиент подключился: ${clientSocket?.inetAddress}")
-                        try {
-                            // Слушаем поток ввода от клиента
-                            val bufferedReader = BufferedReader(InputStreamReader(clientSocket!!.getInputStream()))
-                            while (true) {
-                                receivedValue = bufferedReader.readLine() ?: break
-                                //toast("Получено значение: $receivedValue")
-                                Log.d("Server", "Получено значение: $receivedValue")
-                                // Обработай полученные данные здесь
-                            }
-                        } catch (e: Exception) {
-                            toast("Ошибка при обработке клиента: ${e.message}")
-                            Log.d("Server", "Ошибка при обработке клиента: ${e.message}")
-                        } finally {
-                            clientSocket?.close()
-                        }
+                    if (ip.isNullOrEmpty()) {
+                        startServer(port)
+                    } else {
+                        connectToServer(ip, port)
                     }
-
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("LocalServer", "Ошибка: ${e.message}")
                 }
             }
         }
 
-        // Останавливает сервер
-        fun stop() {
+        private fun startServer(port: String) {
             try {
-                clientSocket?.close()
-                serverSocket?.close()
-                //toast("Сервер остановлен.")
-                Log.d("Server","Сервер остановлен.")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+                serverSocket = ServerSocket(port.toInt())
+                connectedPort = port
+                connectedIP = getLocalIPAddress()
+                isRunning = true
+                Log.d("LocalServer", "Сервер запущен на $connectedIP:$port")
 
-        // Отправляет значение подключенным устройствам
-        fun send(value: String) {
-            try {
-                if (clientSocket != null && !clientSocket!!.isClosed) {
-                    val outputStream = clientSocket!!.getOutputStream() // Получаем OutputStream каждый раз
-                    outputStream.write((value + "\n").toByteArray()) // Добавляем перевод строки для удобства
-                    outputStream.flush()
-                } else {
-                    toast("Клиент не подключен")
-                    Log.d("Server", "Клиент не подключен.")
+                while (isRunning) {
+                    val socket = serverSocket!!.accept()
+                    handleClient(socket)
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("LocalServer", "Ошибка запуска сервера: ${e.message}")
             }
         }
 
-
-        // Возвращает последнее полученное значение
-        fun getValue(): String {
-            return receivedValue
-        }
-
-        // Подключается к другому локальному серверу
-        fun connect(ip: String, port: String) {
+        private fun connectToServer(ip: String, port: String) {
             try {
+                clientSocket = Socket(ip, port.toInt())
+                outputStream = clientSocket!!.getOutputStream()
                 connectedIP = ip
                 connectedPort = port
-                clientSocket = Socket(ip, port.toInt())
-                //toast("Подключено к серверу: $ip:$port")
-                Log.d("Server", "Подключено к серверу: $ip:$port")
-
-                // Также инициализируй outputStream
-                outputStream = clientSocket?.getOutputStream()
-
+                isRunning = true
+                Log.d("LocalServer", "Подключен к серверу $ip:$port")
+                listenForMessages(clientSocket!!)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("LocalServer", "Ошибка подключения: ${e.message}")
             }
         }
 
-
-        // Получает IP запущенного сервера
-        fun getIP(): String {
-            return connectedIP ?: "NaN"
+        private fun handleClient(socket: Socket) {
+            GlobalScope.launch {
+                listenForMessages(socket)
+            }
         }
 
-        // Получает порт запущенного сервера
-        fun getPort(): String {
-            return connectedPort ?: "NaN"
+        private fun listenForMessages(socket: Socket) {
+            try {
+                val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+                while (isRunning) {
+                    val message = reader.readLine() ?: break
+                    receivedValue = message
+                    Log.d("LocalServer", "Получено: $message")
+                }
+            } catch (e: Exception) {
+                Log.e("LocalServer", "Ошибка чтения: ${e.message}")
+            }
+        }
+
+        fun send(value: String) {
+            GlobalScope.launch {
+                try {
+                    outputStream?.write((value + "\n").toByteArray())
+                    outputStream?.flush()
+                    Log.d("LocalServer", "Отправлено: $value")
+                } catch (e: Exception) {
+                    Log.e("LocalServer", "Ошибка отправки: ${e.message}")
+                }
+            }
+        }
+
+        fun stop() {
+            isRunning = false
+            serverSocket?.close()
+            clientSocket?.close()
+            outputStream = null
+            Log.d("LocalServer", "Сервер остановлен")
+        }
+
+        fun getValue(): String = receivedValue
+        fun getIP(): String = connectedIP ?: "NaN"
+        fun getPort(): String = connectedPort ?: "NaN"
+
+        private fun getLocalIPAddress(): String? {
+            return NetworkInterface.getNetworkInterfaces().toList()
+                .flatMap { it.inetAddresses.toList() }
+                .firstOrNull { it is InetAddress && !it.isLoopbackAddress && it.address.size == 4 }
+                ?.hostAddress
         }
     }
 }
