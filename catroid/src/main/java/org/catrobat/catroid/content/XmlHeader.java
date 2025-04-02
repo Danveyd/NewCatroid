@@ -134,8 +134,13 @@ public class XmlHeader implements Serializable {
 			int width = displayMetrics.widthPixels;
 			int height = displayMetrics.heightPixels;
 			Log.d("CustomRes", "Y: " + String.valueOf(height));
+			/*if(!islandscapeMode()) {
+				virtualScreenHeight = width;
+			} else {
+				virtualScreenHeight = height;
+			}*/
 			virtualScreenHeight = height;
-			return height;
+			return virtualScreenHeight;
 		}
 		Log.d("CustomRes", "def: Y: " + String.valueOf(virtualScreenHeight));
 		return virtualScreenHeight;
@@ -150,8 +155,14 @@ public class XmlHeader implements Serializable {
 			int width = displayMetrics.widthPixels;
 			int height = displayMetrics.heightPixels;
 			Log.d("CustomRes", "X: " + String.valueOf(width));
+			/*if(!islandscapeMode()) {
+				virtualScreenWidth = height;
+				Log.d("TestLandscapemode", "IsLandscapeMode");
+			} else {
+				virtualScreenWidth = width;
+			}*/
 			virtualScreenWidth = width;
-			return width;
+			return virtualScreenWidth;
 		}
 		Log.d("CustomRes", "def: X: " + String.valueOf(virtualScreenWidth));
 		return virtualScreenWidth;

@@ -97,6 +97,15 @@ public class PhysicsWorld {
 		world.setContactListener(new PhysicsCollisionListener(this));
 	}
 
+	public PhysicsWorld(int width, int height) {
+		ACTIVE_AREA_WIDTH_FACTOR = 3.0f;
+		ACTIVE_AREA_HEIGHT_FACTOR = 2.0f;
+		boundaryBox = new PhysicsBoundaryBox(world);
+		boundaryBox.create(width, height);
+		activeArea = new Vector2(width * ACTIVE_AREA_WIDTH_FACTOR, height * ACTIVE_AREA_HEIGHT_FACTOR);
+		world.setContactListener(new PhysicsCollisionListener(this));
+	}
+
 	public void setBounceOnce(Sprite sprite, PhysicsBoundaryBox.BoundaryBoxIdentifier boundaryBoxIdentifier) {
 		if (physicsObjects.containsKey(sprite)) {
 			PhysicsObject physicsObject = physicsObjects.get(sprite);

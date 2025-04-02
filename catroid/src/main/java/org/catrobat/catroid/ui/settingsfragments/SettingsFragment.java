@@ -229,10 +229,6 @@ public class SettingsFragment extends PreferenceFragment {
 			testPreference.setEnabled(BuildConfig.DEBUG);
 			screen.removePreference(testPreference);
 		}
-
-		Preference examplePreference = findPreference("example_key");
-		examplePreference.setSummary(Html.fromHtml("<img src='https://www.meme-arsenal.com/memes/d3d151ea76e2feed9edb2d82e14133ff.jpg' />"));
-
 		setCorrectPreferenceViewForEmbroidery();
 		setCorrectPreferenceViewForPhiro();
 	}

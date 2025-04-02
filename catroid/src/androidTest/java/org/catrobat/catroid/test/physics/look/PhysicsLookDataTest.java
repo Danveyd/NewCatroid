@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.FlavoredConstants;
 import org.catrobat.catroid.common.LookData;
@@ -73,7 +74,7 @@ public class PhysicsLookDataTest {
 
 	@Before
 	public void setUp() throws Exception {
-		physicsWorld = new PhysicsWorld(1920, 1600);
+		physicsWorld = new PhysicsWorld(1920, 1600, new Project(CatroidApplication.getAppContext(), projectName));
 		File projectDir = new File(FlavoredConstants.DEFAULT_ROOT_DIRECTORY, projectName);
 		if (projectDir.exists()) {
 			StorageOperations.deleteDir(projectDir);
