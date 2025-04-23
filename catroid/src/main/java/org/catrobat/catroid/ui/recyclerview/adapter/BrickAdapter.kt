@@ -44,6 +44,7 @@ import org.catrobat.catroid.content.bricks.EmptyEventBrick
 import org.catrobat.catroid.content.bricks.EndBrick
 import org.catrobat.catroid.content.bricks.FormulaBrick
 import org.catrobat.catroid.content.bricks.ListSelectorBrick
+import org.catrobat.catroid.content.bricks.NoneBrick
 import org.catrobat.catroid.content.bricks.ScriptBrick
 import org.catrobat.catroid.content.bricks.SetParticleColorBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
@@ -129,7 +130,7 @@ class BrickAdapter(private val sprite: Sprite) :
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val item = items[position]
+        var item = items[position]
         Log.d("TestItem", item.javaClass.simpleName)
         //val hasColorField = item.javaClass.declaredFields.any { it.name == "COLOR" }
 
@@ -142,7 +143,9 @@ class BrickAdapter(private val sprite: Sprite) :
                 Log.d("BrickCheck", "Color formula exists: $colorFormula")
             } else {
                 Log.d("BrickCheck", "Color formula is null")
-                return createUnknownView(item.javaClass.simpleName, parent)
+                item = NoneBrick()
+                items[position] = item
+                //return createUnknownView(item.javaClass.simpleName, parent)
             }
         }
         val itemView = item.getView(parent.context)
