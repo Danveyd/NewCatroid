@@ -107,12 +107,12 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
     }
 }
 
-def defaultVersionCode = 113
-def defaultVersionName = "2.1.0"
+def defaultVersionCode = 120
+def defaultVersionName = "2.0.5"
 
 android {
-    compileSdk 34
-    buildToolsVersion = "33.0.2"
+    compileSdk 33
+    //buildToolsVersion = "33.0.2"
 
     namespace 'org.catrobat.catroid'
 
@@ -124,8 +124,8 @@ android {
     //2011
 
     defaultConfig {
-        minSdkVersion 28
-        targetSdkVersion 34
+        minSdkVersion 23
+        targetSdkVersion 30
         applicationId appId
         testInstrumentationRunner 'org.catrobat.catroid.runner.UiTestApplicationRunner'
         versionCode defaultVersionCode
@@ -153,7 +153,7 @@ android {
         buildConfigField "boolean", "FEATURE_1_APRIL", "true"
         buildConfigField "boolean", "FEATURE_AI_SENSORS_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "false"
-        buildConfigField "boolean", "FEATURE_ARDUINO_ENABLED", "true"
+        buildConfigField "boolean", "FEATURE_ARDUINO_ENABLED", "false"
         buildConfigField "boolean", "FEATURE_CAST_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_EMBROIDERY_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_PLOT_ENABLED", "true"
@@ -168,7 +168,7 @@ android {
         buildConfigField "boolean", "FEATURE_NFC_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_POCKETMUSIC_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_RASPI_ENABLED", "true"
-        buildConfigField "boolean", "FEATURE_SCRATCH_CONVERTER_ENABLED", "false"
+        buildConfigField "boolean", "FEATURE_SCRATCH_CONVERTER_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_USER_REPORTERS_ENABLED", "false"
         buildConfigField "boolean", "FEATURE_MULTIPLAYER_VARIABLES_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_TESTBRICK_ENABLED", "true"
