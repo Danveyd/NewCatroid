@@ -458,8 +458,6 @@ public class RtlBrickTest {
 
 		checkIfBrickISRtl(ListenMicroBrick.class, R.id.brick_listen_micro_layout);
 
-		checkIfBrickISRtl(DividePolandBrick.class, R.id.brick_divide_poland_layout);
-
 		checkIfBrickISRtl(CreateWebUrlBrick.class, R.id.brick_create_web_url_layout);
 
 		checkIfBrickISRtl(CreateWebFileBrick.class, R.id.brick_create_web_file_layout);

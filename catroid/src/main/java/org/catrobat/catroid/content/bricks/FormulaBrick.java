@@ -70,6 +70,18 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 		}
 	}
 
+	public Formula getFormulaWithBrickField(FormulaField formulaField, Boolean ret) {
+		if (formulaMap.containsKey(formulaField)) {
+			return formulaMap.get(formulaField);
+		} else {
+			if(ret) {
+				return null;
+			} else {
+				return new Formula("#000000");
+			}
+		}
+	}
+
 	public void setFormulaWithBrickField(FormulaField formulaField, Formula formula) throws IllegalArgumentException {
 		if (formulaMap.containsKey(formulaField)) {
 			formulaMap.replace(formulaField, formula);

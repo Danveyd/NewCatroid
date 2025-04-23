@@ -41,7 +41,7 @@ class SetParticleColorBrick() : FormulaBrick() {
         sequence.addAction(
             sprite.actionFactory
                 .createSetParticleColorAction(
-                    sprite, getFormulaWithBrickField(BrickField.COLOR),
+                    sprite, getFormulaWithBrickField(BrickField.COLOR, false),
                     sequence
                 )
         )

@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_unkown">Unkown brick</string>
     <string formatted="false" name="brick_choose_file">Choose file</string>
     <string formatted="false" name="brick_choose_file2">save name to variable</string>
     <string formatted="false" name="brick_choose_file3">and copy to project files</string>

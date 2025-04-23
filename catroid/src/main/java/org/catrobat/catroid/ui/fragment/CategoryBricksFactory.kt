@@ -89,7 +89,6 @@ import org.catrobat.catroid.content.bricks.DeleteThisCloneBrick
 import org.catrobat.catroid.content.bricks.DeleteVarBrick
 import org.catrobat.catroid.content.bricks.DeleteVarsBrick
 import org.catrobat.catroid.content.bricks.DeleteWebBrick
-import org.catrobat.catroid.content.bricks.DividePolandBrick
 import org.catrobat.catroid.content.bricks.DroneEmergencyBrick
 import org.catrobat.catroid.content.bricks.DroneFlipBrick
 import org.catrobat.catroid.content.bricks.DroneMoveBackwardBrick
@@ -716,7 +715,6 @@ open class CategoryBricksFactory {
         deviceBrickList.add(ShowToastBlock("Hello World"))
         deviceBrickList.add(CopyTextBrick("Котлета"))
         deviceBrickList.add(ListenMicroBrick("100"))
-        //deviceBrickList.add(DividePolandBrick())
         deviceBrickList.add(RunJSBrick("1 + 2"))
         deviceBrickList.add(RunLuaBrick("return 'Привет из Lua!'"))
         deviceBrickList.add(OpenFileBrick("fileFromUrl.txt"))

@@ -182,6 +182,8 @@ public final class XstreamSerializer {
 		xstream.omitField(ParticleEffectAdditivityBrick.class, "formulaList");
 		xstream.omitField(SetParticleColorBrick.class, "formulaList");
 
+		xstream.omitField(NoneBrick.class, "formulaList");
+
 		xstream.alias("look", LookData.class);
 		xstream.alias("sound", SoundInfo.class);
 		xstream.alias("nfcTag", NfcTagData.class);
@@ -241,7 +243,6 @@ public final class XstreamSerializer {
 		xstream.alias("brick", CreateWebUrlBrick.class);
 		xstream.alias("brick", CreateWebFileBrick.class);
 		xstream.alias("brick", DeleteWebBrick.class);
-		xstream.alias("brick", DividePolandBrick.class);
 		xstream.alias("brick", ListenMicroBrick.class);
 		xstream.alias("brick", CopyTextBrick.class);
 		xstream.alias("brick", RunJSBrick.class);
@@ -511,6 +512,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", FadeParticleEffectBrick.class);
 		xstream.alias("brick", ParticleEffectAdditivityBrick.class);
 		xstream.alias("brick", SetParticleColorBrick.class);
+		xstream.alias("brick", NoneBrick.class);
 	}
 
 	public Project loadProject(File projectDir, Context context) throws IOException, LoadingProjectException {

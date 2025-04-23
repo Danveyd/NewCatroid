@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_unkown">Неизвестный блок</string>
     <string formatted="false" name="brick_choose_file">Выбрать файл</string>
     <string formatted="false" name="brick_choose_file2">сохранить название в переменную</string>
     <string formatted="false" name="brick_choose_file3">и копировать в файлы проекта</string>

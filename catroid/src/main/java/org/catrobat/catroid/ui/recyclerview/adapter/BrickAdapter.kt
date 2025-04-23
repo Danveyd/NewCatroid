@@ -25,25 +25,33 @@ package org.catrobat.catroid.ui.recyclerview.adapter
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.BaseAdapter
+import android.widget.TextView
 import androidx.annotation.IntDef
+import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Script
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.content.bricks.Brick
+import org.catrobat.catroid.content.bricks.Brick.BrickField
 import org.catrobat.catroid.content.bricks.CompositeBrick
 import org.catrobat.catroid.content.bricks.EmptyEventBrick
 import org.catrobat.catroid.content.bricks.EndBrick
 import org.catrobat.catroid.content.bricks.FormulaBrick
 import org.catrobat.catroid.content.bricks.ListSelectorBrick
 import org.catrobat.catroid.content.bricks.ScriptBrick
+import org.catrobat.catroid.content.bricks.SetParticleColorBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
+import org.catrobat.catroid.ui.BrickLayout
 import org.catrobat.catroid.ui.dragndrop.BrickAdapterInterface
 import org.catrobat.catroid.ui.recyclerview.adapter.draganddrop.ViewStateManager
 import org.catrobat.catroid.ui.recyclerview.adapter.multiselection.MultiSelectionManager
+import org.koin.ext.getScopeName
 import java.util.ArrayList
 import java.util.Collections
 
@@ -122,6 +130,21 @@ class BrickAdapter(private val sprite: Sprite) :
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val item = items[position]
+        Log.d("TestItem", item.javaClass.simpleName)
+        //val hasColorField = item.javaClass.declaredFields.any { it.name == "COLOR" }
+
+        if (item is SetParticleColorBrick) {
+            Log.d("BrickCheck", "SetParticleColorBrick recognized")
+
+            // Проверяем, есть ли у него формула цвета
+            val colorFormula = item.getFormulaWithBrickField(BrickField.COLOR, true)
+            if (colorFormula != null) {
+                Log.d("BrickCheck", "Color formula exists: $colorFormula")
+            } else {
+                Log.d("BrickCheck", "Color formula is null")
+                return createUnknownView(item.javaClass.simpleName, parent)
+            }
+        }
         val itemView = item.getView(parent.context)
 
         itemView.visibility =
@@ -145,6 +168,22 @@ class BrickAdapter(private val sprite: Sprite) :
         item.checkBox.isEnabled = viewStateManager.isEnabled(position)
         return itemView
     }
+
+    private fun createUnknownView(className: String, container: ViewGroup): View {
+        // Создаем представление из разметки
+        val brickView = LayoutInflater.from(container.context).inflate(R.layout.brick_none, container, false)
+
+        // Получаем ссылку на BrickLayout
+        //val brickLayout = brickView as? BrickLayout
+
+        // Находим TextView внутри BrickLayout
+        //val textView: TextView? = brickLayout?.findViewById(R.id.brick_none_text) // Используем id, который вы добавили
+
+        // Устанавливаем текст
+        //textView?.text = "Xz" // Устанавливает текст на TextView
+        return brickView
+    }
+
 
     private fun checkBoxClickListener(item: Brick, itemView: ViewGroup, position: Int) {
         item.checkBox.setOnClickListener { onCheckBoxClick(position) }

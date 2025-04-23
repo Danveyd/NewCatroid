@@ -37,7 +37,6 @@ import org.catrobat.catroid.content.bricks.CreateWebUrlBrick;
 import org.catrobat.catroid.content.bricks.DeleteVarBrick;
 import org.catrobat.catroid.content.bricks.DeleteVarsBrick;
 import org.catrobat.catroid.content.bricks.DeleteWebBrick;
-import org.catrobat.catroid.content.bricks.DividePolandBrick;
 import org.catrobat.catroid.content.bricks.FileUrlBrick;
 import org.catrobat.catroid.content.bricks.HideTextBrick;
 import org.catrobat.catroid.content.bricks.ListenMicroBrick;
@@ -110,7 +109,6 @@ public class CloneBrickUpdateVariableTest {
 				{"ListenServerBrick", new ListenServerBrick()},
 				{"CopyTextBrick", new CopyTextBrick()},
 				{"ListenMicroBrick", new ListenMicroBrick()},
-				{"DividePolandBrick", new DividePolandBrick()},
 				{"RunJSBrick", new RunJSBrick()},
 				{"CreateWebUrlBrick", new CreateWebUrlBrick()},
 				{"CreateWebFileBrick", new CreateWebFileBrick()},

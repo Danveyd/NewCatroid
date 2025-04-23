@@ -406,8 +406,6 @@ public class BricksHelpUrlTest {
 				"https://wiki.catrobat.org/bin/view/Documentation/BrickDocumentatio/None");
 		brickToHelpUrlMapping.put("org.catrobat.catroid.content.bricks.RunJSBrick",
 				"https://wiki.catrobat.org/bin/view/Documentation/BrickDocumentatio/None");
-		brickToHelpUrlMapping.put("org.catrobat.catroid.content.bricks.DividePolandBrick",
-				"https://wiki.catrobat.org/bin/view/Documentation/BrickDocumentatio/None");
 		brickToHelpUrlMapping.put("org.catrobat.catroid.content.bricks.ListenMicroBrick",
 				"https://wiki.catrobat.org/bin/view/Documentation/BrickDocumentatio/None");
 		brickToHelpUrlMapping.put("org.catrobat.catroid.content.bricks.CopyTextBrick",

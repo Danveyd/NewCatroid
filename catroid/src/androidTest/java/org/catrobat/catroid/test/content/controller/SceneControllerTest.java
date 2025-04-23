@@ -40,7 +40,6 @@ import org.catrobat.catroid.content.bricks.CreateWebUrlBrick;
 import org.catrobat.catroid.content.bricks.DeleteVarBrick;
 import org.catrobat.catroid.content.bricks.DeleteVarsBrick;
 import org.catrobat.catroid.content.bricks.DeleteWebBrick;
-import org.catrobat.catroid.content.bricks.DividePolandBrick;
 import org.catrobat.catroid.content.bricks.HideTextBrick;
 import org.catrobat.catroid.content.bricks.ListenMicroBrick;
 import org.catrobat.catroid.content.bricks.PlaceAtBrick;
@@ -260,7 +259,6 @@ public class SceneControllerTest {
 		script.addBrick(new DeleteVarBrick());
 		script.addBrick(new DeleteVarsBrick());
 		script.addBrick(new ShowToastBlock());
-		script.addBrick(new DividePolandBrick());
 		script.addBrick(new CopyTextBrick());
 		script.addBrick(new ListenMicroBrick());
 		script.addBrick(new RunJSBrick());

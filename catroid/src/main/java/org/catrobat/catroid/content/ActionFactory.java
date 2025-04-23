@@ -1539,13 +1539,6 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
-	public Action createDividePoland(Sprite sprite, SequenceAction sequence) {
-		DividePolandAction action = Actions.action(DividePolandAction.class);
-		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
-		action.setScope(scope);
-		return action;
-	}
-
 	public Action createListenMicroAction(Sprite sprite, SequenceAction sequence,
 			Formula time) {
 		ListenMicroAction action = action(ListenMicroAction.class);
