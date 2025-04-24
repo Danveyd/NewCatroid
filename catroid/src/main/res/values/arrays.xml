@@ -445,6 +445,8 @@
         <item>@string/formula_editor_object_look_height</item>
         <item>@string/formula_editor_object_rotation</item>
         <item>@string/formula_editor_object_size</item>
+        <item>@string/formula_editor_object_width</item>
+        <item>@string/formula_editor_object_height</item>
         <item>@string/formula_editor_object_transparency</item>
         <item>@string/formula_editor_object_x</item>
         <item>@string/formula_editor_object_x_velocity</item>

@@ -55,6 +55,7 @@ import org.catrobat.catroid.utils.TouchUtil;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.VisibleForTesting;
@@ -74,6 +75,15 @@ public class Look extends Image {
 
 	public static final float DEGREE_UI_OFFSET = 90.0f;
 	private static final float COLOR_SCALE = 200.0f;
+
+	// --- Поля для кэширования полигонов ---
+	private Polygon[] cachedTransformedPolygons = null;
+	// Используем AtomicBoolean для базовой потокобезопасности при доступе к флагу
+	private final AtomicBoolean collisionDirty = new AtomicBoolean(true);
+	private LookData lastUsedLookDataForCache = null;
+	// ----------------------------------------
+
+	private boolean assumesConvexPolygons = true;
 	private boolean lookVisible = true;
 	private boolean simultaneousMovementXY = false;
 	private int lookListIndexBeforeLookRequest = -1;
@@ -83,6 +93,9 @@ public class Look extends Image {
 	protected float alpha = 1f;
 	protected float brightness = 1f;
 	protected float hue = 0f;
+
+	protected float height = 1f;
+	protected float width = 1f;
 	protected Pixmap pixmap;
 	private BrightnessContrastHueShader shader;
 	private int rotationMode = ROTATION_STYLE_ALL_AROUND;
@@ -104,6 +117,7 @@ public class Look extends Image {
 		setScale(1f, 1f);
 		setRotation(0f);
 		setTouchable(Touchable.enabled);
+		setAssumesConvexPolygons(false);
 		addListeners();
 	}
 
@@ -124,6 +138,21 @@ public class Look extends Image {
 			}
 		});
 		this.addListener(new EventWrapperListener(this));
+	}
+
+	public void setAssumesConvexPolygons(boolean convex) {
+		this.assumesConvexPolygons = convex;
+		// Примечание: Если бы LookData сам содержал флаг выпуклости,
+		// можно было бы автоматически устанавливать assumesConvexPolygons
+		// при вызове setLookData/setLookData2.
+		// Сейчас ответственность лежит на том, кто управляет объектом Look.
+	}
+
+	/**
+	 * @return true, если полигоны этого Look считаются выпуклыми (по умолчанию true).
+	 */
+	public boolean getAssumesConvexPolygons() {
+		return assumesConvexPolygons;
 	}
 
 	public synchronized boolean isLookVisible() {
@@ -232,6 +261,16 @@ public class Look extends Image {
 		}
 	}
 
+	public void setHeightV(Float value) {
+		height = value;
+		this.setScaleY(value);
+	}
+
+	public void setWidthV(Float value) {
+		height = value;
+		this.setScaleX(value);
+	}
+
 	public ParticleEmitter getParticleEmitter() {
 		return getParticleEffect().getEmitters().first();
 	}
@@ -309,6 +348,9 @@ public class Look extends Image {
 
 	@Override
 	protected void positionChanged() {
+		collisionDirty.set(true);
+		super.positionChanged();
+
 		if (sprite != null && sprite.penConfiguration != null && sprite.penConfiguration.isPenDown()
 				&& !simultaneousMovementXY) {
 			float x = getXInUserInterfaceDimensionUnit();
@@ -343,6 +385,20 @@ public class Look extends Image {
 
 	public void setSchedulerState(@ThreadScheduler.SchedulerState int state) {
 		scheduler.setState(state);
+	}
+
+	@Override
+	protected void rotationChanged() {
+		collisionDirty.set(true); // Поворот изменился, кэш неактуален
+		super.rotationChanged(); // Вызов родительского метода (хотя в Image он пуст)
+	}
+
+	@Override
+	protected void sizeChanged() {
+		collisionDirty.set(true); // Размер/масштаб изменился, кэш неактуален
+		super.sizeChanged(); // Вызов родительского метода (хотя в Image он пуст)
+		// Обновляем origin, так как он зависит от размера
+		setOrigin(getWidth() / 2f, getHeight() / 2f);
 	}
 
 	public synchronized void refreshTextures(boolean refreshShader) {
@@ -403,13 +459,19 @@ public class Look extends Image {
 	}
 
 	public synchronized void setLookData(LookData lookData) {
-		this.lookData = lookData;
-		refreshTextures(false);
+		if (this.lookData != lookData) {
+			this.lookData = lookData;
+			collisionDirty.set(true); // Сменили lookData, кэш неактуален
+			refreshTextures(false); // Обновляем текстуру и размер/origin
+		}
 	}
 
 	public synchronized void setLookData2(LookData lookData) {
-		this.lookData2 = lookData;
-		refreshTextures(false);
+		if (this.lookData2 != lookData) {
+			this.lookData2 = lookData;
+			collisionDirty.set(true); // Сменили lookData2, кэш неактуален
+			refreshTextures(false); // Обновляем текстуру и размер/origin
+		}
 	}
 
 	public boolean haveAllThreadsFinished() {
@@ -477,6 +539,70 @@ public class Look extends Image {
 		setYInUserInterfaceDimensionUnit(y);
 	}
 
+	@Override
+	public void setPosition(float x, float y) {
+		if (getX() != x || getY() != y) {
+			super.setPosition(x, y);
+			// positionChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setX(float x) {
+		if (getX() != x) {
+			super.setX(x);
+			// positionChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setY(float y) {
+		if (getY() != y) {
+			super.setY(y);
+			// positionChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setRotation(float degrees) {
+		if (getRotation() != degrees) {
+			super.setRotation(degrees);
+			// rotationChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setScale(float scaleXY) {
+		if (getScaleX() != scaleXY || getScaleY() != scaleXY) {
+			super.setScale(scaleXY);
+			// sizeChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setScale(float scaleX, float scaleY) {
+		if (getScaleX() != scaleX || getScaleY() != scaleY) {
+			super.setScale(scaleX, scaleY);
+			// sizeChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setScaleX(float scaleX) {
+		if (getScaleX() != scaleX) {
+			super.setScaleX(scaleX);
+			// sizeChanged() будет вызван автоматически libGDX
+		}
+	}
+
+	@Override
+	public void setScaleY(float scaleY) {
+		if (getScaleY() != scaleY) {
+			super.setScaleY(scaleY);
+			// sizeChanged() будет вызван автоматически libGDX
+		}
+	}
+
 	private void adjustSimultaneousMovementXY(float x, float y) {
 		simultaneousMovementXY = x != getXInUserInterfaceDimensionUnit() && y != getYInUserInterfaceDimensionUnit();
 	}
@@ -495,11 +621,11 @@ public class Look extends Image {
 	}
 
 	public float getWidthInUserInterfaceDimensionUnit() {
-		return getWidth() * getSizeInUserInterfaceDimensionUnit() / 100f;
+		return getWidth() * width;
 	}
 
 	public float getHeightInUserInterfaceDimensionUnit() {
-		return getHeight() * getSizeInUserInterfaceDimensionUnit() / 100f;
+		return getHeight() * height;
 	}
 
 	public float getMotionDirectionInUserInterfaceDimensionUnit() {
@@ -551,34 +677,68 @@ public class Look extends Image {
 	}
 
 	public Rectangle getHitbox() {
-		float x = getXInUserInterfaceDimensionUnit() - getWidthInUserInterfaceDimensionUnit() / 2;
-		float y = getYInUserInterfaceDimensionUnit() - getHeightInUserInterfaceDimensionUnit() / 2;
-		float width = getWidthInUserInterfaceDimensionUnit();
-		float height = getHeightInUserInterfaceDimensionUnit();
-		float[] vertices;
-		if (getRotation() == 0) {
-			vertices = new float[] {
-					x, y,
-					x, y + height,
-					x + width, y + height,
-					x + width, y
-			};
-		} else {
-			PointF center = new PointF(x + width / 2f, y + height / 2f);
-			PointF upperLeft = rotatePointAroundPoint(center, new PointF(x, y), getRotation());
-			PointF upperRight = rotatePointAroundPoint(center, new PointF(x, y + height), getRotation());
-			PointF lowerRight = rotatePointAroundPoint(center, new PointF(x + width, y + height), getRotation());
-			PointF lowerLeft = rotatePointAroundPoint(center, new PointF(x + width, y), getRotation());
-			vertices = new float[] {
-					upperLeft.x, upperLeft.y,
-					upperRight.x, upperRight.y,
-					lowerRight.x, lowerRight.y,
-					lowerLeft.x, lowerLeft.y
-			};
-		}
+		// Получаем текущие трансформации Actor'а
+		float x = getX(); // Нижний левый угол Actor'а
+		float y = getY();
+		float width = getWidth(); // Ширина с учетом масштаба
+		float height = getHeight(); // Высота с учетом масштаба
+		float originX = getOriginX();
+		float originY = getOriginY();
+		float rotation = getRotation();
+		float scaleX = getScaleX();
+		float scaleY = getScaleY();
+
+		// Если нет вращения и масштабирования (или масштаб = 1), можно проще
+		//if (rotation == 0f && scaleX == 1f && scaleY == 1f) {
+		//	return new Rectangle(x, y, width, height); // Прямоугольник Actor'а
+		//}
+		// Но общий случай с Polygon надежнее для повернутых объектов
+
+		// Вершины не трансформированного прямоугольника относительно origin
+		float localX = -originX;
+		float localY = -originY;
+		float localX2 = localX + width / scaleX; // Используем размер до масштабирования для локальных координат
+		float localY2 = localY + height / scaleY;
+
+		// Применяем трансформации
+		float worldOriginX = x + originX;
+		float worldOriginY = y + originY;
+
+		float[] vertices = new float[8];
+		// Нижний левый
+		float x1 = localX; float y1 = localY;
+		// Нижний правый
+		float x2 = localX2; float y2 = localY;
+		// Верхний правый
+		float x3 = localX2; float y3 = localY2;
+		// Верхний левый
+		float x4 = localX; float y4 = localY2;
+
+		// Масштаб
+		x1 *= scaleX; y1 *= scaleY;
+		x2 *= scaleX; y2 *= scaleY;
+		x3 *= scaleX; y3 *= scaleY;
+		x4 *= scaleX; y4 *= scaleY;
+
+		// Поворот
+		float cos = (float) Math.cos(Math.toRadians(rotation));
+		float sin = (float) Math.sin(Math.toRadians(rotation));
+
+		vertices[0] = x1 * cos - y1 * sin + worldOriginX;
+		vertices[1] = x1 * sin + y1 * cos + worldOriginY;
+
+		vertices[2] = x2 * cos - y2 * sin + worldOriginX;
+		vertices[3] = x2 * sin + y2 * cos + worldOriginY;
+
+		vertices[4] = x3 * cos - y3 * sin + worldOriginX;
+		vertices[5] = x3 * sin + y3 * cos + worldOriginY;
+
+		vertices[6] = x4 * cos - y4 * sin + worldOriginX;
+		vertices[7] = x4 * sin + y4 * cos + worldOriginY;
+
 
 		Polygon p = new Polygon(vertices);
-
+		// getBoundingRectangle() вернет AABB для трансформированного полигона
 		return p.getBoundingRectangle();
 	}
 
@@ -594,7 +754,9 @@ public class Look extends Image {
 				boolean needsFlipping = (isFlipped() && orientedRight) || (!isFlipped() && orientedLeft);
 				if (needsFlipping && lookData != null) {
 					lookData.getTextureRegion().flip(true, false);
-					lookData2.getTextureRegion().flip(true, false);
+					if(lookData2 != null) {
+						lookData2.getTextureRegion().flip(true, false);
+					}
 				}
 				break;
 			case ROTATION_STYLE_ALL_AROUND:
@@ -623,7 +785,8 @@ public class Look extends Image {
 		//if (percent < 0) {
 		//	percent = 0;
 		//}
-
+		height = percent / 100f;
+		width = percent / 100f;
 		setScale(percent / 100f, percent / 100f);
 	}
 
@@ -804,7 +967,7 @@ public class Look extends Image {
 		}
 	}
 
-	public Polygon[] getCurrentCollisionPolygon() {
+	/*public Polygon[] getCurrentCollisionPolygon() {
 		if(lookData2 != null) {
 			Polygon[] originalPolygons;
 			CollisionInformation collisionInformation = lookData2.getCollisionInformation();
@@ -848,7 +1011,176 @@ public class Look extends Image {
 			}
 			return transformedPolygons;
 		}
+	}*/
+
+	public Polygon[] getCurrentCollisionPolygon() {
+		// Определяем, какой LookData используется сейчас
+		LookData currentLookData = (lookData2 != null) ? lookData2 : lookData;
+
+		// Проверяем, актуален ли кэш
+		// Используем compareAndSet для проверки и установки флага в одной атомарной операции,
+		// чтобы избежать гонки состояний, если метод вызван из разных потоков одновременно
+		// (хотя в типичном игровом цикле это маловероятно).
+		// Если collisionDirty был true, он станет false, и мы пересчитаем.
+		// Если был false, он останется false, и мы используем кэш (если lookData тот же).
+		boolean needsRecalculation = collisionDirty.compareAndSet(true, false);
+
+		if (!needsRecalculation && lastUsedLookDataForCache == currentLookData && cachedTransformedPolygons != null) {
+			// Кэш актуален и относится к текущему LookData
+			return cachedTransformedPolygons;
+		}
+
+		// --- Пересчет полигонов ---
+		Polygon[] originalPolygons;
+		if (currentLookData == null) {
+			originalPolygons = new Polygon[0]; // Нет данных - нет полигонов
+		} else {
+			CollisionInformation collisionInformation = currentLookData.getCollisionInformation();
+			if (collisionInformation == null) {
+				// На всякий случай, если CollisionInformation может быть null
+				originalPolygons = new Polygon[0];
+			} else {
+				if (collisionInformation.collisionPolygons == null) {
+					// Загружаем полигоны, если они еще не загружены
+					collisionInformation.loadCollisionPolygon();
+				}
+				originalPolygons = collisionInformation.collisionPolygons;
+				if (originalPolygons == null) {
+					// Если после загрузки все еще null
+					originalPolygons = new Polygon[0];
+				}
+			}
+		}
+
+		// Создаем массив для трансформированных полигонов
+		Polygon[] transformedPolygons = new Polygon[originalPolygons.length];
+
+		// Получаем текущие параметры трансформации один раз
+		float currentX = getX();
+		float currentY = getY();
+		float currentRotation = getRotation();
+		float currentScaleX = getScaleX();
+		float currentScaleY = getScaleY();
+		float currentOriginX = getOriginX();
+		float currentOriginY = getOriginY();
+
+		for (int p = 0; p < originalPolygons.length; p++) {
+			Polygon originalPoly = originalPolygons[p];
+			if (originalPoly == null) {
+				// Пропускаем, если исходный полигон почему-то null
+				transformedPolygons[p] = null; // Или можно создать пустой new Polygon()? Зависит от ожиданий CollisionDetection.
+				continue;
+			}
+
+			// Важно: Создаем НОВЫЙ полигон на основе НЕ ТРАНСФОРМИРОВАННЫХ вершин оригинала!
+			// getVertices() возвращает исходные вершины без учета трансформации самого полигона.
+			float[] vertices = originalPoly.getVertices();
+			if (vertices == null || vertices.length == 0) {
+				transformedPolygons[p] = new Polygon(); // Пустой полигон
+				continue;
+			}
+
+			Polygon transformedPoly = new Polygon(vertices); // Создаем копию с оригинальными вершинами
+
+			// Применяем трансформации Actor'а (Look) к этому новому полигону
+			transformedPoly.setOrigin(currentOriginX, currentOriginY); // Устанавливаем Origin ДО трансформаций
+			transformedPoly.setScale(currentScaleX, currentScaleY);
+			transformedPoly.setRotation(currentRotation);
+			transformedPoly.translate(currentX, currentY);
+
+			transformedPolygons[p] = transformedPoly;
+		}
+
+		// Сохраняем результат в кэш
+		this.cachedTransformedPolygons = transformedPolygons;
+		this.lastUsedLookDataForCache = currentLookData;
+		// collisionDirty уже установлен в false через compareAndSet (или не был true изначально)
+
+		return this.cachedTransformedPolygons;
 	}
+
+	/*public Polygon[] getCurrentCollisionPolygon() {
+		LookData currentLookData = (lookData2 != null) ? lookData2 : lookData;
+		boolean needsRecalculation = collisionDirty.compareAndSet(true, false);
+
+		if (!needsRecalculation && lastUsedLookDataForCache == currentLookData && cachedTransformedPolygons != null) {
+			// Кэш актуален и для текущего LookData, используем его
+			return cachedTransformedPolygons;
+		}
+
+		// --- Пересчет полигонов ---
+		Polygon[] originalPolygons;
+		if (currentLookData == null) {
+			originalPolygons = new Polygon[0];
+		} else {
+			CollisionInformation collisionInformation = currentLookData.getCollisionInformation();
+			if (collisionInformation == null) {
+				originalPolygons = new Polygon[0];
+			} else {
+				if (collisionInformation.collisionPolygons == null) {
+					collisionInformation.loadCollisionPolygon();
+				}
+				originalPolygons = collisionInformation.collisionPolygons;
+				if (originalPolygons == null) {
+					originalPolygons = new Polygon[0];
+				}
+			}
+		}
+
+		// --- Переиспользование или создание кэш-массива и его содержимого ---
+		if (cachedTransformedPolygons == null || cachedTransformedPolygons.length != originalPolygons.length) {
+			// Создаем новый массив, если кэш не существует или размер отличается
+			cachedTransformedPolygons = new Polygon[originalPolygons.length];
+			// Заполняем его новыми пустыми объектами Polygon
+			for (int i = 0; i < cachedTransformedPolygons.length; i++) {
+				cachedTransformedPolygons[i] = new Polygon();
+			}
+		} else {
+			// Убедимся, что все Polygon объекты существуют (на всякий случай)
+			for (int i = 0; i < cachedTransformedPolygons.length; i++) {
+				if (cachedTransformedPolygons[i] == null) {
+					cachedTransformedPolygons[i] = new Polygon();
+				}
+			}
+		}
+
+		// Получаем текущие трансформации один раз
+		float currentX = getX();
+		float currentY = getY();
+		float currentRotation = getRotation();
+		float currentScaleX = getScaleX();
+		float currentScaleY = getScaleY();
+		float currentOriginX = getOriginX();
+		float currentOriginY = getOriginY();
+
+		for (int p = 0; p < originalPolygons.length; p++) {
+			Polygon originalPoly = originalPolygons[p];
+			// Получаем существующий объект Polygon из кэша для обновления
+			Polygon targetPoly = cachedTransformedPolygons[p];
+
+			if (originalPoly == null || originalPoly.getVertices() == null || originalPoly.getVertices().length < 6) { // Полигону нужно >= 3 вершин (6 floats)
+				// Если исходный полигон невалиден, делаем целевой полигон пустым
+				targetPoly.setVertices(new float[0]); // Устанавливаем пустые вершины
+				continue;
+			}
+
+			// --- Обновляем существующий targetPoly ---
+			// 1. Устанавливаем вершины из оригинала (метод setVertices копирует массив)
+			targetPoly.setVertices(originalPoly.getVertices());
+
+			// 2. Применяем трансформации к targetPoly
+			targetPoly.setOrigin(currentOriginX, currentOriginY); // Устанавливаем origin ДО трансформаций
+			targetPoly.setScale(currentScaleX, currentScaleY);
+			targetPoly.setRotation(currentRotation);
+			targetPoly.translate(currentX, currentY); // Применяем смещение Actor'а
+		}
+
+		// Сохраняем ссылку на LookData, для которого был сделан кэш
+		this.lastUsedLookDataForCache = currentLookData;
+		// collisionDirty уже установлен в false через compareAndSet
+
+		return this.cachedTransformedPolygons;
+	}*/
 
 	void notifyAllWaiters() {
 		for (Action action : getActions()) {

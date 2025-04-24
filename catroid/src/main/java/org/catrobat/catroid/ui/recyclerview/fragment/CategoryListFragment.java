@@ -108,6 +108,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_object_background_name, R.string.formula_editor_object_number_of_backgrounds);
 	private static final List<Integer> OBJECT_PHYSICAL_1 = asList(R.string.formula_editor_object_x,
 			R.string.formula_editor_object_y, R.string.formula_editor_object_size,
+			R.string.formula_editor_object_width, R.string.formula_editor_object_height,
 			R.string.formula_editor_object_rotation, R.string.formula_editor_object_rotation_look,
 			R.string.formula_editor_object_layer);
 	private static final List<Integer> OBJECT_PHYSICAL_COLLISION = singletonList(R.string.formula_editor_function_collision);

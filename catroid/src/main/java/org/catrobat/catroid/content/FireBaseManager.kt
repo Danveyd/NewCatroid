@@ -22,13 +22,13 @@ object FireBaseManager {
         initializeFirebase()
         Log.d("Firebase", "read from database")
         val database: DatabaseReference = FirebaseDatabase.getInstance(databaseUrl).reference
-        Log.d("Firebase", "Initialization 2")
         database.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 callback(snapshot.value?.toString() ?: "No data")
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Error reading data: ${error.message}", error.toException())
                 callback(null) // Обработка ошибок
             }
         })
@@ -39,17 +39,27 @@ object FireBaseManager {
         initializeFirebase()
         Log.d("Firebase", "write to database")
         val database: DatabaseReference = FirebaseDatabase.getInstance(databaseUrl).reference
-        Log.d("Firebase", "Initialization 2")
         database.child(key).setValue(value)
+            .addOnSuccessListener {
+                Log.d("Firebase", "Data written successfully")
+            }
+            .addOnFailureListener { error ->
+                Log.e("Firebase", "Error writing data: ${error.message}", error)
+            }
         Log.d("Firebase", "End")
     }
 
     fun deleteFromDatabase(databaseUrl: String, key: String) {
         initializeFirebase()
-        Log.d("Firebase", "delete fromdatabase")
+        Log.d("Firebase", "delete from database")
         val database: DatabaseReference = FirebaseDatabase.getInstance(databaseUrl).reference
-        Log.d("Firebase", "Initialization 2")
         database.child(key).removeValue()
+            .addOnSuccessListener {
+                Log.d("Firebase", "Data deleted successfully")
+            }
+            .addOnFailureListener { error ->
+                Log.e("Firebase", "Error deleting data: ${error.message}", error)
+            }
         Log.d("Firebase", "End")
     }
 }

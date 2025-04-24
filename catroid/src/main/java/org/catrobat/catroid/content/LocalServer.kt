@@ -24,7 +24,7 @@ class LocalServer private constructor() {
                         connectToServer(ip, port)
                     }
                 } catch (e: Exception) {
-                    Log.e("LocalServer", "Ошибка: ${e.message}")
+                    Log.e("LocalServer", "Ошибка в startOrJoin: ${e.message}", e)
                 }
             }
         }

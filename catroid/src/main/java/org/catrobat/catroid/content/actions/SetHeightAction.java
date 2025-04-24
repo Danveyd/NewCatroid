@@ -40,7 +40,7 @@ public class SetHeightAction extends TemporalAction {
 	protected void update(float delta) {
 		try {
 			Float newSize = size == null ? Float.valueOf(0f) : size.interpretFloat(scope);
-			scope.getSprite().look.setScaleY(newSize / 100f);
+			scope.getSprite().look.setHeightV(newSize / 100f);
 			WidthHeightManager.Companion.setHeight(newSize);
 			//scope.getSprite().look.setSize(scope.getSprite().look.getScaleX(),newSize / 100f);
 		} catch (InterpretationException interpretationException) {

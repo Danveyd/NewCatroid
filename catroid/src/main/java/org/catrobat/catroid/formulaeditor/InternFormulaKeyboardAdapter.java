@@ -587,6 +587,10 @@ public class InternFormulaKeyboardAdapter {
 				return buildObject(Sensors.OBJECT_COLOR);
 			case R.string.formula_editor_object_size:
 				return buildObject(Sensors.OBJECT_SIZE);
+			case R.string.formula_editor_object_width:
+				return buildObject(Sensors.OBJECT_WIDTH);
+			case R.string.formula_editor_object_height:
+				return buildObject(Sensors.OBJECT_HEIGHT);
 			case R.string.formula_editor_object_rotation:
 				return buildObject(Sensors.MOTION_DIRECTION);
 			case R.string.formula_editor_object_rotation_look:

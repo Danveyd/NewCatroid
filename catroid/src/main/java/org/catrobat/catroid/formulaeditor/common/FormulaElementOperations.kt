@@ -182,6 +182,8 @@ object FormulaElementOperations {
             Sensors.MOTION_DIRECTION -> look.motionDirectionInUserInterfaceDimensionUnit.toDouble()
             Sensors.LOOK_DIRECTION -> look.lookDirectionInUserInterfaceDimensionUnit.toDouble()
             Sensors.OBJECT_SIZE -> look.sizeInUserInterfaceDimensionUnit.toDouble()
+            Sensors.OBJECT_HEIGHT -> look.height.toDouble() * 100
+            Sensors.OBJECT_WIDTH -> look.width.toDouble() * 100
             Sensors.OBJECT_X -> look.xInUserInterfaceDimensionUnit.toDouble()
             Sensors.OBJECT_Y -> look.yInUserInterfaceDimensionUnit.toDouble()
             Sensors.OBJECT_ANGULAR_VELOCITY -> look.angularVelocityInUserInterfaceDimensionUnit.toDouble()

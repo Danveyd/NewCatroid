@@ -40,7 +40,7 @@ public class SetWidthAction extends TemporalAction {
 	protected void update(float delta) {
 		try {
 			Float newSize = size == null ? Float.valueOf(0f) : size.interpretFloat(scope);
-			scope.getSprite().look.setScaleX(newSize / 100f);
+			scope.getSprite().look.setWidthV(newSize / 100f);
 			WidthHeightManager.Companion.setWidth(newSize);
 			//scope.getSprite().look.setSize(newSize / 100f, scope.getSprite().look.getScaleY());
 		} catch (InterpretationException interpretationException) {

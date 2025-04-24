@@ -189,9 +189,14 @@ public final class StageLifeCycleController {
 					break;
 				}
 			}
+			List<Sprite> sprites = null;
 
-			List<Sprite> sprites =
-					((StageListener) stageActivity.getApplicationListener()).getSpritesFromStage();
+			try {
+				sprites =
+						((StageListener) stageActivity.getApplicationListener()).getSpritesFromStage();
+			} catch (Exception e) {
+				sprites = null;
+			}
 			if (sprites != null) {
 				for (Sprite sprite : sprites) {
 					sprite.look.resumeParticleEffect();
@@ -233,7 +238,11 @@ public final class StageLifeCycleController {
 			SoundManager.getInstance().resume();
 			MidiSoundManager.getInstance().resume();
 			if (stageActivity.stageResourceHolder.initFinished()) {
-				StageActivity.stageListener.menuResume();
+				try {
+					StageActivity.stageListener.menuResume();
+				} catch(Exception e) {
+					//anything
+				}
 			}
 		}
 	}

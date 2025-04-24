@@ -2184,6 +2184,8 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="formula_editor_object_x">position x</string>
     <string formatted="false" name="formula_editor_object_y">position y</string>
     <string formatted="false" name="formula_editor_object_transparency">transparency</string>
+    <string formatted="false" name="formula_editor_object_width">width</string>
+    <string formatted="false" name="formula_editor_object_height">height</string>
     <string formatted="false" name="formula_editor_object_brightness">brightness</string>
     <string formatted="false" name="formula_editor_object_size">size</string>
     <string formatted="false" name="formula_editor_object_rotation">motion direction</string>
