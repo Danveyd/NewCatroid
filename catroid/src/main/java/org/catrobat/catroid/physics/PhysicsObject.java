@@ -22,16 +22,27 @@
  */
 package org.catrobat.catroid.physics;
 
+import com.badlogic.gdx.box2d.enums.b2BodyType;
+import com.badlogic.gdx.box2d.structs.b2Rot;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
-import com.badlogic.gdx.physics.box2d.Transform;
+import com.badlogic.gdx.box2d.structs.b2BodyDef;
+import com.badlogic.gdx.box2d.structs.b2WorldDef;
+import com.badlogic.gdx.box2d.structs.b2BodyDef.b2BodyDefPointer;
+import com.badlogic.gdx.box2d.structs.b2Circle;
+//import com.badlogic.gdx.box2d.structs.shape;
+import com.badlogic.gdx.box2d.Box2d;
+import com.badlogic.gdx.box2d.structs.b2Filter;
+import com.badlogic.gdx.box2d.structs.b2WorldId;
+import com.badlogic.gdx.box2d.structs.b2Vec2;
+import com.badlogic.gdx.box2d.structs.b2BodyId;
+import com.badlogic.gdx.box2d.structs.b2ChainDef;
+import com.badlogic.gdx.box2d.structs.b2ChainId;
+import com.badlogic.gdx.box2d.structs.b2BodyMoveEvent;
+import com.badlogic.gdx.box2d.structs.b2ShapeId;
+import com.badlogic.gdx.box2d.FFITypes.*;
+import com.badlogic.gdx.box2d.structs.b2Polygon;
+import com.badlogic.gdx.box2d.structs.b2ShapeDef;
+import com.badlogic.gdx.box2d.structs.b2Transform;
 import com.badlogic.gdx.utils.Array;
 
 import org.catrobat.catroid.content.Sprite;
@@ -59,13 +70,28 @@ public class PhysicsObject {
 	private short collisionMaskRecord = 0;
 	private short categoryMaskRecord = PhysicsWorld.CATEGORY_PHYSICSOBJECT;
 
-	private final Body body;
-	private final FixtureDef fixtureDef = new FixtureDef();
-	private Shape[] shapes;
+	private b2BodyDef body;
+
+	private b2BodyId bodyId;
+
+	private b2WorldDef world;
+
+	private b2WorldId worldId;
+
+	private b2ChainId chainId;
+	private b2ChainDef chain;
+	private b2ShapeDef fixtureDef = new b2ShapeDef();
+	private b2ShapeId fixtureId = new b2ShapeId();
+	private b2ShapeId[] shapes;
+
+	private b2ShapeDef[] shapesDef;
 	private Type type;
 	private float mass;
 	private float circumference;
 	private boolean ifOnEdgeBounce = false;
+
+	private final PhysicsWorld physicsWorldWrapper; // Ссылка на обертку PhysicsWorld для вызова статических методов Box2d.*
+	//private final Array<b2ShapeId> shapeIds = new Array<>(false, 4); // ID форм, принадлежащих телу (начальная емкость 4)
 
 	private Vector2 bodyAabbLowerLeft;
 	private Vector2 bodyAabbUpperRight;
@@ -78,16 +104,38 @@ public class PhysicsObject {
 	private float gravityScale = 0;
 	private Type savedType = Type.NONE;
 
-	public PhysicsObject(Body b, Sprite sprite) {
-		body = b;
-		body.setUserData(sprite);
-		mass = PhysicsObject.DEFAULT_MASS;
-		fixtureDef.density = PhysicsObject.DEFAULT_DENSITY;
-		fixtureDef.friction = PhysicsObject.DEFAULT_FRICTION;
-		fixtureDef.restitution = PhysicsObject.DEFAULT_BOUNCE_FACTOR;
-		setType(Type.NONE);
+	private final b2ShapeDef shapeDefTemplate = new b2ShapeDef();
 
-		tmpVertice = new Vector2();
+	public PhysicsObject(b2BodyId bodyId, b2WorldId worldId, PhysicsWorld physicsWorldWrapper, Sprite sprite) {
+		if (bodyId == null || bodyId.isNull() || worldId == null || worldId.isNull() || physicsWorldWrapper == null) {
+			throw new IllegalArgumentException("Valid BodyId, WorldId, and PhysicsWorld wrapper are required for PhysicsObject");
+		}
+		this.bodyId = bodyId;
+		this.worldId = worldId;
+		this.physicsWorldWrapper = physicsWorldWrapper; // Сохраняем ссылку на обертку
+
+		// --- Проверка UserData (опционально, но полезно для отладки) ---
+		// Предполагаем, что PhysicsWorld сохранил Sprite в своей карте bodyIdToUserDataMap
+		/*Object currentData = physicsWorldWrapper.getUserDataForBody(bodyId); // Нужен метод в PhysicsWorld для этого!
+		if (currentData != sprite) {
+			// Можно кинуть исключение или вывести серьезное предупреждение
+			System.err.println("CRITICAL WARNING: UserData mismatch in PhysicsObject constructor! Expected Sprite: "
+					+ (sprite != null ? sprite.getName() : "null") + ", but found: " + currentData);
+			// Это может указывать на проблемы с управлением UserData в PhysicsWorld
+		}*/
+
+		// --- Инициализация шаблона свойств формы ---
+		shapeDefTemplate.density(PhysicsObject.DEFAULT_DENSITY);
+		Box2d.b2CreateChain(bodyId, chain.asPointer());
+		/*shapeDefTemplate.friction = PhysicsObject.DEFAULT_FRICTION;
+		shapeDefTemplate.restitution = PhysicsObject.DEFAULT_BOUNCE_FACTOR;
+		// Установка фильтров по умолчанию (категория объекта, маска зависит от типа)
+		shapeDefTemplate.filter.categoryBits = PhysicsWorld.CATEGORY_PHYSICSOBJECT;
+		// Маска будет установлена при вызове setType*/
+
+		// --- Установка начального состояния ---
+		setType(Type.NONE); // Устанавливаем начальный тип (это вызовет API Box2D)
+		mass = PhysicsObject.DEFAULT_MASS; // Устанавливаем массу по умолчанию
 	}
 
 	public void copyTo(PhysicsObject destination) {
@@ -101,26 +149,30 @@ public class PhysicsObject {
 		destination.setVelocity(this.getVelocity());
 	}
 
-	public void setShape(Shape[] shapes) {
-		if (Arrays.equals(this.shapes, shapes)) {
+	public void setShape(b2ShapeDef[] shapes) {
+		if (Arrays.equals(this.shapesDef, shapesDef)) {
 			return;
 		}
 
 		if (shapes != null) {
-			this.shapes = Arrays.copyOf(shapes, shapes.length);
+			this.shapesDef = Arrays.copyOf(shapesDef, shapesDef.length);
 		} else {
-			this.shapes = null;
+			this.shapesDef = null;
 		}
 
-		while (body.getFixtureList().size > 0) {
-			Fixture oldFixture = body.getFixtureList().first();
-			body.destroyFixture(oldFixture);
+		while (Box2d.b2Body_GetShapeCount(bodyId) > 0) {
+			b2ShapeId.b2ShapeIdPointer xz = null;
+			int capacity = 5;
+			Box2d.b2Body_GetShapes(bodyId, xz, capacity);
+			b2ShapeId oldFixture = xz.get(0);
+			Box2d.b2DestroyShape(oldFixture, true);
 		}
 
 		if (shapes != null) {
-			for (Shape tempShape : shapes) {
-				fixtureDef.shape = tempShape;
-				body.createFixture(fixtureDef);
+			for (b2ShapeDef tempShape : shapesDef) {
+				fixtureDef = tempShape;
+				b2Polygon box = Box2d.b2MakeBox(1.0f, 1.0f);
+				fixtureId = Box2d.b2CreatePolygonShape(bodyId, fixtureDef.asPointer(), box.asPointer());
 			}
 		}
 
@@ -129,7 +181,7 @@ public class PhysicsObject {
 	}
 
 	private void calculateCircumference() {
-		if (body.getFixtureList().size == 0) {
+		if (Box2d.b2Body_GetShapeCount(bodyId) == 0) {
 			//Log.d(TAG, "No fixtures, so reset circumference to zero");
 			circumference = 0;
 			return;
@@ -149,18 +201,20 @@ public class PhysicsObject {
 
 		switch (type) {
 			case DYNAMIC:
-				body.setType(BodyType.DynamicBody);
-				body.setGravityScale(1.0f);
-				body.setBullet(true);
+				Box2d.b2Body_SetType(bodyId, b2BodyType.b2_dynamicBody);
+				Box2d.b2Body_SetGravityScale(bodyId,1.0f);
+				Box2d.b2Body_SetBullet(bodyId,true);
 				setMass(mass);
 				collisionMaskRecord = PhysicsWorld.MASK_PHYSICSOBJECT;
 				break;
 			case FIXED:
-				body.setType(BodyType.KinematicBody);
+				Box2d.b2Body_SetType(bodyId, b2BodyType.b2_kinematicBody);
+				Box2d.b2Body_SetGravityScale(bodyId,1.0f);
 				collisionMaskRecord = PhysicsWorld.MASK_PHYSICSOBJECT;
 				break;
 			case NONE:
-				body.setType(BodyType.KinematicBody);
+				Box2d.b2Body_SetType(bodyId, b2BodyType.b2_kinematicBody);
+				Box2d.b2Body_SetGravityScale(bodyId,1.0f);
 				collisionMaskRecord = PhysicsWorld.MASK_NO_COLLISION;
 				break;
 		}
@@ -169,23 +223,26 @@ public class PhysicsObject {
 	}
 
 	public float getDirection() {
-		return PhysicsWorldConverter.convertBox2dToNormalAngle(body.getAngle());
+		return PhysicsWorldConverter.convertBox2dToNormalAngle(body.angularDamping());
 	}
 
 	public void setDirection(float degrees) {
-		body.setTransform(body.getPosition(), PhysicsWorldConverter.convertNormalToBox2dAngle(degrees));
+		b2Rot r = new b2Rot();
+		r.s(PhysicsWorldConverter.convertNormalToBox2dAngle(degrees));
+		r.c(PhysicsWorldConverter.convertNormalToBox2dAngle(degrees));
+		Box2d.b2Body_SetTransform(bodyId, body.position(), r);
 	}
 
 	public float getX() {
-		return PhysicsWorldConverter.convertBox2dToNormalCoordinate(body.getPosition().x);
+		return PhysicsWorldConverter.convertBox2dToNormalCoordinate(Box2d.b2Body_GetPosition(bodyId).x());
 	}
 
 	public float getY() {
-		return PhysicsWorldConverter.convertBox2dToNormalCoordinate(body.getPosition().y);
+		return PhysicsWorldConverter.convertBox2dToNormalCoordinate(Box2d.b2Body_GetPosition(bodyId).y());
 	}
 
 	public Vector2 getMassCenter() {
-		return body.getWorldCenter();
+		return new Vector2(Box2d.b2Body_GetWorldCenterOfMass(bodyId).x(), Box2d.b2Body_GetWorldCenterOfMass(bodyId).y());
 	}
 
 	public float getCircumference() {
@@ -193,23 +250,31 @@ public class PhysicsObject {
 	}
 
 	public Vector2 getPosition() {
-		return PhysicsWorldConverter.convertBox2dToNormalVector(body.getPosition());
+		return PhysicsWorldConverter.convertBox2dToNormalVector(new Vector2(Box2d.b2Body_GetPosition(bodyId).x(), Box2d.b2Body_GetPosition(bodyId).y()));
 	}
 
 	public void setX(float x) {
-		body.setTransform(PhysicsWorldConverter.convertNormalToBox2dCoordinate(x), body.getPosition().y,
-				body.getAngle());
+		b2Vec2 v = new b2Vec2();
+		v.x(PhysicsWorldConverter.convertNormalToBox2dCoordinate(x));
+		v.y(Box2d.b2Body_GetPosition(bodyId).y());
+		Box2d.b2Body_SetTransform(bodyId, v, Box2d.b2Body_GetRotation(bodyId));
 	}
 
 	public void setY(float y) {
-		body.setTransform(body.getPosition().x, PhysicsWorldConverter.convertNormalToBox2dCoordinate(y),
-				body.getAngle());
+		b2Vec2 v = new b2Vec2();
+		v.x(Box2d.b2Body_GetPosition(bodyId).x());
+		v.y(PhysicsWorldConverter.convertNormalToBox2dCoordinate(y));
+		Box2d.b2Body_SetTransform(bodyId, v,
+				Box2d.b2Body_GetRotation(bodyId));
 	}
 
 	public void setPosition(float x, float y) {
 		x = PhysicsWorldConverter.convertNormalToBox2dCoordinate(x);
 		y = PhysicsWorldConverter.convertNormalToBox2dCoordinate(y);
-		body.setTransform(x, y, body.getAngle());
+		b2Vec2 v = new b2Vec2();
+		v.x(x);
+		v.y(y);
+		Box2d.b2Body_SetTransform(bodyId, v, Box2d.b2Body_GetRotation(bodyId));
 	}
 
 	public void setPosition(Vector2 position) {
@@ -217,20 +282,22 @@ public class PhysicsObject {
 	}
 
 	public float getRotationSpeed() {
-		return (float) Math.toDegrees(body.getAngularVelocity());
+		return (float) Math.toDegrees(Box2d.b2Body_GetAngularDamping(bodyId));
 	}
 
 	public void setRotationSpeed(float degreesPerSecond) {
-		body.setAngularVelocity((float) Math.toRadians(degreesPerSecond));
+		Box2d.b2Body_SetAngularDamping(bodyId, (float) Math.toRadians(degreesPerSecond));
 	}
 
 	public Vector2 getVelocity() {
-		return PhysicsWorldConverter.convertBox2dToNormalVector(body.getLinearVelocity());
+		return PhysicsWorldConverter.convertBox2dToNormalVector(new Vector2(Box2d.b2Body_GetLinearVelocity(bodyId).x(), Box2d.b2Body_GetLinearVelocity(bodyId).y()));
 	}
 
 	public void setVelocity(float x, float y) {
-		body.setLinearVelocity(PhysicsWorldConverter.convertNormalToBox2dCoordinate(x),
-				PhysicsWorldConverter.convertNormalToBox2dCoordinate(y));
+		b2Vec2 v = new b2Vec2();
+		v.x(PhysicsWorldConverter.convertNormalToBox2dCoordinate(x));
+		v.y(PhysicsWorldConverter.convertNormalToBox2dCoordinate(y));
+		Box2d.b2Body_SetLinearVelocity(bodyId, v);
 	}
 
 	public void setVelocity(Vector2 velocity) {
@@ -242,7 +309,7 @@ public class PhysicsObject {
 	}
 
 	public float getBounceFactor() {
-		return this.fixtureDef.restitution;
+		return Box2d.b2Chain_GetRestitution(chainId);
 	}
 
 	public void setMass(float mass) {
@@ -257,13 +324,13 @@ public class PhysicsObject {
 		if (isStaticObject()) {
 			return;
 		}
-		float area = body.getMass() / fixtureDef.density;
+		float area = Box2d.b2Body_GetMass(bodyId)/ fixtureDef.density();
 		float density = mass / area;
 		setDensity(density);
 	}
 
 	private boolean isStaticObject() {
-		return body.getMass() == 0.0f;
+		return Box2d.b2Body_GetMass(bodyId) == 0.0f;
 	}
 
 	@VisibleForTesting
@@ -271,15 +338,20 @@ public class PhysicsObject {
 		if (density < MIN_DENSITY) {
 			density = PhysicsObject.MIN_DENSITY;
 		}
-		fixtureDef.density = density;
-		for (Fixture fixture : body.getFixtureList()) {
-			fixture.setDensity(density);
+		fixtureDef.density(density);
+		b2ShapeId.b2ShapeIdPointer xz = null;
+		int capacity = 5;
+		int i = 0;
+		Box2d.b2Body_GetShapes(bodyId, xz, capacity);
+		for (i = 0; i < xz.getSize(); i++) {
+			b2ShapeId fixture = xz.get(i);
+			Box2d.b2Shape_SetDensity(fixture, density, true);
 		}
-		body.resetMassData();
+		Box2d.b2Body_ApplyMassFromShapes(bodyId);
 	}
 
 	public float getFriction() {
-		return fixtureDef.friction;
+		return Box2d.b2Shape_GetFriction(fixtureId);
 	}
 
 	public void setFriction(float friction) {
@@ -290,9 +362,15 @@ public class PhysicsObject {
 			friction = MAX_FRICTION;
 		}
 
-		fixtureDef.friction = friction;
-		for (Fixture fixture : body.getFixtureList()) {
-			fixture.setFriction(friction);
+		Box2d.b2Chain_SetFriction(chainId, friction);
+		b2ShapeId.b2ShapeIdPointer xz = null;
+		int capacity = 5;
+		int i = 0;
+		Box2d.b2Body_GetShapes(bodyId, xz, capacity);
+		for (i = 0; i < xz.getSize(); i++) {
+			b2ShapeId fixture = xz.get(i);
+			b2ChainId c = Box2d.b2Shape_GetParentChain(fixture);
+			Box2d.b2Chain_SetFriction(c, friction);
 		}
 	}
 
@@ -300,22 +378,27 @@ public class PhysicsObject {
 		if (bounceFactor < MIN_BOUNCE_FACTOR) {
 			bounceFactor = MIN_BOUNCE_FACTOR;
 		}
-		fixtureDef.restitution = bounceFactor;
-		for (Fixture fixture : body.getFixtureList()) {
-			fixture.setRestitution(bounceFactor);
+		Box2d.b2Shape_SetRestitution(fixtureId, bounceFactor);
+		b2ShapeId.b2ShapeIdPointer xz = null;
+		int capacity = 5;
+		int i = 0;
+		Box2d.b2Body_GetShapes(bodyId, xz, capacity);
+		for (i = 0; i < xz.getSize(); i++) {
+			b2ShapeId fixture = xz.get(i);
+			Box2d.b2Shape_SetRestitution(fixture, bounceFactor);
 		}
 	}
 
 	public void setGravityScale(float scale) {
-		body.setGravityScale(scale);
+		body.gravityScale(scale);
 	}
 
 	public float getGravityScale() {
-		return body.getGravityScale();
+		return body.gravityScale();
 	}
 
 	public void setFixedRotation(boolean flag) {
-		body.setFixedRotation(flag);
+		body.fixedRotation(flag);
 	}
 
 	public void setIfOnEdgeBounce(boolean bounce, Sprite sprite) {
@@ -327,7 +410,7 @@ public class PhysicsObject {
 		short maskBits;
 		if (bounce) {
 			maskBits = PhysicsWorld.MASK_TO_BOUNCE;
-			body.setUserData(sprite);
+			Box2d.b2Body_SetUserData(bodyId, sprite);
 		} else {
 			maskBits = PhysicsWorld.MASK_PHYSICSOBJECT;
 		}
@@ -340,15 +423,9 @@ public class PhysicsObject {
 	}
 
 	protected void setCollisionBits(short categoryBits, short maskBits, boolean updateState) {
-		fixtureDef.filter.categoryBits = categoryBits;
-		fixtureDef.filter.maskBits = maskBits;
-
-		for (Fixture fixture : body.getFixtureList()) {
-			Filter filter = fixture.getFilterData();
-			filter.categoryBits = categoryBits;
-			filter.maskBits = maskBits;
-			fixture.setFilterData(filter);
-		}
+		b2Filter filterM = fixtureDef.filter();
+		filterM.categoryBits(categoryBits);
+		filterM.maskBits(maskBits);
 
 		if (updateState) {
 			updateNonCollidingState();
@@ -356,8 +433,8 @@ public class PhysicsObject {
 	}
 
 	private void updateNonCollidingState() {
-		if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
-			Object look = ((Sprite) body.getUserData()).look;
+		if (Box2d.b2Body_GetUserData(bodyId) != null && Box2d.b2Body_GetUserData(bodyId) instanceof Sprite) {
+			Object look = ((Sprite) Box2d.b2Body_GetUserData(bodyId)).look;
 			if (look != null && look instanceof PhysicsLook) {
 				((PhysicsLook) look).setNonColliding(isNonColliding());
 			}
@@ -427,33 +504,36 @@ public class PhysicsObject {
 	private void calculateAabb() {
 		bodyAabbLowerLeft = new Vector2(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		bodyAabbUpperRight = new Vector2(Integer.MIN_VALUE, Integer.MIN_VALUE);
-		Transform transform = body.getTransform();
-		int len = body.getFixtureList().size;
-		Array<Fixture> fixtures = body.getFixtureList();
-		if (fixtures.size == 0) {
+		b2Transform transform = Box2d.b2Body_GetTransform(bodyId);
+		int len = Box2d.b2Body_GetShapeCount(bodyId);
+		//Array<b2ShapeId> fixtures = body.getFixtureList();
+		b2ShapeId.b2ShapeIdPointer xz = null;
+		int capacity = 5;
+		Box2d.b2Body_GetShapes(bodyId, xz, capacity);
+		if (xz.getSize() == 0) {
 			bodyAabbLowerLeft.x = 0;
 			bodyAabbLowerLeft.y = 0;
 			bodyAabbUpperRight.x = 0;
 			bodyAabbUpperRight.y = 0;
 		}
 		for (int i = 0; i < len; i++) {
-			Fixture fixture = fixtures.get(i);
-			calculateAabb(fixture, transform);
+			b2ShapeId fixturei = xz.get(i);
+			calculateAabb(fixturei, transform);
 		}
 	}
 
-	private void calculateAabb(Fixture fixture, Transform transform) {
+	private void calculateAabb(b2ShapeId fixture, b2Transform transform) {
 		fixtureAabbLowerLeft = new Vector2(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		fixtureAabbUpperRight = new Vector2(Integer.MIN_VALUE, Integer.MIN_VALUE);
-		if (fixture.getType() == Shape.Type.Circle) {
-			CircleShape shape = (CircleShape) fixture.getShape();
-			float radius = shape.getRadius();
-			tmpVertice.set(shape.getPosition());
+		/*if (fixture.getFFIType() == Shape.Type.Circle) {
+			//b2Circle shape = (b2Circle) xz.get(0);
+			/*float radius = shape.radius();
+			tmpVertice.set(new Vector2(Box2d.b2Body_GetPosition(bodyId).x(), Box2d.b2Body_GetPosition(bodyId).y()));
 			tmpVertice.rotate(transform.getRotation()).add(transform.getPosition());
 			fixtureAabbLowerLeft.set(tmpVertice.x - radius, tmpVertice.y - radius);
 			fixtureAabbUpperRight.set(tmpVertice.x + radius, tmpVertice.y + radius);
-		} else if (fixture.getType() == Shape.Type.Polygon) {
-			PolygonShape shape = (PolygonShape) fixture.getShape();
+		} else if (fixture.getFFIType() == Shape.Type.Polygon) {
+			b2Polygon shape = (b2Polygon) fixture.getShape();
 			int vertexCount = shape.getVertexCount();
 
 			shape.getVertex(0, tmpVertice);
@@ -467,7 +547,7 @@ public class PhysicsObject {
 				fixtureAabbUpperRight.x = Math.max(fixtureAabbUpperRight.x, tmpVertice.x);
 				fixtureAabbUpperRight.y = Math.max(fixtureAabbUpperRight.y, tmpVertice.y);
 			}
-		}
+		}*/
 
 		bodyAabbLowerLeft.x = Math.min(fixtureAabbLowerLeft.x, bodyAabbLowerLeft.x);
 		bodyAabbLowerLeft.y = Math.min(fixtureAabbLowerLeft.y, bodyAabbLowerLeft.y);

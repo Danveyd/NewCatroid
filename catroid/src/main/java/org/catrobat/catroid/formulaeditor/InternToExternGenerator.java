@@ -104,6 +104,7 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_Y.name(), R.string.formula_editor_function_table_y);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_ELEMENT.name(), R.string.formula_editor_function_table_element);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_JOIN.name(), R.string.formula_editor_function_table_join);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FILE.name(), R.string.formula_editor_function_file);
 
 		//DRONE SENSORS
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.DRONE_BATTERY_STATUS.name(), R.string.formula_editor_sensor_drone_battery_status);

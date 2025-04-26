@@ -11,11 +11,11 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 113,
-      "versionName": "2.1.0",
+      "versionCode": 120,
+      "versionName": "2.0.5",
       "outputFile": "catroid-catroid-release.apk"
     }
   ],
   "elementType": "File",
-  "minSdkVersionForDexing": 28
+  "minSdkVersionForDexing": 23
 }

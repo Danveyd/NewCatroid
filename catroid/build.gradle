@@ -54,7 +54,8 @@ ext {
     manifestAppIcon = '@mipmap/ic_launcher'
 
     projectVersion = "0.9"
-    gdxVersion = "1.9.10"
+    gdxVersion = "1.12.1"
+    box2d = "0.1-SNAPSHOT"
     mockitoVersion = "3.12.4"
     espressoVersion = "3.1.0"
     playServicesVersion = '17.0.1'
@@ -124,7 +125,7 @@ android {
     //2011
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         applicationId appId
         testInstrumentationRunner 'org.catrobat.catroid.runner.UiTestApplicationRunner'
@@ -499,16 +500,16 @@ dependencies {
     // libGDX
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$box2d"
     //implementation "com.badlogicgames.gdx:gdx-box2d:0.1-SNAPSHOT"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86_64"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-arm64-v8a"
 
     implementation "com.google.android.gms:play-services-auth:17.0.0"
 

@@ -549,58 +549,37 @@ public class Look extends Image {
 
 	@Override
 	public void setX(float x) {
-		if (getX() != x) {
-			super.setX(x);
-			// positionChanged() будет вызван автоматически libGDX
-		}
+		super.setX(x);
 	}
 
 	@Override
 	public void setY(float y) {
-		if (getY() != y) {
-			super.setY(y);
-			// positionChanged() будет вызван автоматически libGDX
-		}
+		super.setY(y);
 	}
 
 	@Override
 	public void setRotation(float degrees) {
-		if (getRotation() != degrees) {
-			super.setRotation(degrees);
-			// rotationChanged() будет вызван автоматически libGDX
-		}
+		super.setRotation(degrees);
 	}
 
 	@Override
 	public void setScale(float scaleXY) {
-		if (getScaleX() != scaleXY || getScaleY() != scaleXY) {
-			super.setScale(scaleXY);
-			// sizeChanged() будет вызван автоматически libGDX
-		}
+		super.setScale(scaleXY);
 	}
 
 	@Override
 	public void setScale(float scaleX, float scaleY) {
-		if (getScaleX() != scaleX || getScaleY() != scaleY) {
-			super.setScale(scaleX, scaleY);
-			// sizeChanged() будет вызван автоматически libGDX
-		}
+		super.setScale(scaleX, scaleY);
 	}
 
 	@Override
 	public void setScaleX(float scaleX) {
-		if (getScaleX() != scaleX) {
-			super.setScaleX(scaleX);
-			// sizeChanged() будет вызван автоматически libGDX
-		}
+		super.setScaleX(scaleX);
 	}
 
 	@Override
 	public void setScaleY(float scaleY) {
-		if (getScaleY() != scaleY) {
-			super.setScaleY(scaleY);
-			// sizeChanged() будет вызван автоматически libGDX
-		}
+		super.setScaleY(scaleY);
 	}
 
 	private void adjustSimultaneousMovementXY(float x, float y) {

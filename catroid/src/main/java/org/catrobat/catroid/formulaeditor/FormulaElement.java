@@ -475,13 +475,41 @@ public class FormulaElement implements Serializable {
 				return interpretFunctionSubtext(arguments.get(0), arguments.get(1),
 						arguments.get(2));
 			case FILE:
+				if (arguments == null || arguments.isEmpty() || arguments.get(0) == null) {
+					// Логика ошибки: имя файла не предоставлено или равно null
+					System.err.println("Error: File name argument is missing or null."); // Используйте ваш логгер
+					return false; // Или другое значение по умолчанию/ошибке
+				}
+
 				String fileName = String.valueOf(arguments.get(0));
-				File file = scope.getProject().getFile(fileName);
-				if(file.exists()) {
-					return true;
-				} else {
+
+				// Дополнительная проверка на null для scope и project (на всякий случай)
+				if (scope == null || scope.getProject() == null) {
+					System.err.println("Error: Scope or Project context is missing."); // Используйте ваш логгер
 					return false;
 				}
+
+				File file = null; // Инициализируем null на случай, если getFile выбросит исключение
+				try {
+					// Пытаемся получить файл через метод проекта
+					file = scope.getProject().getFile(fileName);
+				} catch (Exception e) {
+					// Логируем ошибку, если сам getFile может выбросить исключение
+					System.err.println("Error retrieving file object for '" + fileName + "': " + e.getMessage()); // Используйте ваш логгер
+					return false; // Считаем, что файл не существует, если произошла ошибка при получении
+				}
+
+
+				// *** Ключевая проверка на null ***
+				if (file != null && file.exists()) {
+					// Объект File был успешно получен И файл реально существует на диске
+					return true;
+				} else {
+					// Либо getFile вернул null (файл не найден в контексте проекта),
+					// либо файл найден, но file.exists() вернул false (файл не существует на диске)
+					return false;
+				}
+
 			case LUA:
 				Globals globals = JsePlatform.standardGlobals();
 				String luaScript = String.valueOf(arguments.get(0));
