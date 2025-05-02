@@ -233,7 +233,7 @@ def defaultVersionCode = 120
 def defaultVersionName = "2.0.5"
 
 android {
-    compileSdk 33
+    compileSdk 34
     //buildToolsVersion = "33.0.2"
 
     namespace 'org.catrobat.catroid'
@@ -627,8 +627,8 @@ dependencies {
     // libGDX
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    //implementation "com.badlogicgames.gdx:gdx-box2d:$box2d"
-    implementation "io.github.libgdx:gdx-box2d:$box2d" // $box2d = "3.1.0-0"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$box2d"
+    //implementation "io.github.libgdx:gdx-box2d:$box2d" // $box2d = "3.1.0-0"
     //implementation "com.badlogicgames.gdx:gdx-jnigen-runtime:2.5.2"
     //implementation "com.badlogicgames.gdx:gdx-box2d:0.1-SNAPSHOT"
     /*natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
