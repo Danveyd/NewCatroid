@@ -23,8 +23,8 @@
 package org.catrobat.catroid.physics.shapebuilder;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.box2d.structs.b2ShapeDef;
 
 public interface PhysicsShapeBuilderStrategy {
-	Shape[] build(Pixmap pixmap, float scale);
+	Object[] build(Pixmap pixmap, float scale);
 }

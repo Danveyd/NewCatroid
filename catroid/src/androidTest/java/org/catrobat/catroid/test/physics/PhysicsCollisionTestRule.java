@@ -26,10 +26,6 @@ package org.catrobat.catroid.test.physics;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.World;
 
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Sprite;
@@ -41,7 +37,7 @@ import org.catrobat.catroid.test.utils.Reflection;
 
 import static junit.framework.Assert.assertNotNull;
 
-public class PhysicsCollisionTestRule extends PhysicsTestRule implements PhysicsCollisionTestReceiver {
+public class PhysicsCollisionTestRule {//extends PhysicsTestRule implements PhysicsCollisionTestReceiver {
 
 	private static final String TAG = PhysicsCollisionTestRule.class.getSimpleName();
 
@@ -62,7 +58,7 @@ public class PhysicsCollisionTestRule extends PhysicsTestRule implements Physics
 	public static final float DELTA_TIME = 0.1f;
 	public static final int MAX_STEPS = 25;
 
-	@Override
+	/*@Override
 	protected void before() throws Throwable {
 		super.before();
 		sprite2 = new Sprite("TestSprite2");
@@ -80,9 +76,9 @@ public class PhysicsCollisionTestRule extends PhysicsTestRule implements Physics
 		World world = (World) Reflection.getPrivateField(PhysicsWorld.class, physicsWorld, "world");
 		physicsCollisionTestListener = new PhysicsCollisionTestListener(this, physicsWorld);
 		world.setContactListener(physicsCollisionTestListener);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	protected void after() {
 		sprite2 = null;
 		physicsCollisionTestListener = null;
@@ -155,5 +151,5 @@ public class PhysicsCollisionTestRule extends PhysicsTestRule implements Physics
 
 	@Override
 	public void postSolveCallback(Contact contact, ContactImpulse impulse) {
-	}
+	}*/
 }

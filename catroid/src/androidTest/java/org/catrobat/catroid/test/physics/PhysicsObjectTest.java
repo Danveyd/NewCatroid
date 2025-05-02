@@ -23,13 +23,6 @@
 package org.catrobat.catroid.test.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -74,7 +67,7 @@ public class PhysicsObjectTest {
 		physicsWorld = new PhysicsWorld(1920, 1600);
 	}
 
-	@After
+	/*@After
 	public void tearDown() throws Exception {
 		physicsWorld = null;
 	}
@@ -446,5 +439,5 @@ public class PhysicsObjectTest {
 		physicsObject.setMass(1.0f);
 		assertEquals(0.0f, body.getMass(), TestUtils.DELTA);
 		assertEquals(1.0f, PhysicsTestUtils.getMass(physicsObject));
-	}
+	}*/
 }

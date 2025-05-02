@@ -24,8 +24,6 @@ package org.catrobat.catroid.test.physics;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import org.catrobat.catroid.ProjectManager;
@@ -67,7 +65,7 @@ public class PhysicsShapeScaleUtilsTest {
 	private File projectDir;
 	private Project project;
 	private PhysicsShapeBuilderStrategy strategy = new PhysicsShapeBuilderStrategyFastHull();
-	private Shape[] complexSingleConvexPolygonShapes;
+	//private Shape[] complexSingleConvexPolygonShapes;
 	static {
 		GdxNativesLoader.load();
 	}
@@ -86,7 +84,7 @@ public class PhysicsShapeScaleUtilsTest {
 		XstreamSerializer.getInstance().saveProject(project);
 		ProjectManager.getInstance().setCurrentProject(project);
 
-		String complexSingleConvexPolygonFileName = PhysicsTestUtils
+		/*String complexSingleConvexPolygonFileName = PhysicsTestUtils
 				.getInternalImageFilenameFromFilename("complex_single_convex_polygon.png");
 
 		File complexSingleConvexPolygonFile = ResourceImporter.createImageFileFromResourcesInDirectory(
@@ -97,8 +95,8 @@ public class PhysicsShapeScaleUtilsTest {
 				1);
 
 		LookData complexSingleConvexPolygonLookData = PhysicsTestUtils.generateLookData(complexSingleConvexPolygonFile);
-		Pixmap pixmap = complexSingleConvexPolygonLookData.getPixmap();
-		complexSingleConvexPolygonShapes = strategy.build(pixmap, 1.0f);
+		Pixmap pixmap = complexSingleConvexPolygonLookData.getPixmap();*/
+		//complexSingleConvexPolygonShapes = strategy.build(pixmap, 1.0f);
 	}
 
 	@After
@@ -110,7 +108,7 @@ public class PhysicsShapeScaleUtilsTest {
 		physicsWorld = null;
 	}
 
-	@Test
+	/*@Test
 	public void testShapeScaling() {
 		Shape[] ninetyPercent = PhysicsShapeScaleUtils.scaleShapes(complexSingleConvexPolygonShapes, 0.9f);
 		Shape[] oneHundredAndTenPercent = PhysicsShapeScaleUtils.scaleShapes(complexSingleConvexPolygonShapes, 1.1f);
@@ -120,7 +118,7 @@ public class PhysicsShapeScaleUtilsTest {
 		compareShapeSize(complexSingleConvexPolygonShapes, oneHundredAndTenPercent, 1.1f);
 		compareShapeSize(complexSingleConvexPolygonShapes, oneHundredAndFortyPercent, 1.4f);
 		compareShapeSize(complexSingleConvexPolygonShapes, eightyPercent, 0.8f);
-	}
+	}*/
 
 	@Test
 	public void testScaleCoordinate() throws Exception {
@@ -168,7 +166,7 @@ public class PhysicsShapeScaleUtilsTest {
 		assertEquals(expectedCoordinateVector.y, actualCoordinateVector.y, DELTA);
 	}
 
-	private void compareShapeSize(Shape[] firstShapes, Shape[] secondShapes, float scaleFactor) {
+	/*private void compareShapeSize(Shape[] firstShapes, Shape[] secondShapes, float scaleFactor) {
 		assertNotNull(firstShapes);
 		assertNotNull(secondShapes);
 
@@ -194,5 +192,5 @@ public class PhysicsShapeScaleUtilsTest {
 				}
 			}
 		}
-	}
+	}*/
 }

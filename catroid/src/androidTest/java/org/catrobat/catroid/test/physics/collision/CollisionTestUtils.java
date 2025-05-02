@@ -42,7 +42,6 @@ import java.io.IOException;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import static org.catrobat.catroid.common.Constants.IMAGE_DIRECTORY_NAME;
-import static org.catrobat.catroid.test.physics.PhysicsTestUtils.generateLookData;
 
 public final class CollisionTestUtils {
 
@@ -64,7 +63,7 @@ public final class CollisionTestUtils {
 				hashedFileName,
 				1);
 
-		LookData lookData = generateLookData(file);
+		/*LookData lookData = generateLookData(file);
 		Assert.assertNotNull(lookData);
 		CollisionInformation collisionInformation = lookData.getCollisionInformation();
 		collisionInformation.loadCollisionPolygon();
@@ -73,6 +72,6 @@ public final class CollisionTestUtils {
 		sprite.getLookList().add(lookData);
 		sprite.look.setHeight(sprite.look.getLookData().getPixmap().getHeight());
 		sprite.look.setWidth(sprite.look.getLookData().getPixmap().getWidth());
-		sprite.look.setPositionInUserInterfaceDimensionUnit(0, 0);
+		sprite.look.setPositionInUserInterfaceDimensionUnit(0, 0);*/
 	}
 }

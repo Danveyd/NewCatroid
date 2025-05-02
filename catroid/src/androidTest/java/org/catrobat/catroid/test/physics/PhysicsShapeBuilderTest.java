@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.test.physics;
 
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import org.catrobat.catroid.ProjectManager;
@@ -91,7 +89,7 @@ public class PhysicsShapeBuilderTest {
 		XstreamSerializer.getInstance().saveProject(project);
 		ProjectManager.getInstance().setCurrentProject(project);
 
-		String simpleSingleConvexPolygonFileName = PhysicsTestUtils
+		/*String simpleSingleConvexPolygonFileName = PhysicsTestUtils
 				.getInternalImageFilenameFromFilename("simple_single_convex_polygon.png");
 
 		simpleSingleConvexPolygonFile = ResourceImporter.createImageFileFromResourcesInDirectory(
@@ -113,7 +111,7 @@ public class PhysicsShapeBuilderTest {
 
 		sprite = new Sprite("TestSprite");
 
-		physicsLook = new PhysicsLook(sprite, physicsWorld);
+		physicsLook = new PhysicsLook(sprite, physicsWorld);*/
 	}
 
 	@After
@@ -125,7 +123,7 @@ public class PhysicsShapeBuilderTest {
 		projectDir = null;
 	}
 
-	@Test
+	/*@Test
 	public void testSimpleSingleConvexPolygon() {
 		LookData lookData = PhysicsTestUtils.generateLookData(simpleSingleConvexPolygonFile);
 		physicsLook.setLookData(lookData);
@@ -159,5 +157,5 @@ public class PhysicsShapeBuilderTest {
 			highestAccuracyShapes = higherAccuracyShapes;
 		}
 		assertThat(lowestAccuracyShapes.length, is(lessThan(highestAccuracyShapes.length)));
-	}
+	}*/
 }

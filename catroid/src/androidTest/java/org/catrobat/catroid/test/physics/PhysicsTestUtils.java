@@ -26,12 +26,12 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.box2d.structs.b2Polygon;
+import com.badlogic.gdx.box2d.structs.b2ShapeId;
+import com.badlogic.gdx.box2d.structs.b2ShapeDef;
+import com.badlogic.gdx.box2d.Box2d;
 
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Sprite;
@@ -46,22 +46,22 @@ import static org.mockito.Mockito.mock;
 
 public final class PhysicsTestUtils {
 
-	private PhysicsTestUtils() {
-		throw new AssertionError();
-	}
+	//private PhysicsTestUtils() {
+	//	throw new AssertionError();
+	//}
 
-	public static PhysicsObject createPhysicsObject(PhysicsWorld physicsWorld, PhysicsObject.Type type, float width,
+	/*public static PhysicsObject createPhysicsObject(PhysicsWorld physicsWorld, PhysicsObject.Type type, float width,
 			float height) {
 		return createPhysicsObject(physicsWorld, type, createRectanglePolygonShape(width, height));
 	}
 
-	public static PolygonShape createRectanglePolygonShape(float width, float height) {
-		PolygonShape rectangle = new PolygonShape();
-		rectangle.setAsBox(width / 2.0f, height / 2.0f);
+	public static b2ShapeDef createRectanglePolygonShape(float width, float height) {
+		b2ShapeDef rectangle = new b2ShapeDef();
+		//rectangle = Bo(width / 2.0f, height / 2.0f);
 		return rectangle;
 	}
 
-	public static PhysicsObject createPhysicsObject(PhysicsWorld physicsWorld, PhysicsObject.Type type, Shape shape) {
+	public static PhysicsObject createPhysicsObject(PhysicsWorld physicsWorld, PhysicsObject.Type type, b2ShapeDef shape) {
 		PhysicsObject physicsObject = physicsWorld.getPhysicsObject(new Sprite("TestSprite"));
 
 		if (type != null) {
@@ -69,7 +69,7 @@ public final class PhysicsTestUtils {
 		}
 
 		if (shape != null) {
-			physicsObject.setShape(new Shape[] {shape});
+			physicsObject.setShape(new b2ShapeDef[] {shape});
 		}
 		return physicsObject;
 	}
@@ -127,5 +127,5 @@ public final class PhysicsTestUtils {
 			return null;
 		}
 		return pixmap;
-	}
+	}*/
 }

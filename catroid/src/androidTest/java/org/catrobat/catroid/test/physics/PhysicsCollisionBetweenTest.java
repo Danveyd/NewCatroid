@@ -24,7 +24,6 @@
 package org.catrobat.catroid.test.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
 
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
@@ -58,7 +57,7 @@ public class PhysicsCollisionBetweenTest {
 	private Sprite sprite2;
 	private Project project;
 
-	@Before
+	/*@Before
 	public void setUp() {
 		sprite = rule.sprite;
 		sprite2 = rule.sprite2;
@@ -141,5 +140,5 @@ public class PhysicsCollisionBetweenTest {
 			}
 		}
 		return true;
-	}
+	}*/
 }

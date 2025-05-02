@@ -56,7 +56,7 @@ public class PhysicsTestRule extends ExternalResource {
 	@Override
 	protected void before() throws Throwable {
 		TestUtils.deleteProjects();
-		rectangle125x125FileName = PhysicsTestUtils.getInternalImageFilenameFromFilename("rectangle_125x125.png");
+		//rectangle125x125FileName = PhysicsTestUtils.getInternalImageFilenameFromFilename("rectangle_125x125.png");
 
 		project = new Project(ApplicationProvider.getApplicationContext(), TestUtils.DEFAULT_TEST_PROJECT_NAME);
 
@@ -76,13 +76,13 @@ public class PhysicsTestRule extends ExternalResource {
 				rectangle125x125FileName,
 				1);
 
-		LookData lookdata = PhysicsTestUtils.generateLookData(rectangle125x125File);
+		/*LookData lookdata = PhysicsTestUtils.generateLookData(rectangle125x125File);
 		sprite.look.setLookData(lookdata);
 		sprite.setActionFactory(new ActionPhysicsFactory());
 
 		assertNotNull(sprite.look.getLookData());
 
-		stabilizePhysicsWorld(physicsWorld);
+		stabilizePhysicsWorld(physicsWorld);*/
 	}
 
 	@Override

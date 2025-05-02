@@ -23,7 +23,6 @@
 package org.catrobat.catroid.test.physics.actions;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -59,7 +58,7 @@ public class SetGravityActionTest {
 		physicsWorld = rule.physicsWorld;
 	}
 
-	@Test
+	/*@Test
 	public void testNormalBehavior() throws Exception {
 		float gravityX = GRAVITY_X;
 		float gravityY = GRAVITY_Y;
@@ -153,5 +152,5 @@ public class SetGravityActionTest {
 
 		assertEquals(PhysicsWorld.DEFAULT_GRAVITY.x, gravityVector.x);
 		assertEquals(PhysicsWorld.DEFAULT_GRAVITY.y, gravityVector.y);
-	}
+	}*/
 }

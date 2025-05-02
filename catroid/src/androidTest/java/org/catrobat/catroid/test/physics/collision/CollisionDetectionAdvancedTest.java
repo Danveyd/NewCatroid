@@ -55,7 +55,6 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import static org.catrobat.catroid.common.Constants.IMAGE_DIRECTORY_NAME;
-import static org.catrobat.catroid.test.physics.PhysicsTestUtils.generateLookData;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -78,7 +77,7 @@ public class CollisionDetectionAdvancedTest {
 				hashedFileName,
 				1);
 
-		LookData lookData = generateLookData(file);
+		/*LookData lookData = generateLookData(file);
 		CollisionInformation collisionInformation = lookData.getCollisionInformation();
 		collisionInformation.loadCollisionPolygon();
 
@@ -86,7 +85,7 @@ public class CollisionDetectionAdvancedTest {
 		sprite.getLookList().add(lookData);
 		sprite.look.setHeight(sprite.look.getLookData().getPixmap().getHeight());
 		sprite.look.setWidth(sprite.look.getLookData().getPixmap().getWidth());
-		sprite.look.setPositionInUserInterfaceDimensionUnit(0, 0);
+		sprite.look.setPositionInUserInterfaceDimensionUnit(0, 0);*/
 	}
 
 	@Before

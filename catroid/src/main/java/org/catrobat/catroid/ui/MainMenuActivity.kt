@@ -71,6 +71,7 @@ import org.catrobat.catroid.utils.setVisibleOrGone
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 private const val SDK_VERSION = 24
 
@@ -81,6 +82,8 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
     private lateinit var mainMenuBinding: ActivityMainMenuBinding
     private val projectManager: ProjectManager by inject()
     private var oldPrivacyPolicy = 0
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -374,5 +377,11 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
         @JvmField
         var surveyCampaign: Survey? = null
+
+        init {
+            GdxNativesLoader.load()
+            System.loadLibrary("gdx")
+            System.loadLibrary("gdx-box2d")
+        }
     }
 }

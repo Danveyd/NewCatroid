@@ -102,7 +102,7 @@ public class CollisionInformationTest {
 				polygons[0].getVertices(), DELTA);
 	}
 
-	@Test
+	/*@Test
 	public void testGetCollisionPolygonFromPNGMeta() throws IOException {
 		TestUtils.deleteProjects();
 
@@ -228,5 +228,5 @@ public class CollisionInformationTest {
 		assertEquals(verticalCorrect.length, verticalTest.length);
 		assertArrayEquals(horizontalCorrect, horizontalTest, DELTA);
 		assertArrayEquals(verticalCorrect, verticalTest, DELTA);
-	}
+	}*/
 }

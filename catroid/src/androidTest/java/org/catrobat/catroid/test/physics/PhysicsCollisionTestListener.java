@@ -23,9 +23,6 @@
 
 package org.catrobat.catroid.test.physics;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.Manifold;
 
 import org.catrobat.catroid.physics.PhysicsCollisionListener;
 import org.catrobat.catroid.physics.PhysicsWorld;
@@ -39,7 +36,7 @@ public class PhysicsCollisionTestListener extends PhysicsCollisionListener {
 		this.receiver = receiver;
 	}
 
-	@Override
+	/*@Override
 	public void beginContact(Contact contact) {
 		super.beginContact(contact);
 		if (receiver != null) {
@@ -69,5 +66,5 @@ public class PhysicsCollisionTestListener extends PhysicsCollisionListener {
 		if (receiver != null) {
 			receiver.postSolveCallback(contact, impulse);
 		}
-	}
+	}*/
 }

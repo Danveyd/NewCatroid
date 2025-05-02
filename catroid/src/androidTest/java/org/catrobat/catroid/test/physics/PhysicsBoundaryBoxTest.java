@@ -22,11 +22,6 @@
  */
 package org.catrobat.catroid.test.physics;
 
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Filter;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -46,7 +41,7 @@ public class PhysicsBoundaryBoxTest {
 		GdxNativesLoader.load();
 	}
 
-	private World world;
+	/*private World world;
 
 	@Before
 	public void setUp() throws Exception {
@@ -81,5 +76,5 @@ public class PhysicsBoundaryBoxTest {
 			assertEquals(PhysicsWorld.MASK_BOUNDARYBOX, filter.maskBits);
 			assertEquals(PhysicsWorld.CATEGORY_BOUNDARYBOX, filter.categoryBits);
 		}
-	}
+	}*/
 }

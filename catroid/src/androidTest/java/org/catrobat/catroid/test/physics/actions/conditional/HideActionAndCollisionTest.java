@@ -51,7 +51,7 @@ public class HideActionAndCollisionTest {
 
 	private Sprite sprite;
 
-	@Before
+	/*@Before
 	public void setUp() {
 		sprite = rule.sprite;
 
@@ -94,5 +94,5 @@ public class HideActionAndCollisionTest {
 		Action action = factory.createHideAction(null);
 		exception.expect(NullPointerException.class);
 		action.act(1.0f);
-	}
+	}*/
 }

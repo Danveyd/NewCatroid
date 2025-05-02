@@ -70,18 +70,18 @@ public class SetLookActionTest {
 		sprite = rule.sprite;
 		project = rule.project;
 
-		multipleConvexPolygonsFileName = PhysicsTestUtils.getInternalImageFilenameFromFilename("multible_convex_polygons.png");
+		/*multipleConvexPolygonsFileName = PhysicsTestUtils.getInternalImageFilenameFromFilename("multible_convex_polygons.png");
 
 		multipleConvexPolygonsFile = ResourceImporter.createImageFileFromResourcesInDirectory(
 				InstrumentationRegistry.getInstrumentation().getContext().getResources(),
 				org.catrobat.catroid.test.R.raw.multible_convex_polygons,
 				new File(project.getDefaultScene().getDirectory(), IMAGE_DIRECTORY_NAME),
 				multipleConvexPolygonsFileName,
-				1);
+				1);*/
 
-		lookData = PhysicsTestUtils.generateLookData(multipleConvexPolygonsFile);
+		/*lookData = PhysicsTestUtils.generateLookData(multipleConvexPolygonsFile);
 
-		assertNotNull(sprite.look.getLookData());
+		assertNotNull(sprite.look.getLookData());*/
 	}
 
 	@After

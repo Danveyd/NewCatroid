@@ -29,20 +29,140 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.4.2'
+        //classpath "com.badlogicgames.gdx:gdx-jnigen-gradle:2.5.2"
+        //classpath "com.badlogicgames.jnigen:jnigen-gradle"
     }
 }
+
+// https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-jnigen
+//implementation 'com.badlogicgames.gdx:gdx-jnigen
 
 plugins {
     id "io.gitlab.arturbosch.detekt" version "1.23.0"
     id 'checkstyle'
+//    id "com.badlogicgames.jnigen.jnigen-gradle"
+    //id "com.badlogicgames.gdx.gdx-jnigen" version "2.5.2"
+    //id "com.badlogicgames.jnigen.jnigen-gradle" version "2.0.0"
     //id 'com.google.gms.google-services'
 }
 
+//apply plugin: "com.badlogicgames.gdx.gdx-jnigen:2.5.2"
+
+//apply plugin: 'java'
+
+/*jnigen {
+
+    // Задаём имя общей библиотеки
+    sharedLibName = "example"
+
+    // Включаем многопоточную компиляцию
+    multiThreadedCompile = true
+
+    // Общие флаги для всех BuildTarget
+    all {
+        cFlags += ["-fvisibility=hidden"]
+        cppFlags += ["-std=c++11", "-fvisibility=hidden"]
+        linkerFlags += ["-fvisibility=hidden"]
+    }
+
+    // Пример добавления платформы Windows 64
+    addWindows(x64, x86) {
+        // Дополнительные флаги компиляции
+        cFlags += ["-fextraflag=fake"]
+    }
+}*/
+
+/*jnigen {
+    // Your shared library name
+    sharedLibName = "example"
+    //temporaryDir = "target"
+    //libsDir = "libs"
+    //jniDir = "jni"
+
+    // Shared configuration for all BuildTargets. Executed first
+    // See all BuildTarget options here: https://github.com/libgdx/gdx-jnigen/blob/master/gdx-jnigen/src/main/java/com/badlogic/gdx/jnigen/BuildTarget.java
+    // Most paths are relative to the $jniDir directory
+    // String options can be replaced by using `x = "value"` or appended to with `x += "extravalue"`
+    // String[] options can be replaced by using `x = ["value"]` or appended to with `x += "extravalue"` or `x += ["extravalue", "extravalue2"]`
+    all {
+        // Add extra flags passed to the C compiler
+        cFlags += " -fvisibility=hidden "
+        // Add extra flags passed to the C++ compiler
+        cppFlags += " -std=c++11 -fvisibility=hidden "
+        // Add extra flags passed to the linker
+        linkerFlags += " -fvisibility=hidden "
+    }
+
+    // Configure robovm.xml for IOS builds, most simple libraries will not need to do this
+    robovm {
+        // Use preexisting robovm.xml, cannot be combined with other options.
+        //manualFile file("robovm.xml")
+
+        // Add extra patterns to forceLinkClasses
+        //forceLinkClasses "test", "test2"
+        //forceLinkClasses "pattern3"
+        // Add extra library "test.a" with variant "device"
+        //extraLib "test.a", "device"
+        //extraXCFramework "libs/test.xcframework"
+    }
+
+    // Add BuildTargets
+    // All BuildTarget options can be further customized in an OS+Arch specific manner within a {} block
+
+    // Add windows 32-bit BuildTarget and customize it
+    add(Windows, x32) {
+        //cFlags += " -fextraflag=fake "
+        //compilerPrefix = "someprefix-";
+        //cIncludes += "windowsspecificdir/*.c"
+    }
+    add(Windows, x64)
+    add(Linux, x32)
+    add(Linux, x64)
+    add(Linux, x32, ARM)
+    add(Linux, x64, ARM)
+    add(MacOsX, x64)
+    add(MacOsX, x64, ARM)
+    add(Android) {
+        // Add extra content to the generated Application.mk file
+        //androidApplicationMk += "APP_STL := c++_static"
+        // Specify which ABIs to build
+        //androidABIs = ["armeabi", "armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+    }
+    add(IOS) {
+        // Define ios framework bundle identifier
+        // xcframeworkBundleIdentifier = "com.badlogic.gdx.JniGen
+        // Deinfe minimum supported iOS version
+        // minIOSVersion = "11.0"
+    }
+
+    // Customize each BuildTarget that matches the condition
+    each({ it.os != Android && !it.isARM }) {
+        //cppFlags += " -march=nocona "
+    }
+    // Customize everything again, can be used for conditional changes
+    each({ true }) {
+        //if(!it.cppCompiler.contains("clang")) {
+        //    it.cFlags += " -flto "
+        //    it.cppFlags += " -flto "
+        //    it.linkerFlags += " -flto "
+        //}
+
+        //if(it.cppCompiler.contains("clang"))
+        //    it.linkerFlags += " -Wl,-dead_strip -Wl,-s "
+        //else
+        //    it.linkerFlags += " -Wl,--gc-sections "
+    }
+}*/
+
 repositories {
     mavenLocal()
+    google()
+    mavenCentral()
+    gradlePluginPortal()
     maven { url "https://jitpack.io" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
@@ -54,8 +174,9 @@ ext {
     manifestAppIcon = '@mipmap/ic_launcher'
 
     projectVersion = "0.9"
-    gdxVersion = "1.12.1"
-    box2d = "0.1-SNAPSHOT"
+    gdxVersion = "1.13.1"
+    jni = ""
+    box2d = "3.1.0-0"
     mockitoVersion = "3.12.4"
     espressoVersion = "3.1.0"
     playServicesVersion = '17.0.1'
@@ -358,10 +479,16 @@ android {
 
 configurations {
     implementation.exclude group: 'xpp3' //compile problem with xstream
-    natives
+    //natives
 }
 
 dependencies {
+    //implementation 'com.badlogicgames.gdx:gdx-jnigen:3.0.0'
+    // https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-jnigen
+    //implementation "com.badlogicgames.gdx:gdx-jnigen:2.5.2"
+    // https://mvnrepository.com/artifact/com.badlogicgames.gdx/gdx-jnigen-loader
+   // implementation "com.badlogicgames.gdx:gdx-jnigen-loader:0.1-SNAPSHOT"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Paintroid local aar lib files
@@ -500,16 +627,28 @@ dependencies {
     // libGDX
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-box2d:$box2d"
+    //implementation "com.badlogicgames.gdx:gdx-box2d:$box2d"
+    implementation "io.github.libgdx:gdx-box2d:$box2d" // $box2d = "3.1.0-0"
+    //implementation "com.badlogicgames.gdx:gdx-jnigen-runtime:2.5.2"
     //implementation "com.badlogicgames.gdx:gdx-box2d:0.1-SNAPSHOT"
-    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+    /*natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
-    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"*/
+    /*natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86"
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86_64"
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-armeabi-v7a"
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-arm64-v8a"*/
+
+    /*implementation "com.badlogicgames.gdx:gdx-jnigen:$jni:natives-armeabi-v7a"
+    implementation "com.badlogicgames.gdx:gdx-jnigen:$jni:natives-arm64-v8a"
+    implementation "com.badlogicgames.gdx:gdx-jnigen:$jni:natives-x86"
+    implementation "com.badlogicgames.gdx:gdx-jnigen:$jni:natives-x86_64"*/
+
+    /*implementation "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-armeabi-v7a"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-arm64-v8a"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$box2d:natives-x86_64"*/
 
     implementation "com.google.android.gms:play-services-auth:17.0.0"
 
@@ -565,7 +704,7 @@ project.gradle.taskGraph.whenReady {
     connectedCatroidDebugAndroidTest.ignoreFailures = true
 }
 
-task copyAndroidNatives {
+/*task copyAndroidNatives {
     doFirst {
         project.file("src/main/jniLibs/armeabi-v7a/").mkdirs()
         project.file("src/main/jniLibs/arm64-v8a/").mkdirs()
@@ -593,7 +732,7 @@ tasks.whenTaskAdded { packageTask ->
     if (packageTask.name.contains("package")) {
         packageTask.dependsOn 'copyAndroidNatives'
     }
-}
+}*/
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
   kotlinOptions {

@@ -22,17 +22,13 @@
  */
 package org.catrobat.catroid.test.physics;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.Manifold;
-
 public interface PhysicsCollisionTestReceiver {
 
-	void beginContactCallback(Contact contact);
+	/*void beginContactCallback(Contact contact);
 
 	void endContactCallback(Contact contact);
 
 	void preSolveCallback(Contact contact, Manifold oldManifold);
 
-	void postSolveCallback(Contact contact, ContactImpulse impulse);
+	void postSolveCallback(Contact contact, ContactImpulse impulse);*/
 }

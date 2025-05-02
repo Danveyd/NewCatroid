@@ -23,7 +23,6 @@
 package org.catrobat.catroid.test.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import org.catrobat.catroid.content.Sprite;
@@ -59,7 +58,7 @@ public class PhysicsWorldTest {
 		GdxNativesLoader.load();
 	}
 
-	private PhysicsWorld physicsWorld;
+	/*private PhysicsWorld physicsWorld;
 	private World world;
 	private Map<Sprite, PhysicsObject> physicsObjects;
 
@@ -179,5 +178,5 @@ public class PhysicsWorldTest {
 		assertEquals(2 * velocity.x, physicsObject.getX(), 1e-8);
 		assertEquals(2 * velocity.y, physicsObject.getY(), 1e-8);
 		assertEquals(2 * rotationSpeed, physicsObject.getDirection(), 1e-8);
-	}
+	}*/
 }

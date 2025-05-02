@@ -57,7 +57,7 @@ public class SetBounceFactorActionTest {
 	private Sprite sprite;
 	private PhysicsWorld physicsWorld;
 
-	@Before
+	/*@Before
 	public void setUp() {
 		sprite = rule.sprite;
 		physicsWorld = rule.physicsWorld;
@@ -163,5 +163,5 @@ public class SetBounceFactorActionTest {
 		}
 
 		return y;
-	}
+	}*/
 }

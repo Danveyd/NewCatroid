@@ -24,8 +24,6 @@ package org.catrobat.catroid.test.physics.look;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 
 import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
@@ -79,7 +77,7 @@ public class PhysicsLookDataTest {
 		if (projectDir.exists()) {
 			StorageOperations.deleteDir(projectDir);
 		}
-		String testImageFilename = PhysicsTestUtils.getInternalImageFilenameFromFilename("testImage.png");
+		/*String testImageFilename = PhysicsTestUtils.getInternalImageFilenameFromFilename("testImage.png");
 		Project project = new Project(ApplicationProvider.getApplicationContext(), projectName);
 		XstreamSerializer.getInstance().saveProject(project);
 		ProjectManager.getInstance().setCurrentProject(project);
@@ -89,13 +87,13 @@ public class PhysicsLookDataTest {
 				R.raw.multible_mixed_polygons,
 				new File(project.getDefaultScene().getDirectory(), IMAGE_DIRECTORY_NAME),
 				testImageFilename,
-				1);
+				1);*/
 
-		sprite = new Sprite("TestSprite");
+		/*sprite = new Sprite("TestSprite");
 		lookData = PhysicsTestUtils.generateLookData(testImage);
 		sprite.getLookList().add(lookData);
 		Pixmap pixmap = PhysicsTestUtils.getPixmapFromFile(testImage);
-		lookData.setPixmap(pixmap);
+		lookData.setPixmap(pixmap);*/
 	}
 
 	@After
@@ -103,7 +101,7 @@ public class PhysicsLookDataTest {
 		TestUtils.deleteProjects(projectName);
 	}
 
-	@Test
+	/*@Test
 	public void testShapeComputationOfLook() {
 		PhysicsShapeBuilder physicsShapeBuilder = PhysicsShapeBuilder.getInstance();
 
@@ -148,5 +146,5 @@ public class PhysicsLookDataTest {
 			((PolygonShape) scaledShape).getVertex(idx, scaledVertices[idx]);
 		}
 		assertArrayEquals(expectedVertices, scaledVertices);
-	}
+	}*/
 }

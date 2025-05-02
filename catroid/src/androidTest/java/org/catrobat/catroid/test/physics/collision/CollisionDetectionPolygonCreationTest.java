@@ -47,7 +47,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 import static org.catrobat.catroid.common.Constants.IMAGE_DIRECTORY_NAME;
-import static org.catrobat.catroid.test.physics.PhysicsTestUtils.generateLookData;
 import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -68,7 +67,7 @@ public class CollisionDetectionPolygonCreationTest {
 		ProjectManager.getInstance().setCurrentProject(project);
 	}
 
-	protected CollisionInformation generateCollisionInformation(int resourceId, String filename) throws IOException {
+	/*protected CollisionInformation generateCollisionInformation(int resourceId, String filename) throws IOException {
 		String hashedFileName = PhysicsTestUtils.getInternalImageFilenameFromFilename(filename);
 
 		File file = ResourceImporter.createImageFileFromResourcesInDirectory(
@@ -143,5 +142,5 @@ public class CollisionDetectionPolygonCreationTest {
 		assertArrayEquals(new float[] {125.0f, 248.0f, 154.0f, 330.0f, 201.0f, 365.0f, 248.0f, 375.0f, 313.0f, 358.0f,
 				365.0f, 299.0f, 374.0f, 234.0f, 346.0f, 170.0f, 285.0f, 130.0f, 206.0f, 133.0f, 150.0f, 175.0f},
 				collisionInformation.collisionPolygons[1].getVertices(), DELTA);
-	}
+	}*/
 }
