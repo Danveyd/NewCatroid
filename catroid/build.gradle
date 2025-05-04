@@ -234,6 +234,7 @@ def defaultVersionName = "2.0.5"
 
 android {
     compileSdk 34
+    ndkVersion "25.2.9519653"
     //buildToolsVersion = "33.0.2"
 
     namespace 'org.catrobat.catroid'

@@ -378,10 +378,11 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         @JvmField
         var surveyCampaign: Survey? = null
 
-        init {
-            GdxNativesLoader.load()
+        /*init {
+            /*GdxNativesLoader.load()
             System.loadLibrary("gdx")
-            System.loadLibrary("gdx-box2d")
-        }
+            System.loadLibrary("gdx-box2d")*/
+            com.badlogic.gdx.box2d.Box2d.initialize()
+        }*/
     }
 }

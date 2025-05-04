@@ -127,6 +127,7 @@ public class Scene implements Nameable, Serializable {
 	}
 
 	public synchronized PhysicsWorld resetPhysicsWorld() {
+		com.badlogic.gdx.box2d.Box2d.initialize();
 		return (physicsWorld = new PhysicsWorld(
 				project.getXmlHeader().getVirtualScreenWidth(),
 				project.getXmlHeader().getVirtualScreenHeight(), project));
