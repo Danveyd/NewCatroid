@@ -34,6 +34,7 @@ import android.os.Environment
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.IntentListener
 import android.util.Log
+import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -97,17 +98,12 @@ class OpenFilesAction() : TemporalAction() {
 
                     val intent = Intent(Intent.ACTION_VIEW)
 
-                    when (fileToOpen.extension.lowercase()) {
-                        "png" -> intent.setDataAndType(uri, "image/png")
-                        "jpg", "jpeg" -> intent.setDataAndType(uri, "image/jpeg")
-                        "html" -> intent.setDataAndType(uri, "text/html")
-                        "apk" -> intent.setDataAndType(
-                            uri,
-                            "application/vnd.android.package-archive"
-                        )
-
-                        else -> intent.setDataAndType(uri, "*/*")
+                    val fileExtension = fileToOpen.extension.lowercase()
+                    var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
+                    if (mimeType == null) {
+                        mimeType = "*/*" // Тип по умолчанию, если не удалось определить
                     }
+                    intent.setDataAndType(uri, mimeType)
 
                     intent.flags =
                         Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK

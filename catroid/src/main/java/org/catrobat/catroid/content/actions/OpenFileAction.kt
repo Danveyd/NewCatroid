@@ -46,6 +46,8 @@ import org.catrobat.paintroid.common.PERMISSION_EXTERNAL_STORAGE_SAVE_COPY
 import java.io.File
 import java.util.ArrayList
 
+import android.webkit.MimeTypeMap
+
 class OpenFileAction() : TemporalAction() {
     private var contextt: Context? = null
     var scope: Scope? = null
@@ -93,13 +95,12 @@ class OpenFileAction() : TemporalAction() {
 
             val intent = Intent(Intent.ACTION_VIEW)
 
-            when (fileToOpen.extension.lowercase()) {
-                "png" -> intent.setDataAndType(uri, "image/png")
-                "jpg", "jpeg" -> intent.setDataAndType(uri, "image/jpeg")
-                "html" -> intent.setDataAndType(uri, "text/html")
-                "apk" -> intent.setDataAndType(uri, "application/vnd.android.package-archive")
-                else -> intent.setDataAndType(uri, "*/*")
+            val fileExtension = fileToOpen.extension.lowercase()
+            var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
+            if (mimeType == null) {
+                mimeType = "*/*" // Тип по умолчанию, если не удалось определить
             }
+            intent.setDataAndType(uri, mimeType)
 
             intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
 

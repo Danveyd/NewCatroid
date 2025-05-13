@@ -39,6 +39,7 @@ import org.catrobat.catroid.content.bricks.AddRadioBrick
 import org.catrobat.catroid.content.bricks.ArduinoSendDigitalValueBrick
 import org.catrobat.catroid.content.bricks.ArduinoSendPWMValueBrick
 import org.catrobat.catroid.content.bricks.AskBrick
+import org.catrobat.catroid.content.bricks.AskGPTBrick
 import org.catrobat.catroid.content.bricks.AskGemini2Brick
 import org.catrobat.catroid.content.bricks.AskGeminiBrick
 import org.catrobat.catroid.content.bricks.AskSpeechBrick
@@ -894,6 +895,7 @@ open class CategoryBricksFactory {
         neuralBrickList.add(SetGeminiKeyBrick("api_key"))
         neuralBrickList.add(AskGeminiBrick("Hello!"))
         neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-2.0-flash-exp"))
+        neuralBrickList.add(AskGPTBrick("Привет!", "Отвечай на все словом \"апельсин\""))
         return neuralBrickList
     }
 

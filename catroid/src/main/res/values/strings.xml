@@ -78,6 +78,8 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_ask_gpt">Ask ChatGPT</string>
+    <string formatted="false" name="brick_ask_gpt2">System prompt</string>
     <string formatted="false" name="brick_unkown">Unkown brick</string>
     <string formatted="false" name="brick_choose_file">Choose file</string>
     <string formatted="false" name="brick_choose_file2">save name to variable</string>

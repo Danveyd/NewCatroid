@@ -60,6 +60,7 @@ import org.catrobat.catroid.content.WhenNfcScript;
 import org.catrobat.catroid.content.WhenScript;
 import org.catrobat.catroid.content.WhenTouchDownScript;
 import org.catrobat.catroid.content.XmlHeader;
+import org.catrobat.catroid.content.actions.AskGPTAction;
 import org.catrobat.catroid.content.actions.ShowTextFontAction;
 import org.catrobat.catroid.content.backwardcompatibility.LegacyDataContainer;
 import org.catrobat.catroid.content.backwardcompatibility.LegacyProjectWithoutScenes;
@@ -213,6 +214,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", AskGeminiBrick.class);
 		xstream.alias("brick", AskGemini2Brick.class);
 		xstream.alias("brick", SetDnsBrick.class);
+		xstream.alias("brick", AskGPTAction.class);
 		xstream.alias("brick", HideStatusBarBrick.class);
 		xstream.alias("brick", TestBrick.class);
 		xstream.alias("brick", StringToTableBrick.class);

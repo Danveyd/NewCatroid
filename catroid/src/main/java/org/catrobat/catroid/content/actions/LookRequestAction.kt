@@ -110,16 +110,61 @@ open class LookRequestAction : WebAction() {
         super.restart()
     }
 
+    // Внутри класса LookRequestAction
     override fun onRequestSuccess(httpResponse: Response) {
-        response = httpResponse.body()?.byteStream()
-        val fileName = Utils.getFileNameFromHttpResponse(httpResponse) ?: Utils.getFileNameFromURL(url)
-        fileName.split('.', limit = 2).let { name ->
-            lookName = name[0]
-            name.getOrNull(1)?.let { type ->
-                fileExtension = ".$type"
+        val body = httpResponse.body()
+        response = body?.byteStream() // Получаем InputStream как и раньше
+
+        val contentType = body?.contentType() // Получаем MIME-тип от сервера
+        var determinedExtension: String? = null
+
+        if (contentType != null) {
+            val type = contentType.type().lowercase() // Используем lowercase() для Kotlin
+            val subtype = contentType.subtype().lowercase()
+            Log.d("LookRequestAction", "Received Content-Type: $type/$subtype") // Логируем для отладки
+
+            when ("$type/$subtype") {
+                "image/png" -> determinedExtension = ".png"
+                "image/jpeg" -> determinedExtension = ".jpg" // или .jpeg
+                "image/gif" -> determinedExtension = ".gif"
+                "image/bmp" -> determinedExtension = ".bmp"
+                "image/webp" -> determinedExtension = ".webp"
+                // Добавь другие стандартные MIME-типы изображений, если нужно
+                "application/octet-stream" -> {
+                    // Это общий тип для бинарных данных. Сервер может отдавать его,
+                    // если не знает точный тип. Здесь расширение файла из URL/заголовка может быть полезнее.
+                    Log.d("LookRequestAction", "Content-Type is application/octet-stream. Relying on filename extension.")
+                }
+                // Можно добавить обработку других MIME-типов, если ты точно знаешь,
+                // что они соответствуют изображениям, которые может обработать LookData
             }
         }
-        super.onRequestSuccess(httpResponse)
+
+        // Получаем имя файла и расширение из HTTP-ответа или URL (как и раньше)
+        val fileNameFromHttp = Utils.getFileNameFromHttpResponse(httpResponse) ?: Utils.getFileNameFromURL(url)
+        val parts = fileNameFromHttp.split('.', limit = 2)
+        lookName = parts[0]
+        // Сохраняем оригинальное расширение, если оно есть
+        val originalFileExtension = parts.getOrNull(1)?.let { ".$it" }?.lowercase()
+
+        // Приоритет отдаем расширению из Content-Type, если оно определено как графическое
+        if (determinedExtension != null) {
+            fileExtension = determinedExtension
+            if (originalFileExtension != null && originalFileExtension != determinedExtension) {
+                Log.i("LookRequestAction", "Overriding original extension '$originalFileExtension' with '$determinedExtension' from Content-Type.")
+            }
+        } else {
+            fileExtension = originalFileExtension
+        }
+
+        // Если fileExtension все еще null, File.createTempFile использует ".tmp"
+        if (fileExtension == null) {
+            Log.w("LookRequestAction", "Could not determine file extension. Using default for temp file.")
+        } else {
+            Log.i("LookRequestAction", "Using file extension: $fileExtension for look: $lookName")
+        }
+
+        super.onRequestSuccess(httpResponse) // Вызов родительского метода, если он есть и важен
     }
 
     override fun onRequestError(httpError: String) {

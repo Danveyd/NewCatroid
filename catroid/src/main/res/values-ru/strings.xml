@@ -78,6 +78,8 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_ask_gpt">Спросить ChatGPT</string>
+    <string formatted="false" name="brick_ask_gpt2">Системный промпт</string>
     <string formatted="false" name="formula_editor_object_width">ширина</string>
     <string formatted="false" name="formula_editor_object_height">высота</string>
     <string formatted="false" name="brick_unkown">Неизвестный блок</string>
