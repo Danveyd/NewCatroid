@@ -163,6 +163,9 @@ public class PhysicsLook extends Look {
 
 	@Override
 	public float getRotation() {
+		if(physicsObject == null) {
+			return super.getRotation();
+		}
 		super.setRotation((physicsObject.getDirection() % FULL_CIRCLE_DEGREE));
 		float rotation = super.getRotation();
 		float realRotation = physicsObject.getDirection() % FULL_CIRCLE_DEGREE;

@@ -549,26 +549,29 @@ public class Look extends Image {
 
 	@Override
 	public void setX(float x) {
-		if (getX() != x) {
+		/*if (getX() != x) {
 			super.setX(x);
 			// positionChanged() будет вызван автоматически libGDX
-		}
+		}*/
+		super.setX(x);
 	}
 
 	@Override
 	public void setY(float y) {
-		if (getY() != y) {
+		/*if (getY() != y) {
 			super.setY(y);
 			// positionChanged() будет вызван автоматически libGDX
-		}
+		}*/
+		super.setY(y);
 	}
 
 	@Override
 	public void setRotation(float degrees) {
-		if (getRotation() != degrees) {
+		/*if (getRotation() != degrees) {
 			super.setRotation(degrees);
 			// rotationChanged() будет вызван автоматически libGDX
-		}
+		}*/
+		super.setRotation(degrees);
 	}
 
 	@Override
