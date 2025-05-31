@@ -22,11 +22,13 @@
  */
 package org.catrobat.catroid.web
 
+import android.util.Log
 import okhttp3.ConnectionSpec.CLEARTEXT
 import okhttp3.ConnectionSpec.COMPATIBLE_TLS
 import okhttp3.ConnectionSpec.MODERN_TLS
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
+//import okhttp3.logging.HttpLoggingInterceptor
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
@@ -40,12 +42,21 @@ class WebConnectionHolder {
     }
 
     init {
+        /*val loggingInterceptor = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.d("OkHttp", message) // Направляем логи OkHttp в Logcat
+            }
+        }).apply {
+            level = HttpLoggingInterceptor.Level.BODY // Логировать заголовки и тело запроса/ответа
+        }*/
+
         okHttpClient = OkHttpClient.Builder()
             .connectTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
-            .connectionSpecs(listOf(MODERN_TLS, COMPATIBLE_TLS, CLEARTEXT))
+            .connectionSpecs(listOf(MODERN_TLS, COMPATIBLE_TLS))
             .dispatcher(Dispatcher())
+            //.addInterceptor(loggingInterceptor) // <--- Добавляем интерсептор
             .build()
 
         okHttpClient.dispatcher().maxRequests = MAX_CONNECTIONS

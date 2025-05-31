@@ -119,6 +119,9 @@ import static org.catrobat.catroid.ui.SpriteActivityOnTabSelectedListenerKt.addT
 import static org.catrobat.catroid.ui.SpriteActivityOnTabSelectedListenerKt.removeTabLayout;
 import static org.catrobat.catroid.utils.SnackbarUtil.wasHintAlreadyShown;
 
+import org.catrobat.catroid.formulaeditor.InternFormulaKeyboardAdapter; // Убедитесь, что этот импорт есть
+import org.catrobat.catroid.formulaeditor.InternToken; // Убедитесь, что этот импорт есть
+
 import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
 
 public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener,
@@ -172,6 +175,33 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 		formulaBrick = (FormulaBrick) getArguments().getSerializable(FORMULA_BRICK_BUNDLE_ARGUMENT);
 		currentFormulaField = (Brick.FormulaField) getArguments().getSerializable(FORMULA_FIELD_BUNDLE_ARGUMENT);
 		currentFormula = formulaBrick.getFormulaWithBrickField(currentFormulaField);
+	}
+
+	public void addCustomFunctionToActiveFormula(String customFunctionName) {
+		if (formulaEditorEditText == null || formulaEditorEditText.getInternFormula() == null) {
+			Log.w(TAG, "FormulaEditorEditText или его InternFormula не инициализированы в addCustomFunctionToActiveFormula");
+			return;
+		}
+		// InternFormulaKeyboardAdapter должен быть доступен здесь
+		// или создайте его экземпляр
+		InternFormulaKeyboardAdapter adapter = new InternFormulaKeyboardAdapter(); // или getAdapter()
+		List<InternToken> tokens = adapter.buildCustomJsFunction(customFunctionName); // Используем метод, который мы создали
+		if (tokens != null) {
+			// Метод addTokensToActiveFormula должен существовать в FormulaEditorEditText или здесь
+			// Если в FormulaEditorEditText:
+			//formulaEditorEditText.addTokensToActiveFormula(tokens);
+			// Если здесь, то:
+			addTokensToActiveFormula(tokens); // И реализуйте этот метод
+		} else {
+			Log.e(TAG, "Не удалось создать токены для кастомной функции: " + customFunctionName);
+		}
+		updateButtonsOnKeyboardAndInvalidateOptionsMenu(); // Обновляем UI после добавления
+	}
+
+	private void addTokensToActiveFormula(List<InternToken> tokens) {
+		if (formulaEditorEditText != null) {
+			formulaEditorEditText.addTokensToActiveFormula(tokens); // Предполагаем, что такой метод есть или будет в FormulaEditorEditText
+		}
 	}
 
 	@Override
@@ -1071,8 +1101,14 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 				updateBrickView();
 			}
 			if (chosenCategoryItem != null) {
-				addResourceToActiveFormula(chosenCategoryItem.nameResId);
-				chosenCategoryItem = null;
+				if (chosenCategoryItem.isCustomFunction && chosenCategoryItem.customFunctionName != null) {
+					// Это кастомная функция
+					addCustomFunctionToActiveFormula(chosenCategoryItem.customFunctionName);
+				} else {
+					// Это стандартный элемент
+					addResourceToActiveFormula(chosenCategoryItem.nameResId);
+				}
+				chosenCategoryItem = null; // Сбрасываем после обработки
 			}
 			if (chosenUserDataItem != null) {
 				if (chosenUserDataItem instanceof UserVariable) {
@@ -1082,7 +1118,7 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 				} else if (chosenUserDataItem instanceof UserDefinedBrickInput) {
 					addUserDefinedBrickInputToActiveFormula(chosenUserDataItem.getName());
 				}
-				chosenUserDataItem = null;
+				chosenUserDataItem = null; // Сбрасываем после обработки
 			}
 		}
 	}

@@ -78,6 +78,11 @@
         app:showAsAction="never"
         android:icon="@drawable/ic_media_library_look"/>
     <item
+        android:id="@+id/project_libs"
+        android:title="@string/project_libs"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_media_library_look"/>
+    <item
         android:id="@+id/from_library"
         android:title="@string/from_library"
         android:icon="@drawable/ic_apps_small"

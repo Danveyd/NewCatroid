@@ -52,31 +52,31 @@ public class LookTest {
 
 	@Test
 	public void testTouchDownFlipped() {
-		final int width = 1;
-		final int height = 1;
+		final int widths = 1;
+		final int heights = 1;
 
 		Look look = new Look(sprite) {
 			{
-				pixmap = TestUtils.createRectanglePixmap(width, height, Color.RED);
+				pixmap = TestUtils.createRectanglePixmap(widths, heights, Color.RED);
 			}
 		};
-		look.setSize(width, height);
+		look.setSize(widths, heights);
 
 		assertTrue(look.doTouchDown(0, 0, 0));
 	}
 
 	@Test
 	public void testTouchDownFlippedWithAlpha() {
-		final int width = 2;
-		final int height = 1;
+		final int widths = 2;
+		final int heights = 1;
 
 		Look look = new Look(sprite) {
 			{
-				pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+				pixmap = new Pixmap(widths, heights, Pixmap.Format.RGBA8888);
 				pixmap.drawPixel(0, 0, Color.RED.toIntBits());
 			}
 		};
-		look.setSize(width, height);
+		look.setSize(widths, heights);
 
 		assertTrue(look.doTouchDown(0, 0, 0));
 		assertFalse(look.doTouchDown(1, 0, 0));

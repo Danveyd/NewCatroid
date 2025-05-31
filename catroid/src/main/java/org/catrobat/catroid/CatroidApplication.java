@@ -35,6 +35,7 @@ import com.huawei.agconnect.AGConnectInstance;
 import com.huawei.agconnect.config.AGConnectServicesConfig;
 import com.huawei.hms.mlsdk.common.MLApplication;
 
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager;
 import org.catrobat.catroid.koin.CatroidKoinHelperKt;
 import org.catrobat.catroid.utils.Utils;
 
@@ -76,6 +77,7 @@ public class CatroidApplication extends Application {
 		googleAnalytics.setDryRun(BuildConfig.DEBUG);
 
 		setupHuaweiMobileServices();
+		CustomFormulaManager.INSTANCE.initialize();
 	}
 
 	private void setupHuaweiMobileServices() {

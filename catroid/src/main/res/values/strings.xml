@@ -78,6 +78,8 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_lunoscript">Execute LunoScript</string>
+    <string name="formula_editor_custom_functions_header">Libaries</string>
     <string formatted="false" name="brick_ask_gpt">Ask ChatGPT</string>
     <string formatted="false" name="brick_ask_gpt2">System prompt</string>
     <string formatted="false" name="brick_unkown">Unkown brick</string>
@@ -178,6 +180,7 @@
     <string formatted="false" name="brick_run_js">Run Micro-JavaScript code</string>
     <string formatted="false" name="brick_run_js2">and store result in</string>
     <string formatted="false" name="project_files">Project files</string>
+    <string formatted="false" name="project_libs">Project libraries</string>
     <string formatted="false" name="files_add">Add file</string>
     <string formatted="false" name="files_delete">Delete</string>
     <string formatted="false" name="brick_gemini_request">Ask Gemini</string>

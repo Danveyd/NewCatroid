@@ -58,6 +58,7 @@ import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.controller.ActorsAndObjectsManager
 import org.catrobat.catroid.ui.dialogs.LegoSensorConfigInfoDialog
 import org.catrobat.catroid.ui.fragment.ProjectFilesFragment
+import org.catrobat.catroid.ui.fragment.ProjectLibsFragment
 import org.catrobat.catroid.ui.fragment.ProjectOptionsFragment
 import org.catrobat.catroid.ui.recyclerview.backpack.ActorAndObjectActivity
 import org.catrobat.catroid.ui.recyclerview.backpack.BackpackActivity
@@ -179,6 +180,13 @@ class ProjectActivity : BaseCastActivity() {
                     ProjectFilesFragment.TAG
                 )
                 .addToBackStack(ProjectFilesFragment.TAG)
+                .commit()
+            R.id.project_libs -> supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container, ProjectLibsFragment(),
+                    ProjectLibsFragment.TAG
+                )
+                .addToBackStack(ProjectLibsFragment.TAG)
                 .commit()
             else -> return super.onOptionsItemSelected(item)
         }

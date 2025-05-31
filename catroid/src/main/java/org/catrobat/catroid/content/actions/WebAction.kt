@@ -89,6 +89,7 @@ abstract class WebAction : Action(), WebRequestListener {
         permissionStatus = PermissionStatus.DENIED
     }
 
+    // В WebAction.java и GPTAction.java
     override fun act(delta: Float): Boolean {
         if (url == null && !interpretUrl()) {
             return true
@@ -107,16 +108,24 @@ abstract class WebAction : Action(), WebRequestListener {
             return false
         }
 
-        if (requestStatus == RequestStatus.NOT_SENT && !sendRequest()) {
-            handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
-            return true
-        }
-        if (requestStatus == RequestStatus.WAITING) {
-            return false
+        // Теперь эта логика будет работать корректно
+        if (requestStatus == RequestStatus.NOT_SENT) {
+            if (!sendRequest()) { // Если sendRequest() вернул false (не смог добавить в holder)
+                // requestStatus останется NOT_SENT
+                handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
+                return true // Завершаем действие с ошибкой
+            }
+            // Если sendRequest() вернул true, он установил requestStatus = WAITING
+            // На следующем кадре попадем в блок WAITING
         }
 
+        if (requestStatus == RequestStatus.WAITING) {
+            return false // Корректно ждем, если запрос в процессе
+        }
+
+        // Сюда попадаем, только если requestStatus == FINISHED
         stageListener.webConnectionHolder.removeConnection(webConnection)
-        handleResponse()
+        handleResponse() // или handleError, если ошибка пришла из коллбэка
         return true
     }
 
@@ -128,14 +137,22 @@ abstract class WebAction : Action(), WebRequestListener {
             grantPermission()
         }
 
+    // В WebAction.java и GPTAction.java
     private fun sendRequest(): Boolean {
-        requestStatus = RequestStatus.WAITING
-        webConnection = WebConnection(this, url!!)
+        webConnection = WebConnection(this, url!!) // Создаем WebConnection
 
-        return if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
+        if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
+            requestStatus = RequestStatus.WAITING // Устанавливаем WAITING ТОЛЬКО если успешно добавили и будем отправлять
             webConnection!!.sendWebRequest()
-            true
-        } else false
+            // Log.i для GPTAction: Log.i("GPTAction_Send", "[${System.identityHashCode(this)}] sendWebRequest() called.")
+            return true
+        } else {
+            // Log.w для GPTAction: Log.w("GPTAction_Send", "[${System.identityHashCode(this)}] Failed to addConnection to WebConnectionHolder.")
+            // Важно: webConnection создался, но не добавлен. Если его не обнулить, removeConnection может попытаться удалить "не тот" объект
+            // или объект, который не был добавлен. Но т.к. он не добавлялся, removeConnection не должен его найти.
+            // webConnection = null; // Можно, для чистоты, но не обязательно для исправления бага
+            return false // requestStatus остается NOT_SENT (или каким был до вызова sendRequest)
+        }
     }
 
     abstract fun handleResponse()

@@ -59,6 +59,7 @@ import org.catrobat.catroid.ui.ProjectListActivity
 import org.catrobat.catroid.ui.UiUtils
 import org.catrobat.catroid.ui.filepicker.FilePickerActivity
 import org.catrobat.catroid.ui.fragment.ProjectFilesFragment
+import org.catrobat.catroid.ui.fragment.ProjectLibsFragment
 import org.catrobat.catroid.ui.fragment.ProjectOptionsFragment
 import org.catrobat.catroid.ui.recyclerview.adapter.ProjectAdapter
 import org.catrobat.catroid.ui.recyclerview.adapter.RVAdapter
@@ -487,6 +488,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
                 R.id.delete -> deleteItems(itemList)
                 R.id.project_options -> showProjectOptionsFragment(item)
                 R.id.project_files -> showProjectFilesFragment(item)
+                R.id.project_libs -> showProjectLibsFragment(item)
             }
             true
         }
@@ -504,6 +506,29 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container, ProjectOptionsFragment(), ProjectOptionsFragment.TAG
+                )
+                .addToBackStack(ProjectOptionsFragment.TAG)
+                .commit()
+        } catch (exception: IOException) {
+            ToastUtil.showError(requireContext(), R.string.error_load_project)
+            Log.e(TAG, Log.getStackTraceString(exception))
+        } catch (exception: LoadingProjectException) {
+            ToastUtil.showError(requireContext(), R.string.error_load_project)
+            Log.e(TAG, Log.getStackTraceString(exception))
+        }
+    }
+
+    private fun showProjectLibsFragment(item: ProjectData?) {
+        item ?: return
+        try {
+            val project = XstreamSerializer.getInstance().loadProject(
+                item.directory,
+                requireContext()
+            )
+            projectManager.currentProject = project
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container, ProjectLibsFragment(), ProjectOptionsFragment.TAG
                 )
                 .addToBackStack(ProjectOptionsFragment.TAG)
                 .commit()

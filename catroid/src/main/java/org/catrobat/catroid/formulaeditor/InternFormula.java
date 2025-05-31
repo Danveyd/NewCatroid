@@ -88,6 +88,159 @@ public class InternFormula {
 		updateInternCursorPosition();
 	}
 
+	public void insertTokens(Context context, List<InternToken> tokensToInsert) {
+		if (tokensToInsert == null || tokensToInsert.isEmpty()) {
+			Log.w(TAG, "insertTokens: tokensToInsert is null or empty.");
+			return;
+		}
+
+		// Определяем, есть ли активное выделение
+		if (isTokenSelected()) {
+			// Если есть выделение, заменяем его новыми токенами
+			int startIndex = internFormulaTokenSelection.getStartIndex();
+			int endIndex = internFormulaTokenSelection.getEndIndex();
+
+			// Удаляем старые токены в диапазоне выделения
+			// Идем с конца, чтобы не нарушать индексы
+			for (int i = endIndex; i >= startIndex; i--) {
+				if (i < internTokenFormulaList.size()) { // Проверка на выход за границы
+					internTokenFormulaList.remove(i);
+				} else {
+					Log.w(TAG, "insertTokens: Attempted to remove token at index " + i + " but list size is " + internTokenFormulaList.size());
+				}
+			}
+
+			// Вставляем новые токены на место начала старого выделения
+			internTokenFormulaList.addAll(startIndex, tokensToInsert);
+
+			// Обновляем позицию курсора, чтобы он был после вставленных токенов
+			cursorPositionInternTokenIndex = startIndex + tokensToInsert.size() -1; // Индекс последнего вставленного токена
+			cursorPositionInternToken = internTokenFormulaList.get(cursorPositionInternTokenIndex); // Обновляем токен курсора
+
+			// Очищаем выделение после замены
+			internFormulaTokenSelection = null;
+
+			// Устанавливаем внешнюю позицию курсора справа от последнего вставленного токена
+			// Это делается после generateExternFormulaStringAndInternExternMapping
+			// updateExternCursorPosition(CursorTokenPropertiesAfterModification.RIGHT); // или конкретнее
+
+		} else {
+			// Если нет выделения, вставляем токены в текущую позицию курсора
+			int insertAtIndex;
+
+			if (cursorPositionInternToken == null && internTokenFormulaList.isEmpty()) {
+				// Формула пуста, вставляем в начало
+				insertAtIndex = 0;
+			} else if (cursorPositionInternToken == null && !internTokenFormulaList.isEmpty()) {
+				// Курсор не установлен, но формула не пуста, вставляем в конец (или начало, зависит от логики)
+				// Предположим, что externCursorPosition уже установлен корректно FormulaEditorEditText
+				// и updateInternCursorPosition его обработал.
+				// Если cursorTokenPosition == null, это может означать, что курсор в самом начале или самом конце.
+				// Используем externCursorPosition, чтобы определить, куда вставлять.
+				// Это более сложная логика, так как externCursorPosition может быть между представлениями токенов.
+				// Простой вариант: если cursorPositionInternToken == null, но список не пуст,
+				// и externCursorPosition == 0, то вставляем в начало. Иначе - в конец.
+				if (externCursorPosition == 0 && internTokenFormulaList.size() > 0) {
+					insertAtIndex = 0; // Вставка в самое начало, если externCursorPosition = 0
+				} else {
+					// Вставляем в позицию, соответствующую externCursorPosition, или в конец
+					// Если externCursorPosition указывает на начало токена, internTokenIndex будет этим токеном
+					// Если externCursorPosition указывает на конец токена, internTokenIndex будет следующим
+					// updateInternCursorPosition должен был установить cursorPositionInternTokenIndex
+					// и cursorTokenPosition корректно.
+
+					if (cursorPositionInternTokenIndex >= 0 && cursorPositionInternTokenIndex < internTokenFormulaList.size()) {
+						if (cursorTokenPosition == CursorTokenPosition.LEFT) {
+							insertAtIndex = cursorPositionInternTokenIndex;
+						} else if (cursorTokenPosition == CursorTokenPosition.RIGHT) {
+							insertAtIndex = cursorPositionInternTokenIndex + 1;
+						} else { // MIDDLE или неопределенное состояние - вставляем перед
+							insertAtIndex = cursorPositionInternTokenIndex;
+						}
+					} else if (cursorPositionInternTokenIndex == -1 && internTokenFormulaList.isEmpty()) {
+						// Список пуст, вставляем в начало
+						insertAtIndex = 0;
+					} else if (cursorPositionInternTokenIndex == -1 && !internTokenFormulaList.isEmpty() && externCursorPosition == 0) {
+						// Список не пуст, курсор в начале
+						insertAtIndex = 0;
+					}
+					else {
+						// В остальных случаях (например, курсор в конце)
+						insertAtIndex = internTokenFormulaList.size();
+					}
+				}
+			} else {
+				// Курсор установлен на конкретный токен
+				switch (cursorTokenPosition) {
+					case LEFT:
+						insertAtIndex = cursorPositionInternTokenIndex;
+						break;
+					case MIDDLE: // Обычно вставка "поверх" или слева от "среднего"
+						insertAtIndex = cursorPositionInternTokenIndex;
+						break;
+					case RIGHT:
+						insertAtIndex = cursorPositionInternTokenIndex + 1;
+						break;
+					default:
+						// Неожиданное состояние, вставляем в конец как запасной вариант
+						Log.w(TAG, "insertTokens: Unexpected cursorTokenPosition: " + cursorTokenPosition);
+						insertAtIndex = internTokenFormulaList.size();
+						break;
+				}
+			}
+			// Защита от выхода за границы
+			if (insertAtIndex > internTokenFormulaList.size()) {
+				insertAtIndex = internTokenFormulaList.size();
+			}
+			if (insertAtIndex < 0) {
+				insertAtIndex = 0;
+			}
+
+
+			internTokenFormulaList.addAll(insertAtIndex, tokensToInsert);
+
+			// Обновляем позицию курсора, чтобы он был после вставленных токенов
+			// cursorPositionInternTokenIndex теперь указывает на первый из вставленных токенов
+			cursorPositionInternTokenIndex = insertAtIndex + tokensToInsert.size() -1;
+			if (cursorPositionInternTokenIndex < internTokenFormulaList.size() && cursorPositionInternTokenIndex >=0) {
+				cursorPositionInternToken = internTokenFormulaList.get(cursorPositionInternTokenIndex);
+			} else if (!internTokenFormulaList.isEmpty()){
+				cursorPositionInternTokenIndex = internTokenFormulaList.size() -1;
+				cursorPositionInternToken = internTokenFormulaList.get(cursorPositionInternTokenIndex);
+			} else {
+				cursorPositionInternToken = null;
+				cursorPositionInternTokenIndex = -1;
+			}
+			// Устанавливаем внешнюю позицию курсора справа от последнего вставленного токена
+			// Это будет сделано после generateExternFormulaStringAndInternExternMapping
+			// updateExternCursorPosition(CursorTokenPropertiesAfterModification.RIGHT);
+		}
+
+		// Перегенерировать внешнее представление и маппинг
+		generateExternFormulaStringAndInternExternMapping(context);
+
+		// Обновить внешнюю позицию курсора ПОСЛЕ генерации маппинга.
+		// Мы хотим, чтобы курсор был справа от последнего добавленного токена.
+		if (!tokensToInsert.isEmpty()) {
+			// cursorPositionInternTokenIndex уже указывает на последний вставленный токен
+			// или на позицию после него, если вставка была в конец.
+			// Если cursorPositionInternTokenIndex - это индекс последнего вставленного, то ставим курсор справа от него.
+			setExternCursorPositionRightTo(cursorPositionInternTokenIndex);
+		} else if (!internTokenFormulaList.isEmpty()){
+			// Если ничего не вставили, но список не пуст, и был сброс выделения
+			setExternCursorPositionLeftTo(0); // Или какая-то другая логика для курсора по умолчанию
+		} else {
+			// Список пуст
+			externCursorPosition = 0; // Или 1, в зависимости от вашей логики пустого поля
+		}
+
+		// Обновляем внутреннее состояние курсора на основе новой внешней позиции
+		updateInternCursorPosition();
+
+		Log.d(TAG, "Tokens inserted. New state size: " + internTokenFormulaList.size() +
+				", new extern cursor: " + externCursorPosition);
+	}
+
 	public void setCursorAndSelection(int externCursorPosition, boolean isSelected) {
 		this.externCursorPosition = externCursorPosition;
 

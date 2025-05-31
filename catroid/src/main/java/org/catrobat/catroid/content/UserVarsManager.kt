@@ -8,7 +8,7 @@ object UserVarsManager {
 
     // Устанавливает значение переменной. Если она существует, обновляет её,
     // если нет - создает новую.
-    fun setVar(name: String, value: String) {
+    fun setVar(name: kotlin.String, value: kotlin.String) {
         variables[name] = value
     }
 

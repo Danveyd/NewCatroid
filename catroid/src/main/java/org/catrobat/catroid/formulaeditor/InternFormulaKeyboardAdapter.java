@@ -42,6 +42,8 @@ import static org.catrobat.catroid.formulaeditor.InternTokenType.STRING;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_DEFINED_BRICK_INPUT;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_LIST;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_VARIABLE;
+import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
 public class InternFormulaKeyboardAdapter {
 
@@ -49,6 +51,7 @@ public class InternFormulaKeyboardAdapter {
 	public static final int FORMULA_EDITOR_USER_LIST_RESOURCE_ID = 1;
 	public static final int FORMULA_EDITOR_USER_DEFINED_BRICK_INPUT_RESOURCE_ID = 2;
 	public static final int FORMULA_EDITOR_COLLIDE_RESOURCE_ID = 3;
+	public final int CUSTOM_JS_FUNCTION_RESOURCE_ID = -100;
 
 	public List<InternToken> createInternTokenListByResourceId(int resource, String name) {
 
@@ -671,6 +674,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.ID_OF_DETECTED_OBJECT, NUMBER, "1");
 			case R.string.formula_editor_function_object_with_id_visible:
 				return buildSingleParameterFunction(Functions.OBJECT_WITH_ID_VISIBLE, NUMBER, "1");
+			case CUSTOM_JS_FUNCTION_RESOURCE_ID:
+				return buildCustomJsFunction(name);
 		}
 		return null;
 	}
@@ -739,6 +744,31 @@ public class InternFormulaKeyboardAdapter {
 	private List<InternToken> buildSensor(Sensors sensor) {
 		List<InternToken> returnList = new LinkedList<InternToken>();
 		returnList.add(new InternToken(SENSOR, sensor.name()));
+		return returnList;
+	}
+
+	public List<InternToken> buildCustomJsFunction(String customFunctionName) {
+		CustomFormula customFormula = CustomFormulaManager.INSTANCE.getFormulaByUniqueName(customFunctionName);
+		if (customFormula == null) {
+			return null; // или бросить исключение
+		}
+
+		List<InternToken> returnList = new LinkedList<InternToken>();
+		returnList.add(new InternToken(FUNCTION_NAME, customFormula.getUniqueName()));
+
+		if (customFormula.getParamCount() > 0) {
+			returnList.add(new InternToken(FUNCTION_PARAMETERS_BRACKET_OPEN));
+			for (int i = 0; i < customFormula.getParamCount(); i++) {
+				if (i > 0) {
+					returnList.add(new InternToken(FUNCTION_PARAMETER_DELIMITER));
+				}
+				// Используем тип и значение по умолчанию из CustomFormula
+				InternTokenType paramType = customFormula.getDefaultParamTypes().get(i);
+				String paramValue = customFormula.getDefaultParamValues().get(i);
+				returnList.add(new InternToken(paramType, paramValue));
+			}
+			returnList.add(new InternToken(FUNCTION_PARAMETERS_BRACKET_CLOSE));
+		}
 		return returnList;
 	}
 

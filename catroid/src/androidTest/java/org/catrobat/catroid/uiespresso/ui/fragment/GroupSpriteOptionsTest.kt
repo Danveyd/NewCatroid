@@ -129,6 +129,9 @@ class GroupSpriteOptionsTest {
 
         onView(withText(R.string.project_files))
             .check(doesNotExist())
+
+        onView(withText(R.string.project_libs))
+            .check(doesNotExist())
     }
 
     @Test

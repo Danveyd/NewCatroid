@@ -115,6 +115,8 @@ public class ProjectActivityTest {
 
 		onView(withText(R.string.project_files)).perform(click());
 
+		onView(withText(R.string.project_libs)).perform(click());
+
 		onView(withId(R.id.project_options_layout))
 				.check(matches(isDisplayed()));
 	}

@@ -248,6 +248,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", ListenMicroBrick.class);
 		xstream.alias("brick", CopyTextBrick.class);
 		xstream.alias("brick", RunJSBrick.class);
+		xstream.alias("brick", LunoScriptBrick.class);
 		xstream.alias("brick", AskBrick.class);
 		xstream.alias("brick", AskSpeechBrick.class);
 		xstream.alias("brick", BroadcastBrick.class);

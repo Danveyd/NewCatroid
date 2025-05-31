@@ -101,14 +101,33 @@ import static org.catrobat.catroid.formulaeditor.common.FormulaElementResources.
 import static org.catrobat.catroid.formulaeditor.common.FormulaElementResources.addSensorsResources;
 import static org.catrobat.catroid.utils.NumberFormats.trimTrailingCharacters;
 
+import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
+import org.mozilla.javascript.ContextFactory; // Rhino
+import org.mozilla.javascript.Context;     // Rhino
+import org.mozilla.javascript.Scriptable;  // Rhino
+import org.mozilla.javascript.ScriptableObject; // Rhino
+import org.mozilla.javascript.RhinoException; // Rhino
+
 import android.util.Log;
 
 public class FormulaElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static boolean rhinoInitialized = false;
+	private static final String TAG_FORMULA_ELEMENT = "FormulaElement";
 
 	public enum ElementType {
 		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, USER_LIST, USER_DEFINED_BRICK_INPUT, BRACKET, STRING, COLLISION_FORMULA
+	}
+
+	private static void ensureRhinoInitialized() {
+		// Этот код нужен, если вы сталкиваетесь с ошибками ClassDefNotFound для классов Rhino на некоторых устройствах
+		// Обычно ContextFactory.getGlobal() сам инициализируется.
+		// Если есть проблемы, можно попробовать:
+		if (!ContextFactory.hasExplicitGlobal()) {
+		    ContextFactory.initGlobal(new ContextFactory());
+		}
 	}
 
 	private ElementType type;
@@ -423,7 +442,8 @@ public class FormulaElement implements Serializable {
 				return tryInterpretOperator(scope, value);
 			case FUNCTION:
 				Functions function = Functions.getFunctionByValue(value);
-				return interpretFunction(function, scope);
+				//return interpretFunction(function, scope);
+				return interpretFunction(value, scope);
 			case SENSOR:
 				return interpretSensor(scope.getSprite(), currentlyEditedScene, currentProject, value);
 			case USER_VARIABLE:
@@ -451,6 +471,41 @@ public class FormulaElement implements Serializable {
 			return false;
 		}
 		return interpretOperator(operator, scope);
+	}
+
+	private Object interpretFunction(String name, Scope scope) {
+		List<Object> arguments = new ArrayList<>();
+
+		// Собираем аргументы как раньше
+		arguments.add(tryInterpretRecursive(leftChild, scope));
+		arguments.add(tryInterpretRecursive(rightChild, scope));
+		for (FormulaElement child : additionalChildren) {
+			arguments.add(tryInterpretRecursive(child, scope));
+		}
+
+		Functions standardFunction = Functions.getFunctionByValue(name); // Получаем стандартную функцию
+
+		if (standardFunction != null) {
+			Log.d("Formula", "isDefaultFunction");
+			return interpretFunction(standardFunction, scope);
+		} else {
+			Log.d("Formula", "isCustomFunction");
+			CustomFormula customFormula = CustomFormulaManager.INSTANCE.getFormulaByUniqueName(name);
+			if (customFormula != null) {
+				// Удаляем null значения из аргументов, если функция ожидает меньше параметров
+				// чем максимально возможно (leftChild, rightChild, additionalChildren)
+				List<Object> actualArguments = new ArrayList<>();
+				if (leftChild != null) actualArguments.add(arguments.get(0));
+				if (rightChild != null) actualArguments.add(arguments.get(1));
+				for (int i = 0; i < additionalChildren.size(); i++) {
+					actualArguments.add(arguments.get(2 + i));
+				}
+				return interpretCustomJsFunction(customFormula, actualArguments, scope);
+			} else {
+				Log.e("FormulaElement", "Неизвестная функция: " + name);
+				return FALSE; // Неизвестная функция
+			}
+		}
 	}
 
 	private Object interpretFunction(Functions function, Scope scope) {
@@ -590,6 +645,106 @@ public class FormulaElement implements Serializable {
 				return interpretFormulaFunction(function, arguments);
 		}
 	}
+
+	private Object interpretCustomJsFunction(CustomFormula customFormula, List<Object> arguments, Scope scope) {
+		ensureRhinoInitialized(); // Убедимся, что Rhino готов
+		Context rhinoContext = Context.enter();
+		// Для Android рекомендуется отключать оптимизацию или ставить на -1,
+		// чтобы избежать проблем с компиляцией байт-кода Dex.
+		rhinoContext.setOptimizationLevel(-1);
+		try {
+			Scriptable rhinoScope = rhinoContext.initStandardObjects();
+
+			// Передача параметров в JS как массив 'p'
+			Object[] jsArgs = new Object[customFormula.getParamCount()]; // Используем paramCount из customFormula
+			for (int i = 0; i < customFormula.getParamCount(); i++) {
+				if (i < arguments.size() && arguments.get(i) != null) {
+					Object arg = arguments.get(i);
+					// Конвертация булевых значений Catroid (0.0/1.0) в JS (false/true)
+					if (arg instanceof Double) {
+						if (arg.equals(FALSE)) jsArgs[i] = false;
+						else if (arg.equals(TRUE)) jsArgs[i] = true;
+						else jsArgs[i] = arg;
+					} else if (arg instanceof Boolean) { // Если вдруг уже Boolean
+						jsArgs[i] = arg;
+					}
+					else {
+						jsArgs[i] = arg; // Строки и т.д.
+					}
+				} else {
+					jsArgs[i] = org.mozilla.javascript.Undefined.instance; // Если аргумент отсутствует
+				}
+			}
+			ScriptableObject.putProperty(rhinoScope, "p", Context.javaToJS(jsArgs, rhinoScope));
+
+			// JS код должен вернуть значение. Например: "return p[0] + p[1];"
+			// Или если это просто выражение: "p[0] + p[1]"
+			// Чтобы сделать более надежным, обернем в функцию, если это не сделано
+			String scriptToExecute = customFormula.getJsCode();
+			//if (!scriptToExecute.trim().startsWith("return") && !scriptToExecute.trim().contains("function")) {
+				// Если это просто выражение, Rhino его вычислит.
+				// Если это блок кода, его нужно обернуть, чтобы он вернул последнее выражение,
+				// или явно использовать 'return'. Для простоты ожидаем, что jsCode содержит 'return'.
+			//}
+			// Для большей гибкости можно сделать так, чтобы код всегда был функцией:
+			// String fullScript = "(function(params) { " + customFormula.getJsCode() + " })(p);";
+			// Но тогда в jsCode не нужно писать p[0], а просто params[0] или именованные параметры.
+			// Пока оставим как есть, ожидая "return p[0] + p[1];"
+
+			Log.d(TAG_FORMULA_ELEMENT, "Выполнение JS для " + customFormula.getUniqueName() + ": " + scriptToExecute + " с параметрами: " + Arrays.toString(jsArgs));
+
+			Object result = rhinoContext.evaluateString(rhinoScope, scriptToExecute, customFormula.getUniqueName(), 1, null);
+
+			// Конвертация результата из JS в представление Catroid
+			if (result instanceof org.mozilla.javascript.Undefined) {
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул undefined");
+				return ""; // или FALSE, или специальное значение Catroid для undefined
+			}
+			if (result instanceof Double) {
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул Double: " + result);
+				return result;
+			}
+			if (result instanceof Integer || result instanceof Long || result instanceof Float) {
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул числовой тип: " + result);
+				return ((Number) result).doubleValue();
+			}
+			if (result instanceof Boolean) {
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул Boolean: " + result);
+				return booleanToDouble((Boolean) result); // Конвертируем в 0.0 или 1.0
+			}
+			if (result instanceof String) {
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул String: " + result);
+				return result;
+			}
+			// Другие типы, например ConsString (конкатенация строк в Rhino)
+			if (result instanceof org.mozilla.javascript.ConsString) {
+				String strResult = result.toString();
+				Log.d(TAG_FORMULA_ELEMENT, "JS вернул ConsString: " + strResult);
+				return strResult;
+			}
+
+			Log.w(TAG_FORMULA_ELEMENT, "JS вернул неизвестный тип: " + result.getClass().getName() + " значение: " + Context.toString(result));
+			// Попытка конвертировать в строку, если тип не распознан
+			return Context.toString(result);
+
+		} catch (RhinoException e) {
+			Log.e(TAG_FORMULA_ELEMENT, "Ошибка выполнения JS для " + customFormula.getUniqueName() + ": " + e.getMessage(), e);
+			// Вывод деталей ошибки Rhino
+			Log.e(TAG_FORMULA_ELEMENT, "RhinoException details: " + e.details());
+			Log.e(TAG_FORMULA_ELEMENT, "RhinoException sourceName: " + e.sourceName());
+			Log.e(TAG_FORMULA_ELEMENT, "RhinoException lineNumber: " + e.lineNumber());
+			Log.e(TAG_FORMULA_ELEMENT, "RhinoException columnNumber: " + e.columnNumber());
+			Log.e(TAG_FORMULA_ELEMENT, "RhinoException lineSource: " + e.lineSource());
+			return "NaN"; // или специальное значение ошибки
+		} catch (Exception e) {
+			Log.e(TAG_FORMULA_ELEMENT, "Общая ошибка при выполнении JS для " + customFormula.getUniqueName(), e);
+			return "NaN";
+		}
+		finally {
+			Context.exit();
+		}
+	}
+
 
 	@Nullable
 	private Object tryInterpretRecursive(FormulaElement element, Scope scope) {

@@ -83,6 +83,9 @@ import static org.catrobat.catroid.common.SharedPreferenceKeys.LANGUAGE_TAG_KEY;
 import static org.catrobat.catroid.ui.fragment.FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG;
 import static org.koin.java.KoinJavaComponent.get;
 
+import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -95,6 +98,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 	public static final String ACTION_BAR_TITLE_BUNDLE_ARGUMENT = "actionBarTitle";
 	public static final String FRAGMENT_TAG_BUNDLE_ARGUMENT = "fragmentTag";
 	public static final String TAG = CategoryListFragment.class.getSimpleName();
+
+	public static final int CUSTOM_FUNCTION_ITEM_TYPE_ID = -100;
 
 	private static final List<Integer> OBJECT_GENERAL_PROPERTIES = asList(
 			R.string.formula_editor_object_rotation_look,
@@ -567,6 +572,18 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 
 	@Override
 	public void onItemClick(CategoryListItem item) {
+		if (item.isCustomFunction && item.customFunctionName != null) {
+			FormulaEditorFragment formulaEditorFragment =
+					((FormulaEditorFragment) getFragmentManager().findFragmentByTag(FORMULA_EDITOR_FRAGMENT_TAG));
+			if (formulaEditorFragment != null) {
+				// Вместо setChosenCategoryItem, нам нужно передать информацию о кастомной функции
+				// formulaEditorFragment.setChosenCategoryItem(item); // Это не сработает как надо
+				// Нам нужен способ добавить кастомную функцию по ее имени
+				formulaEditorFragment.addCustomFunctionToActiveFormula(item.customFunctionName);
+			}
+			getActivity().onBackPressed();
+			return; // Важно выйти здесь
+		}
 		switch (item.type) {
 			case CategoryListRVAdapter.NXT:
 				showLegoSensorPortConfigDialog(item.nameResId, Constants.NXT);
@@ -904,6 +921,26 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 		result.addAll(addHeader(toCategoryListItems(LIST_FUNCTIONS, LIST_PARAMS),
 				getString(R.string.formula_editor_functions_lists)));
 
+		// Добавление кастомных функций
+		List<CustomFormula> customFormulas = CustomFormulaManager.INSTANCE.getFormulas();
+		if (!customFormulas.isEmpty()) {
+			List<CategoryListItem> customFunctionItems = new ArrayList<>();
+			for (CustomFormula cf : customFormulas) {
+				// Для CategoryListItem нужен nameResId. Так как у нас его нет,
+				// можно использовать уникальный идентификатор или специальный тип.
+				// Здесь мы передаем uniqueName через поле `tag` и используем фиктивный nameResId.
+				// CategoryListItemType.DEFAULT - так как это обычная функция
+				CategoryListItem item = new CategoryListItem(
+						0, // Фиктивный nameResId, так как он не используется для идентификации кастомных
+						cf.getDisplayName(), // Отображаемое имя
+						CategoryListRVAdapter.DEFAULT // Тип по умолчанию для функций
+				);
+				item.isCustomFunction = true; // Добавляем флаг
+				item.customFunctionName = cf.getUniqueName(); // Сохраняем уникальное имя
+				customFunctionItems.add(item);
+			}
+			result.addAll(addHeader(customFunctionItems, getString(R.string.formula_editor_custom_functions_header))); // Вам нужно добавить этот ресурс строки
+		}
 		return result;
 	}
 

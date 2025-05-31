@@ -54,6 +54,9 @@ public class CategoryListRVAdapter extends RecyclerView.Adapter<ViewHolder> {
 	public static class CategoryListItem {
 		@Nullable
 		public String header;
+
+		public boolean isCustomFunction = false;
+		public String customFunctionName = null;
 		public int nameResId;
 		public String text;
 		public @CategoryListItemType int type;

@@ -151,6 +151,7 @@ import org.catrobat.catroid.content.bricks.LookFileBrick
 import org.catrobat.catroid.content.bricks.LookFromTableBrick
 import org.catrobat.catroid.content.bricks.LookRequestBrick
 import org.catrobat.catroid.content.bricks.LookToTableBrick
+import org.catrobat.catroid.content.bricks.LunoScriptBrick
 import org.catrobat.catroid.content.bricks.MoveDownloadsBrick
 import org.catrobat.catroid.content.bricks.MoveFilesBrick
 import org.catrobat.catroid.content.bricks.MoveNStepsBrick
@@ -718,6 +719,7 @@ open class CategoryBricksFactory {
         deviceBrickList.add(ListenMicroBrick("100"))
         deviceBrickList.add(RunJSBrick("1 + 2"))
         deviceBrickList.add(RunLuaBrick("return 'Привет из Lua!'"))
+        deviceBrickList.add(LunoScriptBrick("MakeToast(\"Hey from Luno! :)\");"))
         deviceBrickList.add(OpenFileBrick("fileFromUrl.txt"))
         deviceBrickList.add(MoveFilesBrick("variable.txt"))
         deviceBrickList.add(MoveDownloadsBrick("variable.txt"))

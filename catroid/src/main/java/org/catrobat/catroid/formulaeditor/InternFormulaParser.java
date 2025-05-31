@@ -29,6 +29,7 @@ import org.catrobat.catroid.content.Scope;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
 public class InternFormulaParser {
 
@@ -324,8 +325,14 @@ public class InternFormulaParser {
 	}
 
 	private FormulaElement function(Scope scope) throws InternFormulaParserException {
-		if (!Functions.isFunction(currentToken.getTokenStringValue())) {
-			throw new InternFormulaParserException("Parse Error");
+		String functionName = currentToken.getTokenStringValue();
+		boolean isStandardFunction = Functions.isFunction(functionName);
+		boolean isCustomJsFunction = CustomFormulaManager.INSTANCE.getFormulaByUniqueName(functionName) != null;
+
+		if (!isStandardFunction && !isCustomJsFunction) {
+			// Если имя функции не является ни стандартным, ни кастомным, это ошибка
+			Log.e(TAG, "Parse Error: Unknown function name '" + functionName + "' at token index " + currentTokenParseIndex);
+			throw new InternFormulaParserException("Parse Error: Unknown function name '" + functionName + "'");
 		}
 
 		FormulaElement functionTree = new FormulaElement(FormulaElement.ElementType.FUNCTION, currentToken.getTokenStringValue(), null);

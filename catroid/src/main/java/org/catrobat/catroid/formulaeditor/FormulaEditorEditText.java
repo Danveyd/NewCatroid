@@ -30,6 +30,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.style.BackgroundColorSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +46,8 @@ import java.util.Map;
 
 @SuppressLint("AppCompatCustomView")
 public class FormulaEditorEditText extends EditText implements OnTouchListener {
+
+	private static final String TAG = "FormulaEditorEditText"; // Добавьте TAG для логирования
 
 	private static final BackgroundColorSpan COLOR_ERROR = new BackgroundColorSpan(0xFFF00000);
 	private static final BackgroundColorSpan COLOR_HIGHLIGHT = new BackgroundColorSpan(0xFF33B5E5);
@@ -138,6 +141,35 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 	public FormulaEditorEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
+	}
+
+	/**
+	 * Добавляет список токенов в текущую позицию (или выделение) формулы.
+	 * Этот метод вызывается из FormulaEditorFragment при добавлении кастомных функций.
+	 * @param tokensToAdd Список токенов для добавления.
+	 */
+	public void addTokensToActiveFormula(List<InternToken> tokensToAdd) {
+		if (internFormula == null || tokensToAdd == null || tokensToAdd.isEmpty()) {
+			Log.w(TAG, "addTokensToActiveFormula: internFormula is null or tokensToAdd is null/empty");
+			return;
+		}
+		// internFormula.handleKeyInput уже знает, как вставлять токены,
+		// но он ожидает resourceId. Мы можем эмулировать это или добавить новый метод в InternFormula.
+		// Проще всего добавить метод в InternFormula, который напрямую принимает List<InternToken>.
+
+		// Вариант 1: Добавить метод в InternFormula
+		internFormula.insertTokens(context, tokensToAdd); // Предполагаем, что вы создадите этот метод в InternFormula
+
+		// Вариант 2: Эмулировать через handleKeyInput (менее чистый)
+		// Это потребует специального resourceId и передачи списка токенов через 'name' или другое поле,
+		// что не очень хорошо. Поэтому Вариант 1 предпочтительнее.
+
+		pushToHistoryAndRefreshPreviewString();
+		if (formulaEditorFragment != null) {
+			formulaEditorFragment.updateButtonsOnKeyboardAndInvalidateOptionsMenu();
+		}
+		// Устанавливаем флаг, что были изменения, если это не делается внутри pushToHistory
+		// (обычно делается, так как history.push означает изменение)
 	}
 
 	@SuppressLint("ClickableViewAccessibility")

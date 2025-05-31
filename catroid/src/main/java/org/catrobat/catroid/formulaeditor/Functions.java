@@ -43,7 +43,7 @@ public enum Functions {
 	ID_OF_DETECTED_OBJECT, OBJECT_WITH_ID_VISIBLE;
 
 	private static final String TAG = Functions.class.getSimpleName();
-	public static final EnumSet<Functions> TEXT = EnumSet.of(LENGTH, LETTER, SUBTEXT, CLAMP, TO_HEX, TO_DEC, DISTAN, UPPER, LOWER, REVERSE, VAR, VARNAME, VARVALUE, JOIN, JOIN3, REPLACE, CONTAINS_STR, REPEAT, RANDOM_STR, JOINNUMBER,
+	public static EnumSet<Functions> TEXT = EnumSet.of(LENGTH, LETTER, SUBTEXT, CLAMP, TO_HEX, TO_DEC, DISTAN, UPPER, LOWER, REVERSE, VAR, VARNAME, VARVALUE, JOIN, JOIN3, REPLACE, CONTAINS_STR, REPEAT, RANDOM_STR, JOINNUMBER,
 			REGEX, TABLE_X, TABLE_Y, TABLE_ELEMENT, TABLE_JOIN, LUA, FILE);
 	public static final EnumSet<Functions> LIST = EnumSet.of(LIST_ITEM, CONTAINS, INDEX_OF_ITEM,
 			NUMBER_OF_ITEMS, FLATTEN, CONNECT, FIND);
@@ -60,5 +60,9 @@ public enum Functions {
 
 	public static Functions getFunctionByValue(String value) {
 		return EnumUtils.getEnum(Functions.class, value);
+	}
+
+	public static void addText(Functions func) {
+		TEXT.add(func);
 	}
 }

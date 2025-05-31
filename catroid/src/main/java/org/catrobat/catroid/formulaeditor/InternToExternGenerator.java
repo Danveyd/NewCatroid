@@ -32,6 +32,8 @@ import org.catrobat.catroid.utils.FormatNumberUtil;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
 public class InternToExternGenerator {
 	private static final String TAG = InternToExternGenerator.class.getSimpleName();
@@ -433,11 +435,24 @@ public class InternToExternGenerator {
 				return getExternStringForNumber(number, trimNumbers);
 
 			case OPERATOR:
+				String operatorValue = internToken.getTokenStringValue();
+				String mappedOperatorValue = getExternStringForInternTokenValue(operatorValue, context);
+				return mappedOperatorValue == null ? operatorValue : mappedOperatorValue;
 
-				String returnvalue = internToken.getTokenStringValue();
-				String mappingValue = getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
-
-				return mappingValue == null ? returnvalue : mappingValue;
+			case FUNCTION_NAME: // Добавлено для обработки имен функций здесь
+				String functionName = internToken.getTokenStringValue();
+				// Сначала проверяем стандартные функции
+				String mappedFunctionName = getExternStringForInternTokenValue(functionName, context);
+				if (mappedFunctionName != null) {
+					return mappedFunctionName;
+				}
+				// Затем проверяем кастомные функции
+				CustomFormula customFormula = CustomFormulaManager.INSTANCE.getFormulaByUniqueName(functionName);
+				if (customFormula != null) {
+					return customFormula.getDisplayName(); // Используем displayName для отображения
+				}
+				// Если не найдено ни там, ни там, возвращаем "как есть" (хотя это не должно происходить для валидных функций)
+				return functionName;
 
 			case BRACKET_OPEN:
 			case FUNCTION_PARAMETERS_BRACKET_OPEN:
@@ -460,9 +475,11 @@ public class InternToExternGenerator {
 						.formula_editor_function_collision);
 				return collisionTag + "(" + internToken.getTokenStringValue() + ")";
 
-			default:
-				return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
+			//default:
+				//return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
 		}
+		Log.w(TAG, "Необработанный тип токена в generateExternStringFromToken: " + internToken.getInternTokenType());
+		return internToken.getTokenStringValue(); // запасной вариант
 	}
 
 	private String getExternStringForNumber(String number, boolean trimNumbers) {
@@ -521,6 +538,8 @@ public class InternToExternGenerator {
 	private String getExternStringForInternTokenValue(String internTokenValue, Context context) {
 		Integer stringResourceID = INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.get(internTokenValue);
 		if (stringResourceID == null) {
+			// Не логируем ошибку здесь, так как это может быть имя кастомной функции,
+			// которое будет обработано в другом месте или возвращено "как есть".
 			return null;
 		}
 		return context.getString(stringResourceID);

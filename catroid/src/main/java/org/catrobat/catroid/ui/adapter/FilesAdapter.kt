@@ -32,7 +32,7 @@ class FilesAdapter(private val project: Project?, private val files: List<String
         Log.d("ProjectFile", "Binding item at position $position: ${fileName}")
 
         project?.let {
-            val file: File = it.getFile(fileName)
+            val file: File = it.getFile(fileName) ?: it.getLib(fileName)
 
             holder.fileSize.text = formatFileSize(file.length())
         }

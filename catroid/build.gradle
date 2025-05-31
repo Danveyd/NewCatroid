@@ -124,7 +124,7 @@ android {
     //2011
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         applicationId appId
         testInstrumentationRunner 'org.catrobat.catroid.runner.UiTestApplicationRunner'
@@ -496,6 +496,9 @@ dependencies {
     implementation 'com.huawei.hms:ml-computer-language-detection:3.7.0.301'
     implementation 'com.huawei.hms:ml-computer-vision-skeleton:3.7.0.301'
 
+    // https://mvnrepository.com/artifact/org.mozilla/rhino
+    implementation "org.mozilla:rhino:1.7.13"
+
     // libGDX
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
@@ -533,6 +536,7 @@ dependencies {
 
     // Retrofit testing
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.14.9'
+    //testImplementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
 
     // Koin for Unit tests
     androidTestImplementation "io.insert-koin:koin-test:$koin_version"

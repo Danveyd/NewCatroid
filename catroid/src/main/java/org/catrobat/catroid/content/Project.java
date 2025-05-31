@@ -421,7 +421,20 @@ public class Project implements Serializable {
 		return new File(this.directory, "files");
 	}
 
+	public File getLibsDir() {
+		return new File(this.directory, "libs");
+	}
+
 	public File getFile(String fileName) {
+		File file = new File(getFilesDir(), fileName);
+		if(file.exists()) {
+			return file;
+		} else {
+			return null;
+		}
+	}
+
+	public File getLib(String fileName) {
 		File file = new File(getFilesDir(), fileName);
 		if(file.exists()) {
 			return file;
