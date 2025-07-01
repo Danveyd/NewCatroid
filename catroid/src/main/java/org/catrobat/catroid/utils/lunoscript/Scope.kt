@@ -3,10 +3,6 @@ package org.catrobat.catroid.utils.lunoscript
 class Scope(internal val enclosing: Scope? = null) { // internal или без модификатора
     internal val values: MutableMap<String, LunoValue> = mutableMapOf() // internal или без модификатора
 
-    fun define(name: String, value: LunoValue) {
-        values[name] = value
-    }
-
     fun assign(nameToken: Token, value: LunoValue): LunoValue {
         val name = nameToken.lexeme
         if (values.containsKey(name)) {
@@ -19,8 +15,15 @@ class Scope(internal val enclosing: Scope? = null) { // internal или без �
         throw LunoRuntimeError("Undefined variable '${name}'.", nameToken.line)
     }
 
+    // Scope.kt
+    fun define(name: String, value: LunoValue) {
+        android.util.Log.d("LunoScope", "DEFINE: var '$name' = $value in scope $this (enclosing: $enclosing)")
+        values[name] = value
+    }
+
     fun get(nameToken: Token): LunoValue {
         val name = nameToken.lexeme
+        android.util.Log.d("LunoScope", "GET: var '$name' from scope $this (enclosing: $enclosing). Keys: ${values.keys}")
         if (values.containsKey(name)) {
             return values[name]!!
         }

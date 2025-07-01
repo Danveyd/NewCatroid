@@ -74,7 +74,7 @@ sealed class LunoValue {
             return 0..0 // По умолчанию конструктор без аргументов
         }
         override fun call(interpreter: Interpreter, arguments: kotlin.collections.List<LunoValue>, callSiteToken: Token): LunoValue {
-            val instance = LunoObject(this)
+            val instance = LunoObject(this) // this здесь - это LunoClass
             methods["init"]?.let { initMethod ->
                 // Нужно создать временное окружение для вызова init, привязанное к instance
                 val initClosure = Scope(initMethod.closure) // Используем замыкание метода init

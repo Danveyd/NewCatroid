@@ -1,5 +1,7 @@
 package org.catrobat.catroid.utils.lunoscript
 
+import android.util.Log
+
 // Pratt Parser-inspired structure for expressions for easier precedence handling
 class Parser(private val tokens: List<Token>) {
     private var current = 0
@@ -166,9 +168,29 @@ class Parser(private val tokens: List<Token>) {
 
     private fun blockStatements(): List<Statement> {
         val statements = mutableListOf<Statement>()
+        Log.d("LunoScriptParser", "Parser.blockStatements: Entering block. Current token: ${peek().type} ('${peek().lexeme}') line ${peek().line}")
         while (!check(TokenType.RBRACE) && !isAtEnd()) {
-            declaration()?.let { statements.add(it) }
+            val decl = declaration()
+            if (decl != null) {
+                statements.add(decl)
+            } else {
+                // Если declaration() вернул null (например, из-за ошибки и synchronize),
+                // и synchronize не продвинул нас до RBRACE или EOF, мы можем застрять.
+                // НО! Если synchronize работает правильно, он должен либо выйти на "хорошем" токене,
+                // либо пропустить текущий.
+                // Если мы здесь, и decl == null, значит, была ошибка, и synchronize уже отработал.
+                // `peek()` должен был измениться. Если нет, то проблема в synchronize.
+                if (!isAtEnd() && !check(TokenType.RBRACE)) {
+                    // Это состояние не должно достигаться, если synchronize правильно выходит или продвигает.
+                    // Если мы все же здесь, это значит, что synchronize вернул управление,
+                    // но peek() все еще не RBRACE, и declaration() вернул null.
+                    // Это может быть, если synchronize вышел на SEMICOLON, а следующий токен не парсится.
+                    Log.e("LunoScriptParser", "Parser.blockStatements: declaration() is null, but not at RBRACE or EOF after synchronize. Peek: ${peek().type}. Breaking to avoid infinite loop.")
+                    break; // Защита от бесконечного цикла, если synchronize не справляется
+                }
+            }
         }
+        Log.d("LunoScriptParser", "Parser.blockStatements: Exiting block. Current token is ${peek().type} ('${peek().lexeme}') line ${peek().line}")
         return statements
     }
 
@@ -193,14 +215,29 @@ class Parser(private val tokens: List<Token>) {
 
 
     private fun expressionStatement(): Statement {
-        val expr = expression()
-        val line = expr.line
-        consumeSemicolon("Expect ';' or newline after expression statement.")
-        return ExpressionStatement(expr, line)
+        // Сначала парсим то, что может быть левой частью присваивания (l-value) или самостоятельным выражением.
+        // `call()` здесь хорошо подходит, так как оно может распарсить `ident`, `obj.prop`, `obj[idx]`, `func()`.
+        val expr = call() // Используем call() вместо expression() чтобы получить l-value
+
+        // Теперь смотрим на следующий токен
+        if (peek().type.isAssignmentOperator()) {
+            // Это присваивание (простое или составное)
+            if (!(expr is VariableExpr || expr is GetExpr || expr is IndexAccessExpr || expr is ThisExpr)) {
+                // ThisExpr тоже может быть слева, если this.field = ...
+                throw error(peek(), "Invalid assignment target. Left side must be a variable, property, or index access.")
+            }
+            val operator = advance() // Съедаем оператор присваивания
+            val value = expression() // Парсим правую часть (r-value)
+            consumeSemicolon("Expect ';' or newline after assignment statement.")
+            return AssignmentStatement(expr, value, operator, operator.line)
+        } else {
+            // Это не присваивание, значит, expr - это просто выражение, которое нужно выполнить.
+            consumeSemicolon("Expect ';' or newline after expression statement.")
+            return ExpressionStatement(expr, expr.line)
+        }
     }
 
     // --- Expression parsing (Pratt style with precedence) ---
-    private fun expression(): Expression = assignment()
 
     // Assignment has the lowest precedence for expressions that can be on the right of '='
     // but `=` itself is not an expression in Kotlin-like LunoScript, it's part of AssignmentStatement.
@@ -457,7 +494,15 @@ class Parser(private val tokens: List<Token>) {
             match(TokenType.WHILE) -> whileStatement()
             match(TokenType.FOR) -> forStatement()
             match(TokenType.SWITCH) -> switchStatement()
-            match(TokenType.LBRACE) -> BlockStatement(blockStatements(), previous().line)
+            match(TokenType.LBRACE) -> {
+                val lbraceToken = previous()
+                Log.d("LunoScriptParser", "Statement: Matched LBRACE at line ${lbraceToken.line}. Parsing block body...")
+                val blockStmts = blockStatements() // current указывает на RBRACE после этого
+                Log.d("LunoScriptParser", "Statement: blockStatements returned. Next token is ${peek().lexeme} (${peek().type}) line ${peek().line}. Expecting RBRACE.")
+                consume(TokenType.RBRACE, "Expect '}' after block body. " + lbraceToken.line) // current указывает на то, что ПОСЛЕ RBRACE
+                Log.d("LunoScriptParser", "Statement: Consumed RBRACE. Next token is ${peek().lexeme} (${peek().type}) line ${peek().line}.")
+                BlockStatement(blockStmts, lbraceToken.line)
+            }
             match(TokenType.RETURN) -> returnStatement()
             match(TokenType.BREAK) -> breakStatement()
             match(TokenType.CONTINUE) -> continueStatement()
@@ -500,6 +545,14 @@ class Parser(private val tokens: List<Token>) {
         return operatorToken?.type?.isAssignmentOperator() == true
     }
 
+    private fun expression(): Expression = logicalOr() // Начинаем с логического ИЛИ (или другой операции с нужным приоритетом)
+
+// assignment() в иерархии выражений больше НЕ НУЖЕН, если простое присваивание - это инструкция.
+// Если бы присваивание было выражением (как в C, где a = 5 возвращает 5), тогда бы он был нужен.
+// Убираем его из цепочки: expression -> logicalOr -> logicalAnd -> ...
+// private fun assignment(): Expression { ... } // ЭТОТ МЕТОД УДАЛИТЬ ИЗ ИЕРАРХИИ ВЫРАЖЕНИЙ
+
+    // Вспомогательная функция для TokenType (если ее еще нет)
     private fun TokenType.isAssignmentOperator(): Boolean {
         return this == TokenType.ASSIGN || this == TokenType.PLUS_ASSIGN || this == TokenType.MINUS_ASSIGN ||
                 this == TokenType.MULTIPLY_ASSIGN || this == TokenType.DIVIDE_ASSIGN || this == TokenType.MODULO_ASSIGN
@@ -571,7 +624,13 @@ class Parser(private val tokens: List<Token>) {
     }
 
     private fun consume(type: TokenType, message: String): Token {
-        if (check(type)) return advance()
+        Log.d("LunoScriptParser", "CONSUME: Attempting to consume ${type}. Current peek is ${peek().type} ('${peek().lexeme}')")
+        if (check(type)) {
+            val consumedToken = advance()
+            Log.d("LunoScriptParser", "CONSUME: Successfully consumed ${consumedToken.type}. Next peek is ${if(!isAtEnd()) peek().type else "EOF"}")
+            return consumedToken
+        }
+        Log.e("LunoScriptParser", "CONSUME_ERROR: Failed to consume ${type}. Peek is ${peek().type}. Throwing error: $message")
         throw error(peek(), message)
     }
 
@@ -601,14 +660,15 @@ class Parser(private val tokens: List<Token>) {
     private fun error(token: Token, message: String): ParseError = ParseError(message, token)
 
     private fun synchronize() {
-        advance() // Consume the erroneous token
-        while (!isAtEnd()) {
-            if (previous().type == TokenType.SEMICOLON) return // Found a statement boundary
-            when (peek().type) { // Heuristic: stop at keywords that likely start new statements/declarations
-                TokenType.CLASS, TokenType.FUN, TokenType.VAR, TokenType.FOR, TokenType.IF,
-                TokenType.WHILE, TokenType.SWITCH, TokenType.RETURN, TokenType.LBRACE -> return
-                else -> advance()
-            }
+        val problemToken = peek()
+        Log.d("LunoScriptParser", "SYNC: Attempting to recover. Error occurred at or before: ${problemToken.lexeme} (${problemToken.type}) L${problemToken.line}. Previous: ${if(current > 0) previous().lexeme else "N/A"}")
+
+        if (!isAtEnd()) {
+            Log.d("LunoScriptParser", "SYNC: Advancing past token: ${problemToken.lexeme}")
+            advance() // Пропускаем токен, вызвавший ошибку (или на котором остановились)
         }
+        // Больше ничего не делаем, пусть главный цикл parse() попробует снова
+        // с токена, следующего за проблемным.
+        Log.d("LunoScriptParser", "SYNC: Recovery attempted. Next token to parse: ${if(!isAtEnd()) peek().lexeme else "EOF"}")
     }
 }

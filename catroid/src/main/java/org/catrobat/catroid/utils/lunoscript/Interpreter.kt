@@ -7,13 +7,31 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.math.Rectangle
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.common.LookData
+import org.catrobat.catroid.content.ActionFactory
 import org.catrobat.catroid.content.EventWrapper
 import org.catrobat.catroid.content.Look
 import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.content.Scene
+import org.catrobat.catroid.content.Script
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.content.UserVarsManager
 import org.catrobat.catroid.content.XmlHeader
+import org.catrobat.catroid.content.actions.AskSpeechAction
+import org.catrobat.catroid.content.actions.ScriptSequenceAction
+import org.catrobat.catroid.content.bricks.AddEditBrick
+import org.catrobat.catroid.content.bricks.AddItemToUserListBrick
+import org.catrobat.catroid.content.bricks.AddRadioBrick
+import org.catrobat.catroid.content.bricks.ArduinoSendDigitalValueBrick
+import org.catrobat.catroid.content.bricks.ArduinoSendPWMValueBrick
+import org.catrobat.catroid.content.bricks.AskBrick
+import org.catrobat.catroid.content.bricks.AskGPTBrick
+import org.catrobat.catroid.content.bricks.AskGemini2Brick
+import org.catrobat.catroid.content.bricks.AskGeminiBrick
+import org.catrobat.catroid.content.bricks.AskSpeechBrick
+import org.catrobat.catroid.content.bricks.Brick
+import org.catrobat.catroid.content.bricks.CloneBrick
+import org.catrobat.catroid.content.bricks.ShowToastBlock
+import org.catrobat.catroid.content.bricks.UserDefinedBrick
 import org.catrobat.catroid.formulaeditor.CustomFormula
 import org.catrobat.catroid.formulaeditor.CustomFormulaManager
 import org.catrobat.catroid.formulaeditor.Formula
@@ -21,6 +39,7 @@ import org.catrobat.catroid.formulaeditor.InternTokenType
 import org.catrobat.catroid.formulaeditor.UserList
 import org.catrobat.catroid.formulaeditor.UserVariable
 import org.catrobat.catroid.stage.StageActivity
+import org.catrobat.catroid.userbrick.UserDefinedBrickData
 import java.io.File
 import java.util.ArrayList // For LunoValue.List elements
 import kotlin.math.pow
@@ -2197,7 +2216,912 @@ class Interpreter(
             }
         }
 
+        defineNative("SpriteGetScriptList", 1..1) { _, args ->
+            val sprite = args[0]
 
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetScriptList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.scriptList.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetScriptList: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetLookList", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetLookList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.lookList.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetLookList: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetSoundList", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetSoundList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.soundList.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetSoundList: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetUserVariables", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetUserVariables: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.userVariables.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetUserVariables: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetUserLists", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetUserLists: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.userLists.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetUserLists: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ActionFactory", 0..0) { _, args ->
+            LunoValue.NativeObject(ActionFactory())
+        }
+
+        defineNative("SpriteGetActionFactory", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetActionFactory: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.NativeObject(sprite.obj.actionFactory)
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetActionFactory: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteIsClone", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteIsClone: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.Boolean(sprite.obj.isClone)
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteIsClone: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteOriginal", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteOriginal: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.NativeObject(sprite.obj.myOriginal)
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteOriginal: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteIsGliding", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteIsClone: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.Boolean(sprite.obj.isGliding)
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteIsClone: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetAllBricks", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetAllBricks: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.List(
+                    sprite.obj.allBricks.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetAllBricks: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetUserVariable", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetUserVariable: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.NativeObject(sprite.obj.getUserVariable(args[1].toString()))
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetUserVariable: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteAddUserVariable", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteAddUserVariable: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                val variable = args[1]
+
+                if (variable !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("SpriteAddUserVariable: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (variable.obj is UserVariable) {
+                    sprite.obj.addUserVariable(variable.obj)
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "SpriteAddUserVariable: Argument 1 was not a UserVariable. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteIsClone: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteAddUserList", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteAddUserList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                val variable = args[0]
+
+                if (variable !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("SpriteAddUserList: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (variable.obj is UserList) {
+                    sprite.obj.addUserList(variable.obj)
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "SpriteAddUserList: Argument 1 was not a UserList. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteAddUserList: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetUserList", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetUserList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.NativeObject(sprite.obj.getUserList(args[1].toString()))
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetUserList: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteAddScript", 2..3) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteAddScript: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                val variable = args[1]
+
+                if (variable !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("SpriteAddScript: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (variable.obj is Script) {
+                    if(args.size == 2) {
+                        sprite.obj.addScript(variable.obj)
+                    } else {
+                        try {
+                            sprite.obj.addScript(args[2].toString().toInt(), variable.obj)
+                        } catch (e: Exception) {
+                            throw LunoRuntimeError("SpriteAddScript: Failed to convert String to Int.", -1)
+                        }
+                    }
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "SpriteAddScript: Argument 1 was not a Script. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteAddScript: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteGetScript", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteGetScript: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                try {
+                    LunoValue.NativeObject(sprite.obj.getScript(args[1].toString().toInt()))
+                } catch (e: Exception) {
+                    throw LunoRuntimeError("SpriteGetScript: Failed to convert String to Int.", -1)
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteGetScript: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteRemoveAllScripts", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteRemoveAllScripts: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                sprite.obj.removeAllScripts()
+                LunoValue.Null
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteRemoveAllScripts: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteRemoveScript", 2..2) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteRemoveScript: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                val script = args[1]
+
+                if (script !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("SpriteRemoveScript: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (script.obj is Script) {
+                    sprite.obj.removeScript(script.obj)
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "SpriteRemoveScript: Argument 1 was not a Script. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteRemoveScript: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("SpriteIsBackground", 1..1) { _, args ->
+            val sprite = args[0]
+
+            if (sprite !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("SpriteRemoveScript: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (sprite.obj is Sprite) {
+                LunoValue.Boolean(sprite.obj.isBackgroundSprite)
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = sprite.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "SpriteRemoveScript: Argument 0 was not a Sprite. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptGetBrickList", 1..1) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptGetBrickList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                LunoValue.List(
+                    script.obj.brickList.map { scene ->
+                        LunoValue.NativeObject(scene) // Оборачиваем каждую сцену
+                    }.toMutableList()
+                )
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptGetBrickList: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptRun", 3..3) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptGetBrickList: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                val sprite = args[1]
+
+                if (sprite !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("ScriptGetBrickList: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (sprite.obj is Sprite) {
+                    val sequence = args[2]
+
+                    if (sequence !is LunoValue.NativeObject) {
+                        throw LunoRuntimeError("ScriptGetBrickList: Argument 2 must be a NativeObject.", -1)
+                    }
+
+                    // Каждый элемент должен быть NativeObject, содержащим Scene
+                    if (sequence.obj is ScriptSequenceAction) {
+                        script.obj.run(sprite.obj, sequence.obj)
+                        LunoValue.Null
+                    } else {
+                        // Ошибка: элемент списка не того типа
+                        val gotType = sequence.obj.javaClass.name
+                        throw LunoRuntimeError(
+                            "ScriptGetBrickList: Argument 2 was not a ScriptSequenceAction. Got '$gotType'.",
+                            -1
+                        )
+                    }
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "ScriptGetBrickList: Argument 1 was not a Sprite. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptGetBrickList: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("GetSequence", 1..1) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("GetSequence: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is org.catrobat.catroid.content.Scope) {
+                if(script.obj.sequence != null) {
+                    LunoValue.NativeObject(script.obj.sequence)
+                } else {
+                    LunoValue.Null
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "GetSequence: Argument 0 was not a Scope. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptSequenceAction", 1..1) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptSequenceAction: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                LunoValue.NativeObject(ScriptSequenceAction(script.obj))
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptSequenceAction: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptAddBrick", 2..3) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptAddBrick: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                val sprite = args[1]
+
+                if (sprite !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("ScriptAddBrick: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (sprite.obj is Brick) {
+                    if(args.size == 2) {
+                        script.obj.addBrick(sprite.obj)
+                    } else {
+                        try {
+                            script.obj.addBrick(args[2].toString().toInt(), sprite.obj)
+                        } catch (e: Exception) {
+                            throw LunoRuntimeError(
+                                "ScriptAddBrick: Failed to convert String to Int.",
+                                -1
+                            )
+                        }
+                    }
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "ScriptAddBrick: Argument 1 was not a Brick. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptAddBrick: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptRemoveBrick", 2..2) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptRemoveBrick: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                val sprite = args[1]
+
+                if (sprite !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("ScriptRemoveBrick: Argument 1 must be a NativeObject.", -1)
+                }
+
+                // Каждый элемент должен быть NativeObject, содержащим Scene
+                if (sprite.obj is Brick) {
+                    script.obj.removeBrick(sprite.obj)
+                    LunoValue.Null
+                } else {
+                    // Ошибка: элемент списка не того типа
+                    val gotType = sprite.obj.javaClass.name
+                    throw LunoRuntimeError(
+                        "ScriptRemoveBrick: Argument 1 was not a Brick. Got '$gotType'.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptRemoveBrick: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("ScriptGetBrick", 2..2) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("ScriptGetBrick: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is Script) {
+                try {
+                    LunoValue.NativeObject(script.obj.getBrick(args[1].toString().toInt()))
+                } catch (e: Exception) {
+                    throw LunoRuntimeError(
+                        "ScriptGetBrick: Failed to convert String to Int.",
+                        -1
+                    )
+                }
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "ScriptGetBrick: Argument 0 was not a Script. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("UserVariableGetValue", 1..1) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("UserVariableGetValue: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is UserVariable) {
+                LunoValue.String(script.obj.value.toString())
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "UserVariableGetValue: Argument 0 was not a UserVariable. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("UserVariableSetValue", 2..2) { _, args ->
+            val script = args[0]
+
+            if (script !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("UserVariableSetValue: Argument 0 must be a NativeObject.", -1)
+            }
+
+            // Каждый элемент должен быть NativeObject, содержащим Scene
+            if (script.obj is UserVariable) {
+                script.obj.value = args[1].toString()
+                LunoValue.Null
+            } else {
+                // Ошибка: элемент списка не того типа
+                val gotType = script.obj.javaClass.name
+                throw LunoRuntimeError(
+                    "UserVariableSetValue: Argument 0 was not a UserVariable. Got '$gotType'.",
+                    -1
+                )
+            }
+        }
+
+        defineNative("RunBrick", 3..3) { _, args ->
+            val brickArgLuno = args[0]   // Аргумент для Brick
+            val spriteArgLuno = args[1]  // Аргумент для Sprite
+            val sequenceArgLuno = args[2] // Аргумент для ScriptSequenceAction
+
+            // Проверка и извлечение Brick
+            if (brickArgLuno !is LunoValue.NativeObject) {
+                throw LunoRuntimeError("RunBrick: Argument 0 (brick) must be a NativeObject.", -1)
+            }
+            // Проверяем, что обернутый объект является экземпляром Brick (или его наследником)
+            if (brickArgLuno.obj is Brick) { // Используй свой базовый класс Brick
+                val brickInstance = brickArgLuno.obj // Smart cast к Brick
+
+                // Проверка и извлечение Sprite
+                if (spriteArgLuno !is LunoValue.NativeObject) {
+                    throw LunoRuntimeError("RunBrick: Argument 1 (sprite) must be a NativeObject.", -1)
+                }
+                // Проверяем, что обернутый объект является экземпляром Sprite
+                if (spriteArgLuno.obj is Sprite) { // Используй свой класс Sprite
+                    val spriteInstance = spriteArgLuno.obj // Smart cast к Sprite
+
+                    // Проверка и извлечение ScriptSequenceAction
+                    if (sequenceArgLuno !is LunoValue.NativeObject) {
+                        throw LunoRuntimeError("RunBrick: Argument 2 (sequence) must be a NativeObject.", -1)
+                    }
+                    // Проверяем, что обернутый объект является экземпляром ScriptSequenceAction
+                    if (sequenceArgLuno.obj is ScriptSequenceAction) { // Используй свой класс ScriptSequenceAction
+                        val sequenceInstance = sequenceArgLuno.obj // Smart cast
+
+                        // Теперь все типы проверены и объекты извлечены
+                        try {
+                            brickInstance.addActionToSequence(spriteInstance, sequenceInstance)
+                            return@defineNative LunoValue.Null
+                        } catch (e: Exception) {
+                            throw LunoRuntimeError("RunBrick: Error during addActionToSequence for '${brickInstance::class.simpleName}': ${e.message}", -1, e)
+                        }
+
+                    } else {
+                        val gotType = sequenceArgLuno.obj?.javaClass?.name ?: "null"
+                        throw LunoRuntimeError("RunBrick: Argument 2 (sequence) was not a ScriptSequenceAction. Got '$gotType'.", -1)
+                    }
+                } else {
+                    val gotType = spriteArgLuno.obj?.javaClass?.name ?: "null"
+                    // Вот здесь была твоя ошибка в сообщении, должно быть "Argument 1 was not a Sprite"
+                    throw LunoRuntimeError("RunBrick: Argument 1 (sprite) was not a Sprite. Got '$gotType'.", -1)
+                }
+            } else {
+                val gotType = brickArgLuno.obj?.javaClass?.name ?: "null"
+                throw LunoRuntimeError("RunBrick: Argument 0 (brick) was not a Brick. Got '$gotType'.", -1)
+            }
+        }
+
+        defineNative("Brick", 2..2) { _, args -> // Ожидаем 2 аргумента: имя блока (String) и параметры (List)
+            val brickNameLuno = args[0]
+            val paramsLunoList = args[1] // Это LunoValue.List, содержащий параметры для конструктора блока
+
+            if (brickNameLuno !is LunoValue.String) {
+                throw LunoRuntimeError("Brick: First argument (brick name) must be a String.", -1)
+            }
+            val brickName = brickNameLuno.value.toLowerCase() // Получаем Kotlin String и приводим к нижнему регистру
+
+            if (paramsLunoList !is LunoValue.List) {
+                throw LunoRuntimeError("Brick: Second argument (parameters) must be a List.", -1)
+            }
+            val constructorArgs: List<LunoValue> = paramsLunoList.elements // Список LunoValue аргументов
+
+            // --- Логика создания конкретных блоков ---
+            val brickInstance: Brick = when (brickName) {
+                "showtoastblock" -> { // Сравниваем чистое имя
+                    if (constructorArgs.isEmpty() || constructorArgs[0] !is LunoValue.String) {
+                        throw LunoRuntimeError("ShowToastBlock expects a String message as its first parameter.", -1)
+                    }
+                    val message = (constructorArgs[0] as LunoValue.String).value
+                    ShowToastBlock(message) // Предполагаем, что такой конструктор есть
+                }
+                "addeditbrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.String).value
+                    val text = (constructorArgs[1] as LunoValue.String).value
+
+                    AddEditBrick(name, text)
+                }
+                "additemtouserlistbrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.Number).value
+
+                    AddItemToUserListBrick(name)
+                }
+                "addradiobrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.String).value
+                    val text = (constructorArgs[1] as LunoValue.String).value
+
+                    AddRadioBrick(name, text)
+                }
+                "arduinosenddigitalvaluebrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.Number).value.toInt()
+                    val text = (constructorArgs[1] as LunoValue.Number).value.toInt()
+
+                    ArduinoSendDigitalValueBrick(name, text)
+                }
+                "arduinosendpwmvaluebrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.Number).value.toInt()
+                    val text = (constructorArgs[1] as LunoValue.Number).value.toInt()
+
+                    ArduinoSendPWMValueBrick(name, text)
+                }
+                "askbrick" -> {
+                    val text = (constructorArgs[0] as LunoValue.String).value
+                    val uservar = (constructorArgs[1] as UserVariable)
+
+                    AskBrick(Formula(text), uservar)
+                }
+                "askgemini2brick" -> {
+                    val name = (constructorArgs[0] as LunoValue.String).value
+                    val text = (constructorArgs[1] as LunoValue.String).value
+                    val uservar = (constructorArgs[2] as UserVariable)
+
+                    AskGemini2Brick(Formula(name), Formula(text), uservar)
+                }
+                "askgeminibrick" -> {
+                    val text = (constructorArgs[0] as LunoValue.String).value
+                    val uservar = (constructorArgs[1] as UserVariable)
+
+                    AskGeminiBrick(Formula(text), uservar)
+                }
+                "askgptbrick" -> {
+                    //brick now is broken
+                    AskGPTBrick()
+                }
+                "askspeechbrick" -> {
+                    CloneBrick()
+                }
+                "clonebrick" -> {
+                    val text = (constructorArgs[0] as LunoValue.String).value
+                    val uservar = (constructorArgs[1] as UserVariable)
+
+                    AskGeminiBrick(Formula(text), uservar)
+                }
+                else -> {
+                    throw LunoRuntimeError("Brick: Unknown Brick ID: '${brickNameLuno.value}'.", -1)
+                }
+            }
+
+            LunoValue.NativeObject(brickInstance)
+        }
     }
 
     private fun toKotlinType(value: LunoValue): Any? {
@@ -2277,7 +3201,7 @@ class Interpreter(
     }
 
     fun interpret(program: ProgramNode) {
-        try {
+        /*try {
             program.statements.forEach { execute(it) }
         } catch (error: LunoRuntimeError) {
             System.err.println("Runtime Error (LunoScript): ${error.message} on line ${error.line}")
@@ -2289,7 +3213,8 @@ class Interpreter(
             System.err.println("Runtime Error (LunoScript): 'break' outside of loop.")
         } catch (cont: ContinueSignal) {
             System.err.println("Runtime Error (LunoScript): 'continue' outside of loop.")
-        }
+        }*/
+        program.statements.forEach { execute(it) }
     }
 
     private fun execute(statement: Statement) {
@@ -2652,16 +3577,22 @@ class Interpreter(
 
     private fun evaluateCallExpr(expr: CallExpr): LunoValue {
         val callee = evaluate(expr.callee)
+        // ДОБАВЬ ЛОГ ЗДЕСЬ:
+        android.util.Log.d("LunoCallExpr", "Calling ${expr.callee}, evaluated callee type: ${callee::class.simpleName}, value: $callee")
         val arguments = expr.arguments.map { evaluate(it) }
 
         if (callee !is LunoValue.Callable) {
+            android.util.Log.e("LunoCallExpr", "ERROR: Callee is not LunoValue.Callable! It is: $callee of type ${callee::class.simpleName}")
             throw LunoRuntimeError("Can only call functions, methods, or classes. Got ${callee::class.simpleName}.", expr.line)
         }
 
         // Arity check is now inside LunoValue.Callable types (LunoFunction, NativeCallable, LunoClass)
         // We pass expr.parenToken to use its line number for arity error reporting if needed
         // For LunoFunction or LunoClass (constructor), 'this' binding happens within their 'call'
-        return callee.call(this, arguments, expr.parenToken)
+        val result = callee.call(this, arguments, expr.parenToken)
+        // ДОБАВЬ ЛОГ ЗДЕСЬ:
+        android.util.Log.d("LunoCallExpr", "Call to ${expr.callee} returned: $result (type: ${result::class.simpleName})")
+        return result
     }
 
 
@@ -2797,13 +3728,22 @@ class Interpreter(
             is LunoValue.Number -> value.toString()
             is LunoValue.String -> if (humanReadable) value.value else value.toLunoScriptString()
             is LunoValue.Boolean -> value.value.toString()
-            is LunoValue.List -> value.elements.joinToString(prefix = "[", postfix = "]", separator = ", ") { lunoValueToString(it, humanReadable) }
+            is LunoValue.List -> value.elements.joinToString(
+                prefix = "[",
+                postfix = "]",
+                separator = ", "
+            ) { lunoValueToString(it, humanReadable) }
+
             is LunoValue.LunoObject -> {
-                value.klass?.name?.let { "<$it instance>" } ?:
-                value.fields.entries.joinToString(prefix = "{", postfix = "}", separator = ", ") {
+                value.klass?.name?.let { "<$it instance>" } ?: value.fields.entries.joinToString(
+                    prefix = "{",
+                    postfix = "}",
+                    separator = ", "
+                ) {
                     "${it.key}: ${lunoValueToString(it.value, humanReadable)}"
                 }
             }
+
             is LunoValue.Callable -> value.toString() // LunoFunction, LunoClass, NativeCallable имеют свой toString
             is LunoValue.NativeObject -> "<NativeObject: ${value.obj::class.simpleName}>"
         }
