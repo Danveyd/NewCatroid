@@ -1,0 +1,40 @@
+{
+  "buildFiles": [
+    "D:\\Catroid-develop\\catroid\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "D:\\Catroid-develop\\catroid\\.cxx\\RelWithDebInfo\\541y5s6l\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "D:\\Catroid-develop\\catroid\\.cxx\\RelWithDebInfo\\541y5s6l\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "catroid::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "armeabi-v7a",
+      "artifactName": "catroid",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\RelWithDebInfo\\541y5s6l\\obj\\armeabi-v7a\\libcatroid.so",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\armeabi-v7a\\libonnxruntime.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

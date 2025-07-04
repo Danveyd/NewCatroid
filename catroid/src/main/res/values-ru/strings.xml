@@ -78,6 +78,28 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_delete_float2">из FloatArray</string>
+    <string formatted="false" name="brick_delete_float">Удалить элемент с индексом</string>
+    <string formatted="false" name="brick_put_float3">под индексом</string>
+    <string formatted="false" name="brick_put_float2">во FloatArray</string>
+    <string formatted="false" name="brick_put_float">Вставить</string>
+    <string formatted="false" name="brick_table_to_float2">во FloatArray</string>
+    <string formatted="false" name="brick_table_to_float">Добавить таблицу</string>
+    <string formatted="false" name="brick_create_float">Задать FloatArray с названием</string>
+    <string formatted="false" name="brick_normalize_img5">B:</string>
+    <string formatted="false" name="brick_normalize_img4">G:</string>
+    <string formatted="false" name="brick_normalize_img3">R:</string>
+    <string formatted="false" name="brick_normalize_img2">И сохранить в таблицы</string>
+    <string formatted="false" name="brick_normalize_img">Нормализовать IMG \(0\-1\)</string>
+    <string formatted="false" name="brick_grayscale_img">Сделать IMG чёрно-белым</string>
+    <string formatted="false" name="brick_resize_img3">новый размер (x, y)</string>
+    <string formatted="false" name="brick_resize_img2">файл проекта</string>
+    <string formatted="false" name="brick_resize_img">Изменить размер изображение</string>
+    <string formatted="false" name="brick_predict_nn3">и сохранить результат в</string>
+    <string formatted="false" name="brick_predict_nn2">вход (FloatArray)</string>
+    <string formatted="false" name="brick_predict_nn">Предсказать .onnx</string>
+    <string formatted="false" name="brick_unload_nn">Выгрузить .onnx модель</string>
+    <string formatted="false" name="brick_load_nn">Загрузить .onnx модель из файла проекта</string>
     <string formatted="false" name="brick_lunoscript">Выполнить LunoScript</string>
     <string formatted="false" name="brick_ask_gpt">Спросить ChatGPT</string>
     <string formatted="false" name="brick_ask_gpt2">Системный промпт</string>

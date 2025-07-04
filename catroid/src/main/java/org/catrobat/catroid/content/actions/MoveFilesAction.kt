@@ -55,7 +55,7 @@ class MoveFilesAction() : TemporalAction() {
 
     private fun copyFileToDir(file: File, dir: File): File {
         val newFile = File(dir, file.name)
-        file.copyTo(newFile)
+        file.copyTo(newFile, overwrite = true)
         return newFile
     }
 }

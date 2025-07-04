@@ -214,7 +214,17 @@ public final class XstreamSerializer {
 		xstream.alias("brick", AskGeminiBrick.class);
 		xstream.alias("brick", AskGemini2Brick.class);
 		xstream.alias("brick", SetDnsBrick.class);
-		xstream.alias("brick", AskGPTAction.class);
+		xstream.alias("brick", CreateFloatBrick.class);
+		xstream.alias("brick", TableToFloatBrick.class);
+		xstream.alias("brick", PutFloatBrick.class);
+		xstream.alias("brick", DeleteFloatBrick.class);
+		xstream.alias("brick", ResizeImgBrick.class);
+		xstream.alias("brick", GrayscaleImgBrick.class);
+		xstream.alias("brick", NormalizeImgBrick.class);
+		xstream.alias("brick", LoadNNBrick.class);
+		xstream.alias("brick", UnloadNNBrick.class);
+		xstream.alias("brick", PredictNNBrick.class);
+		xstream.alias("brick", AskGPTBrick.class);
 		xstream.alias("brick", HideStatusBarBrick.class);
 		xstream.alias("brick", TestBrick.class);
 		xstream.alias("brick", StringToTableBrick.class);

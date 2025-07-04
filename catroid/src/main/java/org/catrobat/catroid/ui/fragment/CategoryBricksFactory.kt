@@ -75,6 +75,7 @@ import org.catrobat.catroid.content.bricks.ConnectServerBrick
 import org.catrobat.catroid.content.bricks.CopyLookBrick
 import org.catrobat.catroid.content.bricks.CopyTextBrick
 import org.catrobat.catroid.content.bricks.CreateDialogBrick
+import org.catrobat.catroid.content.bricks.CreateFloatBrick
 import org.catrobat.catroid.content.bricks.CreateTableBrick
 import org.catrobat.catroid.content.bricks.CreateVarBrick
 import org.catrobat.catroid.content.bricks.CreateWebFileBrick
@@ -83,6 +84,7 @@ import org.catrobat.catroid.content.bricks.DelSquareBrick
 import org.catrobat.catroid.content.bricks.DeleteAllTablesBrick
 import org.catrobat.catroid.content.bricks.DeleteBaseBrick
 import org.catrobat.catroid.content.bricks.DeleteFilesBrick
+import org.catrobat.catroid.content.bricks.DeleteFloatBrick
 import org.catrobat.catroid.content.bricks.DeleteItemOfUserListBrick
 import org.catrobat.catroid.content.bricks.DeleteLookBrick
 import org.catrobat.catroid.content.bricks.DeleteTableBrick
@@ -116,6 +118,7 @@ import org.catrobat.catroid.content.bricks.ForeverBrick
 import org.catrobat.catroid.content.bricks.GlideToBrick
 import org.catrobat.catroid.content.bricks.GoNStepsBackBrick
 import org.catrobat.catroid.content.bricks.GoToBrick
+import org.catrobat.catroid.content.bricks.GrayscaleImgBrick
 import org.catrobat.catroid.content.bricks.HideBrick
 import org.catrobat.catroid.content.bricks.HideStatusBarBrick
 import org.catrobat.catroid.content.bricks.HideText3Brick
@@ -147,6 +150,7 @@ import org.catrobat.catroid.content.bricks.LegoNxtMotorTurnAngleBrick
 import org.catrobat.catroid.content.bricks.LegoNxtPlayToneBrick
 import org.catrobat.catroid.content.bricks.ListenMicroBrick
 import org.catrobat.catroid.content.bricks.ListenServerBrick
+import org.catrobat.catroid.content.bricks.LoadNNBrick
 import org.catrobat.catroid.content.bricks.LookFileBrick
 import org.catrobat.catroid.content.bricks.LookFromTableBrick
 import org.catrobat.catroid.content.bricks.LookRequestBrick
@@ -156,6 +160,7 @@ import org.catrobat.catroid.content.bricks.MoveDownloadsBrick
 import org.catrobat.catroid.content.bricks.MoveFilesBrick
 import org.catrobat.catroid.content.bricks.MoveNStepsBrick
 import org.catrobat.catroid.content.bricks.NextLookBrick
+import org.catrobat.catroid.content.bricks.NormalizeImgBrick
 import org.catrobat.catroid.content.bricks.NoteBrick
 import org.catrobat.catroid.content.bricks.OpenFileBrick
 import org.catrobat.catroid.content.bricks.OpenFilesBrick
@@ -183,7 +188,9 @@ import org.catrobat.catroid.content.bricks.PlaySoundBrick
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick
 import org.catrobat.catroid.content.bricks.PointToBrick
 import org.catrobat.catroid.content.bricks.PostWebRequestBrick
+import org.catrobat.catroid.content.bricks.PredictNNBrick
 import org.catrobat.catroid.content.bricks.PreviousLookBrick
+import org.catrobat.catroid.content.bricks.PutFloatBrick
 import org.catrobat.catroid.content.bricks.RaspiIfLogicBeginBrick
 import org.catrobat.catroid.content.bricks.RaspiPwmBrick
 import org.catrobat.catroid.content.bricks.RaspiSendDigitalValueBrick
@@ -198,6 +205,7 @@ import org.catrobat.catroid.content.bricks.RepeatUntilBrick
 import org.catrobat.catroid.content.bricks.ReplaceItemInUserListBrick
 import org.catrobat.catroid.content.bricks.ReportBrick
 import org.catrobat.catroid.content.bricks.ResetTimerBrick
+import org.catrobat.catroid.content.bricks.ResizeImgBrick
 import org.catrobat.catroid.content.bricks.RunJSBrick
 import org.catrobat.catroid.content.bricks.RunLuaBrick
 import org.catrobat.catroid.content.bricks.RunningStitchBrick
@@ -282,6 +290,7 @@ import org.catrobat.catroid.content.bricks.StopServerBrick
 import org.catrobat.catroid.content.bricks.StopSoundBrick
 import org.catrobat.catroid.content.bricks.StoreCSVIntoUserListBrick
 import org.catrobat.catroid.content.bricks.StringToTableBrick
+import org.catrobat.catroid.content.bricks.TableToFloatBrick
 import org.catrobat.catroid.content.bricks.TapAtBrick
 import org.catrobat.catroid.content.bricks.TapForBrick
 import org.catrobat.catroid.content.bricks.TestBrick
@@ -293,6 +302,7 @@ import org.catrobat.catroid.content.bricks.TurnLeftBrick
 import org.catrobat.catroid.content.bricks.TurnLeftSpeedBrick
 import org.catrobat.catroid.content.bricks.TurnRightBrick
 import org.catrobat.catroid.content.bricks.TurnRightSpeedBrick
+import org.catrobat.catroid.content.bricks.UnloadNNBrick
 import org.catrobat.catroid.content.bricks.UnzipBrick
 import org.catrobat.catroid.content.bricks.UserDefinedBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
@@ -898,6 +908,16 @@ open class CategoryBricksFactory {
         neuralBrickList.add(AskGeminiBrick("Hello!"))
         neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-2.0-flash-exp"))
         neuralBrickList.add(AskGPTBrick("Привет!", "Отвечай на все словом \"апельсин\""))
+        neuralBrickList.add(CreateFloatBrick("FloatArray"))
+        neuralBrickList.add(PutFloatBrick("FloatArray", 1, 0))
+        neuralBrickList.add(TableToFloatBrick("myTable", "FloatArray"))
+        neuralBrickList.add(DeleteFloatBrick("FloatArray", 0))
+        neuralBrickList.add(LoadNNBrick("model.onnx"))
+        neuralBrickList.add(PredictNNBrick("FloatArray"))
+        neuralBrickList.add(UnloadNNBrick())
+        neuralBrickList.add(ResizeImgBrick("image.png", 64, 64))
+        neuralBrickList.add(GrayscaleImgBrick("image.png"))
+        neuralBrickList.add(NormalizeImgBrick("image.png", "rTable", "gTable", "bTable"))
         return neuralBrickList
     }
 

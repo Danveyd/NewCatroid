@@ -901,6 +901,35 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createResizeImg(Sprite sprite, SequenceAction sequence, Formula file, Formula x, Formula y) {
+		ResizeImgAction action = Actions.action(ResizeImgAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFile(file);
+		action.setW(x);
+		action.setH(y);
+		return action;
+	}
+
+	public Action createGrayscaleImg(Sprite sprite, SequenceAction sequence, Formula file) {
+		GrayscaleImgAction action = Actions.action(GrayscaleImgAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFile(file);
+		return action;
+	}
+
+	public Action createNormalizeImg(Sprite sprite, SequenceAction sequence, Formula file, Formula r, Formula g, Formula b) {
+		NormalizeImgAction action = Actions.action(NormalizeImgAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFile(file);
+		action.setR(r);
+		action.setG(g);
+		action.setB(b);
+		return action;
+	}
+
 	public Action createAskGeminiAction(Sprite sprite, SequenceAction sequence,
 											 Formula question, UserVariable userVariable) {
 		AskGeminiAction action = Actions.action(AskGeminiAction.class);
@@ -999,6 +1028,32 @@ public class ActionFactory extends Actions {
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
 		action.setToast(toastFormula);
+		return action;
+	}
+
+	public Action createLoadNNAction(Sprite sprite, SequenceAction sequence,
+										Formula file) {
+		LoadNNAction action = action(LoadNNAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFile(file);
+		return action;
+	}
+
+	public Action createUnoadNNAction(Sprite sprite, SequenceAction sequence) {
+		UnloadNNAction action = action(UnloadNNAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		return action;
+	}
+
+	public Action createPredictNNAction(Sprite sprite, SequenceAction sequence,
+										Formula input, UserVariable variable) {
+		PredictNNAction action = action(PredictNNAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setInput(input);
+		action.setVariable(variable);
 		return action;
 	}
 
@@ -1304,6 +1359,46 @@ public class ActionFactory extends Actions {
 		action.setName(name);
 		action.setX(x);
 		action.setY(y);
+		return action;
+	}
+
+	public Action createFloat(Sprite sprite, SequenceAction sequence,
+										  Formula name) {
+		CreateFloatAction action = action(CreateFloatAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		return action;
+	}
+
+	public Action createTableToFloat(Sprite sprite, SequenceAction sequence,
+							  Formula tname, Formula fname) {
+		TableToFloatAction action = action(TableToFloatAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setT_name(tname);
+		action.setF_name(fname);
+		return action;
+	}
+
+	public Action createPutFloat(Sprite sprite, SequenceAction sequence,
+									 Formula name, Formula value, Formula index) {
+		PutFloatAction action = action(PutFloatAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setF_name(name);
+		action.setValue(value);
+		action.setIndex(index);
+		return action;
+	}
+
+	public Action createDeleteFloat(Sprite sprite, SequenceAction sequence,
+									 Formula name, Formula index) {
+		DeleteFloatAction action = action(DeleteFloatAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setIndex(index);
+		action.setF_name(name);
 		return action;
 	}
 

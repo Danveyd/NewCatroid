@@ -101,9 +101,9 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
         from "google-services-template.json"
         rename { "google-services.json" }
         into "src/$flavorName"
-        filter { line ->
-            line.replaceAll('@appId@', flavorId)
-        }
+        //filter { line ->
+        //    line.replaceAll('@appId@', flavorId)
+        //}
     }
 }
 
@@ -185,6 +185,11 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
             }
         }
     }
@@ -285,9 +290,27 @@ android {
         xmlOutput file('build/reports/lint-report.xml')
         xmlReport true
     }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
 
 
     productFlavors {
+        danvex {
+            // Здесь мы не используем суффикс, а ПОЛНОСТЬЮ ПЕРЕОПРЕДЕЛЯЕМ ID.
+            // Это самый надежный способ.
+            applicationId "org.DanVexTeam.NewCatroid"
+
+            // Также переопределяем versionCode и versionName, чтобы
+            // Google Play знал, какая версия у вашего приложения.
+
+            // Вы можете добавить сюда любые другие флаги,
+            // которые вам нужны, например, включить AI по умолчанию.
+            //isDefault.set(true)
+        }
         catroid {
             isDefault.set(true)
         }

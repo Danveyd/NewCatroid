@@ -78,6 +78,28 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_delete_float2">from FloatArray</string>
+    <string formatted="false" name="brick_delete_float">Delete element at index</string>
+    <string formatted="false" name="brick_put_float3">with index</string>
+    <string formatted="false" name="brick_put_float2">to FloatArray</string>
+    <string formatted="false" name="brick_put_float">Insert</string>
+    <string formatted="false" name="brick_table_to_float2">To FloatArray</string>
+    <string formatted="false" name="brick_table_to_float">Add Table</string>
+    <string formatted="false" name="brick_create_float">Set FloatArray with name</string>
+    <string formatted="false" name="brick_normalize_img5">B:</string>
+    <string formatted="false" name="brick_normalize_img4">G:</string>
+    <string formatted="false" name="brick_normalize_img3">R:</string>
+    <string formatted="false" name="brick_normalize_img2">And save values to tables</string>
+    <string formatted="false" name="brick_normalize_img">Normalize IMG (from project files)</string>
+    <string formatted="false" name="brick_grayscale_img">Grayscale IMG (from project files)</string>
+    <string formatted="false" name="brick_resize_img3">new size (x, y)</string>
+    <string formatted="false" name="brick_resize_img2">file</string>
+    <string formatted="false" name="brick_resize_img">Resize IMG (from project files)</string>
+    <string formatted="false" name="brick_predict_nn3">and store result in</string>
+    <string formatted="false" name="brick_predict_nn2">FloatArray</string>
+    <string formatted="false" name="brick_predict_nn">Predict .onnx model</string>
+    <string formatted="false" name="brick_unload_nn">Unload .onnx model</string>
+    <string formatted="false" name="brick_load_nn">Load .onnx model from project file</string>
     <string formatted="false" name="brick_lunoscript">Execute LunoScript</string>
     <string name="formula_editor_custom_functions_header">Libaries</string>
     <string formatted="false" name="brick_ask_gpt">Ask ChatGPT</string>
