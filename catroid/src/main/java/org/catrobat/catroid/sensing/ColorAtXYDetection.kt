@@ -41,6 +41,7 @@ import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.formulaeditor.common.Conversions.convertArgumentToDouble
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageListener
+import org.catrobat.catroid.utils.ErrorLog
 import kotlin.math.roundToInt
 
 private const val COLOR_HEX_PREFIX = "#"
@@ -70,6 +71,7 @@ class ColorAtXYDetection(
                 batch.dispose()
                 fbo.dispose()
             } catch (e: Exception) {
+                //ErrorLog.log(e.message?: "**message not provided :(**")
                 Log.e("ColorAtXYDetection", "Error when disponse")
             }
         }

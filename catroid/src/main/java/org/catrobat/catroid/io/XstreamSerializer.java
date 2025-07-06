@@ -214,6 +214,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", AskGeminiBrick.class);
 		xstream.alias("brick", AskGemini2Brick.class);
 		xstream.alias("brick", SetDnsBrick.class);
+		xstream.alias("brick", ChooseFileBrick.class);
 		xstream.alias("brick", CreateFloatBrick.class);
 		xstream.alias("brick", TableToFloatBrick.class);
 		xstream.alias("brick", PutFloatBrick.class);

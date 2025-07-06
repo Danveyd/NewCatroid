@@ -84,7 +84,7 @@ public final class UiUtils {
 	public static @DrawableRes int getDrawableForItem(@StringRes int itemId) {
 		switch (itemId) {
 			case R.string.backpack_add:
-				return R.drawable.ic_content_paste_small;
+				return R.drawable.personal_bag_24px;
 			case R.string.brick_context_dialog_copy_brick:
 			case R.string.brick_context_dialog_copy_script:
 				return R.drawable.ic_content_copy;

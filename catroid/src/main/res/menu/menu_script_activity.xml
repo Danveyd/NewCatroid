@@ -36,7 +36,7 @@
         android:id="@+id/backpack"
         android:visible="true"
         android:title="@string/backpack"
-        android:icon="@drawable/ic_content_paste_small"
+        android:icon="@drawable/personal_bag_24px"
         app:showAsAction="never" />
     <item
         android:id="@+id/copy"
@@ -62,7 +62,7 @@
         android:id="@+id/comment_in_out"
         android:title="@string/comment_in_out"
         android:visible="false"
-        android:icon="@drawable/ic_look_pos"
+        android:icon="@drawable/mode_comment_24px"
         app:showAsAction="never" />
     <item
         android:id="@+id/find"
@@ -72,12 +72,12 @@
     <item
          android:id="@+id/catblocks"
          android:title="@string/catblocks"
-         android:icon="@drawable/ic_your_brick_pos"
+         android:icon="@drawable/_d_24px"
          app:showAsAction="never"
          />
     <item android:id="@+id/catblocks_reorder_scripts"
         android:title="@string/catblocks_reorder"
-        android:icon="@drawable/ic_placeholder"
+        android:icon="@drawable/split_scene_up_24px"
         app:showAsAction="never" />
     <item
         android:id="@+id/search"

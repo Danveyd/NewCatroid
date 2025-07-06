@@ -117,6 +117,7 @@ import java.io.OutputStream
 import com.android.apksig.ApkSigner
 import com.android.apksig.internal.x509.Certificate
 import org.catrobat.catroid.content.XmlHeader
+import org.catrobat.catroid.utils.ErrorLog
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
@@ -650,6 +651,7 @@ class ProjectOptionsFragment : Fragment() {
                 .build()
                 .sign()
         } catch (e: Exception) {
+            //ErrorLog.log(e.message?: "**message not provided :(**")
             throw RuntimeException("Ошибка при подписании APK: ${e.message}", e)
         }
     }

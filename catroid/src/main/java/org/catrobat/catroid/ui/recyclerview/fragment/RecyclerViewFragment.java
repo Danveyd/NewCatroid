@@ -371,8 +371,8 @@ public abstract class RecyclerViewFragment<T extends Nameable> extends Fragment 
 
 	private void prepareBackpackActionMode() {
 		if (adapter.getItemCount() == itemCountThreshold) {
-			packItems(adapter.getItems().subList(itemCountThreshold - 1, adapter.getItemCount()));
-			return;
+			//packItems(adapter.getItems().subList(itemCountThreshold - 1, adapter.getItemCount()));
+			//return;
 		}
 
 		if (isBackpackEmpty()) {

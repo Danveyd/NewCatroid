@@ -26,7 +26,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <ImageView
-        android:src="?attr/icon_pen"
+        android:src="@drawable/graph_7_24px"
         style="@style/CategoryIconStyle"
         android:contentDescription="@string/category_plot">
     </ImageView >

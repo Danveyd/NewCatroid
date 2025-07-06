@@ -895,6 +895,14 @@ public class StageListener implements ApplicationListener {
 			}
 		}
 
+		if (plotActor != null) {
+			// Убедитесь, что вы передаете ему ShapeRenderer из StageListener
+			plotActor.updateBuffer(this.shapeRenderer);
+		}
+		if (penActor != null) {
+			penActor.updatePenLayer(this.shapeRenderer);
+		}
+
 		// =================================================================
 		// ШАГ 2: ЛОГИКА ОТРИСОВКИ (ИСПОЛЬЗУЕМ ОБНОВЛЕННОЕ СОСТОЯНИЕ)
 		// =================================================================
@@ -916,13 +924,6 @@ public class StageListener implements ApplicationListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 // 2. ФАЗА СПРАЙТОВ (SpriteBatch)
-		if (plotActor != null) {
-			// Убедитесь, что вы передаете ему ShapeRenderer из StageListener
-			plotActor.updateBuffer(this.shapeRenderer);
-		}
-		if (penActor != null) {
-			penActor.updatePenLayer(this.shapeRenderer);
-		}
 
 		batch.setProjectionMatrix(cameraToUse.combined);
 		batch.begin();
@@ -930,7 +931,7 @@ public class StageListener implements ApplicationListener {
 // 1a. Рисуем Look без эффектов
 		batch.setShader(null);
 		for (Actor actor : stage.getActors()) {
-			if (actor instanceof Look && !((Look) actor).needsCustomShader()) {
+			if (actor instanceof Look && !((Look) actor).needsCustomShader() && ((Look) actor).isLookVisible()) {
 				actor.draw(batch, 1.0f);
 			}
 		}
@@ -942,7 +943,7 @@ public class StageListener implements ApplicationListener {
 		for (Actor actor : stage.getActors()) {
 			if (actor instanceof Look) {
 				Look look = (Look) actor;
-				if (look.needsCustomShader()) {
+				if (look.needsCustomShader() && look.isLookVisible()) {
 					// look.applyShaderParameters(brightnessContrastHueShader) - более правильный путь,
 					// но ваш текущий подход тоже будет работать
 					//brightnessContrastHueShader.setBrightness(look.getBrightnessValue());

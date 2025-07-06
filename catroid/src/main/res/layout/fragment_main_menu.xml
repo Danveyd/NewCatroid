@@ -109,7 +109,7 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="32dp"
                     android:textColor="@color/landing_page_icons"
-                    app:drawableEndCompat="@drawable/ic_arrow_forward_vector"
+                    app:drawableEndCompat="@drawable/folder_code_24px"
                     android:clickable="true"
                     android:focusable="true"
                     android:textSize="?attr/x_large"

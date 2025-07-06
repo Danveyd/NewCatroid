@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="bt_permissions_denied">Пожалуйста дайте разрешение. без него получится кирпич :/</string>
     <string formatted="false" name="brick_shader2">фрагментный шейдер</string>
     <string formatted="false" name="brick_shader1">вершинный шейдер</string>
     <string formatted="false" name="brick_shader">Задать GLSL шейдер</string>

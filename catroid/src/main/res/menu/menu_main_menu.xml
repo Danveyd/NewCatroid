@@ -59,7 +59,7 @@
         android:id="@+id/menu_scratch_converter"
         android:title="@string/main_menu_scratch_converter"
         app:showAsAction="never"
-        android:icon="@drawable/ic_placeholder"/>
+        android:icon="@drawable/swap_horiz_24px"/>
     <item
         android:id="@+id/settings"
         android:title="@string/settings"

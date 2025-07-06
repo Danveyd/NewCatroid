@@ -141,6 +141,9 @@ public class Look extends Image {
 		this.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if(getTouchable() == Touchable.disabled) {
+					return false;
+				}
 				if (!isLookVisible()) {
 					return false;
 				}
@@ -197,6 +200,11 @@ public class Look extends Image {
 
 	public synchronized void setLookVisible(boolean lookVisible) {
 		this.lookVisible = lookVisible;
+		if (lookVisible) {
+			setTouchable(Touchable.enabled);
+		} else {
+			setTouchable(Touchable.disabled);
+		}
 	}
 
 	public synchronized int getLookListIndexBeforeLookRequest() {

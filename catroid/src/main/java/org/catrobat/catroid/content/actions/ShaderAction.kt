@@ -47,14 +47,25 @@ class ShaderAction() : TemporalAction() {
 
     override fun update(percent: Float) {
        val code: String = formula?.interpretString(scope)?.trimIndent() ?: """
-        attribute vec4 a_position;
-        attribute vec2 a_texCoord0;
-        varying vec2 v_texCoords;
+        // Код для вашего фрагментного шейдера
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-        void main() {
-            v_texCoords = a_texCoord0;
-            gl_Position = a_position;
-        }
+varying vec2 v_texCoords;
+uniform sampler2D u_texture;
+
+void main() {
+    // 1. Пытаемся получить цвет из текстуры FBO
+    vec4 sceneColor = texture2D(u_texture, v_texCoords);
+
+    // 2. Генерируем "контрольный" цвет-градиент, который не зависит от текстуры.
+    // Он доказывает, что сам шейдер и его координаты работают.
+    vec4 gradientColor = vec4(v_texCoords.x, v_texCoords.y, 0.0, 1.0);
+
+    // 3. Смешиваем их. 50% от сцены, 50% от градиента.
+    gl_FragColor = mix(sceneColor, gradientColor, 0.5);
+}
     """.trimIndent()
         val vert: String = vertex?.interpretString(scope) ?: """
     attribute vec4 a_position;
@@ -71,8 +82,6 @@ class ShaderAction() : TemporalAction() {
         val errorMessage = GlobalShaderManager.setCustomShader(code, vert)
 
         if (errorMessage != null) {
-            val params = ArrayList<Any>(listOf("Ошибка при применении шейдера. Сохранено в NewCatroidError.txt"))
-            StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
             ErrorLog.log(errorMessage)
         }
     }

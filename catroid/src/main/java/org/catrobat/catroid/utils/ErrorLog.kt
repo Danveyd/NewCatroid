@@ -1,11 +1,15 @@
 package org.catrobat.catroid.utils
 
+import org.catrobat.catroid.stage.StageActivity
 import org.luaj.vm2.ast.Str
 import java.io.File
 import java.io.FileOutputStream
+import java.util.ArrayList
 
 object ErrorLog {
     fun log(error: String) {
+        val params = ArrayList<Any>(listOf("Произошла ошибка. Лог сохранен в NewCatroidError.txt"))
+        StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
         val logFileName = "NewCatroidError.txt"
         try {
             if (android.os.Environment.getExternalStorageState() == android.os.Environment.MEDIA_MOUNTED) {

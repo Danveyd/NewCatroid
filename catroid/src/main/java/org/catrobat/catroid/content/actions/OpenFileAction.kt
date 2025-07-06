@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.content.actions
 
+import android.Manifest
 import android.widget.Toast
 import android.content.Context
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
@@ -47,6 +48,7 @@ import java.io.File
 import java.util.ArrayList
 
 import android.webkit.MimeTypeMap
+import org.catrobat.catroid.utils.ErrorLog
 
 class OpenFileAction() : TemporalAction() {
     private var contextt: Context? = null
@@ -58,35 +60,66 @@ class OpenFileAction() : TemporalAction() {
         StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
     }
 
-    override fun update(percent: Float) {
-        val activity = StageActivity.activeStageActivity.get()
-        val context = CatroidApplication.getAppContext() ?: return
+    private fun getMimeType(url: String): String {
+        val extension = MimeTypeMap.getFileExtensionFromUrl(url)?.lowercase()
+        var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
-        // Запрос разрешений
-        activity?.runOnUiThread {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    activity,
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    PERMISSION_EXTERNAL_STORAGE_SAVE_COPY
-                )
+        if (mimeType == null) {
+            // Дополняем стандартную карту своими значениями
+            mimeType = when (extension) {
+                "doc" -> "application/msword"
+                "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                "xls" -> "application/vnd.ms-excel"
+                "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                "ppt" -> "application/vnd.ms-powerpoint"
+                "pptx" -> "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                "pdf" -> "application/pdf"
+                "txt" -> "text/plain"
+                "html" -> "text/html"
+                "htm" -> "team/html"
+                "gif" -> "image/gif"
+                "bin" -> "application/octet-stream"
+                // Добавьте другие нужные расширения сюда
+                else -> "*/*" // Последний рубеж
             }
         }
+        return mimeType
+    }
 
-        val fileName = file?.interpretString(scope) ?: return
+    override fun update(percent: Float) {
+        val activity = StageActivity.activeStageActivity.get()
+        val context = CatroidApplication.getAppContext()
+        if (activity == null || context == null) return
+
+        // Запрос разрешений (лучше выносить из update, но для примера оставим)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                PERMISSION_EXTERNAL_STORAGE_SAVE_COPY
+            )
+            return // Выходим, чтобы дождаться ответа пользователя
+        }
+
+        val fileName = file?.interpretString(scope)
+        if (fileName.isNullOrEmpty()) {
+            toast("File name is empty")
+            return
+        }
+
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val fileToOpen = File(downloadsDir, fileName)
 
-        Log.d("OpenFileAction", "File path: ${fileToOpen.absolutePath}, Exists: ${fileToOpen.exists()}")
-        Log.d("FileProvider", "Opening file: ${fileToOpen.absolutePath}")
-        Log.d("FileProvider", "Authority: ${context.packageName}.fileProvider")
+        Log.d("OpenFileAction", "Trying to open file: ${fileToOpen.absolutePath}")
 
-        if (fileToOpen.exists()) {
+        if (!fileToOpen.exists()) {
+            toast("File not found: $fileName")
+            Log.e("OpenFileAction", "File does not exist at path: ${fileToOpen.absolutePath}")
+            return
+        }
+
+        try {
             val uri: Uri = FileProvider.getUriForFile(
                 context,
                 context.packageName + ".fileProvider",
@@ -95,24 +128,28 @@ class OpenFileAction() : TemporalAction() {
 
             val intent = Intent(Intent.ACTION_VIEW)
 
-            val fileExtension = fileToOpen.extension.lowercase()
-            var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension)
-            if (mimeType == null) {
-                mimeType = "*/*" // Тип по умолчанию, если не удалось определить
-            }
+            // ИЗМЕНЕНО: Используем нашу новую надежную функцию
+            val mimeType = getMimeType(fileToOpen.name)
             intent.setDataAndType(uri, mimeType)
+            Log.d("OpenFileAction", "URI: $uri, MIME Type: $mimeType")
 
-            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            // Используем createChooser, чтобы пользователь всегда видел диалог выбора
+            val chooser = Intent.createChooser(intent, "Open with")
 
             if (intent.resolveActivity(context.packageManager) != null) {
-                activity?.runOnUiThread {
-                    activity.startActivity(Intent.createChooser(intent, "Open with"))
-                }
+                activity.startActivity(chooser)
             } else {
-                toast("No application found to open this file")
+                toast("No application found to open this file type")
+                Log.e("OpenFileAction", "No activity found to handle Intent with MIME type: $mimeType")
             }
-        } else {
-            toast("File not found")
+        } catch (e: Exception) {
+            ErrorLog.log(e.message ?: "**message not provided :(**")
+            // Ловим ошибки, например, от FileProvider
+            Log.e("OpenFileAction", "Error creating URI or starting activity", e)
+            toast("Error opening file: ${e.localizedMessage}")
         }
     }
 

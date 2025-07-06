@@ -29,7 +29,7 @@
         android:id="@+id/unpack"
         android:title="@string/unpack"
         app:showAsAction="never"
-        android:icon="@drawable/ic_placeholder"/>
+        android:icon="@drawable/unarchive_24px"/>
 
     <item
         android:id="@+id/delete"
@@ -41,6 +41,6 @@
         android:id="@+id/show_details"
         android:title="@string/show_details"
         app:showAsAction="never"
-        android:icon="@drawable/ic_placeholder"/>
+        android:icon="@drawable/details_24px"/>
 
 </menu>

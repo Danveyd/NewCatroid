@@ -2130,6 +2130,7 @@ public class ActionFactory extends Actions {
 										 Integer type, UserVariable variable) {
 		ChooseFileAction action = action(ChooseFileAction.class);
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
 		action.setFileType(type);
 		action.setVariable(variable);
 

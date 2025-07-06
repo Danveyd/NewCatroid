@@ -11,6 +11,7 @@ import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.UserVariable
 import org.catrobat.catroid.stage.StageActivity
+import org.catrobat.catroid.utils.ErrorLog
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -51,7 +52,10 @@ class ChooseFileAction : TemporalAction() {
                     Intent.createChooser(intent, "Choose a file"),
                     REQUEST_CODE_PICK_FILE
                 )*/
-                activity.startActivity(Intent.createChooser(intent, "Choose a file"))
+                activity.startActivityForResult(
+                    Intent.createChooser(intent, "Choose a file"),
+                    REQUEST_CODE_PICK_FILE
+                )
                 StageActivity.addIntentListener(object : StageActivity.IntentListener {
                     override fun onIntentResult(
                         requestCode: Int,
@@ -88,20 +92,30 @@ class ChooseFileAction : TemporalAction() {
         try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 copyFile(inputStream, destinationFile)
-                variable?.value = fileName // Сохранение имени файла в переменную
+                variable?.value = fileName
             }
         } catch (e: Exception) {
+            //ErrorLog.log(e.message?: "**message not provided :(**")
             Log.e(TAG, "Ошибка при копировании файла: ${e.message}")
         }
     }
 
     private fun getFileName(context: Context, uri: Uri): String {
-        var fileName = "unknown"
-        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (cursor.moveToFirst() && nameIndex >= 0) {
-                fileName = cursor.getString(nameIndex)
+        var fileName = ""
+        // Проверяем схему URI, так как ContentResolver работает в основном с content://
+        if (uri.scheme == "content") {
+            context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex > -1) {
+                        fileName = cursor.getString(nameIndex)
+                    }
+                }
             }
+        }
+        // Если имя файла получить не удалось, генерируем его из пути
+        if (fileName.isBlank()) {
+            fileName = uri.lastPathSegment ?: "chosen_file_${System.currentTimeMillis()}"
         }
         return fileName
     }

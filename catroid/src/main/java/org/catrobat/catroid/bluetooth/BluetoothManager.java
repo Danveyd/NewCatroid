@@ -22,13 +22,21 @@
  */
 package org.catrobat.catroid.bluetooth;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class BluetoothManager {
 
 	public static final int REQUEST_ENABLE_BT = 2000;
+
+	public static final int REQUEST_BT_PERMISSIONS = 2001; // Новый код запроса
 	public static final int BLUETOOTH_NOT_SUPPORTED = -1;
 	public static final int BLUETOOTH_ALREADY_ON = 1;
 	public static final int BLUETOOTH_ACTIVATING = 0;
@@ -48,6 +56,15 @@ public class BluetoothManager {
 		if (bluetoothAdapter == null) {
 			return BLUETOOTH_NOT_SUPPORTED;
 		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 'S' это Android 12
+			if (ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+				// Разрешения нет, запрашиваем его
+				ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BT_PERMISSIONS);
+				return BLUETOOTH_ACTIVATING; // Прерываемся, ждем ответа пользователя
+			}
+		}
+
 		if (!bluetoothAdapter.isEnabled()) {
 			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);

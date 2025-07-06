@@ -30,6 +30,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.catrobat.catroid.common.Constants
 import org.catrobat.catroid.stage.StageActivity
+import org.catrobat.catroid.utils.ErrorLog
 import java.io.IOException
 import java.lang.ref.WeakReference
 
@@ -76,6 +77,7 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
             // Однако, если sendRequest в Action устанавливает WAITING только после успешного addConnection,
             // то при IllegalArgumentException здесь, статус в Action еще будет NOT_SENT, что лучше.
         } catch (e: Exception) { // Перехватываем другие возможные исключения
+            ErrorLog.log(e.message?: "**message not provided :(**")
             Log.e("WebConnection", "[${System.identityHashCode(this)}] Generic Exception in sendWebRequest for URL: '$url'", e)
             popListener()?.onRequestError(Constants.ERROR_SERVER_ERROR.toString()) // или более специфическая ошибка
         }

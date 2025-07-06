@@ -36,7 +36,7 @@
         android:id="@+id/backpack"
         android:title="@string/backpack"
         app:showAsAction="never"
-        android:icon="@drawable/ic_content_paste_small"/>
+        android:icon="@drawable/personal_bag_24px"/>
     <item
         android:id="@+id/copy"
         android:title="@string/copy"
@@ -61,7 +61,7 @@
         android:id="@+id/new_scene"
         android:title="@string/new_scene"
         app:showAsAction="never"
-        android:icon="@drawable/ic_pen_pos" />
+        android:icon="@drawable/landscape_2_24px" />
     <item
         android:id="@+id/show_details"
         android:title="@string/show_details"
@@ -76,7 +76,7 @@
         android:id="@+id/project_files"
         android:title="@string/project_files"
         app:showAsAction="never"
-        android:icon="@drawable/ic_media_library_look"/>
+        android:icon="@drawable/folder_copy_24px"/>
     <!--<item
         android:id="@+id/project_libs"
         android:title="@string/project_libs"

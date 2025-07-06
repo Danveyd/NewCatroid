@@ -49,6 +49,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import okhttp3.Callback
 import okhttp3.RequestBody
+import org.catrobat.catroid.utils.ErrorLog
 import org.catrobat.paintroid.common.PERMISSION_EXTERNAL_STORAGE_SAVE
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -135,6 +136,7 @@ class FileUrlAction() : TemporalAction() {
                 Log.d("DownloadFile", "Файл скачан: ${destFile.absolutePath}")
                 //showToast("Файл скачан: ${destFile.absolutePath}")
             } catch (e: Exception) {
+                //ErrorLog.log(e.message?: "**message not provided :(**")
                 showToast("Ошибка при загрузке файла: ${e.message}")
                 Log.e("DownloadFile", "Ошибка при загрузке файла: ${e.message}", e)
             } finally {

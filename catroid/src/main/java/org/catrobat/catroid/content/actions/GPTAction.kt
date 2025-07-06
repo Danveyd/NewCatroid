@@ -34,6 +34,7 @@ import org.catrobat.catroid.formulaeditor.InterpretationException
 import org.catrobat.catroid.stage.BrickDialogManager
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.stageListener
+import org.catrobat.catroid.utils.ErrorLog
 import org.catrobat.catroid.web.WebConnection
 import org.catrobat.catroid.web.WebConnection.WebRequestListener
 import java.net.URLEncoder
@@ -69,6 +70,7 @@ abstract class GPTAction : Action(), WebRequestListener {
             Log.d("GPTAction", "url: " + url)
             return true
         } catch (e: Exception) {
+            ErrorLog.log(e.message?: "**message not provided :(**")
             // UnsupportedEncodingException может возникнуть, если указана неверная кодировка,
             // но с StandardCharsets.UTF_8 это крайне маловероятно.
             Log.e("GPTAction_Interpret", "Error in interpretUrl", e)

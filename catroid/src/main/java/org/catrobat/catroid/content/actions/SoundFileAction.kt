@@ -37,6 +37,7 @@ import org.catrobat.catroid.io.SoundManager
 import org.catrobat.catroid.io.StorageOperations
 import org.catrobat.catroid.pocketmusic.mididriver.MidiSoundManager
 import org.catrobat.catroid.stage.StageActivity
+import org.catrobat.catroid.utils.ErrorLog
 import org.catrobat.paintroid.common.PERMISSION_EXTERNAL_STORAGE_SAVE_COPY
 import java.io.File
 import java.io.InputStream
@@ -113,6 +114,7 @@ class SoundFileAction : TemporalAction() {
         return try {
             file.inputStream()
         } catch (e: Exception) {
+            ErrorLog.log(e.message?: "**message not provided :(**")
             e.printStackTrace()
             null
         }

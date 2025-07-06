@@ -9,6 +9,7 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import org.catrobat.catroid.content.TableManager
+import org.catrobat.catroid.utils.ErrorLog
 import java.io.File
 import java.io.FileOutputStream
 
@@ -125,7 +126,8 @@ object ImageProcessingManager {
         } catch (e: Exception) {
             // 7. В случае любой ошибки (например, нет прав на запись)
             // безопасно завершаемся и возвращаем null.
-            e.printStackTrace()
+            ErrorLog.log(e.message?: "**message not provided :(**")
+            //e.printStackTrace()
             null
         }
     }

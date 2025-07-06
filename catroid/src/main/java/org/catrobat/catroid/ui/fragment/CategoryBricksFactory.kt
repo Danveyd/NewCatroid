@@ -811,7 +811,7 @@ void main() {
         deviceBrickList.add(ResetTimerBrick())
         deviceBrickList.add(TestBrick())
         deviceBrickList.add(HideStatusBarBrick())
-        //deviceBrickList.add(ChooseFileBrick())
+        deviceBrickList.add(ChooseFileBrick())
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {

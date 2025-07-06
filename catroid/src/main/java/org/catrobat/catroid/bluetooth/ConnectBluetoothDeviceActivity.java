@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.bluetooth;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
@@ -30,7 +31,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -47,6 +50,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -65,10 +69,14 @@ import org.catrobat.catroid.utils.ToastUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_CLASSIC;
 import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_DUAL;
@@ -77,6 +85,8 @@ import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_LE;
 import static org.catrobat.catroid.common.SharedPreferenceKeys.SHOW_MULTIPLAYER_BLUETOOTH_DIALOG_KEY;
 
 public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
+
+	private static final int REQUEST_BLUETOOTH_PERMISSIONS = 101;
 
 	public static final String TAG = ConnectBluetoothDeviceActivity.class.getSimpleName();
 
@@ -149,40 +159,54 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-
 			if (android.bluetooth.BluetoothDevice.ACTION_FOUND.equals(action)) {
-				android.bluetooth.BluetoothDevice device = intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE);
-				if ((device.getBondState() != android.bluetooth.BluetoothDevice.BOND_BONDED)) {
-					if (device.getType() == DEVICE_TYPE_CLASSIC || device.getType() == DEVICE_TYPE_DUAL) {
-						Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(device.getName(), device.getAddress()), DEVICE_TYPE_CLASSIC);
-						if (newDevicesArrayAdapter.getPosition(listElement) < 0) {
-							newDevicesArrayAdapter.add(listElement);
+				// ИЗМЕНЕНО: Используем новый безопасный метод getParcelableExtra
+				// СТАЛО
+				android.bluetooth.BluetoothDevice device;
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // TIRAMISU это API 33
+					// Новый, безопасный способ для Android 13 и выше
+					device = intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE, android.bluetooth.BluetoothDevice.class);
+				} else {
+					// Старый, устаревший способ для версий ниже
+					//@SuppressWarnings("deprecation")
+							device = intent.getParcelableExtra(android.bluetooth.BluetoothDevice.EXTRA_DEVICE);
+				}
+				if (device == null) return;
+
+				// ИЗМЕНЕНО: Добавляем проверку разрешений перед доступом к свойствам устройства
+				if (checkAndRequestBluetoothPermissions()) {
+					try {
+						if (device.getBondState() != android.bluetooth.BluetoothDevice.BOND_BONDED) {
+							String deviceName = device.getName() == null ? "Unknown Device" : device.getName();
+							int deviceType = device.getType();
+
+							if (deviceType == DEVICE_TYPE_CLASSIC || deviceType == DEVICE_TYPE_DUAL) {
+								Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(deviceName, device.getAddress()), DEVICE_TYPE_CLASSIC);
+								if (newDevicesArrayAdapter.getPosition(listElement) < 0) {
+									newDevicesArrayAdapter.add(listElement);
+								}
+							}
+							if (deviceType == DEVICE_TYPE_LE || deviceType == DEVICE_TYPE_DUAL) {
+								String deviceInfoBLE = "BLE - " + deviceName;
+								Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(deviceInfoBLE, device.getAddress()), DEVICE_TYPE_LE);
+								if (newDevicesArrayAdapter.getPosition(listElement) < 0) {
+									newDevicesArrayAdapter.add(listElement);
+								}
+							}
 						}
-					}
-					if (device.getType() == DEVICE_TYPE_LE || device.getType() == DEVICE_TYPE_DUAL) {
-						String deviceInfoBLE = "BLE" + (device.getName() != null ? " - " + device.getName() : "");
-						Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(deviceInfoBLE, device.getAddress()), DEVICE_TYPE_LE);
-						if (newDevicesArrayAdapter.getPosition(listElement) < 0) {
-							newDevicesArrayAdapter.add(listElement);
-						}
+					} catch (SecurityException e) {
+						Log.e(TAG, "Bluetooth permission missing for device discovery", e);
 					}
 				}
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-				isDiscovering = true;
-				handleScanButtonClicked();
-				setProgressBarIndeterminateVisibility(false);
-
+				isDiscovering = false; // Устанавливаем false, так как поиск ЗАВЕРШЕН
+				scanButton.setImageResource(R.drawable.ic_search); // Возвращаем иконку поиска
 				findViewById(R.id.device_list_progress_bar).setVisibility(View.GONE);
 
-				if (!btManager.getBluetoothAdapter().isEnabled()) {
-					initBluetooth();
-					newDevicesArrayAdapter.clear();
-				} else {
-					if (newDevicesArrayAdapter.isEmpty()) {
-						String noDevices = getResources().getString(R.string.none_found);
-						Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(noDevices, ""), 0);
-						newDevicesArrayAdapter.add(listElement);
-					}
+				if (newDevicesArrayAdapter.isEmpty()) {
+					String noDevices = getResources().getString(R.string.none_found);
+					Pair<Pair<String, String>, Integer> listElement = new Pair<>(new Pair<>(noDevices, ""), 0);
+					newDevicesArrayAdapter.add(listElement);
 				}
 			}
 			setDynamicListViewHeight(findViewById(R.id.new_devices));
@@ -377,28 +401,37 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 	protected void initBluetooth() {
 		int bluetoothState = activateBluetooth();
 		if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
-			listAndSelectDevices();
-			startAcceptThread();
-			activateBluetoothVisibility();
+			// ИЗМЕНЕНО: Проверяем разрешения перед тем, как что-то делать
+			if (checkAndRequestBluetoothPermissions()) {
+				listAndSelectDevices(); // Этот метод теперь безопасен для вызова
+				startAcceptThread();
+				activateBluetoothVisibility();
+			}
 		}
 	}
 
 	private void handleScanButtonClicked() {
 		if (isDiscovering) {
-			scanButton.setImageResource(R.drawable.ic_search);
-			isDiscovering = false;
 			cancelDiscovery();
 		} else {
-			scanButton.setImageResource(R.drawable.ic_close);
-			isDiscovering = true;
-			doDiscovery();
+			// ИЗМЕНЕНО: Проверяем разрешения перед запуском сканирования
+			if (checkAndRequestBluetoothPermissions()) {
+				doDiscovery(); // Этот метод теперь безопасен для вызова
+			}
 		}
 	}
 
 	private void activateBluetoothVisibility() {
 		if (btDevice instanceof Multiplayer) {
-			Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-			startActivity(intent);
+			// ИЗМЕНЕНО: Добавляем проверку разрешения перед созданием Intent
+			if (checkAndRequestBluetoothPermissions()) {
+				try {
+					Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+					startActivity(intent);
+				} catch (SecurityException e) {
+					Log.e(TAG, "Bluetooth permission missing to request discoverable.", e);
+				}
+			}
 		}
 	}
 
@@ -410,16 +443,22 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 	}
 
 	private void listAndSelectDevices() {
-		Set<android.bluetooth.BluetoothDevice> pairedDevices = btManager.getBluetoothAdapter().getBondedDevices();
+		pairedDevicesArrayAdapter.clear();
+		try {
+			// Этот код теперь будет выполняться только если есть разрешения
+			Set<android.bluetooth.BluetoothDevice> pairedDevices = btManager.getBluetoothAdapter().getBondedDevices();
 
-		if (pairedDevices.size() > 0) {
-			findViewById(R.id.bluetooth_paired_section).setVisibility(View.VISIBLE);
-			for (android.bluetooth.BluetoothDevice device : pairedDevices) {
-				Pair<String, String> listElement = new Pair<>(device.getName(), device.getAddress());
-				pairedDevicesArrayAdapter.add(listElement);
+			if (pairedDevices.size() > 0) {
+				findViewById(R.id.bluetooth_paired_section).setVisibility(View.VISIBLE);
+				for (android.bluetooth.BluetoothDevice device : pairedDevices) {
+					String deviceName = device.getName() == null ? "Paired Device" : device.getName();
+					Pair<String, String> listElement = new Pair<>(deviceName, device.getAddress());
+					pairedDevicesArrayAdapter.add(listElement);
+				}
+				setDynamicListViewHeight(findViewById(R.id.paired_devices));
 			}
-
-			setDynamicListViewHeight(findViewById(R.id.paired_devices));
+		} catch (SecurityException e) {
+			Log.e(TAG, "Bluetooth permission missing for listing paired devices.", e);
 		}
 	}
 
@@ -436,30 +475,66 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		if (btManager != null && btManager.getBluetoothAdapter() != null) {
-			cancelDiscovery();
-		}
-
+		// ИЗМЕНЕНО: Добавляем проверку разрешений перед отменой поиска
+		cancelDiscovery();
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
+	/**
+	 * НОВЫЙ МЕТОД: Централизованная проверка и запрос разрешений.
+	 * @return true, если разрешения есть, false, если был сделан запрос.
+	 */
+	// В методе checkAndRequestBluetoothPermissions
+	private boolean checkAndRequestBluetoothPermissions() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			ArrayList<String> permissionsToRequest = new ArrayList<>();
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+				permissionsToRequest.add(Manifest.permission.BLUETOOTH_SCAN);
+			}
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+				permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT);
+			}
+			// ИЗМЕНЕНО: Добавляем проверку для ADVERTISE
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+				permissionsToRequest.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+			}
+
+			if (!permissionsToRequest.isEmpty()) {
+				ActivityCompat.requestPermissions(this, permissionsToRequest.toArray(new String[0]), REQUEST_BLUETOOTH_PERMISSIONS);
+				return false;
+			}
+		}
+		return true;
+	}
+
 	protected void doDiscovery() {
-		newDevicesArrayAdapter.clear();
-		setDynamicListViewHeight(findViewById(R.id.new_devices));
+		try {
+			// Этот код теперь будет выполняться только если есть разрешения
+			isDiscovering = true;
+			scanButton.setImageResource(R.drawable.ic_close);
+			newDevicesArrayAdapter.clear();
+			findViewById(R.id.device_list_progress_bar).setVisibility(View.VISIBLE);
 
-		setProgressBarIndeterminateVisibility(true);
-
-		findViewById(R.id.device_list_progress_bar).setVisibility(View.VISIBLE);
-
-		cancelDiscovery();
-
-		btManager.getBluetoothAdapter().startDiscovery();
+			if (btManager.getBluetoothAdapter().isDiscovering()) {
+				btManager.getBluetoothAdapter().cancelDiscovery();
+			}
+			btManager.getBluetoothAdapter().startDiscovery();
+		} catch (SecurityException e) {
+			Log.e(TAG, "Bluetooth permission missing for discovery.", e);
+			Toast.makeText(this, "Bluetooth permission required.", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private void cancelDiscovery() {
-		if (btManager.getBluetoothAdapter().isDiscovering()) {
-			btManager.getBluetoothAdapter().cancelDiscovery();
+		try {
+			if (btManager != null && btManager.getBluetoothAdapter() != null && btManager.getBluetoothAdapter().isDiscovering()) {
+				btManager.getBluetoothAdapter().cancelDiscovery();
+			}
+			isDiscovering = false;
+			scanButton.setImageResource(R.drawable.ic_search);
+		} catch (SecurityException e) {
+			Log.e(TAG, "Bluetooth permission missing for cancelling discovery.", e);
 		}
 	}
 
@@ -515,15 +590,49 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 		}
 	}
 
+	/**
+	 * НОВЫЙ МЕТОД: Обработка результата запроса разрешений.
+	 */
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == REQUEST_BLUETOOTH_PERMISSIONS) {
+			boolean allGranted = true;
+			for (int result : grantResults) {
+				if (result != PackageManager.PERMISSION_GRANTED) {
+					allGranted = false;
+					break;
+				}
+			}
+
+			if (allGranted) {
+				// Разрешения получены! Теперь можно безопасно выполнять действия
+				Log.d(TAG, "All Bluetooth permissions granted.");
+				// Повторяем действие, которое вызвало запрос.
+				// Например, если пользователь нажал "сканировать", начинаем сканирование
+				if (!isDiscovering) {
+					doDiscovery();
+				}
+				listAndSelectDevices();
+			} else {
+				Toast.makeText(this, R.string.bt_permissions_denied, Toast.LENGTH_LONG).show();
+			}
+		}
+	}
+
+
 	public class AcceptThread extends Thread {
 		private BluetoothServerSocket serverSocket;
 
 		AcceptThread() {
 			try {
+				// Мы уже проверили разрешение, но компилятор требует явной обработки
 				serverSocket = BluetoothAdapter.getDefaultAdapter()
 						.listenUsingRfcommWithServiceRecord(getString(R.string.app_name), btDevice.getBluetoothDeviceUUID());
-			} catch (IOException exception) {
-				Log.e(TAG, "Creating ServerSocket failed!", exception);
+			} catch (IOException e) {
+				Log.e(TAG, "Creating ServerSocket failed due to IOException!", e);
+			} catch (SecurityException e) { // ИЗМЕНЕНО: Добавлен catch для SecurityException
+				Log.e(TAG, "Creating ServerSocket failed due to missing BLUETOOTH_CONNECT permission!", e);
 			}
 
 			((Multiplayer) btDevice).setAcceptThread(this);

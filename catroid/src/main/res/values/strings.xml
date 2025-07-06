@@ -78,6 +78,7 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="bt_permissions_denied">Please grant a permission</string>
     <string formatted="false" name="brick_shader2">fragment shader</string>
     <string formatted="false" name="brick_shader1">vertex shader</string>
     <string formatted="false" name="brick_shader">Set GLSL shader</string>

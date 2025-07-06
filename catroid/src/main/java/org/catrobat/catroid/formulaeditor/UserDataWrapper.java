@@ -36,6 +36,9 @@ import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 public final class UserDataWrapper {
 
 	public static UserVariable getUserVariable(String name, Scope scope) {
+		if (scope == null) {
+			return null;
+		}
 		UserVariable userVariable = null;
 		if (scope.getSprite() != null) {
 			userVariable = scope.getSprite().getUserVariable(name);
@@ -50,8 +53,11 @@ public final class UserDataWrapper {
 	}
 
 	public static UserList getUserList(String name, Scope scope) {
+		if (scope == null) {
+			return null;
+		}
 		UserList userList = null;
-		if (scope != null) {
+		if (scope.getSprite() != null) {
 			userList = scope.getSprite().getUserList(name);
 		}
 		if (scope.getProject() != null && userList == null) {
