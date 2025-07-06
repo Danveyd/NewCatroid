@@ -488,7 +488,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
                 R.id.delete -> deleteItems(itemList)
                 R.id.project_options -> showProjectOptionsFragment(item)
                 R.id.project_files -> showProjectFilesFragment(item)
-                R.id.project_libs -> showProjectLibsFragment(item)
+                //R.id.project_libs -> showProjectLibsFragment(item)
             }
             true
         }

@@ -249,7 +249,7 @@
            android:orientation="vertical"
            android:showDividers="end">
 
-           <TextView
+           <!--<TextView
                android:id="@+id/project_options_upload"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                android:paddingStart="@dimen/material_design_spacing_x_large"
                android:paddingTop="@dimen/material_design_spacing_x_large"
                android:background="@drawable/button_background_selector_dark"
-               android:text="@string/upload_project_dialog_title" />
+               android:text="@string/upload_project_dialog_title" />-->
 
        </LinearLayout>
 
@@ -383,7 +383,7 @@
 
        </LinearLayout>
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@drawable/divider"
@@ -401,7 +401,7 @@
                 android:background="@drawable/button_background_selector_dark"
                 android:text="@string/ogurec" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
        <Button
            android:id="@+id/project_options_delete"

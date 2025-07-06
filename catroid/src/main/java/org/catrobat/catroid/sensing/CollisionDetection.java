@@ -13,8 +13,10 @@ import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.utils.NativeLookOptimizer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class CollisionDetection {
 
@@ -34,46 +36,41 @@ public final class CollisionDetection {
 	}
 
 	public static boolean checkCollisionBetweenLooks(Look firstLook, Look secondLook) {
-		// Initial fast checks
+		// Этап 1: Быстрые проверки в Java (остаются без изменений)
 		if (firstLook == null || secondLook == null ||
 				!firstLook.isVisible() || !firstLook.isLookVisible() ||
 				!secondLook.isVisible() || !secondLook.isLookVisible()) {
 			return false;
 		}
 
-		// Broad phase: Check bounding boxes of the whole looks
+		// Этап 2: Проверка ограничивающих рамок (AABB) (тоже остается)
 		Rectangle firstHitbox = firstLook.getHitbox();
 		Rectangle secondHitbox = secondLook.getHitbox();
 		if (firstHitbox == null || secondHitbox == null || !firstHitbox.overlaps(secondHitbox)) {
 			return false;
 		}
 
-		// Narrow phase: Detailed polygon check
+		// Этап 3: Подготовка данных и вызов C++
 		Polygon[] firstPolygons = firstLook.getCurrentCollisionPolygon();
 		Polygon[] secondPolygons = secondLook.getCurrentCollisionPolygon();
 
-		if (firstPolygons == null || secondPolygons == null) {
-			// Handle cases where polygons might be null (e.g., look not loaded yet?)
-			// Depending on desired behavior, could return false or check hitboxes again
-			// Let's assume null polygons mean no collision for safety.
-			return false;
+		if (firstPolygons == null || secondPolygons == null || firstPolygons.length == 0 || secondPolygons.length == 0) {
+			return false; // Если у кого-то нет полигонов, столкновения нет
 		}
 
-
-		//return checkCollisionBetweenPolygonArrays(firstPolygons, secondPolygons);
-
-		Rectangle[] firstBoxes = createBoundingBoxesOfCollisionPolygons(firstPolygons);
-		Rectangle[] secondBoxes = createBoundingBoxesOfCollisionPolygons(secondPolygons);
-
-		boolean useSAT = firstLook.getAssumesConvexPolygons() && secondLook.getAssumesConvexPolygons();
-
-		if (useSAT) {
-			// Оба объекта предполагают выпуклые полигоны -> используем быстрый SAT
-			return checkCollisionBetweenPolygonArraysSAT(firstPolygons, secondPolygons, firstBoxes, secondBoxes);
-		} else {
-			// Хотя бы один объект не считается выпуклым -> используем старый, более общий метод
-			return checkCollisionBetweenPolygonArrays(firstPolygons, secondPolygons);
+		// Конвертируем Polygon[] в float[][], который понимает JNI
+		float[][] firstPreparedPolys = new float[firstPolygons.length][];
+		for (int i = 0; i < firstPolygons.length; i++) {
+			firstPreparedPolys[i] = (firstPolygons[i] != null) ? firstPolygons[i].getTransformedVertices() : new float[0];
 		}
+
+		float[][] secondPreparedPolys = new float[secondPolygons.length][];
+		for (int i = 0; i < secondPolygons.length; i++) {
+			secondPreparedPolys[i] = (secondPolygons[i] != null) ? secondPolygons[i].getTransformedVertices() : new float[0];
+		}
+
+		// Один-единственный вызов, который делает всю тяжелую работу!
+		return NativeLookOptimizer.checkSingleCollision(firstPreparedPolys, secondPreparedPolys);
 	}
 
 	// Renamed from checkCollisionBetweenPolygons to avoid confusion with the single polygon check
@@ -405,5 +402,55 @@ public final class CollisionDetection {
 		} // End loop through touching points
 
 		return 0d; // No collision found for any touching point
+	}
+
+	public static List<Sprite[]> findAllCollisions(List<Sprite> sprites) {
+		if (sprites == null || sprites.size() < 2) {
+			return new ArrayList<>(); // Пустой список, если не с чем сталкиваться
+		}
+
+		// 1. Собираем данные для C++
+		// Собираем только видимые и активные спрайты
+		List<Sprite> activeSprites = new ArrayList<>();
+		for (Sprite sprite : sprites) {
+			if (sprite != null && sprite.look != null && sprite.look.isVisible() && sprite.look.isLookVisible()) {
+				activeSprites.add(sprite);
+			}
+		}
+
+		if (activeSprites.size() < 2) {
+			return new ArrayList<>();
+		}
+
+		float[][][] allPolygons = new float[activeSprites.size()][][];
+		for (int i = 0; i < activeSprites.size(); i++) {
+			Polygon[] lookPolygons = activeSprites.get(i).look.getCurrentCollisionPolygon();
+			if (lookPolygons == null) {
+				allPolygons[i] = new float[0][]; // Пустой массив, если полигонов нет
+				continue;
+			}
+			allPolygons[i] = new float[lookPolygons.length][];
+			for (int j = 0; j < lookPolygons.length; j++) {
+				if (lookPolygons[j] != null) {
+					allPolygons[i][j] = lookPolygons[j].getTransformedVertices();
+				} else {
+					allPolygons[i][j] = new float[0];
+				}
+			}
+		}
+
+		// 2. Один-единственный вызов в C++!
+		int[] collidingPairs = NativeLookOptimizer.checkAllCollisions(allPolygons);
+
+		// 3. Разбираем результат
+		List<Sprite[]> result = new ArrayList<>();
+		if (collidingPairs != null) {
+			for (int i = 0; i < collidingPairs.length; i += 2) {
+				Sprite sprite1 = activeSprites.get(collidingPairs[i]);
+				Sprite sprite2 = activeSprites.get(collidingPairs[i+1]);
+				result.add(new Sprite[]{sprite1, sprite2});
+			}
+		}
+		return result;
 	}
 }

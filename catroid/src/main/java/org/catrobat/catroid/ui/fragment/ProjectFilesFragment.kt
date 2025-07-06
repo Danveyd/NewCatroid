@@ -93,6 +93,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -181,8 +182,9 @@ class ProjectFilesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         filesAdapter = FilesAdapter(project, filesList,
-            { fileName -> deleteFile(fileName) }, // Обработчик для удаления файла
-            { fileName -> copyFile(fileName) } // Обработчик для копирования файла
+            { fileName -> deleteFile(fileName) },
+            { fileName -> copyFile(fileName) },
+            { fileName -> openFile(fileName) } // <-- ДОБАВЬТЕ onOpen
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = filesAdapter
@@ -192,6 +194,34 @@ class ProjectFilesFragment : Fragment() {
         val clipboard = CatroidApplication.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Response", text)
         clipboard.setPrimaryClip(clip)
+    }
+
+    private fun openFile(fileName: String) {
+        project?.let {
+            val fileDirectory = File(it.directory, "files")
+            val file = File(fileDirectory, fileName)
+
+            if (!file.exists()) {
+                Toast.makeText(requireContext(), "Файл не найден", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+            // Используем authority из вашего AndroidManifest.xml
+            val authority = "${BuildConfig.APPLICATION_ID}.fileProvider"
+            val uri = FileProvider.getUriForFile(requireContext(), authority, file)
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            val mimeType = context?.contentResolver?.getType(uri) ?: "*/*"
+            intent.setDataAndType(uri, mimeType)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(requireContext(), "Не найдено приложений для открытия этого файла", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun copyFile(fileName: String) {

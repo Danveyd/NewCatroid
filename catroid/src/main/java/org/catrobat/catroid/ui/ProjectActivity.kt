@@ -181,13 +181,13 @@ class ProjectActivity : BaseCastActivity() {
                 )
                 .addToBackStack(ProjectFilesFragment.TAG)
                 .commit()
-            R.id.project_libs -> supportFragmentManager.beginTransaction()
+            /*R.id.project_libs -> supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container, ProjectLibsFragment(),
                     ProjectLibsFragment.TAG
                 )
                 .addToBackStack(ProjectLibsFragment.TAG)
-                .commit()
+                .commit()*/
             else -> return super.onOptionsItemSelected(item)
         }
         return true

@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants
+import org.catrobat.catroid.common.FlavoredConstants
 import org.catrobat.catroid.common.FlavoredConstants.CATEGORY_URL
 import org.catrobat.catroid.common.FlavoredConstants.DEFAULT_ROOT_DIRECTORY
 import org.catrobat.catroid.common.ProjectData
@@ -116,12 +117,13 @@ class MainMenuFragment : Fragment(),
         setupViewVisibility()
 
         binding.editProject.setOnClickListener(this)
-        binding.uploadProject.setOnClickListener(this)
+        //binding.uploadProject.setOnClickListener(this)
         binding.newProjectFloatingActionButton.setOnClickListener(this)
         binding.myProjectsTextView.setOnClickListener(this)
         binding.projectImageView.setOnClickListener(this)
         binding.playProject.setOnClickListener(this)
         binding.featuredProjectsTextView.setOnClickListener(this)
+        binding.featuredProjectsTextView2.setOnClickListener(this)
 
         setFragment(this)
 
@@ -130,12 +132,12 @@ class MainMenuFragment : Fragment(),
     }
 
     private fun setupCategoriesRV() {
-        binding.categoriesRecyclerView.setHasFixedSize(true)
+        //binding.categoriesRecyclerView.setHasFixedSize(true)
         categoriesAdapter.apply {
             setOnProjectClickCallback(this@MainMenuFragment)
             setOnCategoryTitleClickCallback(this@MainMenuFragment)
         }.let {
-            binding.categoriesRecyclerView.adapter = it
+            //binding.categoriesRecyclerView.adapter = it
         }
     }
 
@@ -148,15 +150,15 @@ class MainMenuFragment : Fragment(),
 
                 val showNoInternetLayout = !isConnectionActive &&
                     (featuredProjectsList.isNullOrEmpty() || projectsCategoriesList.isNullOrEmpty())
-                binding.noInternetLayout.setVisibleOrGone(showNoInternetLayout)
+                //binding.noInternetLayout.setVisibleOrGone(showNoInternetLayout)
                 if (showNoInternetLayout) {
                     return@Observer
                 }
 
-                binding.categoriesRecyclerView.setVisibleOrGone(!showNoInternetLayout)
+                //binding.categoriesRecyclerView.setVisibleOrGone(!showNoInternetLayout)
 
                 featuredProjectsAdapter.setItems(featuredProjectsList)
-                binding.featuredProjectsRecyclerView.itemsCount = featuredProjectsList.size
+                //binding.featuredProjectsRecyclerView.itemsCount = featuredProjectsList.size
 
                 categoriesAdapter.setItems(projectsCategoriesList)
             })
@@ -178,7 +180,7 @@ class MainMenuFragment : Fragment(),
 
     private fun setupFeaturedProjectsRV() {
         featuredProjectsAdapter.setCallback(this@MainMenuFragment)
-        binding.featuredProjectsRecyclerView.apply {
+        /*binding.featuredProjectsRecyclerView.apply {
             setHasFixedSize(true)
             if (itemDecorationCount == 0) {
                 addItemDecoration(IndicatorDecoration(requireContext()))
@@ -188,7 +190,7 @@ class MainMenuFragment : Fragment(),
         }.run {
             PagerSnapHelper().attachToRecyclerView(binding.featuredProjectsRecyclerView)
             resumeAutoScroll()
-        }
+        }*/
     }
 
     override fun onResume() {
@@ -309,7 +311,7 @@ class MainMenuFragment : Fragment(),
                 dialog.show(parentFragmentManager, NewProjectDialogFragment.TAG)
             }
 
-            R.id.uploadProject -> {
+            /*R.id.uploadProject -> {
                 if (Utils.isDefaultProject(projectManager.currentProject, activity)) {
                     binding.root.apply {
                         Snackbar.make(binding.root, R.string.error_upload_default_project, Snackbar.LENGTH_LONG).show()
@@ -329,7 +331,7 @@ class MainMenuFragment : Fragment(),
                         )
                     )
                 startActivity(intent)
-            }
+            }*/
 
             R.id.playProject -> {
                 viewModel.setIsLoading(true)
@@ -344,6 +346,12 @@ class MainMenuFragment : Fragment(),
             R.id.featuredProjectsTextView -> {
                 viewModel.setIsLoading(true)
                 startActivity(Intent(activity, WebViewActivity::class.java))
+            }
+            R.id.featuredProjectsTextView2 -> {
+                viewModel.setIsLoading(true)
+                val webIntent = Intent(activity, WebViewActivity::class.java)
+                webIntent.putExtra(WebViewActivity.INTENT_PARAMETER_URL, FlavoredConstants.COMMUNITY_URL)
+                startActivity(webIntent)
             }
         }
     }

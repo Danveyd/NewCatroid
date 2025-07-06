@@ -126,7 +126,7 @@ public class XmlHeader implements Serializable {
 	}
 
 	public int getVirtualScreenHeight() {
-		if(customResolution) {
+		/*if(customResolution) {
 			WindowManager windowManager = (WindowManager) CatroidApplication.getAppContext().getSystemService(Context.WINDOW_SERVICE);
 			DisplayMetrics displayMetrics = new DisplayMetrics();
 			windowManager.getDefaultDisplay().getMetrics(displayMetrics);
@@ -138,16 +138,16 @@ public class XmlHeader implements Serializable {
 				virtualScreenHeight = width;
 			} else {
 				virtualScreenHeight = height;
-			}*/
+			}*//*
 			virtualScreenHeight = height;
 			return virtualScreenHeight;
-		}
+		}*/
 		Log.d("CustomRes", "def: Y: " + String.valueOf(virtualScreenHeight));
 		return virtualScreenHeight;
 	}
 
 	public int getVirtualScreenWidth() {
-		if(customResolution) {
+		/*if(customResolution) {
 			WindowManager windowManager = (WindowManager) CatroidApplication.getAppContext().getSystemService(Context.WINDOW_SERVICE);
 			DisplayMetrics displayMetrics = new DisplayMetrics();
 			windowManager.getDefaultDisplay().getMetrics(displayMetrics);
@@ -160,10 +160,10 @@ public class XmlHeader implements Serializable {
 				Log.d("TestLandscapemode", "IsLandscapeMode");
 			} else {
 				virtualScreenWidth = width;
-			}*/
+			}*//*
 			virtualScreenWidth = width;
 			return virtualScreenWidth;
-		}
+		}*/
 		Log.d("CustomRes", "def: X: " + String.valueOf(virtualScreenWidth));
 		return virtualScreenWidth;
 	}

@@ -1031,6 +1031,16 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createShader(Sprite sprite, SequenceAction sequence,
+										Formula code, Formula code2) {
+		ShaderAction action = action(ShaderAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setFormula(code);
+		action.setVertex(code2);
+		return action;
+	}
+
 	public Action createLoadNNAction(Sprite sprite, SequenceAction sequence,
 										Formula file) {
 		LoadNNAction action = action(LoadNNAction.class);

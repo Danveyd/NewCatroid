@@ -205,6 +205,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.TABLE_X, STRING,"myTable");
 			case R.string.formula_editor_function_table_y:
 				return buildSingleParameterFunction(Functions.TABLE_Y, STRING,"myTable");
+			case R.string.formula_editor_function_floatarray:
+				return buildSingleParameterFunction(Functions.FLOATARRAY, STRING,"FloatArray");
 			case R.string.formula_editor_function_table_element:
 				return buildTripleParameterFunction(Functions.TABLE_ELEMENT, STRING,"myTable", NUMBER,"3", NUMBER,"2");
 			case R.string.formula_editor_function_table_join:

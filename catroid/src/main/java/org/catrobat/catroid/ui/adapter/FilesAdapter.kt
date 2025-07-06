@@ -12,12 +12,19 @@ import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Project
 import java.io.File
 
-class FilesAdapter(private val project: Project?, private val files: List<String>, private val onDelete: (String) -> Unit, private val onCopy: (String) -> Unit) : RecyclerView.Adapter<FilesAdapter.ViewHolder>() {
+class FilesAdapter(
+    private val project: Project?,
+    private val files: List<String>,
+    private val onDelete: (String) -> Unit,
+    private val onCopy: (String) -> Unit,
+    private val onOpen: (String) -> Unit // <-- ДОБАВЬТЕ ЭТО
+) : RecyclerView.Adapter<FilesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val fileName: TextView = view.findViewById(R.id.file_name)
-        val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
-        val fileSize: TextView = itemView.findViewById(R.id.file_size)
+        val fileSize: TextView = view.findViewById(R.id.file_size)
+        val deleteButton: Button = view.findViewById(R.id.deleteButton)
+        val openButton: Button = view.findViewById(R.id.openButton) // <-- ДОБАВЬТЕ ЭТО
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,10 +45,13 @@ class FilesAdapter(private val project: Project?, private val files: List<String
         }
 
         holder.deleteButton.setOnClickListener {
-            onDelete(fileName) // Вызываем обработчик удаления
+            onDelete(fileName)
         }
         holder.fileName.setOnClickListener {
             onCopy(fileName)
+        }
+        holder.openButton.setOnClickListener { // <-- ДОБАВЬТЕ ЭТОТ БЛОК
+            onOpen(fileName)
         }
     }
 

@@ -104,6 +104,7 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FIND.name(), R.string.formula_editor_function_find);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_X.name(), R.string.formula_editor_function_table_x);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_Y.name(), R.string.formula_editor_function_table_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FLOATARRAY.name(), R.string.formula_editor_function_floatarray);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_ELEMENT.name(), R.string.formula_editor_function_table_element);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_JOIN.name(), R.string.formula_editor_function_table_join);
 
@@ -475,11 +476,11 @@ public class InternToExternGenerator {
 						.formula_editor_function_collision);
 				return collisionTag + "(" + internToken.getTokenStringValue() + ")";
 
-			//default:
-				//return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
+			default:
+				return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
 		}
-		Log.w(TAG, "Необработанный тип токена в generateExternStringFromToken: " + internToken.getInternTokenType());
-		return internToken.getTokenStringValue(); // запасной вариант
+		//Log.w(TAG, "Необработанный тип токена в generateExternStringFromToken: " + internToken.getInternTokenType());
+		//return internToken.getTokenStringValue(); // запасной вариант
 	}
 
 	private String getExternStringForNumber(String number, boolean trimNumbers) {

@@ -93,6 +93,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -181,11 +182,42 @@ class ProjectLibsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         filesAdapter = FilesAdapter(project, filesList,
-            { fileName -> deleteFile(fileName) }, // Обработчик для удаления файла
-            { fileName -> copyFile(fileName) } // Обработчик для копирования файла
+            { fileName -> deleteFile(fileName) },
+            { fileName -> copyFile(fileName) },
+            { fileName -> openFile(fileName) } // <-- ДОБАВЬТЕ onOpen
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = filesAdapter
+    }
+
+    private fun openFile(fileName: String) {
+        project?.let {
+            val fileDirectory = File(it.directory, "files")
+            val file = File(fileDirectory, fileName)
+
+            if (!file.exists()) {
+                Toast.makeText(requireContext(), "Файл не найден", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Используем FileProvider для безопасной передачи файла другим приложениям
+            // Убедитесь, что authority соответствует вашему файлу provider_paths.xml и AndroidManifest.xml
+            val authority = "${BuildConfig.APPLICATION_ID}.provider"
+            val uri = FileProvider.getUriForFile(requireContext(), authority, file)
+
+            val intent = Intent(Intent.ACTION_VIEW)
+            // Определяем MIME-тип, чтобы система знала, какими приложениями открывать файл
+            val mimeType = context?.contentResolver?.getType(uri) ?: "*/*"
+            intent.setDataAndType(uri, mimeType)
+            // Даем временные права на чтение файла приложению, которое его откроет
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            try {
+                startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(requireContext(), "Не найдено приложений для открытия этого файла", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun copyToClipboard(text: String) {

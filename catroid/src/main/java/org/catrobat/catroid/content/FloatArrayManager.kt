@@ -1,6 +1,4 @@
-package org.catrobat.catroid.content // Или в папке NN, как вам удобнее
-
-import java.util.Collections
+package org.catrobat.catroid.content
 
 object FloatArrayManager {
 

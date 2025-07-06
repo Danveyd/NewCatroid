@@ -64,8 +64,8 @@ abstract class GPTAction : Action(), WebRequestListener {
             system = sformula?.interpretString(scope) ?: ""
             val promptEnc = URLEncoder.encode(prompt, StandardCharsets.UTF_8.toString())
             val systemEnc = URLEncoder.encode(system, StandardCharsets.UTF_8.toString())
-            //url = "https://text.pollinations.ai/$promptEnc?private=true&system=$systemEnc"
-            url = "https://www.google.com"
+            url = "https://text.pollinations.ai/$promptEnc?private=true&system=$systemEnc"
+            //url = "https://www.google.com"
             Log.d("GPTAction", "url: " + url)
             return true
         } catch (e: Exception) {
@@ -95,11 +95,14 @@ abstract class GPTAction : Action(), WebRequestListener {
     }
 
     // В WebAction.java и GPTAction.java
+    // В WebAction.kt и GPTAction.kt
     override fun act(delta: Float): Boolean {
+        // Интерпретация URL (остается без изменений)
         if (url == null && !interpretUrl()) {
             return true
         }
 
+        // Проверка разрешений (остается без изменений)
         when (permissionStatus) {
             PermissionStatus.UNKNOWN -> checkPermission()
             PermissionStatus.DENIED -> {
@@ -108,30 +111,30 @@ abstract class GPTAction : Action(), WebRequestListener {
             }
             else -> {}
         }
-
         if (permissionStatus == PermissionStatus.PENDING) {
             return false
         }
 
-        // Теперь эта логика будет работать корректно
-        if (requestStatus == RequestStatus.NOT_SENT) {
-            if (!sendRequest()) { // Если sendRequest() вернул false (не смог добавить в holder)
-                // requestStatus останется NOT_SENT
-                handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
-                return true // Завершаем действие с ошибкой
-            }
-            // Если sendRequest() вернул true, он установил requestStatus = WAITING
-            // На следующем кадре попадем в блок WAITING
+        // ▼▼▼ НАЧАЛО ИСПРАВЛЕННОЙ ЛОГИКИ ▼▼▼
+
+        // Атомарная проверка: если мы еще не отправляли запрос И отправка не удалась,
+        // то обрабатываем ошибку и завершаем действие.
+        if (requestStatus == RequestStatus.NOT_SENT && !sendRequest()) {
+            handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
+            return true
         }
 
+        // Если мы в состоянии ожидания, просто ждем дальше.
         if (requestStatus == RequestStatus.WAITING) {
-            return false // Корректно ждем, если запрос в процессе
+            return false
         }
 
-        // Сюда попадаем, только если requestStatus == FINISHED
+        // Сюда мы попадаем, только если requestStatus == FINISHED
         stageListener.webConnectionHolder.removeConnection(webConnection)
-        handleResponse() // или handleError, если ошибка пришла из коллбэка
+        handleResponse() // Этот метод будет вызван только после успешного onRequestSuccess
         return true
+
+        // ▲▲▲ КОНЕЦ ИСПРАВЛЕННОЙ ЛОГИКИ ▲▲▲
     }
 
     private fun checkPermission() =
@@ -143,27 +146,17 @@ abstract class GPTAction : Action(), WebRequestListener {
         }
 
     private fun sendRequest(): Boolean {
-        Log.d("GPTAction_SendRequest", "[${System.identityHashCode(this)}] Entered sendRequest. Current URL: '$url'") // ++ Лог входа
-        if (StageActivity.stageListener == null) {
-            Log.e("GPTAction_SendRequest", "StageActivity.stageListener is NULL!")
-            return false // или throw Exception
-        }
-        if (StageActivity.stageListener.webConnectionHolder == null) {
-            Log.e("GPTAction_SendRequest", "StageActivity.stageListener.webConnectionHolder is NULL!")
-            return false
-        }
+        // Сначала меняем состояние. Это гарантирует, что мы не будем пытаться
+        // отправить запрос снова и снова в каждом кадре.
+        requestStatus = RequestStatus.WAITING
         webConnection = WebConnection(this, url!!)
-        Log.d("GPTAction_SendRequest", "[${System.identityHashCode(this)}] WebConnection object created: ${System.identityHashCode(webConnection)}") // ++ Лог создания
 
         if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
-            Log.i("GPTAction_SendRequest", "[${System.identityHashCode(this)}] addConnection SUCCESSFUL. Calling sendWebRequest...") // ++ Лог успеха добавления
-            requestStatus = RequestStatus.WAITING
             webConnection!!.sendWebRequest()
-            Log.i("GPTAction_SendRequest", "[${System.identityHashCode(this)}] sendWebRequest() called on WebConnection object ${System.identityHashCode(webConnection)}.")
             return true
         } else {
-            Log.w("GPTAction_SendRequest", "[${System.identityHashCode(this)}] Failed to addConnection to WebConnectionHolder. URL: '$url'")
-            // webConnection = null; // Не обязательно, но для чистоты
+            // Если не удалось добавить в холдер, возвращаем false,
+            // но статус уже WAITING, поэтому мы не застрянем в цикле отправки.
             return false
         }
     }

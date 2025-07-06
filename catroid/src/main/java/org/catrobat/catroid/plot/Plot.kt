@@ -100,6 +100,23 @@ class Plot
 
     }
 
+    fun drawAllLines(renderer: ShapeRenderer, screenRatio: Float, camera: Camera) {
+        if (camera == null)
+            return
+
+        renderer.color = Color(0.0F, 0.0F, 0.0F, 255.0F)
+        //renderer.begin(ShapeRenderer.ShapeType.Filled)
+
+        while (canDraw()) {
+            drawLine(screenRatio, renderer, camera)
+            updateQueue()
+        }
+
+        //renderer.end()
+        width = camera.viewportWidth
+        height = camera.viewportHeight
+    }
+
     private fun drawLine(screenRatio: Float, renderer: ShapeRenderer, camera: Camera) {
         val currentPosition: PointF = drawQueue.first().removeFirst()
         val nextPosition: PointF = drawQueue.first().first()

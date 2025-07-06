@@ -78,6 +78,12 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_shader2">fragment shader</string>
+    <string formatted="false" name="brick_shader1">vertex shader</string>
+    <string formatted="false" name="brick_shader">Set GLSL shader</string>
+    <string formatted="false" name="open">open</string>
+    <string formatted="false" name="formula_editor_function_floatarray">FloatArray size</string>
+    <string formatted="false" name="formula_editor_function_floatarray_parameter">(\'FloatArray\')</string>
     <string formatted="false" name="brick_delete_float2">from FloatArray</string>
     <string formatted="false" name="brick_delete_float">Delete element at index</string>
     <string formatted="false" name="brick_put_float3">with index</string>
@@ -332,6 +338,7 @@
     <string formatted="false" name="main_menu_programs">Projects on device</string>
     <string formatted="false" name="main_menu_help">Help</string>
     <string formatted="false" name="main_menu_web">Dev\'s Telegram</string>
+    <string formatted="false" name="main_menu_community">NewCatroid community</string>
     <string formatted="false" name="main_menu_upload">Upload project</string>
     <string formatted="false" name="main_menu_play">Play project</string>
 

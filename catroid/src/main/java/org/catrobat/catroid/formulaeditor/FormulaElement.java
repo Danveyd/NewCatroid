@@ -23,6 +23,7 @@
 package org.catrobat.catroid.formulaeditor;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.content.FloatArrayManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
 import org.catrobat.catroid.content.Scope;
@@ -581,6 +582,8 @@ public class FormulaElement implements Serializable {
 				Integer ySize = TableManager.Companion.getTableYSize("myTable"); // Получение размера по Y
 				Log.d("TABLE_MANAGER", "Размеры таблицы: " + xSize + " по X и " + ySize + " по Y"); // Выводит: Размеры таблицы: 6 по X и 4 по Y */
 				return TableManager.Companion.getTableXSize(String.valueOf(arguments.get(0)));
+			case FLOATARRAY:
+				return FloatArrayManager.INSTANCE.getArraySize(String.valueOf(arguments.get(0)));
 			case TABLE_Y:
 				return TableManager.Companion.getTableYSize(String.valueOf(arguments.get(0)));
 			case TABLE_ELEMENT:

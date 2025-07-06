@@ -26,4 +26,7 @@
     <cache-path name="cache_root" path="." />
     <external-path name="external_files" path="." />
     <external-path name="downloads" path="Download" />
+    <files-path
+        name="internal_project_files"
+        path="." />
 </paths>

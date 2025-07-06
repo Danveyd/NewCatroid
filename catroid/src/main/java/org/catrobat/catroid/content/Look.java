@@ -23,8 +23,10 @@
 package org.catrobat.catroid.content;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -40,6 +42,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
@@ -51,6 +54,7 @@ import org.catrobat.catroid.content.actions.ScriptSequenceActionWithWaiter;
 import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.physics.ParticleConstants;
 import org.catrobat.catroid.sensing.CollisionInformation;
+import org.catrobat.catroid.utils.NativeLookOptimizer;
 import org.catrobat.catroid.utils.TouchUtil;
 
 import java.lang.annotation.Retention;
@@ -76,6 +80,12 @@ public class Look extends Image {
 	public static final float DEGREE_UI_OFFSET = 90.0f;
 	private static final float COLOR_SCALE = 200.0f;
 
+	private final Rectangle cachedHitbox = new Rectangle();
+
+	private static int globalFrameTicker = 0;
+	private static final int UPDATE_BUCKETS = 4; // Делим все объекты на 4 группы
+	private int myUpdateBucket = -1; // Уникальная "группа" для этого объекта
+
 	// --- Поля для кэширования полигонов ---
 	private Polygon[] cachedTransformedPolygons = null;
 	// Используем AtomicBoolean для базовой потокобезопасности при доступе к флагу
@@ -88,8 +98,12 @@ public class Look extends Image {
 	private boolean simultaneousMovementXY = false;
 	private int lookListIndexBeforeLookRequest = -1;
 	protected LookData lookData;
+
+	private BrightnessContrastHueShader shader;
+	// Добавьте флаг, чтобы понимать, нужен ли объекту вообще особый шейдер
+	private boolean useCustomShader = false;
 	public LookData lookData2 = null;
-	protected Sprite sprite;
+	public Sprite sprite;
 	protected float alpha = 1f;
 	protected float brightness = 1f;
 	protected float hue = 0f;
@@ -97,7 +111,6 @@ public class Look extends Image {
 	protected float height = 1f;
 	protected float width = 1f;
 	protected Pixmap pixmap;
-	private BrightnessContrastHueShader shader;
 	private int rotationMode = ROTATION_STYLE_ALL_AROUND;
 	private float rotation = 90f;
 	private float realRotation = rotation;
@@ -111,6 +124,8 @@ public class Look extends Image {
 
 	public Look(final Sprite sprite) {
 		this.sprite = sprite;
+		globalFrameTicker++;
+		myUpdateBucket = globalFrameTicker % UPDATE_BUCKETS;
 		scheduler = new ThreadScheduler(this);
 		setBounds(0f, 0f, 0f, 0f);
 		setOrigin(0f, 0f);
@@ -121,19 +136,40 @@ public class Look extends Image {
 		addListeners();
 	}
 
+	// В Look.java
 	protected void addListeners() {
 		this.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				if (doTouchDown(x, y, pointer)) {
-					return true;
+				if (!isLookVisible()) {
+					return false;
 				}
+
+				// Мировые координаты клика
+				float stageX = event.getStageX();
+				float stageY = event.getStageY();
+
+				// Проверяем попадание по полигонам
+				Polygon[] collisionPolygons = getCurrentCollisionPolygon();
+				for (Polygon poly : collisionPolygons) {
+					if (poly.contains(stageX, stageY)) {
+						// Попали!
+						EventWrapper e = new EventWrapper(new EventId(EventId.TAP), false);
+						sprite.look.fire(e);
+						return true; // Обработали событие, возвращаем true
+					}
+				}
+
+				// Если не попали ни в один полигон, передаем событие дальше
 				setTouchable(Touchable.disabled);
-				Actor target = getParent().hit(event.getStageX(), event.getStageY(), true);
+				Actor target = getParent().hit(stageX, stageY, true);
 				if (target != null) {
+					target.fire(event);
 					target.fire(event);
 				}
 				setTouchable(Touchable.enabled);
+
+				// ВОТ ИСПРАВЛЕНИЕ: Нужно вернуть false, если мы не обработали событие
 				return false;
 			}
 		});
@@ -205,20 +241,52 @@ public class Look extends Image {
 		if (!isLookVisible()) {
 			return false;
 		}
-		if (isFlipped()) {
-			x = (getWidth() - 1) - x;
-		}
 
-		// We use Y-down, libgdx Y-up. This is the fix for accurate y-axis detection
-		y = (getHeight() - 1) - y;
+		// Старый, медленный способ:
+		// if (isFlipped()) { x = (getWidth() - 1) - x; }
+		// y = (getHeight() - 1) - y;
+		// if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()
+		//         && ((pixmap != null && ((pixmap.getPixel((int) x, (int) y) & 0x000000FF) > 10)))) { ... }
 
-		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()
-				&& ((pixmap != null && ((pixmap.getPixel((int) x, (int) y) & 0x000000FF) > 10)))) {
-			EventWrapper event = new EventWrapper(new EventId(EventId.TAP), false);
-			sprite.look.fire(event);
-			return true;
-		}
+		// Новый, быстрый способ:
+		// x и y здесь - это локальные координаты внутри Actor'а.
+		// Нам нужно проверить, лежит ли эта точка внутри одного из полигонов.
+		Polygon[] polygons = getCurrentCollisionPolygon(); // Он уже кэшированный!
 
+		// Но getCurrentCollisionPolygon возвращает полигоны в мировых координатах.
+		// Нам нужно получить мировые координаты клика. Их нам дает InputEvent.
+		// Поэтому менять нужно не doTouchDown, а логику в InputListener.
+
+		// --- ПРАВИЛЬНЫЙ ПОДХОД ---
+		// В методе addListeners()
+		this.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				if (!isLookVisible()) {
+					return false;
+				}
+
+				// event.getStageX() и event.getStageY() - это мировые координаты клика
+				Polygon[] collisionPolygons = getCurrentCollisionPolygon(); // Получаем кэшированные полигоны
+				for (Polygon poly : collisionPolygons) {
+					if (poly.contains(event.getStageX(), event.getStageY())) {
+						// Попали! Запускаем событие.
+						EventWrapper e = new EventWrapper(new EventId(EventId.TAP), false);
+						sprite.look.fire(e);
+						return true; // Обработали нажатие
+					}
+				}
+
+				// Если не попали, передаем событие дальше, как и раньше
+				setTouchable(Touchable.disabled);
+				Actor target = getParent().hit(event.getStageX(), event.getStageY(), true);
+				if (target != null) {
+					target.fire(event);
+				}
+				setTouchable(Touchable.enabled);
+				return false;
+			}
+		});
 		return false;
 	}
 
@@ -312,7 +380,7 @@ public class Look extends Image {
 		particleEffect.update(Gdx.graphics.getDeltaTime());
 	}
 
-	@Override
+	/*@Override
 	public synchronized void draw(Batch batch, float parentAlpha) {
 		if (!isParticleEffectPaused) {
 			if (hasParticleEffect) {
@@ -335,14 +403,97 @@ public class Look extends Image {
 			super.draw(batch, this.alpha);
 		}
 		batch.setShader(null);
+	}*/
+
+	// в файле Look.java
+
+	@Override
+	public synchronized void draw(Batch batch, float parentAlpha) {
+		// !!! ВАЖНО: ЗАМЕНИТЕ "Sprite1" НА ИМЯ ВАШЕГО РЕАЛЬНОГО СПРАЙТА !!!
+		boolean shouldLog = true;
+
+		if (shouldLog) {
+			Log.d("ShaderDebug", "    [Draw] >>> Drawing Look for: " + sprite.getName());
+		}
+
+		// Логика частиц и смешивания (оставляем исправление на всякий случай)
+		if (particleEffect != null) {
+			if (shouldLog) Log.d("ShaderDebug", "    [Draw] Drawing particle effect.");
+			particleEffect.draw(batch);
+			batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		}
+
+		// Проверка видимости
+		if (!isLookVisible() || getDrawable() == null) {
+			if (shouldLog) {
+				Log.w("ShaderDebug", "    [Draw] Look is NOT drawn. isLookVisible: " + isLookVisible() + ", getDrawable() is null: " + (getDrawable() == null));
+			}
+			return; // Не рисуем, если невидимый или нет текстуры
+		}
+
+		if (shouldLog) {
+			Log.d("ShaderDebug", "    [Draw] Look is visible and has drawable. Alpha: " + this.alpha);
+			Log.d("ShaderDebug", "    [Draw] Batch blend func (SRC): " + batch.getBlendSrcFunc() + ", (DST): " + batch.getBlendDstFunc());
+			Log.d("ShaderDebug", "    [Draw] Position (X,Y): " + getX() + "," + getY() + " | Size (W,H): " + getWidth() + "," + getHeight());
+		}
+
+		// Рисуем сам объект
+		super.setVisible(alpha != 0.0f);
+		batch.setShader(shader);
+		super.setVisible(alpha != 0.0f);
+
+		if (isLookVisible() && this.getDrawable() != null) {
+			super.draw(batch, this.alpha);
+		}
+		batch.setShader(null);
+		/*TextureRegionDrawable trd = (TextureRegionDrawable) getDrawable();
+		if (trd != null && trd.getRegion().getTexture() != null) {
+			TextureRegion region = trd.getRegion();
+			batch.setColor(1f, 1f, 1f, this.alpha); // Устанавливаем цвет
+			batch.draw(
+					region,
+					getX(), getY(),
+					getOriginX(), getOriginY(),
+					getWidth(), getHeight(),
+					getScaleX(), getScaleY(),
+					getRotation()
+			);
+			Log.d("ShaderDebug", "    [Draw] >>> MANUAL DRAW <<<");
+		}*/
+
+
+		if (shouldLog) {
+			Log.d("ShaderDebug", "    [Draw] <<< super.draw() called.");
+		}
+
+		Drawable drawable = getDrawable();
+		if (drawable != null) {
+			Log.d("ShaderDebug", "    [Draw] Drawable class: " + drawable.getClass().getSimpleName());
+			if (drawable instanceof TextureRegionDrawable) {
+				TextureRegion region = ((TextureRegionDrawable) drawable).getRegion();
+				Log.d("ShaderDebug", "    [Draw] TextureRegion: " + region);
+				Log.d("ShaderDebug", "    [Draw] Texture is null: " + (region.getTexture() == null));
+			}
+		}
+
+	}
+
+	public static void tickGlobalFrame() {
+		globalFrameTicker++;
 	}
 
 	@Override
 	public void act(float delta) {
-		scheduler.tick(delta);
+		scheduler.tick(delta); // Базовую логику оставляем
 		if (sprite != null) {
-			sprite.runningStitch.update();
-			sprite.evaluateConditionScriptTriggers();
+			// ▼▼▼ НАЧАЛО ИЗМЕНЕНИЙ ▼▼▼
+			// Проверяем, настал ли наш черед обновляться
+			if (myUpdateBucket == globalFrameTicker % UPDATE_BUCKETS) {
+				// Да, наша очередь! Выполняем тяжелую логику.
+				sprite.runningStitch.update();
+				sprite.evaluateConditionScriptTriggers();
+			}
+			// ▲▲▲ КОНЕЦ ИЗМЕНЕНИЙ ▲▲▲
 		}
 	}
 
@@ -680,69 +831,21 @@ public class Look extends Image {
 	}
 
 	public Rectangle getHitbox() {
-		// Получаем текущие трансформации Actor'а
-		float x = getX(); // Нижний левый угол Actor'а
-		float y = getY();
-		float width = getWidth(); // Ширина с учетом масштаба
-		float height = getHeight(); // Высота с учетом масштаба
-		float originX = getOriginX();
-		float originY = getOriginY();
-		float rotation = getRotation();
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
-
-		// Если нет вращения и масштабирования (или масштаб = 1), можно проще
-		//if (rotation == 0f && scaleX == 1f && scaleY == 1f) {
-		//	return new Rectangle(x, y, width, height); // Прямоугольник Actor'а
-		//}
-		// Но общий случай с Polygon надежнее для повернутых объектов
-
-		// Вершины не трансформированного прямоугольника относительно origin
-		float localX = -originX;
-		float localY = -originY;
-		float localX2 = localX + width / scaleX; // Используем размер до масштабирования для локальных координат
-		float localY2 = localY + height / scaleY;
-
-		// Применяем трансформации
-		float worldOriginX = x + originX;
-		float worldOriginY = y + originY;
-
-		float[] vertices = new float[8];
-		// Нижний левый
-		float x1 = localX; float y1 = localY;
-		// Нижний правый
-		float x2 = localX2; float y2 = localY;
-		// Верхний правый
-		float x3 = localX2; float y3 = localY2;
-		// Верхний левый
-		float x4 = localX; float y4 = localY2;
-
-		// Масштаб
-		x1 *= scaleX; y1 *= scaleY;
-		x2 *= scaleX; y2 *= scaleY;
-		x3 *= scaleX; y3 *= scaleY;
-		x4 *= scaleX; y4 *= scaleY;
-
-		// Поворот
-		float cos = (float) Math.cos(Math.toRadians(rotation));
-		float sin = (float) Math.sin(Math.toRadians(rotation));
-
-		vertices[0] = x1 * cos - y1 * sin + worldOriginX;
-		vertices[1] = x1 * sin + y1 * cos + worldOriginY;
-
-		vertices[2] = x2 * cos - y2 * sin + worldOriginX;
-		vertices[3] = x2 * sin + y2 * cos + worldOriginY;
-
-		vertices[4] = x3 * cos - y3 * sin + worldOriginX;
-		vertices[5] = x3 * sin + y3 * cos + worldOriginY;
-
-		vertices[6] = x4 * cos - y4 * sin + worldOriginX;
-		vertices[7] = x4 * sin + y4 * cos + worldOriginY;
-
-
-		Polygon p = new Polygon(vertices);
-		// getBoundingRectangle() вернет AABB для трансформированного полигона
-		return p.getBoundingRectangle();
+		// Вызываем статический метод из другого класса, передавая ему данные этого объекта
+		float[] box = NativeLookOptimizer.getTransformedBoundingBox(
+				getX(),
+				getY(),
+				getWidth(), // Текущий размер (уже содержит масштаб)
+				getHeight(),
+				getScaleX(),
+				getScaleY(),
+				getRotation(),
+				getOriginX(),
+				getOriginY()
+		);
+		// Обновляем существующий объект Rectangle, чтобы не создавать мусор
+		cachedHitbox.set(box[0], box[1], box[2], box[3]);
+		return cachedHitbox;
 	}
 
 	public void setMotionDirectionInUserInterfaceDimensionUnit(float degrees) {
@@ -839,6 +942,7 @@ public class Look extends Image {
 		}
 
 		brightness = percent / 100f;
+		useCustomShader = (brightness != 1.0f || hue != 0.0f);
 		refreshTextures(true);
 	}
 
@@ -856,6 +960,7 @@ public class Look extends Image {
 			val = COLOR_SCALE + val;
 		}
 		hue = val / COLOR_SCALE;
+		useCustomShader = (brightness != 1.0f || hue != 0.0f);
 		refreshTextures(true);
 	}
 
@@ -871,6 +976,25 @@ public class Look extends Image {
 
 	private boolean isAngleInCatroidInterval(float catroidAngle) {
 		return (catroidAngle > -180 && catroidAngle <= 180);
+	}
+
+	public boolean needsCustomShader() {
+		return useCustomShader;
+	}
+
+	public float getBrightnessValue() { // Название изменено, чтобы не путать с getBrightness() из Actor
+		return brightness;
+	}
+
+	public float getHueValue() {
+		return hue;
+	}
+	// Этот метод будет устанавливать параметры, но не переключать шейдер в batch!
+	public void applyShaderParameters(ShaderProgram customShader) {
+		if (customShader instanceof BrightnessContrastHueShader) {
+			((BrightnessContrastHueShader)customShader).setBrightness(brightness);
+			((BrightnessContrastHueShader)customShader).setHue(hue);
+		}
 	}
 
 	public float breakDownCatroidAngle(float catroidAngle) {
@@ -893,7 +1017,8 @@ public class Look extends Image {
 		return breakDownCatroidAngle(catroidAngle);
 	}
 
-	private class BrightnessContrastHueShader extends ShaderProgram {
+	// ЗАМЕНИТЕ ВЕСЬ СУЩЕСТВУЮЩИЙ КЛАСС BrightnessContrastHueShader НА ЭТОТ:
+	public static class BrightnessContrastHueShader extends ShaderProgram {
 
 		private static final String VERTEX_SHADER = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
 				+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" + "attribute vec2 "
@@ -945,7 +1070,7 @@ public class Look extends Image {
 		private static final String CONTRAST_STRING_IN_SHADER = "contrast";
 		private static final String HUE_STRING_IN_SHADER = "hue";
 
-		BrightnessContrastHueShader() {
+		public BrightnessContrastHueShader() {
 			super(VERTEX_SHADER, FRAGMENT_SHADER);
 			ShaderProgram.pedantic = false;
 			if (isCompiled()) {
@@ -1016,7 +1141,7 @@ public class Look extends Image {
 		}
 	}*/
 
-	public Polygon[] getCurrentCollisionPolygon() {
+	/*public Polygon[] getCurrentCollisionPolygon() {
 		// Определяем, какой LookData используется сейчас
 		LookData currentLookData = (lookData2 != null) ? lookData2 : lookData;
 
@@ -1099,6 +1224,70 @@ public class Look extends Image {
 		this.lastUsedLookDataForCache = currentLookData;
 		// collisionDirty уже установлен в false через compareAndSet (или не был true изначально)
 
+		return this.cachedTransformedPolygons;
+	}*/
+
+	public Polygon[] getCurrentCollisionPolygon() {
+		LookData currentLookData = (lookData2 != null) ? lookData2 : lookData;
+		boolean needsRecalculation = collisionDirty.compareAndSet(true, false);
+
+		if (!needsRecalculation && lastUsedLookDataForCache == currentLookData && cachedTransformedPolygons != null) {
+			return cachedTransformedPolygons;
+		}
+
+		// --- Пересчет полигонов (теперь с C++) ---
+		Polygon[] originalPolygons;
+		if (currentLookData == null) {
+			originalPolygons = new Polygon[0];
+		} else {
+			CollisionInformation ci = currentLookData.getCollisionInformation();
+			if (ci == null || ci.collisionPolygons == null) {
+				ci.loadCollisionPolygon(); // Предполагаем, что это загружает полигоны
+			}
+			originalPolygons = ci.collisionPolygons;
+			if (originalPolygons == null) {
+				originalPolygons = new Polygon[0];
+			}
+		}
+
+		// --- Оптимизация здесь ---
+		// Переиспользуем массив, если это возможно, чтобы уменьшить работу GC
+		if (cachedTransformedPolygons == null || cachedTransformedPolygons.length != originalPolygons.length) {
+			cachedTransformedPolygons = new Polygon[originalPolygons.length];
+			for (int i = 0; i < originalPolygons.length; i++) {
+				cachedTransformedPolygons[i] = new Polygon(); // Создаем один раз
+			}
+		}
+
+		// Получаем параметры трансформации один раз
+		float currentX = getX();
+		float currentY = getY();
+		float currentRotation = getRotation();
+		float currentScaleX = getScaleX();
+		float currentScaleY = getScaleY();
+		float currentOriginX = getOriginX();
+		float currentOriginY = getOriginY();
+
+		for (int p = 0; p < originalPolygons.length; p++) {
+			Polygon originalPoly = originalPolygons[p];
+			if (originalPoly == null || originalPoly.getVertices() == null) {
+				continue;
+			}
+
+			// Вызываем наш нативный метод!
+			float[] transformedVertices = NativeLookOptimizer.transformPolygon(
+					originalPoly.getVertices(),
+					currentX, currentY,
+					currentScaleX, currentScaleY,
+					currentRotation,
+					currentOriginX, currentOriginY
+			);
+
+			// Обновляем существующий полигон вместо создания нового
+			cachedTransformedPolygons[p].setVertices(transformedVertices);
+		}
+
+		this.lastUsedLookDataForCache = currentLookData;
 		return this.cachedTransformedPolygons;
 	}
 

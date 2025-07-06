@@ -240,6 +240,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", SoundFileBrick.class);
 		xstream.alias("brick", SoundFilesBrick.class);
 		xstream.alias("brick", LookFileBrick.class);
+		xstream.alias("brick", ShaderBrick.class);
 		xstream.alias("brick", SaveLookFilesBrick.class);
 		xstream.alias("brick", SetLookFilesBrick.class);
 		xstream.alias("brick", SaveLookBrick.class);

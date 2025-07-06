@@ -3513,7 +3513,12 @@ class Interpreter(
             // Arithmetic
             TokenType.PLUS -> when {
                 left is LunoValue.Number && right is LunoValue.Number -> LunoValue.Number(left.value + right.value)
-                left is LunoValue.String || right is LunoValue.String -> LunoValue.String(lunoValueToString(left) + lunoValueToString(right))
+                left is LunoValue.String || right is LunoValue.String -> {
+                    // Получаем "сырые" строковые значения, не оборачивая их в кавычки.
+                    val leftString = if (left is LunoValue.String) left.value else lunoValueToString(left, humanReadable = true)
+                    val rightString = if (right is LunoValue.String) right.value else lunoValueToString(right, humanReadable = true)
+                    LunoValue.String(leftString + rightString)
+                }
                 left is LunoValue.List && right is LunoValue.List -> LunoValue.List((left.elements + right.elements).toMutableList())
                 else -> throw LunoRuntimeError("Operands for '+' must be numbers, strings, or lists. Got ${left::class.simpleName} and ${right::class.simpleName}", line)
             }

@@ -25,10 +25,13 @@ package org.catrobat.catroid.sensing
 import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.math.Matrix4
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.content.Look
@@ -52,6 +55,26 @@ class ColorAtXYDetection(
     scope: Scope,
     stageListener: StageListener?
 ) : ColorDetection(scope, stageListener) {
+    companion object {
+        // Создаем дорогие объекты ОДИН РАЗ и переиспользуем их всегда.
+        private val batch: SpriteBatch by lazy { SpriteBatch() }
+        private val camera: OrthographicCamera by lazy { OrthographicCamera(1f, 1f) }
+        private val fbo: FrameBuffer by lazy {
+            FrameBuffer(Pixmap.Format.RGBA8888, 1, 1, false)
+        }
+
+        // Метод для очистки ресурсов при выходе из игры (важно!)
+        fun disposeShared() {
+            try {
+                if (batch.isDrawing) batch.end()
+                batch.dispose()
+                fbo.dispose()
+            } catch (e: Exception) {
+                Log.e("ColorAtXYDetection", "Error when disponse")
+            }
+        }
+    }
+
     private var xPosition: Int = 0
     private var yPosition: Int = 0
 
@@ -115,14 +138,68 @@ class ColorAtXYDetection(
             yPosition == -virtualHeight / 2
 
     private fun getHexColorStringFromStagePixmap(): String {
-        val lookList: MutableList<Look> = getLooksOfRelevantSprites() ?: return HEX_COLOR_BLACK
+        // 1. Находим ТОЛЬКО ОДИН самый верхний спрайт в нужной точке
+        var topLook: Look? = null
+        // Итерируем спрайты в обратном порядке, чтобы найти самый верхний (последний в списке отрисовки)
+        stageListener?.spritesFromStage?.asReversed()?.forEach { sprite ->
+            if (sprite.look.isLookVisible && sprite.look.isVisible) {
+                val polygons = sprite.look.currentCollisionPolygon
+                for (poly in polygons) {
+                    // Проверяем, содержит ли полигон нашу точку
+                    if (poly.contains(xPosition.toFloat(), yPosition.toFloat())) {
+                        topLook = sprite.look
+                        return@forEach // Выходим из forEach, так как нашли нужный спрайт
+                    }
+                }
+            }
+        }
 
-        val batch = SpriteBatch()
-        val projectionMatrix = scope.project?.let { createProjectionMatrix(it) }
-        val stagePixmap = projectionMatrix?.let { createPicture(lookList, it, batch) }
-        val color = stagePixmap?.let { Color(stagePixmap.getPixel(0, 0)) } ?: return HEX_COLOR_BLACK
-        return tryRgbaColorToRGBHexString(color, batch, stagePixmap)
+        // 2. Настраиваем нашу статическую камеру, чтобы она смотрела точно на нужный пиксель
+        camera.position.set(xPosition.toFloat(), yPosition.toFloat(), 0f)
+        camera.update()
+        batch.projectionMatrix = camera.combined
+
+        // 3. Рисуем в наш 1x1 буфер (FBO)
+        fbo.begin() // Начинаем рисовать в текстуру
+
+        // Очищаем буфер прозрачным цветом
+        Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        batch.begin()
+        if (topLook != null) {
+            // Если нашли спрайт, рисуем ТОЛЬКО ЕГО
+            topLook!!.draw(batch, 1f)
+        } else {
+            // Если спрайтов в этой точке нет, рисуем цвет фона сцены.
+            // Здесь можно получить цвет фона из ProjectManager и залить им.
+            // Пока просто оставим прозрачным (черным).
+        }
+        batch.end()
+
+        // 4. Получаем пиксель из буфера
+        val pixmap = Pixmap.createFromFrameBuffer(0, 0, 1, 1)
+
+        fbo.end() // Заканчиваем рисовать в текстуру
+
+        val pixelColor = Color(pixmap.getPixel(0, 0))
+        pixmap.dispose() // Обязательно очищаем Pixmap
+
+        return rgbaColorToRGBHexString(pixelColor)
     }
+
+// УДАЛИТЕ СТАРЫЙ createProjectionMatrix, он больше не нужен в этом классе
+// private fun createProjectionMatrix(project: Project): Matrix4 { ... }
+
+    // Также можно упростить getLooksOfRelevantSprites, так как он больше не нужен
+// для этой функции.
+    override fun getLooksOfRelevantSprites(): MutableList<Look>? =
+        stageListener?.let {
+            ArrayList(it.spritesFromStage)
+                .filter { s -> s.look.isLookVisible }
+                .map { s -> s.look }
+                .toMutableList()
+        }
 
     private fun tryRgbaColorToRGBHexString(color: Color, batch: SpriteBatch, stagePixmap: Pixmap):
         String {
@@ -214,13 +291,13 @@ class ColorAtXYDetection(
         bufferWidth = 1
     }
 
-    override fun getLooksOfRelevantSprites(): MutableList<Look>? =
+    /*override fun getLooksOfRelevantSprites(): MutableList<Look>? =
         stageListener?.let {
             ArrayList<Sprite>(it.spritesFromStage)
                 .filter { s -> s.look.isLookVisible }
                 .map { s -> s.look }
                 .toMutableList()
-        }
+        }*/
 
     override fun isParameterInvalid(parameter: Any?): Boolean =
         convertArgumentToDouble(parameter) == null

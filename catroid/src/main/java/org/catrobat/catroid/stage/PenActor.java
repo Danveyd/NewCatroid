@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -34,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -48,6 +50,8 @@ public class PenActor extends Actor {
 	private OrthographicCamera camera;
 	private Float screenRatio;
 
+	private TextureRegion region;
+
 	public PenActor() {
 		XmlHeader header = ProjectManager.getInstance().getCurrentProject().getXmlHeader();
 		buffer = new FrameBuffer(Pixmap.Format.RGBA8888, header.getVirtualScreenWidth(), header.getVirtualScreenHeight(), false);
@@ -55,25 +59,63 @@ public class PenActor extends Actor {
 		camera = new OrthographicCamera(header.getVirtualScreenWidth(), header.getVirtualScreenHeight());
 		bufferBatch.setProjectionMatrix(camera.combined);
 		screenRatio = calculateScreenRatio();
+
+		region = new TextureRegion(buffer.getColorBufferTexture()); // Инициализируем
+		region.flip(false, true); // Переворачиваем один раз
+
 		reset();
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	/**
+	 * НОВЫЙ МЕТОД: Выполняет всю сложную работу по рисованию в FBO.
+	 * Вызывается один раз за кадр из StageListener ДО основного рендера.
+	 */
+	public void updatePenLayer(ShapeRenderer shapeRenderer) {
 		buffer.begin();
+
+		Camera worldCamera = getStage().getViewport().getCamera();
+		bufferBatch.setProjectionMatrix(worldCamera.combined);
+
+		// Начинаем рисовать штампы
+		bufferBatch.begin();
+		for (Sprite sprite : StageActivity.stageListener.getSpritesFromStage()) {
+
+			PenConfiguration pen = sprite.penConfiguration;
+			if (pen.hasStamp()) {
+				// Рисуем текущий костюм спрайта (look) в наш FBO
+				sprite.look.draw(bufferBatch, 1.0f);
+				// Сбрасываем флаг, чтобы не штамповать на следующем кадре
+				pen.setStamp(false);
+			}
+		}
+		bufferBatch.end();
+		// --- КОНЕЦ ФАЗЫ 2 ---
+
+		// 1. Рисуем линии
+		// Устанавливаем проекцию для ShapeRenderer
+		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		for (Sprite sprite : StageActivity.stageListener.getSpritesFromStage()) {
 			PenConfiguration pen = sprite.penConfiguration;
-			pen.drawLinesForSprite(screenRatio, getStage().getViewport().getCamera());
+			// ПРЕДУПРЕЖДЕНИЕ: Эта строка вызовет ошибку компиляции.
+			// Решение - в Шаге 2.
+			pen.drawAllLines(shapeRenderer, screenRatio, getStage().getViewport().getCamera());
 		}
-		buffer.end();
+		shapeRenderer.end();
 
-		batch.end();
-		TextureRegion region = new TextureRegion(buffer.getColorBufferTexture());
-		region.flip(false, true);
-		Image image = new Image(region);
-		image.setPosition(-buffer.getWidth() / 2, -buffer.getHeight() / 2);
-		batch.begin();
-		image.draw(batch, parentAlpha);
+
+		buffer.end(); // Завершаем рисовать в наш FBO
+	}
+
+
+	/**
+	 * ПЕРЕПИСАННЫЙ МЕТОД: Теперь он только рисует готовую текстуру.
+	 * Он больше не ломает главный batch.
+	 */
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		// Просто рисуем наш готовый FBO как обычную картинку
+		batch.draw(region, -buffer.getWidth() / 2, -buffer.getHeight() / 2);
 	}
 
 	public void reset() {

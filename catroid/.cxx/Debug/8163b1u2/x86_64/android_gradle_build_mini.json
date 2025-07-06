@@ -1,0 +1,29 @@
+{
+  "buildFiles": [
+    "D:\\Catroid-develop\\catroid\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "D:\\Catroid-develop\\catroid\\.cxx\\Debug\\8163b1u2\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "D:\\Catroid-develop\\catroid\\.cxx\\Debug\\8163b1u2\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "catroid::@6890427a1f51a3e7e1df": {
+      "artifactName": "catroid",
+      "abi": "x86_64",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\Debug\\8163b1u2\\obj\\x86_64\\libcatroid.so",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\x86_64\\libonnxruntime.so"
+      ]
+    }
+  }
+}

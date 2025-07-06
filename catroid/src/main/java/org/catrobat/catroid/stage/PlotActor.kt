@@ -39,9 +39,9 @@ import kotlin.math.sqrt
 
 class PlotActor : Actor() {
     private var buffer: FrameBuffer?
-    private var bufferBatch: Batch?
     private val camera: OrthographicCamera
     private val screenRatio: Float
+    private val region: TextureRegion
 
     init {
         val header = ProjectManager.getInstance().currentProject.xmlHeader
@@ -51,31 +51,54 @@ class PlotActor : Actor() {
             header.virtualScreenHeight,
             false
         )
-        bufferBatch = SpriteBatch()
+        // bufferBatch больше не нужен
         camera = OrthographicCamera(
             header.getVirtualScreenWidth().toFloat(),
             header.getVirtualScreenHeight().toFloat()
         )
-        (bufferBatch as SpriteBatch).setProjectionMatrix(camera.combined)
         screenRatio = calculateScreenRatio()
+
+        region = TextureRegion(buffer!!.colorBufferTexture) // <-- Инициализируем
+        region.flip(false, true) // <-- Переворачиваем один раз и навсегда
+
         reset()
     }
 
-    override fun draw(batch: Batch, parentAlpha: Float) {
+    fun updateBuffer(shapeRenderer: com.badlogic.gdx.graphics.glutils.ShapeRenderer) {
         buffer!!.begin()
+        // Очищаем FBO прозрачным цветом
+        Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+        // === НАЧАЛО ИСПРАВЛЕНИЯ ===
+        // Начинаем рисовать с помощью ShapeRenderer
+        shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled)
+
+        // Проходим по всем спрайтам и просим их нарисовать свои линии
         for (sprite in StageActivity.stageListener.spritesFromStage) {
             val plot = sprite.plot
-            plot.drawLinesForSprite(screenRatio, stage.viewport.camera)
+            if (plot != null) {
+                // Вызываем наш НОВЫЙ, правильный метод!
+                // Убедимся, что camera не null
+                val camera = stage.viewport.camera
+                if (camera != null) {
+                    plot.drawAllLines(shapeRenderer, screenRatio, camera)
+                }
+            }
         }
-        buffer!!.end()
 
-        batch.end()
-        val region = TextureRegion(buffer!!.colorBufferTexture)
-        region.flip(false, true)
-        val image = Image(region)
-        image.setPosition((-buffer!!.width / 2).toFloat(), (-buffer!!.height / 2).toFloat())
-        batch.begin()
-        image.draw(batch, parentAlpha)
+        // Заканчиваем рисовать
+        shapeRenderer.end()
+        // === КОНЕЦ ИСПРАВЛЕНИЯ ===
+
+        buffer!!.end()
+    }
+
+    // ПЕРЕПИСАННЫЙ МЕТОД DRAW
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        // НИКАКИХ BATCH.END() И BATCH.BEGIN()!
+        // Просто рисуем готовую текстуру на главном batch'e
+        batch.draw(region, (-buffer!!.width / 2).toFloat(), (-buffer!!.height / 2).toFloat())
     }
 
     fun reset() {
@@ -88,10 +111,6 @@ class PlotActor : Actor() {
         if (buffer != null) {
             buffer!!.dispose()
             buffer = null
-        }
-        if (bufferBatch != null) {
-            bufferBatch!!.dispose()
-            bufferBatch = null
         }
     }
 

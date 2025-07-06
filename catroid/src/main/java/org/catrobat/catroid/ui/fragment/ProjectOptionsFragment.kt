@@ -172,7 +172,7 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     private fun setupMishkFrede() {
-        binding.projectOptionsMishkFrede.setOnClickListener {
+        /*binding.projectOptionsMishkFrede.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Мы подозреваем, что вы не кушаете огурцы")
                 .setMessage("Нам нужно удостоверится в этом, ответьте на вопрос. Едите ли вы огурцы?")
@@ -247,7 +247,7 @@ class ProjectOptionsFragment : Fragment() {
                 }
                 .setCancelable(false)
                 .show()
-        }
+        }*/
     }
 
     private fun setupNameInputLayout() {
@@ -340,9 +340,9 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     private fun setupProjectUpload() {
-        binding.projectOptionsUpload.setOnClickListener {
-            projectUpload()
-        }
+        //binding.projectOptionsUpload.setOnClickListener {
+        //    projectUpload()
+        //}
     }
 
     private fun setupProjectSaveExternal() {

@@ -90,11 +90,14 @@ abstract class WebAction : Action(), WebRequestListener {
     }
 
     // В WebAction.java и GPTAction.java
+    // В WebAction.kt и GPTAction.kt
     override fun act(delta: Float): Boolean {
+        // Интерпретация URL (остается без изменений)
         if (url == null && !interpretUrl()) {
             return true
         }
 
+        // Проверка разрешений (остается без изменений)
         when (permissionStatus) {
             PermissionStatus.UNKNOWN -> checkPermission()
             PermissionStatus.DENIED -> {
@@ -103,30 +106,30 @@ abstract class WebAction : Action(), WebRequestListener {
             }
             else -> {}
         }
-
         if (permissionStatus == PermissionStatus.PENDING) {
             return false
         }
 
-        // Теперь эта логика будет работать корректно
-        if (requestStatus == RequestStatus.NOT_SENT) {
-            if (!sendRequest()) { // Если sendRequest() вернул false (не смог добавить в holder)
-                // requestStatus останется NOT_SENT
-                handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
-                return true // Завершаем действие с ошибкой
-            }
-            // Если sendRequest() вернул true, он установил requestStatus = WAITING
-            // На следующем кадре попадем в блок WAITING
+        // ▼▼▼ НАЧАЛО ИСПРАВЛЕННОЙ ЛОГИКИ ▼▼▼
+
+        // Атомарная проверка: если мы еще не отправляли запрос И отправка не удалась,
+        // то обрабатываем ошибку и завершаем действие.
+        if (requestStatus == RequestStatus.NOT_SENT && !sendRequest()) {
+            handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
+            return true
         }
 
+        // Если мы в состоянии ожидания, просто ждем дальше.
         if (requestStatus == RequestStatus.WAITING) {
-            return false // Корректно ждем, если запрос в процессе
+            return false
         }
 
-        // Сюда попадаем, только если requestStatus == FINISHED
+        // Сюда мы попадаем, только если requestStatus == FINISHED
         stageListener.webConnectionHolder.removeConnection(webConnection)
-        handleResponse() // или handleError, если ошибка пришла из коллбэка
+        handleResponse() // Этот метод будет вызван только после успешного onRequestSuccess
         return true
+
+        // ▲▲▲ КОНЕЦ ИСПРАВЛЕННОЙ ЛОГИКИ ▲▲▲
     }
 
     private fun checkPermission() =
@@ -139,19 +142,18 @@ abstract class WebAction : Action(), WebRequestListener {
 
     // В WebAction.java и GPTAction.java
     private fun sendRequest(): Boolean {
-        webConnection = WebConnection(this, url!!) // Создаем WebConnection
+        // Сначала меняем состояние. Это гарантирует, что мы не будем пытаться
+        // отправить запрос снова и снова в каждом кадре.
+        requestStatus = RequestStatus.WAITING
+        webConnection = WebConnection(this, url!!)
 
         if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
-            requestStatus = RequestStatus.WAITING // Устанавливаем WAITING ТОЛЬКО если успешно добавили и будем отправлять
             webConnection!!.sendWebRequest()
-            // Log.i для GPTAction: Log.i("GPTAction_Send", "[${System.identityHashCode(this)}] sendWebRequest() called.")
             return true
         } else {
-            // Log.w для GPTAction: Log.w("GPTAction_Send", "[${System.identityHashCode(this)}] Failed to addConnection to WebConnectionHolder.")
-            // Важно: webConnection создался, но не добавлен. Если его не обнулить, removeConnection может попытаться удалить "не тот" объект
-            // или объект, который не был добавлен. Но т.к. он не добавлялся, removeConnection не должен его найти.
-            // webConnection = null; // Можно, для чистоты, но не обязательно для исправления бага
-            return false // requestStatus остается NOT_SENT (или каким был до вызова sendRequest)
+            // Если не удалось добавить в холдер, возвращаем false,
+            // но статус уже WAITING, поэтому мы не застрянем в цикле отправки.
+            return false
         }
     }
 

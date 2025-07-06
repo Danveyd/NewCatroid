@@ -63,6 +63,20 @@ public class PenConfiguration {
 		return !positions.isEmpty() && (positions.first().size > 1 || queuesToFinish > 0);
 	}
 
+	public void drawAllLines(ShapeRenderer renderer, Float screenRatio, Camera camera) {
+		// Устанавливаем цвет для рисования
+		renderer.setColor(new Color(penColor.r, penColor.g, penColor.b, penColor.a));
+
+		// Это ГЛАВНЫЙ цикл из оригинального кода. Мы просто вернули его.
+		while (currentQueueHasJobToHandle()) {
+			// Рисуем один сегмент линии
+			drawLine(screenRatio, renderer, camera);
+			// Обновляем состояние очередей
+			updateQueues();
+		}
+		renderer.flush();
+	}
+
 	private void drawLine(Float screenRatio, ShapeRenderer renderer, Camera camera) {
 
 		PointF currentPosition = positions.first().removeFirst();
@@ -99,6 +113,10 @@ public class PenConfiguration {
 
 	public void incrementQueuesToFinish() {
 		queuesToFinish++;
+	}
+
+	public void decrementQueuesToFinish() {
+		queuesToFinish--;
 	}
 
 	public void setPenDown(boolean penDown) {

@@ -262,6 +262,7 @@ import org.catrobat.catroid.content.bricks.SetWidthBrick
 import org.catrobat.catroid.content.bricks.SetXBrick
 import org.catrobat.catroid.content.bricks.SetYBrick
 import org.catrobat.catroid.content.bricks.SewUpBrick
+import org.catrobat.catroid.content.bricks.ShaderBrick
 import org.catrobat.catroid.content.bricks.ShowBrick
 import org.catrobat.catroid.content.bricks.ShowDialogBrick
 import org.catrobat.catroid.content.bricks.ShowText3Brick
@@ -629,6 +630,40 @@ open class CategoryBricksFactory {
         looksBrickList.add(ShowDialogBrick("myDialog"))
         looksBrickList.add(SquareBrick("square", "#ff0000", 0f, 0f, 100f, 100f, 1f, 0f, 0f))
         looksBrickList.add(DelSquareBrick("square"))
+        looksBrickList.add(ShaderBrick("""attribute vec4 a_position;
+attribute vec2 a_texCoord0;
+
+uniform mat4 u_projTrans;
+
+varying vec2 v_texCoords;
+
+void main() {
+    v_texCoords = a_texCoord0;
+    gl_Position = u_projTrans * a_position;
+}""", """// Fragment Shader
+// Этот код выполняется для каждого пикселя на экране.
+
+// v_texCoords - координаты текущего пикселя (от 0.0 до 1.0)
+varying vec2 v_texCoords;
+
+// u_texture - это текстура со всей вашей сценой
+uniform sampler2D u_texture;
+
+void main() {
+    // 1. Получаем оригинальный цвет пикселя из сцены
+    vec4 originalColor = texture2D(u_texture, v_texCoords);
+
+    // 2. (Здесь ваше волшебство) Манипулируем цветом.
+    // Например, инвертируем цвета:
+    originalColor.rgb = 1.0 - originalColor.rgb;
+
+    // Например, делаем черно-белым:
+    // float gray = dot(originalColor.rgb, vec3(0.299, 0.587, 0.114));
+    // originalColor.rgb = vec3(gray);
+
+    // 3. Задаем итоговый цвет пикселя
+    gl_FragColor = originalColor;
+}"""))
         looksBrickList.add(OpenUrlBrick(BrickValues.OPEN_IN_BROWSER))
         return looksBrickList
     }
@@ -738,6 +773,40 @@ open class CategoryBricksFactory {
         //deviceBrickList.add(CreateWebUrlBrick("myWebView", "https://example.com", "0", "0", "100", "200"))
         //deviceBrickList.add(CreateWebFileBrick("myWebView", "", "0", "0", "100", "200"))
         //deviceBrickList.add(DeleteWebBrick("myWebView"))
+        deviceBrickList.add(ShaderBrick("""attribute vec4 a_position;
+attribute vec2 a_texCoord0;
+
+uniform mat4 u_projTrans;
+
+varying vec2 v_texCoords;
+
+void main() {
+    v_texCoords = a_texCoord0;
+    gl_Position = u_projTrans * a_position;
+}""", """// Fragment Shader
+// Этот код выполняется для каждого пикселя на экране.
+
+// v_texCoords - координаты текущего пикселя (от 0.0 до 1.0)
+varying vec2 v_texCoords;
+
+// u_texture - это текстура со всей вашей сценой
+uniform sampler2D u_texture;
+
+void main() {
+    // 1. Получаем оригинальный цвет пикселя из сцены
+    vec4 originalColor = texture2D(u_texture, v_texCoords);
+
+    // 2. (Здесь ваше волшебство) Манипулируем цветом.
+    // Например, инвертируем цвета:
+    originalColor.rgb = 1.0 - originalColor.rgb;
+
+    // Например, делаем черно-белым:
+    // float gray = dot(originalColor.rgb, vec3(0.299, 0.587, 0.114));
+    // originalColor.rgb = vec3(gray);
+
+    // 3. Задаем итоговый цвет пикселя
+    gl_FragColor = originalColor;
+}"""))
         deviceBrickList.add(ScreenShotBrick())
         deviceBrickList.add(ResetTimerBrick())
         deviceBrickList.add(TestBrick())

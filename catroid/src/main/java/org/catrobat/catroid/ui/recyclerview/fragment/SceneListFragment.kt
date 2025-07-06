@@ -231,7 +231,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
             R.id.show_details,
             R.id.project_options,
             R.id.project_files,
-            R.id.project_libs,
+            //R.id.project_libs,
             R.id.edit,
             R.id.from_local,
             R.id.from_library
