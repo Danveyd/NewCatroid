@@ -252,17 +252,17 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main_menu, menu)
-        val scratchConverter = getString(R.string.main_menu_scratch_converter)
-        val scratchConverterBeta = SpannableString(
-            scratchConverter + " " + getString(R.string.beta)
-        )
+        //val scratchConverter = getString(R.string.main_menu_scratch_converter)
+        //val scratchConverterBeta = SpannableString(
+        //    scratchConverter + " " + getString(R.string.beta)
+        //)
 
-        scratchConverterBeta.setSpan(
-            ForegroundColorSpan(resources.getColor(R.color.beta_label_color, theme)),
-            scratchConverter.length, scratchConverterBeta.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        menu.findItem(R.id.menu_scratch_converter).title = scratchConverterBeta
+        //scratchConverterBeta.setSpan(
+       //     ForegroundColorSpan(resources.getColor(R.color.beta_label_color, theme)),
+        //    scratchConverter.length, scratchConverterBeta.length,
+        //    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        //)
+        //menu.findItem(R.id.menu_scratch_converter).title = scratchConverterBeta
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -272,7 +272,7 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         //menu.findItem(R.id.menu_logout).isVisible =
         //    Utils.isUserLoggedIn(this)
         if (!BuildConfig.FEATURE_SCRATCH_CONVERTER_ENABLED) {
-            menu.removeItem(R.id.menu_scratch_converter)
+            //menu.removeItem(R.id.menu_scratch_converter)
         }
         return true
     }
@@ -307,9 +307,9 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
                 supportFragmentManager,
                 AboutDialogFragment.TAG
             )
-            R.id.menu_scratch_converter -> if (Utils.checkIsNetworkAvailableAndShowErrorMessage(this)) {
-                startActivity(Intent(this, ScratchConverterActivity::class.java))
-            }
+            //R.id.menu_scratch_converter -> if (Utils.checkIsNetworkAvailableAndShowErrorMessage(this)) {
+            //    startActivity(Intent(this, ScratchConverterActivity::class.java))
+            //}
             R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
             //R.id.menu_login -> startActivity(Intent(this, SignInActivity::class.java))
             //R.id.menu_logout -> {

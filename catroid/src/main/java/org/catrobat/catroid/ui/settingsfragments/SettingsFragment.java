@@ -76,7 +76,7 @@ public class SettingsFragment extends PreferenceFragment {
 	public static final String SETTINGS_MINDSTORMS_EV3_BRICKS_CHECKBOX_PREFERENCE = "settings_mindstorms_ev3_bricks_checkbox_preference";
 	public static final String SETTINGS_MINDSTORMS_EV3_SHOW_SENSOR_INFO_BOX_DISABLED = "settings_mindstorms_ev3_show_sensor_info_box_disabled";
 	public static final String SETTINGS_SHOW_PARROT_AR_DRONE_BRICKS = "setting_parrot_ar_drone_bricks";
-	public static final String SETTINGS_EDIT_TRUSTED_DOMAINS = "setting_trusted_domains";
+	//public static final String SETTINGS_EDIT_TRUSTED_DOMAINS = "setting_trusted_domains";
 	public static final String SETTINGS_SHOW_JUMPING_SUMO_BRICKS = "setting_parrot_jumping_sumo_bricks";
 	public static final String SETTINGS_SHOW_EMBROIDERY_BRICKS_PREFERENCE = "setting_embroidery_bricks_preference";
 	public static final String SETTINGS_SHOW_EMBROIDERY_BRICKS_CHECKBOX_PREFERENCE = "setting_embroidery_bricks_checkbox_preference";

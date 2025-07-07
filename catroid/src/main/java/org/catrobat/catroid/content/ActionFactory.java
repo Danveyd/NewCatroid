@@ -1031,6 +1031,13 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createPhoto(Sprite sprite, SequenceAction sequence) {
+		PhotoAction action = action(PhotoAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		return action;
+	}
+
 	public Action createShader(Sprite sprite, SequenceAction sequence,
 										Formula code, Formula code2) {
 		ShaderAction action = action(ShaderAction.class);
@@ -1038,6 +1045,18 @@ public class ActionFactory extends Actions {
 		action.setScope(scope);
 		action.setFormula(code);
 		action.setVertex(code2);
+		return action;
+	}
+
+	public Action createCutLook(Sprite sprite, SequenceAction sequence,
+							   Formula x1, Formula y1, Formula x2, Formula y2) {
+		CutLookAction action = action(CutLookAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setX1(x1);
+		action.setY1(y1);
+		action.setX2(x2);
+		action.setY2(y2);
 		return action;
 	}
 

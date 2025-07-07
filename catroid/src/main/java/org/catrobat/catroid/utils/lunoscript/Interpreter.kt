@@ -3103,17 +3103,14 @@ class Interpreter(
                     AskGeminiBrick(Formula(text), uservar)
                 }
                 "askgptbrick" -> {
+                    val name = (constructorArgs[0] as LunoValue.String).value
+                    val text = (constructorArgs[1] as LunoValue.String).value
+                    val uservar = (constructorArgs[2] as UserVariable)
                     //brick now is broken
                     AskGPTBrick()
                 }
-                "askspeechbrick" -> {
-                    CloneBrick()
-                }
                 "clonebrick" -> {
-                    val text = (constructorArgs[0] as LunoValue.String).value
-                    val uservar = (constructorArgs[1] as UserVariable)
-
-                    AskGeminiBrick(Formula(text), uservar)
+                    CloneBrick()
                 }
                 else -> {
                     throw LunoRuntimeError("Brick: Unknown Brick ID: '${brickNameLuno.value}'.", -1)

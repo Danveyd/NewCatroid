@@ -94,15 +94,15 @@ public class ScratchConverterActivity extends BaseActivity implements
 
 		setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		String scratchConverter = getString(R.string.main_menu_scratch_converter);
-		SpannableString scratchConverterBeta = new SpannableString(scratchConverter
-				+ " "
-				+ getString(R.string.beta));
-		scratchConverterBeta.setSpan(
-				new ForegroundColorSpan(getResources().getColor(R.color.beta_label_color)),
-				scratchConverter.length(), scratchConverterBeta.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		getSupportActionBar().setTitle(scratchConverterBeta);
+		//String scratchConverter = getString(R.string.main_menu_scratch_converter);
+		//SpannableString scratchConverterBeta = new SpannableString(scratchConverter
+		//		+ " "
+		//		+ getString(R.string.beta));
+		//scratchConverterBeta.setSpan(
+		//		new ForegroundColorSpan(getResources().getColor(R.color.beta_label_color)),
+		//		scratchConverter.length(), scratchConverterBeta.length(),
+		//		Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		//getSupportActionBar().setTitle(scratchConverterBeta);
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		long clientID = sharedPreferences

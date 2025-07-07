@@ -55,7 +55,7 @@
         android:id="@+id/cast_button"
         android:title="@string/cast_button_menu_item_title"
         android:icon="@drawable/ic_cast_white"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/merge"

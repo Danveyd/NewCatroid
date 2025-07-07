@@ -80,6 +80,7 @@ import org.catrobat.catroid.content.bricks.CreateTableBrick
 import org.catrobat.catroid.content.bricks.CreateVarBrick
 import org.catrobat.catroid.content.bricks.CreateWebFileBrick
 import org.catrobat.catroid.content.bricks.CreateWebUrlBrick
+import org.catrobat.catroid.content.bricks.CutLookBrick
 import org.catrobat.catroid.content.bricks.DelSquareBrick
 import org.catrobat.catroid.content.bricks.DeleteAllTablesBrick
 import org.catrobat.catroid.content.bricks.DeleteBaseBrick
@@ -179,6 +180,7 @@ import org.catrobat.catroid.content.bricks.PhiroMotorMoveForwardBrick
 import org.catrobat.catroid.content.bricks.PhiroMotorStopBrick
 import org.catrobat.catroid.content.bricks.PhiroPlayToneBrick
 import org.catrobat.catroid.content.bricks.PhiroRGBLightBrick
+import org.catrobat.catroid.content.bricks.PhotoBrick
 import org.catrobat.catroid.content.bricks.PlaceAtBrick
 import org.catrobat.catroid.content.bricks.PlayDrumForBeatsBrick
 import org.catrobat.catroid.content.bricks.PlayNoteForBeatsBrick
@@ -607,6 +609,8 @@ open class CategoryBricksFactory {
             else -> looksBrickList.add(BackgroundRequestBrick(BrickValues.BACKGROUND_REQUEST))
         }
         looksBrickList.add(ScreenShotBrick())
+        looksBrickList.add(PhotoBrick())
+        looksBrickList.add(CutLookBrick(100, 200, 300, 400))
         looksBrickList.add(SaveLookBrick("my_actor.png"))
         looksBrickList.add(LookFileBrick("my_actor.png"))
         looksBrickList.add(SaveLookFilesBrick("look.png"))
@@ -987,6 +991,7 @@ void main() {
         neuralBrickList.add(ResizeImgBrick("image.png", 64, 64))
         neuralBrickList.add(GrayscaleImgBrick("image.png"))
         neuralBrickList.add(NormalizeImgBrick("image.png", "rTable", "gTable", "bTable"))
+        neuralBrickList.add(CutLookBrick(100, 200, 300, 400))
         return neuralBrickList
     }
 

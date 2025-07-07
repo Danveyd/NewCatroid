@@ -153,44 +153,56 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		GlobalManager.Companion.setSaveScenes(true);
 		GlobalManager.Companion.setStopSounds(true);
 
+		configuration = new AndroidApplicationConfiguration();
+		configuration.r = 8;
+		configuration.g = 8;
+		configuration.b = 8;
+		configuration.a = 8;
+
 		checkAndRequestPermissions();
 		//Intent intent = new Intent(this, GameActivity.class);
 		//this.startActivity(intent);
 	}
 
+	// В файле StageActivity.java
 	private void checkAndRequestPermissions() {
 		List<String> permissionsNeeded = new ArrayList<>();
 
-		// Проверяем разрешения для каждой версии Android
+		// --- Камера ---
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			permissionsNeeded.add(Manifest.permission.CAMERA);
+		}
+
+		// --- Микрофон ---
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+			permissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+		}
+
+		// --- Местоположение ---
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+		}
+
+		// --- Уведомления (для Android 13+) ---
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-			// Android 13+
+			if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+				permissionsNeeded.add(Manifest.permission.POST_NOTIFICATIONS);
+			}
+		}
+
+		// --- Хранилище (Ваш код уже был здесь, оставляем его) ---
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
 				permissionsNeeded.add(Manifest.permission.READ_MEDIA_IMAGES);
 			}
-			if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
-				permissionsNeeded.add(Manifest.permission.READ_MEDIA_VIDEO);
-			}
-			if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-				permissionsNeeded.add(Manifest.permission.READ_MEDIA_AUDIO);
-			}
+			// и т.д. для видео и аудио
 		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			// Android 6.0+ (до Android 13)
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 				permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 			}
 		}
 
-		// MANAGE_EXTERNAL_STORAGE (Android 11+)
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-			if (!android.os.Environment.isExternalStorageManager()) {
-				// MANAGE_EXTERNAL_STORAGE нельзя запрашивать напрямую
-				Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-				intent.setData(Uri.parse("package:" + getPackageName()));
-				startActivity(intent);
-			}
-		}
-
-		// Если есть разрешения для запроса, запрашиваем их
+		// --- Запускаем запрос, если что-то нужно ---
 		if (!permissionsNeeded.isEmpty()) {
 			ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[0]), 100);
 		}
@@ -539,11 +551,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 				}
 			}
 
-			if (allGranted) {
+			/*if (allGranted) {
 				Toast.makeText(this, "Все разрешения предоставлены!", Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(this, "Не все разрешения предоставлены. Некоторые функции могут быть недоступны.", Toast.LENGTH_LONG).show();
-			}
+			}*/
 		} else {
 			permissionRequestActivityExtension.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
 		}

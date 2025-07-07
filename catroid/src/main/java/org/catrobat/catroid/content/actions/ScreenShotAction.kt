@@ -22,141 +22,130 @@
  */
 package org.catrobat.catroid.content.actions
 
-import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.util.Log
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import com.badlogic.gdx.utils.ScreenUtils
-import kotlinx.coroutines.GlobalScope
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.common.LookData
-import org.catrobat.catroid.common.ScreenValues
 import org.catrobat.catroid.content.MyActivityManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.io.StorageOperations
 import org.catrobat.catroid.stage.ScreenshotSaver
-import org.catrobat.catroid.stage.ScreenshotSaverCallback
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
 
+@Suppress("DEPRECATION")
 open class ScreenShotAction : TemporalAction() {
     var scope: Scope? = null
     var name: String? = null
 
-    fun getScreenshotPath(): String {
-        val scene = ProjectManager.getInstance().currentlyPlayingScene
-        return scene.getDirectory().getAbsolutePath() + "/"
+    companion object {
+        private const val TAG = "ScreenShotAction"
+        private const val DEFAULT_FILENAME = "screenshot"
+        private const val FILE_EXTENSION = ".png"
     }
 
+    /**
+     * Этот метод вызывается каждый кадр. Мы запускаем логику скриншота один раз
+     * с помощью Gdx.app.postRunnable, чтобы она выполнилась в основном потоке рендеринга.
+     */
     override fun update(percent: Float) {
-        //val activity = StageActivity.activeStageActivity.get()
-            /*val test = CatroidApplication.getAppContext().applicationContext
-        val activityManager = test.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val tasks = activityManager.getRunningTasks(1)
-        val currentActivity = tasks[0].topActivity
-
-        val screen = takeScreenshot(currentActivity)
-        val filename = name ?: ""
-        val file = createFile(filename, ".png", screen)
-        setLook(file)*/
-        //MyActivityManager.stage_activity?.window?.decorView?.viewTreeObserver?.addOnGlobalLayoutListener {
+        // Выполняем захват кадра в потоке рендеринга LibGDX для обеспечения безопасности потоков
         Gdx.app.postRunnable {
-            val project = ProjectManager.getInstance().currentProject
-            val header = project.xmlHeader
-            var width = MyActivityManager.stage_activity?.window?.decorView?.measuredWidth ?: 0
-            var height = MyActivityManager.stage_activity?.window?.decorView?.measuredHeight ?: 0
-            var screenshotWidth = width //header.getVirtualScreenWidth() //ScreenValues.getResolutionForProject(project).width
-            var screenshotHeight = height//header.getVirtualScreenHeight() //ScreenValues.getResolutionForProject(project).height
-            var screenshotX = 0 //ScreenValues.getResolutionForProject(project).offsetX
-            var screenshotY = 0 //ScreenValues.getResolutionForProject(project).offsetY
-            val screenshotSaver = ScreenshotSaver(
-                Gdx.files, getScreenshotPath(), screenshotWidth,
-                screenshotHeight
-            )
-            Log.d("Screenshot", "Width: $width, Height: $height")
-            val screenshot = ScreenUtils.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth, screenshotHeight, true)
-            Log.d("Screenshot", "Screenshot data size: ${screenshot.size}")
-            val screen = screenshotSaver.getScreenshot(screenshot) //byteArrayToInputStream(screenshot)
-            val filename = name ?: "screenshot"
-            val file = createFile(filename, ".png", screen)
-            setLook(file)
-        }
-        //}
-        /*val screen = screenshotSaver.getScreenshot(
-            screenshot,
-            //name ?: "screenshot",
-        )
-        val filename = name ?: "screenshot"
-        val file = createFile(filename, ".png", screen)
-        setLook(file)*/
-        /*val activity = MyActivityManager.actor_activity
-        activity?.let { activity2 ->
-            val screen = takeScreenshot(activity2)
-            val filename = name ?: "screenshot"
-            val file = createFile(filename, ".png", screen)
-            setLook(file)
-        } ?: run {
-            Log.e("Screenshot", "Activity is null...")
-        }*/
-        /*activity?.postRunnable {
-            val screen = takeScreenshot(activity)
-            val filename = name ?: "screenshot"
-            val file = createFile(filename, ".png", screen)
-            setLook(file)
-        }*/
-    }
-
-    fun byteArrayToInputStream(byteArray: ByteArray): InputStream {
-        // Создаем InputStream из ByteArray
-        return ByteArrayInputStream(byteArray)
-    }
-
-    fun takeScreenshot(activity: Activity): InputStream {
-        // Создаем Bitmap для активности
-        val bitmap = Bitmap.createBitmap(activity.window.decorView.width,
-            activity.window.decorView.height,
-            Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        activity.window.decorView.draw(canvas) // Рисуем содержимое окна на канвасе
-
-        // Сохраняем Bitmap в ByteArrayOutputStream
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-
-        // Получаем byteArray и создаем InputStream
-        val byteArray = byteArrayOutputStream.toByteArray()
-        return ByteArrayInputStream(byteArray)
-    }
-
-
-    fun setLook(look: LookData) {
-        look?.apply {
-            updateLookListIndex()
-            scope?.sprite?.look?.lookData = this
-            collisionInformation?.collisionPolygonCalculationThread?.join()
-            file?.delete()
-            isWebRequest = true
+            captureAndSetLook()
         }
     }
 
-    fun createFile(fileName: String, fileExtension: String, file: InputStream): LookData {
-        val lookFile = File.createTempFile(fileName, fileExtension)
-        StorageOperations.copyStreamToFile(file, lookFile)
-        LookData(fileName, lookFile).apply {
+    /**
+     * Основная логика захвата экрана, создания файла и установки нового "образа" (Look).
+     */
+    private fun captureAndSetLook() {
+        val activity = MyActivityManager.stage_activity ?: run {
+            Log.e(TAG, "StageActivity is null, cannot take screenshot.")
+            return
+        }
+
+        // Получаем размеры всего окна приложения
+        val view = activity.window.decorView
+        val width = view.measuredWidth
+        val height = view.measuredHeight
+
+        if (width <= 0 || height <= 0) {
+            Log.e(TAG, "Invalid view dimensions, skipping screenshot.")
+            return
+        }
+
+        // Захватываем пиксели из буфера кадра LibGDX
+        val pixels = ScreenUtils.getFrameBufferPixels(0, 0, width, height, true)
+        Log.d(TAG, "Screenshot data size: ${pixels.size}")
+
+        // Используем ScreenshotSaver для преобразования пикселей в InputStream
+        val screenshotInputStream = getScreenshotStream(pixels, width, height)
+
+        // Создаем LookData из полученного потока
+        val lookData = createLookDataFromFile(screenshotInputStream)
+
+        // Применяем новый образ к спрайту
+        setLook(lookData)
+    }
+
+    /**
+     * Преобразует массив байт с пикселями в InputStream с помощью ScreenshotSaver.
+     */
+    private fun getScreenshotStream(pixels: ByteArray, width: Int, height: Int): InputStream {
+        val screenshotPath = getScreenshotPath()
+        val screenshotSaver = ScreenshotSaver(Gdx.files, screenshotPath, width, height)
+        return screenshotSaver.getScreenshot(pixels)
+    }
+
+    /**
+     * Возвращает путь для сохранения временных файлов скриншота.
+     */
+    private fun getScreenshotPath(): String {
+        val scene = ProjectManager. getInstance().currentlyPlayingScene
+        return scene.directory.absolutePath + "/"
+    }
+
+    /**
+     * Создает временный файл, копирует в него данные из InputStream и возвращает готовый [LookData].
+     */
+    private fun createLookDataFromFile(fileStream: InputStream): LookData {
+        val finalFileName = name ?: DEFAULT_FILENAME
+        val tempFile = File.createTempFile(finalFileName, FILE_EXTENSION)
+        StorageOperations.copyStreamToFile(fileStream, tempFile)
+
+        return LookData(finalFileName, tempFile).apply {
+            // Запускаем расчет коллизии для нового образа
             collisionInformation.calculate()
-            return this
         }
     }
 
+    /**
+     * Применяет новый [LookData] к спрайту в указанном [scope].
+     */
+    private fun setLook(lookData: LookData) {
+        val sprite = scope?.sprite ?: return
+
+        lookData.apply {
+            updateLookListIndex()
+            sprite.look.lookData = this
+            // Ожидаем завершения расчета полигона коллизии, если он был запущен
+            collisionInformation?.collisionPolygonCalculationThread?.join()
+            // Удаляем временный файл после использования
+            file?.delete()
+            isWebRequest = true // Флаг для обработки как нового образа
+        }
+    }
+
+    /**
+     * Сохраняет индекс текущего "образа" в списке, чтобы его можно было восстановить.
+     */
     private fun updateLookListIndex() {
         val currentLook = scope?.sprite?.look
-        if (!(currentLook != null && currentLook.lookListIndexBeforeLookRequest > -1)) {
-            scope?.sprite?.look?.lookListIndexBeforeLookRequest =
-                scope?.sprite?.lookList?.indexOf(scope?.sprite?.look?.lookData) ?: -1
+        if (currentLook != null && currentLook.lookListIndexBeforeLookRequest <= -1) {
+            val lookList = scope?.sprite?.lookList
+            currentLook.lookListIndexBeforeLookRequest = lookList?.indexOf(currentLook.lookData) ?: -1
         }
     }
 }

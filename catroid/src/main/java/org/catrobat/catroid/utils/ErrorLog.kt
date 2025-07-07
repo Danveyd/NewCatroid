@@ -7,7 +7,8 @@ import java.io.FileOutputStream
 import java.util.ArrayList
 
 object ErrorLog {
-    fun log(error: String) {
+    fun log(error1: String?) {
+        val error = error1 ?: "**пустая ошибка (попробуйте еще раз)**"
         val params = ArrayList<Any>(listOf("Произошла ошибка. Лог сохранен в NewCatroidError.txt"))
         StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
         val logFileName = "NewCatroidError.txt"

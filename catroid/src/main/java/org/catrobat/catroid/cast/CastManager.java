@@ -280,12 +280,15 @@ public final class CastManager {
 	}
 
 	public synchronized void addStageViewToLayout(GLSurfaceView20 stageView) {
+		if (remoteLayout == null) {
+			return;
+		}
 		stageViewDisplayedOnCast = stageView;
 		remoteLayout.setBackgroundColor(ContextCompat.getColor(initializingActivity, android.R.color.white));
 		remoteLayout.removeAllViews();
 		remoteLayout.addView(stageViewDisplayedOnCast);
 		Project project = ProjectManager.getInstance().getCurrentProject();
-		stageView.surfaceChanged(stageView.getHolder(), 0, project.getXmlHeader().getVirtualScreenWidth(),
+		stageView.surfaceChanged(stageView.getHolder(), android.graphics.PixelFormat.RGBA_8888, project.getXmlHeader().getVirtualScreenWidth(),
 				project.getXmlHeader().getVirtualScreenHeight());
 	}
 
@@ -300,7 +303,7 @@ public final class CastManager {
 
 	public synchronized void setCastButton(MenuItem castButton) {
 		this.castButton = castButton;
-		castButton.setVisible(mediaRouter.isRouteAvailable(mediaRouteSelector, MediaRouter.AVAILABILITY_FLAG_REQUIRE_MATCH));
+		//castButton.setVisible(mediaRouter.isRouteAvailable(mediaRouteSelector, MediaRouter.AVAILABILITY_FLAG_REQUIRE_MATCH));
 		setIsConnected(isConnected);
 	}
 
@@ -444,12 +447,13 @@ public final class CastManager {
 			Intent intent = new Intent(activity, activity.getClass());
 			PendingIntent notificationPendingIntent;
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // M = API 23, где появился IMMUTABLE
 				notificationPendingIntent = PendingIntent.getActivity(activity, 0,
-						intent,PendingIntent.FLAG_IMMUTABLE);
+						intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 			} else {
+				// Для очень старых версий (до API 23)
 				notificationPendingIntent = PendingIntent.getActivity(activity, 0,
-						intent, 0);
+						intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			}
 
 

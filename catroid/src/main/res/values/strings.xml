@@ -78,6 +78,10 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_photo">Take photo from camera and use as look</string>
+    <string formatted="false" name="brick_cut_look2">to (x, y)</string>
+    <string formatted="false" name="brick_cut_look1">from (x, y)</string>
+    <string formatted="false" name="brick_cut_look">Crop look</string>
     <string formatted="false" name="bt_permissions_denied">Please grant a permission</string>
     <string formatted="false" name="brick_shader2">fragment shader</string>
     <string formatted="false" name="brick_shader1">vertex shader</string>

@@ -90,6 +90,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+    <queries>
+        <!-- Разрешает приложению находить сервисы Google Cast -->
+        <intent>
+            <action android:name="com.google.android.gms.cast.CATEGORY_CAST" />
+        </intent>
+    </queries>
+
     <application
         android:name=".CatroidApplication"
         android:allowBackup="false"

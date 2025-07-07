@@ -31,11 +31,11 @@
         android:summary="@string/preference_description_language"
         android:title="@string/preference_title_language" />
 
-    <TrustListEditorPreference
+    <!--<TrustListEditorPreference
         android:defaultValue=""
         android:key="setting_trusted_domains"
         android:summary="@string/preference_description_web_access"
-        android:title="@string/preference_title_web_access" />
+        android:title="@string/preference_title_web_access" />-->
 
     <PreferenceScreen
         android:key="setting_ai_screen"

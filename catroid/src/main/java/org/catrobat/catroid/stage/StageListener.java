@@ -920,7 +920,14 @@ public class StageListener implements ApplicationListener {
 // === ОБЩАЯ ЛОГИКА РЕНДЕРИНГА (И ДЛЯ ЭКРАНА, И ДЛЯ FBO) ===
 
 // 1. Очищаем текущую цель (либо экран, либо FBO)
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+        CameraManager cameraManager = StageActivity.getActiveCameraManager();
+        if (cameraManager != null && cameraManager.getPreviewVisible()) {
+            // Если камера активна, очищаем фон прозрачным цветом
+            Gdx.gl.glClearColor(0, 0, 0, 0);
+        } else {
+            // Иначе - стандартным белым
+            Gdx.gl.glClearColor(1, 1, 1, 1);
+        }
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 // 2. ФАЗА СПРАЙТОВ (SpriteBatch)
@@ -1444,11 +1451,16 @@ public class StageListener implements ApplicationListener {
 		batch.dispose();
 	}
 
-	public void gamepadPressed(String buttonType) {
-		EventId eventId = new GamepadEventId(buttonType);
-		EventWrapper gamepadEvent = new EventWrapper(eventId, false);
-		project.fireToAllSprites(gamepadEvent);
-	}
+    public void gamepadPressed(String buttonType) {
+        // ИЗМЕНЕНО: Добавляем проверку на null
+        if (project == null) {
+            Log.e("StageListener", "Gamepad event received, but project is null. Ignoring.");
+            return; // Просто выходим, чтобы избежать крэша
+        }
+        EventId eventId = new GamepadEventId(buttonType);
+        EventWrapper gamepadEvent = new EventWrapper(eventId, false);
+        project.fireToAllSprites(gamepadEvent);
+    }
 
 	public void addActor(Actor actor) {
 		stage.addActor(actor);

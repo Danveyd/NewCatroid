@@ -32,7 +32,7 @@
         android:id="@+id/cast_button"
         android:icon="@drawable/ic_cast_white"
         android:title="@string/cast_button_menu_item_title"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
 
     <item
@@ -55,11 +55,11 @@
         android:title="@string/main_menu_about"
         app:showAsAction="never"
         android:icon="@drawable/ic_info"/>
-    <item
+    <!--<item
         android:id="@+id/menu_scratch_converter"
         android:title="@string/main_menu_scratch_converter"
         app:showAsAction="never"
-        android:icon="@drawable/swap_horiz_24px"/>
+        android:icon="@drawable/swap_horiz_24px"/>-->
     <item
         android:id="@+id/settings"
         android:title="@string/settings"

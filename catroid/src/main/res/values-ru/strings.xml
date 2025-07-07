@@ -78,6 +78,10 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_photo">Сделать снимок и использовать как образ</string>
+    <string formatted="false" name="brick_cut_look2">конец (x, y)</string>
+    <string formatted="false" name="brick_cut_look1">начало (x, y)</string>
+    <string formatted="false" name="brick_cut_look">Обрезать образ</string>
     <string formatted="false" name="bt_permissions_denied">Пожалуйста дайте разрешение. без него получится кирпич :/</string>
     <string formatted="false" name="brick_shader2">фрагментный шейдер</string>
     <string formatted="false" name="brick_shader1">вершинный шейдер</string>

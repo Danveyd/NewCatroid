@@ -31,19 +31,26 @@ import androidx.annotation.UiThread
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCase
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.utils.MobileServiceAvailability
 import org.catrobat.catroid.utils.ToastUtil
+import org.koin.ext.scope
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import org.koin.java.KoinJavaComponent.get
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
     private val cameraProvider = ProcessCameraProvider.getInstance(stageActivity).get()
@@ -54,6 +61,8 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
 
     private val previewUseCase = Preview.Builder().build()
     private val analysisUseCase = ImageAnalysis.Builder().build()
+
+    private val imageCaptureUseCase = ImageCapture.Builder().build()
 
     private var currentCamera: Camera? = null
     private val defaultCameraSelector: CameraSelector
@@ -216,7 +225,9 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
 
     private fun bindPreview(): Boolean {
         previewView.visibility = View.VISIBLE
-        return bindUseCase(previewUseCase).also {
+
+        // ИЗМЕНЕНО: теперь мы привязываем и превью, и захват изображения
+        return bindUseCase(previewUseCase, imageCaptureUseCase).also {
             previewUseCase.setSurfaceProvider(previewView.createSurfaceProvider())
             if (previewVisible.not()) {
                 previewView.visibility = View.INVISIBLE
@@ -232,8 +243,96 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
         }
     }
 
+    /**
+     * Делает снимок и сохраняет его в указанный файл.
+     *
+     * @param outputFile Файл, в который будет сохранено изображение. Убедитесь, что у приложения есть права на запись в это место!
+     * @param callback Колбэк, который будет вызван по завершении (в основном потоке).
+     */
+    fun takePicture(outputFile: File, callback: (success: Boolean) -> Unit) {
+        // 1. Создаем опции для сохранения, используя переданный файл.
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
+
+        // 2. Вызываем асинхронный метод съемки.
+        imageCaptureUseCase.takePicture(
+            outputOptions,
+            Executors.newSingleThreadExecutor(), // Выполняем в фоновом потоке
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    // Успех! Вызываем колбэк в основном потоке.
+                    stageActivity.runOnUiThread {
+                        val msg = "Photo capture succeeded: ${outputFile.absolutePath}"
+                        //ToastUtil.showSuccess(stageActivity, msg)
+                        Log.d(TAG, msg)
+                        callback(true) // Теперь просто возвращаем успех
+                    }
+                }
+
+                override fun onError(exc: ImageCaptureException) {
+                    // Ошибка! Вызываем колбэк в основном потоке.
+                    stageActivity.runOnUiThread {
+                        val msg = "Photo capture failed: ${exc.message}"
+                        //ToastUtil.showError(stageActivity, msg)
+                        Log.e(TAG, msg, exc)
+                        callback(false)
+                    }
+                }
+            }
+        )
+    }
+
+    fun takePicture2(callback: (success: Boolean, file: File?) -> Unit) {
+        if (ProjectManager.getInstance().currentProject == null) {
+            Log.e("CameraManager", "Project is null, cannot save photo.")
+            callback(false, null) // Не забываем вернуть ошибку
+            return
+        }
+
+        // 1. Получаем директорию проекта.
+        val projectDir = ProjectManager.getInstance().currentProject.filesDir
+
+        // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+        // 2. Убеждаемся, что все родительские папки существуют.
+        //    Метод mkdirs() создаст все недостающие папки по пути.
+        if (!projectDir.exists()) {
+            projectDir.mkdirs()
+        }
+        // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+        // 3. Теперь безопасно создаем файл.
+        //    Имя файла должно быть уникальным, чтобы не затирать старые фото.
+        val photoFile = File(
+            projectDir,
+            "photo.png" // Используем .jpg и уникальное имя
+        )
+
+        // Остальной код остается без изменений...
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCaptureUseCase.takePicture(
+            outputOptions,
+            Executors.newSingleThreadExecutor(),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    stageActivity.runOnUiThread {
+                        val msg = "Photo capture succeeded: ${photoFile.absolutePath}"
+                        Log.d(TAG, msg)
+                        callback(true, photoFile)
+                    }
+                }
+                override fun onError(exc: ImageCaptureException) {
+                    stageActivity.runOnUiThread {
+                        val msg = "Photo capture failed: ${exc.message}"
+                        Log.e(TAG, msg, exc)
+                        callback(false, null)
+                    }
+                }
+            }
+        )
+    }
+
     @UiThread
-    private fun bindFaceAndTextDetector() = bindUseCase(analysisUseCase).also {
+    private fun bindFaceAndTextDetector() = bindUseCase(analysisUseCase, imageCaptureUseCase).also {
         val mobileServiceAvailability = get(MobileServiceAvailability::class.java)
         if (mobileServiceAvailability.isGmsAvailable(stageActivity)) {
             CatdroidImageAnalyzer.setActiveDetectorsWithContext(this.stageActivity.context)
@@ -244,25 +343,24 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
     }
 
     @UiThread
-    private fun bindUseCase(useCase: UseCase): Boolean {
-        if (cameraProvider.isBound(useCase)) {
-            cameraProvider.unbind(useCase)
-        }
+    private fun bindUseCase(vararg useCases: UseCase): Boolean { // ИЗМЕНЕНО: принимаем массив UseCase
+        // Сначала отвязываем все, чтобы избежать конфликтов
+        // cameraProvider.unbindAll() // Лучше отвязывать конкретные, но для простоты можно и так
+
         return try {
+            // Отвязываем старые use cases перед привязкой новых
+            cameraProvider.unbind(*useCases)
+
             currentCamera = cameraProvider.bindToLifecycle(
                 this,
                 currentCameraSelector,
-                useCase
+                *useCases // ИЗМЕНЕНО: привязываем все переданные use cases
             )
             currentCamera?.cameraControl?.enableTorch(flashOn)
             lifecycle.currentState = Lifecycle.State.STARTED
             true
-        } catch (exception: IllegalStateException) {
-            Log.e(TAG, "Could not bind use case.", exception)
-            handleError()
-            false
-        } catch (exception: IllegalArgumentException) {
-            Log.e(TAG, "No suitable camera found.", exception)
+        } catch (exception: Exception) { // Ловим более общие исключения
+            Log.e(TAG, "Could not bind use case(s).", exception)
             handleError()
             false
         }
