@@ -203,6 +203,18 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.VARVALUE, NUMBER,"0");
 			case R.string.formula_editor_function_table_x:
 				return buildSingleParameterFunction(Functions.TABLE_X, STRING,"myTable");
+			case R.string.view_x:
+				return buildSingleParameterFunction(Functions.VIEW_X, STRING,"myView");
+			case R.string.view_y:
+				return buildSingleParameterFunction(Functions.VIEW_Y, STRING,"myView");
+			case R.string.view_width:
+				return buildSingleParameterFunction(Functions.VIEW_WIDTH, STRING,"myView");
+			case R.string.view_height:
+				return buildSingleParameterFunction(Functions.VIEW_HEIGHT, STRING,"myView");
+			case R.string.is_video_playing:
+				return buildSingleParameterFunction(Functions.VIDEO_PLAYING, STRING,"myVideoPlayer");
+			case R.string.video_time:
+				return buildSingleParameterFunction(Functions.VIDEO_TIME, STRING,"myVideoPlayer");
 			case R.string.formula_editor_function_table_y:
 				return buildSingleParameterFunction(Functions.TABLE_Y, STRING,"myTable");
 			case R.string.formula_editor_function_floatarray:

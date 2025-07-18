@@ -215,6 +215,9 @@ public final class XstreamSerializer {
 		xstream.alias("brick", AskGemini2Brick.class);
 		xstream.alias("brick", SetDnsBrick.class);
 		xstream.alias("brick", ChooseFileBrick.class);
+		xstream.alias("brick", NativeLayerBrick.class);
+		xstream.alias("brick", SetWebBrick.class);
+		xstream.alias("brick", EvalWebBrick.class);
 		xstream.alias("brick", CreateFloatBrick.class);
 		xstream.alias("brick", TableToFloatBrick.class);
 		xstream.alias("brick", PutFloatBrick.class);
@@ -258,6 +261,11 @@ public final class XstreamSerializer {
 		xstream.alias("brick", ScreenShotBrick.class);
 		xstream.alias("brick", CreateWebUrlBrick.class);
 		xstream.alias("brick", CreateWebFileBrick.class);
+		xstream.alias("brick", CreateVideoBrick.class);
+		xstream.alias("brick", PlayVideoBrick.class);
+		xstream.alias("brick", PauseVideoBrick.class);
+		xstream.alias("brick", SeekVideoBrick.class);
+		xstream.alias("brick", CreateTextFieldBrick.class);
 		xstream.alias("brick", DeleteWebBrick.class);
 		xstream.alias("brick", ListenMicroBrick.class);
 		xstream.alias("brick", CopyTextBrick.class);

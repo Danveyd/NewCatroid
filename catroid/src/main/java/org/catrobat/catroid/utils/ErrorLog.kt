@@ -19,10 +19,9 @@ object ErrorLog {
                     downloadsDir.mkdirs()
                 }
                 val logFile = File(downloadsDir, logFileName)
-                FileOutputStream(logFile, true).use {
+                FileOutputStream(logFile, false).use {
                     it.write(error.toByteArray())
                 }
-
             }
         } catch (e: Exception) {
             e.printStackTrace(System.err)

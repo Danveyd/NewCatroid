@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Catroid: An on-device visual programming system for Android devices
+  ~ Copyright (C) 2010-2022 The Catrobat Team
+  ~ (<http://developer.catrobat.org/credits>)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ An additional term exception under section 7 of the GNU Affero
+  ~ General Public License, version 3, is available at
+  ~ http://developer.catrobat.org/license_additional_term
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_create_textfield_layout"
+        style="@style/BrickContainer.Device.Big">
+
+        <include layout="@layout/icon_brick_category_device" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_textfield" />
+
+        <TextView
+            android:id="@+id/create_textfield_name"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/default_text"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_default"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/type"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_type"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/max_length"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_length"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/is_password"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_password"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/position"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_x"
+            style="@style/BrickEditText" />
+
+        <TextView
+            android:id="@+id/create_textfield_y"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/size_wh"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_width"
+            style="@style/BrickEditText" />
+
+        <TextView
+            android:id="@+id/create_textfield_height"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/save_to_variable"
+            app:layout_newLine="true"/>
+
+        <Spinner
+            android:id="@+id/brick_create_textfield_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textDirection="locale" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/styles"
+            app:layout_newLine="true"/>
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/text_size"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_textsize"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/text_color"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_textcolor"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/bg_color"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_bgcolor"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/hint_text"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_hinttext"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/hint_color"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_hintcolor"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/alignment"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_alignment"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/font"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_font"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/corner_radius"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/create_textfield_corner"
+            style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+
+</LinearLayout>

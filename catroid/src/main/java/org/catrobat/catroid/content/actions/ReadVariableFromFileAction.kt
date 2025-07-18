@@ -132,7 +132,7 @@ class ReadVariableFromFileAction : Action(), IntentListener {
     }
 
     private fun writeContentToVariable(content: String) {
-        userVariable?.value = content.toDoubleOrNull() ?: content
+        userVariable?.value = content
     }
 
     private fun getFileName(): String {

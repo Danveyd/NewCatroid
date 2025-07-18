@@ -90,6 +90,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES" />
+
+    <!-- Также добавьте это объявление службы mDNS внутри тега <application> -->
+    <!-- Это поможет системе понять, что вы ищете сервисы в локальной сети -->
+
     <queries>
         <!-- Разрешает приложению находить сервисы Google Cast -->
         <intent>
@@ -283,7 +289,14 @@
             android:foregroundServiceType="dataSync" />
         <service android:name=".transfers.MediaDownloadService" />
         <service android:name=".utils.notifications.StatusBarNotificationManager$NotificationActionService" />
-        <service android:name=".cast.CastService"/>
+
+        <service
+            android:name=".cast.CastService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.cast.remote_display.REMOTE_DISPLAY_SERVICE" />
+            </intent-filter>
+        </service>
 
         <provider
             android:authorities="${applicationId}.fileProvider"

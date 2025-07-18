@@ -571,6 +571,31 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action playVideoAction(Sprite sprite, SequenceAction sequence, Formula name) {
+		PlayVideoAction action = Actions.action(PlayVideoAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		return action;
+	}
+
+	public Action pauseVideoAction(Sprite sprite, SequenceAction sequence, Formula name) {
+		PauseVideoAction action = Actions.action(PauseVideoAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		return action;
+	}
+
+	public Action seekVideoAction(Sprite sprite, SequenceAction sequence, Formula name, Formula time ) {
+		SeekVideoAction action = Actions.action(SeekVideoAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		action.setTime(time);
+		return action;
+	}
+
 	public Action createSetTransparencyAction(Sprite sprite, SequenceAction sequence,
 			Formula transparency) {
 		SetTransparencyAction action = Actions.action(SetTransparencyAction.class);
@@ -840,6 +865,33 @@ public class ActionFactory extends Actions {
 		action.setScope(scope);
 		action.setChangeVariable(variableFormula);
 		action.setUserVariable(userVariable);
+		return action;
+	}
+
+	public Action createTextfield(Sprite sprite, SequenceAction sequence,
+										  Formula name, Formula def, Formula x, Formula y, Formula w, Formula h, Formula ts, Formula tc, Formula bc, Formula ht, Formula hc, Formula align,
+                                  Formula pass, Formula corner, Formula len, Formula type, Formula font, UserVariable userVariable) {
+		CreateTextFieldAction action = Actions.action(CreateTextFieldAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		action.setInitialText(def);
+		action.setPosX(x);
+		action.setPosY(y);
+		action.setWidth(w);
+		action.setHeight(h);
+		action.setText_size(ts);
+		action.setText_color(tc);
+		action.setBg_color(bc);
+		action.setHint_text(ht);
+		action.setHint_color(hc);
+		action.setAlignment_f(align);
+		action.set_password(pass);
+		action.setCorner_radius(corner);
+		action.setMax_length(len);
+		action.setInput_type(type);
+		action.setFont_path(font);
+		action.setVariable(userVariable);
 		return action;
 	}
 
@@ -1533,6 +1585,26 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action evalWebAction(Sprite sprite, SequenceAction sequence,
+									   Formula js, Formula name) {
+		EvalWebAction action = action(EvalWebAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setCode(js);
+		action.setName(name);
+		return action;
+	}
+
+	public Action setWebAction(Sprite sprite, SequenceAction sequence,
+								Formula name, UserVariable variable) {
+		SetWebAction action = action(SetWebAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setUserVariable(variable);
+		action.setName(name);
+		return action;
+	}
+
 	public Action createStartServerAction(Sprite sprite, SequenceAction sequence,
 										Formula port) {
 		StartServerAction action = action(StartServerAction.class);
@@ -1626,6 +1698,23 @@ public class ActionFactory extends Actions {
 		action.setPosY(y);
 		action.setWidth(width);
 		action.setHeight(height);
+		return action;
+	}
+
+	public Action videoAction(Sprite sprite, SequenceAction sequence,
+									  Formula name, Formula url, Formula x, Formula y, Formula width, Formula height,
+									  Formula loop, Formula control) {
+		CreateVideoAction action = action(CreateVideoAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setName(name);
+		action.setFile(url);
+		action.setPosX(x);
+		action.setPosY(y);
+		action.setWidth(width);
+		action.setHeight(height);
+		action.setLoop(loop);
+		action.setControls(control);
 		return action;
 	}
 
@@ -2113,6 +2202,12 @@ public class ActionFactory extends Actions {
 	public Action createUpdateCameraPreviewAction(boolean turnOn) {
 		CameraBrickAction action = action(CameraBrickAction.class);
 		action.setActive(turnOn);
+		return action;
+	}
+
+	public Action nativeViewLayer(int layer) {
+		NativeLayerAction action = action(NativeLayerAction.class);
+		action.setLayer(layer);
 		return action;
 	}
 

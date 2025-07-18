@@ -78,6 +78,44 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string formatted="false" name="brick_set_callback2">callback to variable</string>
+    <string formatted="false" name="brick_set_callback">Add to WebView</string>
+    <string formatted="false" name="brick_eval_web2">in WebView</string>
+    <string formatted="false" name="brick_eval_web">Run JS</string>
+    <string formatted="false" name="set_native_layer">Set Native Views layer</string>
+    <string formatted="false" name="videoplayer_params">(\'myVideoPlayer\')</string>
+    <string formatted="false" name="view_params">(\'myView\')</string>
+    <string formatted="false" name="video_time">videoplayer time</string>
+    <string formatted="false" name="is_video_playing">is videoplayer playing</string>
+    <string formatted="false" name="view_height">view height</string>
+    <string formatted="false" name="view_width">view width</string>
+    <string formatted="false" name="view_y">position y view</string>
+    <string formatted="false" name="view_x">position x view</string>
+    <string formatted="false" name="seek_video2">to (seconds)</string>
+    <string formatted="false" name="seek_video">Seek VideoPlayer</string>
+    <string formatted="false" name="play_video">Start VideoPlayer</string>
+    <string formatted="false" name="pause_video">Pause VideoPlayer</string>
+    <string formatted="false" name="is_password">is password</string>
+    <string formatted="false" name="corner_radius">corner radius</string>
+    <string formatted="false" name="max_length">max length</string>
+    <string formatted="false" name="type">type (text, number)</string>
+    <string formatted="false" name="font">font (project files)</string>
+    <string formatted="false" name="default_text">default text</string>
+    <string formatted="false" name="alignment">alignment (left, center, right)</string>
+    <string formatted="false" name="hint_color">hint color</string>
+    <string formatted="false" name="hint_text">hint text</string>
+    <string formatted="false" name="bg_color">BG color</string>
+    <string formatted="false" name="text_color">text color</string>
+    <string formatted="false" name="text_size">text size</string>
+    <string formatted="false" name="styles">Styles</string>
+    <string formatted="false" name="save_to_variable">store to variable</string>
+    <string formatted="false" name="brick_create_textfield">Create TextField</string>
+    <string formatted="false" name="project_file">project file</string>
+    <string formatted="false" name="control_enabled">show controls</string>
+    <string formatted="false" name="loop_enabled">loop video</string>
+    <string formatted="false" name="position">position (x, y)</string>
+    <string formatted="false" name="size_wh">size (width, height)</string>
+    <string formatted="false" name="brick_video_player">Create VideoPlayer</string>
     <string formatted="false" name="brick_photo">Take photo from camera and use as look</string>
     <string formatted="false" name="brick_cut_look2">to (x, y)</string>
     <string formatted="false" name="brick_cut_look1">from (x, y)</string>
@@ -201,7 +239,7 @@
     <string formatted="false" name="formula_editor_function_distance">levenshtein distance</string>
     <string formatted="false" name="formula_editor_function_distance_parameter">(\'panda\', \'lavanda\')</string>
     <string formatted="false" name="ai_assist">AI assistant</string>
-    <string formatted="false" name="delete_web">Delete WebView with name</string>
+    <string formatted="false" name="delete_web">Delete Native View</string>
     <string formatted="false" name="create_web_url">Create WebView with name</string>
     <string formatted="false" name="create_web_url2">URL</string>
     <string formatted="false" name="create_web_url3">position (x, y)</string>

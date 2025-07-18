@@ -23,7 +23,11 @@
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -48,6 +52,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.VisibleForTesting;
@@ -133,6 +138,39 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 		return view;
 	}
 
+	/*@Override
+	public View getView(Context context) {
+		super.getView(context);
+		Pattern colorPattern = Pattern.compile("^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6})$");
+
+		for (BiMap.Entry<FormulaField, Integer> entry : brickFieldToTextViewIdMap.entrySet()) {
+			TextView formulaFieldView = view.findViewById(entry.getValue());
+			String text = getFormulaWithBrickField(entry.getKey()).clone().getTrimmedFormulaString(context);
+
+			// Проверяем, является ли текст цветом
+			if (colorPattern.matcher(text.trim()).matches()) {
+				try {
+					int color = Color.parseColor(text.trim());
+					Drawable checkerboard = UiUtils.createCheckerboardDrawable(context, 20);
+					Drawable colorOverlay = new ColorDrawable(color);
+					LayerDrawable layers = new LayerDrawable(new Drawable[]{checkerboard, colorOverlay});
+					formulaFieldView.setBackground(layers);
+				} catch (Exception e) {
+					// В случае ошибки парсинга, устанавливаем фон по умолчанию
+					formulaFieldView.setBackgroundResource(R.drawable.formula_field_selector);
+				}
+			} else {
+				// Если это не цвет, устанавливаем стандартный фон
+				formulaFieldView.setBackgroundResource(R.drawable.formula_field_selector);
+			}
+
+			formulaFieldView.setText(
+					FormulaSpannableStringBuilder.buildSpannableFormulaString(view.getContext(), text,
+							formulaFieldView.getTextSize()), TextView.BufferType.SPANNABLE);
+		}
+		return view;
+	}*/
+
 	public void setClickListeners() {
 		for (BiMap.Entry<FormulaField, Integer> entry : brickFieldToTextViewIdMap.entrySet()) {
 			TextView formulaFieldView = view.findViewById(entry.getValue());
@@ -160,6 +198,41 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 				.setColorFilter(view.getContext().getResources()
 						.getColor(R.color.brick_field_highlight), PorterDuff.Mode.SRC_ATOP);
 	}
+
+	/*public void highlightTextView(FormulaField formulaField) {
+		TextView formulaTextField = getTextView(formulaField);
+		if (formulaTextField == null) {
+			return;
+		}
+
+		String text = formulaTextField.getText().toString().trim();
+		Pattern colorPattern = Pattern.compile("^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6})$");
+
+		// Проверяем, является ли поле полем с цветом
+		if (colorPattern.matcher(text).matches()) {
+			try {
+				int color = Color.parseColor(text);
+				Drawable checkerboard = UiUtils.createCheckerboardDrawable(formulaTextField.getContext(), 20);
+				Drawable colorOverlay = new ColorDrawable(color);
+				// Создаем полупрозрачный слой подсветки
+				int highlightColor = formulaTextField.getContext().getResources().getColor(R.color.brick_field_highlight);
+				Drawable highlightOverlay = new ColorDrawable(highlightColor);
+
+				// Собираем новый фон из трех слоев: шахматка -> цвет -> подсветка
+				LayerDrawable layers = new LayerDrawable(new Drawable[]{checkerboard, colorOverlay, highlightOverlay});
+				formulaTextField.setBackground(layers);
+
+			} catch (Exception e) {
+				// В случае ошибки используем стандартную подсветку
+				formulaTextField.getBackground().mutate().setColorFilter(view.getContext().getResources()
+						.getColor(R.color.brick_field_highlight), PorterDuff.Mode.SRC_ATOP);
+			}
+		} else {
+			// Если это не цвет, используем оригинальную логику подсветки
+			formulaTextField.getBackground().mutate().setColorFilter(view.getContext().getResources()
+					.getColor(R.color.brick_field_highlight), PorterDuff.Mode.SRC_ATOP);
+		}
+	}*/
 
 	@Override
 	public void onClick(View view) {

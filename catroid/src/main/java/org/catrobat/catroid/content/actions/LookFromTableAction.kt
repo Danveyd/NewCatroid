@@ -20,41 +20,64 @@ class LookFromTableAction : TemporalAction() {
     var a_table: Formula? = null
 
     override fun update(percent: Float) {
-        scope?.let {
-            val r_name = r_table?.interpretString(scope) ?: "rTable"
-            val g_name = g_table?.interpretString(scope) ?: "gTable"
-            val b_name = b_table?.interpretString(scope) ?: "bTable"
-            val a_name = a_table?.interpretString(scope) ?: "aTable"
-
-            val width = TableManager.getTableXSize(r_name)
-            val height = TableManager.getTableYSize(r_name)
-
-            // Создаем пустой Bitmap
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-
-            // Восстанавливаем значения пикселей из таблиц
-            for (x in 1..width) {
-                for (y in 1..height) {
-                    val rValue = TableManager.getElementValue(r_name, x, y)?.toInt() ?: 0
-                    val gValue = TableManager.getElementValue(g_name, x, y)?.toInt() ?: 0
-                    val bValue = TableManager.getElementValue(b_name, x, y)?.toInt() ?: 0
-                    val aValue = TableManager.getElementValue(a_name, x, y)?.toInt() ?: 255 // Если A отсутствует, то ставим 255
-
-                    // Устанавливаем пиксель в Bitmap
-                    val pixel = Color.argb(aValue, rValue, gValue, bValue)
-                    bitmap.setPixel(x - 1, y - 1, pixel) // Индексы здесь начинаются с 0
-                }
-            }
-
-            // Обновляем look с новым изображением
-            val file = saveBitmapToTempFile(bitmap)
-            val look = createlook(file)
-            setLook(look)
+        if (percent < 1.0f) {
+            return
         }
+
+        val currentScope = scope ?: return
+
+        // --- НАЧАЛО БЛОКА ОПТИМИЗАЦИИ (все так же, как и раньше) ---
+
+        val r_name = r_table?.interpretString(currentScope) ?: "rTable"
+        val g_name = g_table?.interpretString(currentScope) ?: "gTable"
+        val b_name = b_table?.interpretString(currentScope) ?: "bTable"
+        val a_name = a_table?.interpretString(currentScope) ?: "aTable"
+
+        val rMap = TableManager.getTable(r_name) ?: return
+        val gMap = TableManager.getTable(g_name)
+        val bMap = TableManager.getTable(b_name)
+        val aMap = TableManager.getTable(a_name)
+
+        val width = rMap.keys.maxOfOrNull { it.first } ?: 0
+        val height = rMap.keys.maxOfOrNull { it.second } ?: 0
+
+        if (width == 0 || height == 0) return
+
+        val pixelArray = IntArray(width * height)
+
+        for (y in 1..height) {
+            for (x in 1..width) {
+                val key = Pair(x, y)
+                val rValue = (rMap[key] as? Number)?.toInt() ?: 0
+                val gValue = (gMap?.get(key) as? Number)?.toInt() ?: 0
+                val bValue = (bMap?.get(key) as? Number)?.toInt() ?: 0
+                val aValue = (aMap?.get(key) as? Number)?.toInt() ?: 255
+                val index = (y - 1) * width + (x - 1)
+                pixelArray[index] = Color.argb(aValue, rValue, gValue, bValue)
+            }
+        }
+
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        bitmap.setPixels(pixelArray, 0, width, 0, 0, width, height)
+
+        // --- КОНЕЦ БЛОКА ОПТИМИЗАЦИИ ---
+
+        // 7. Сохраняем наш быстро сгенерированный Bitmap во временный файл
+        val tempFile = saveBitmapToTempFile(bitmap)
+
+        // 8. Создаем и устанавливаем Look из этого файла
+        setLookFromFile(tempFile)
+
+        // 9. (Важно!) Освобождаем память, занятую созданным Bitmap, т.к. LookData его уже скопировал
+        bitmap.recycle()
     }
 
+    /**
+     * Сохраняет Bitmap во временный файл. Этот код взят из вашего оригинала.
+     */
     private fun saveBitmapToTempFile(bitmap: Bitmap): File {
-        val tempFile = File(CatroidApplication.getAppContext().cacheDir, "temp_image.png")
+        // Используем уникальное имя, чтобы избежать конфликтов при одновременной работе
+        val tempFile = File(CatroidApplication.getAppContext().cacheDir, "generated_${System.nanoTime()}.png")
         try {
             FileOutputStream(tempFile).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -65,26 +88,28 @@ class LookFromTableAction : TemporalAction() {
         return tempFile
     }
 
-    fun createlook(file: File): LookData {
-        LookData(file.name, file).apply {
-            collisionInformation.calculate()
-            return this
-        }
-    }
+    /**
+     * Создает новый LookData из файла и устанавливает его для спрайта.
+     */
+    private fun setLookFromFile(file: File) {
+        val currentSprite = scope?.sprite ?: return
 
-    fun setLook(look: LookData) {
-        look?.apply {
-            updateLookListIndex()
-            scope?.sprite?.look?.lookData = this
-            collisionInformation?.collisionPolygonCalculationThread?.join()
-            isWebRequest = false
-        }
+        // Создаем LookData из файла (как в вашем оригинальном коде)
+        val newLookData = LookData(file.name, file)
+        newLookData.collisionInformation.calculate()
+
+        // Устанавливаем Look для спрайта
+        updateLookListIndex()
+        currentSprite.look.lookData = newLookData
+
+        // Дожидаемся расчета коллизии
+        //newLookData.collisionInformation?.collisionPolygonCalculationThread?.join()
     }
 
     private fun updateLookListIndex() {
         val currentLook = scope?.sprite?.look
-        if (!(currentLook != null && currentLook.lookListIndexBeforeLookRequest > -1)) {
-            scope?.sprite?.look?.lookListIndexBeforeLookRequest =
+        if (currentLook != null && currentLook.lookListIndexBeforeLookRequest <= -1) {
+            currentLook.lookListIndexBeforeLookRequest =
                 scope?.sprite?.lookList?.indexOf(scope?.sprite?.look?.lookData) ?: -1
         }
     }

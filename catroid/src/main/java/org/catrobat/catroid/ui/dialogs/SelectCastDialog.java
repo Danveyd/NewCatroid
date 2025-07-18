@@ -44,17 +44,6 @@ public class SelectCastDialog extends DialogFragment {
 
 	public static final String TAG = SelectCastDialog.class.getSimpleName();
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		CastManager.getInstance().setCallback(MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN);
-	}
-
-	@Override
-	public void onDismiss(DialogInterface dialog) {
-		CastManager.getInstance().setCallback();
-		super.onDismiss(dialog);
-	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -87,12 +76,16 @@ public class SelectCastDialog extends DialogFragment {
 
 		final AlertDialog alertDialog = builder.create();
 
+		// В методе onCreateDialog, найдите этот код:
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				synchronized (this) {
 					MediaRouter.RouteInfo routeInfo = CastManager.getInstance().getRouteInfos().get(position);
-					CastManager.getInstance().setCallback();
+
+					// УДАЛИТЕ ЭТУ СТРОКУ:
+					// CastManager.getInstance().setCallback();
+
 					CastManager.getInstance().startCastButtonAnimation();
 					CastManager.getInstance().selectRoute(routeInfo);
 					alertDialog.dismiss();

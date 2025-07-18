@@ -156,7 +156,9 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_flatten, R.string.formula_editor_function_connect,
 			R.string.formula_editor_function_table_x, R.string.formula_editor_function_table_y, R.string.formula_editor_function_table_element,
 			R.string.formula_editor_function_table_join, R.string.formula_editor_function_floatarray,
-			R.string.formula_editor_function_lua);
+			R.string.formula_editor_function_lua,
+			R.string.view_x, R.string.view_y, R.string.view_width, R.string.view_height, R.string.is_video_playing, //R.string.video_time,
+			R.string.formula_editor_function_file);
 	private static final List<Integer> STRING_PARAMS = asList(R.string.formula_editor_function_length_parameter,
 			R.string.formula_editor_function_letter_parameter,
 			R.string.formula_editor_function_subtext_parameter,
@@ -183,7 +185,14 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_table_element_parameter,
 			R.string.formula_editor_function_table_join_parameter,
 			R.string.formula_editor_function_floatarray_parameter,
-			R.string.formula_editor_function_lua_parameter);
+			R.string.formula_editor_function_lua_parameter,
+			R.string.view_params,
+			R.string.view_params,
+			R.string.view_params,
+			R.string.view_params,
+			R.string.videoplayer_params,
+			//R.string.videoplayer_params,
+			R.string.formula_editor_function_file_parameter);
 	private static final List<Integer> LIST_FUNCTIONS = asList(R.string.formula_editor_function_number_of_items,
 			R.string.formula_editor_function_list_item, R.string.formula_editor_function_contains,
 			R.string.formula_editor_function_index_of_item, R.string.formula_editor_function_flatten, R.string.formula_editor_function_connect, R.string.formula_editor_function_find);

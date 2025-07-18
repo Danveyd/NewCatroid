@@ -30,6 +30,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -156,28 +157,48 @@ public final class CastManager {
 		return selectedDevice;
 	}
 
+	// В файле CastManager.java
 	public synchronized void initializeCast(AppCompatActivity activity) {
-
 		initializingActivity = activity;
 
+		// Если роутер уже создан, ничего не делаем.
 		if (mediaRouter != null) {
 			return;
 		}
+
+		// Подготовка, но не запуск!
 		deviceAdapter = new CastDevicesAdapter(activity, R.layout.fragment_cast_device_list_item, routeInfos);
 		mediaRouter = MediaRouter.getInstance(activity.getApplicationContext());
 		mediaRouteSelector = new MediaRouteSelector.Builder()
 				.addControlCategory(CastMediaControlIntent.categoryForCast(Constants.REMOTE_DISPLAY_APP_ID))
 				.build();
-		setCallback();
-	}
 
-	public void addCallback() {
+		// Просто создаем объект колбэка, но НЕ регистрируем его.
 		callback = new MyMediaRouterCallback();
-		mediaRouter.addCallback(mediaRouteSelector, callback, MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY);
 	}
 
-	public synchronized void setCallback() {
-		setCallback(MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY);
+	// В файле CastManager.java
+
+	// Этот метод будет вызываться из onResume
+	public void addCallback() {
+		if (mediaRouter != null && callback != null) {
+			// Используем флаг для АКТИВНОГО сканирования, когда UI виден
+			mediaRouter.addCallback(mediaRouteSelector, callback, MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN);
+		}
+	}
+
+	// Этот метод будет вызываться из onPause
+	public void removeCallback() {
+		if (mediaRouter != null && callback != null) {
+			mediaRouter.removeCallback(callback);
+		}
+	}
+
+	// Упрощаем setCallback, он больше не будет регистрировать колбэк
+	/*public synchronized void setCallback() {
+		if (callback == null) {
+			callback = new MyMediaRouterCallback();
+		}
 	}
 
 	public synchronized void setCallback(int callbackFlag) {
@@ -185,7 +206,7 @@ public final class CastManager {
 			callback = new MyMediaRouterCallback();
 		}
 		mediaRouter.addCallback(mediaRouteSelector, callback, callbackFlag);
-	}
+	}*/
 
 	public void openDeviceSelectorOrDisconnectDialog() {
 		openDeviceSelectorOrDisconnectDialog(initializingActivity);
@@ -445,13 +466,16 @@ public final class CastManager {
 		public void startCastService(final AppCompatActivity activity) {
 
 			Intent intent = new Intent(activity, activity.getClass());
-			PendingIntent notificationPendingIntent;
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // M = API 23, где появился IMMUTABLE
+			PendingIntent notificationPendingIntent;
+
+// Начиная с Android M (API 23), где появился флаг IMMUTABLE, мы должны его указывать.
+// Это обязательно для targetSdk 31+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				notificationPendingIntent = PendingIntent.getActivity(activity, 0,
 						intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 			} else {
-				// Для очень старых версий (до API 23)
+				// Для старых версий оставляем как было
 				notificationPendingIntent = PendingIntent.getActivity(activity, 0,
 						intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			}
@@ -480,6 +504,14 @@ public final class CastManager {
 
 				@Override
 				public void onRemoteDisplaySessionEnded(CastRemoteDisplayLocalService castRemoteDisplayLocalService) {
+				}
+
+				@Override
+				public void onRemoteDisplayMuteStateChanged(boolean muted) {
+					// Этот колбэк теперь обязателен в новой версии библиотеки.
+					// Вы можете добавить сюда логику, если нужно реагировать на выключение звука
+					// на удаленном экране. Пока можно оставить пустым.
+					Log.d("CastManager", "Remote display mute state changed to: " + muted);
 				}
 			};
 

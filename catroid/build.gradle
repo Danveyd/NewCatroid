@@ -107,8 +107,8 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
     }
 }
 
-def defaultVersionCode = 120
-def defaultVersionName = "2.0.5"
+def defaultVersionCode = 122
+def defaultVersionName = "2.0.6b"
 
 android {
     compileSdk 34
@@ -424,7 +424,7 @@ dependencies {
 
     // Support libraries
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.mediarouter:mediarouter:1.1.0'
+    implementation 'androidx.mediarouter:mediarouter:1.6.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.browser:browser:1.2.0'
@@ -473,7 +473,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // CAST
-    implementation "com.google.android.gms:play-services-cast:17.0.0"
+    //implementation "com.google.android.gms:play-services-cast:17.0.0"
+    implementation 'com.google.android.gms:play-services-cast-framework:21.4.0'
 
     // Analytics
     implementation "com.google.android.gms:play-services-analytics:$playServicesVersion"
@@ -484,6 +485,7 @@ dependencies {
     implementation 'com.koushikdutta.async:androidasync:2.2.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'ar.com.hjg:pngj:2.1.0'
+    implementation 'app.cash.quickjs:quickjs-android:0.9.2'
 
     implementation ('com.thoughtworks.xstream:xstream:1.4.11.1') {
         exclude group: 'xmlpull'

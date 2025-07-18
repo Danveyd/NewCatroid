@@ -27,7 +27,7 @@
     android:orientation="vertical"
     android:theme="@android:style/Theme.Light" >
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/formula_editor_brick_and_formula"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,12 +41,50 @@
             android:paddingTop="@dimen/brick_space_padding_formular_editor"
             android:paddingBottom="@dimen/brick_space_padding_formular_editor"
             android:background="@color/toolbar_background"
-            android:orientation="vertical"/>
+            android:orientation="vertical"
+            android:elevation="0dp"  />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/solid_white" >
+            android:background="#FFFFFF"
+            android:elevation="4dp" >
+
+            <org.catrobat.catroid.formulaeditor.FormulaEditorEditText
+                android:id="@+id/formula_editor_edit_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="#FFFFFF"
+                android:hint="@string/formula_nothing_selected"
+                android:inputType="textMultiLine"
+                android:lineSpacingExtra="5dp"
+                android:maxLines="20"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:textColor="@color/solid_black"
+                android:textSize="?attr/x_large" />
+        </FrameLayout>
+
+    </LinearLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/formula_editor_brick_and_formula"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- ДОБАВЛЯЕМ ID, чтобы ссылаться на этот контейнер -->
+        <FrameLayout
+            android:id="@+id/formula_editor_field_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/solid_white"
+            android:layout_alignParentBottom="true" > <!-- ПРИКЛЕИВАЕМ ЕГО К НИЗУ РОДИТЕЛЯ -->
 
             <org.catrobat.catroid.formulaeditor.FormulaEditorEditText
                 android:id="@+id/formula_editor_edit_field"
@@ -67,7 +105,24 @@
                 android:textSize="?attr/x_large" />
         </FrameLayout>
 
-    </LinearLayout>
+        <!-- ОБОРАЧИВАЕМ контейнер для кирпичика в ScrollView -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/formula_editor_field_container"> <!-- ЗАСТАВЛЯЕМ ЕГО ЗАНЯТЬ ВСЕ МЕСТО НАД ПОЛЕМ ВВОДА -->
+
+            <LinearLayout
+                android:id="@+id/formula_editor_brick_space"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/brick_space_padding_formular_editor"
+                android:paddingBottom="@dimen/brick_space_padding_formular_editor"
+                android:background="@color/toolbar_background"
+                android:orientation="vertical" />
+        </ScrollView>
+
+    </RelativeLayout>
 
     <include
         android:id="@+id/formula_editor_keyboardview"

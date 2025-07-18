@@ -49,7 +49,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.Manifest
+import android.content.ContentUris
+import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.provider.MediaStore
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.catrobat.catroid.CatroidApplication
@@ -80,96 +83,99 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
         if (userVariable == null || formula == null) {
             return
         }
-        createAndWriteToFile()
+        saveOrOverwriteInDownloads(CatroidApplication.getAppContext(), getFileName(), userVariable!!.value.toString())
     }
 
-    @VisibleForTesting
-    fun createAndWriteToFile() {
-        /*val fileName = getFileName()
-        createFile(fileName)?.let {
-            val content = userVariable?.value.toString() ?: "0"
-            writeToFile(it, content)
-        }*/
-        writeNew()
-        /*val content = userVariable?.value.toString() ?: "0"
-        saveToFile(getFileName(), content)*/
-    }
+    /**
+     * Сохраняет текстовый контент в файл в общую папку "Загрузки".
+     * Если файл с таким именем уже существует, он будет ПЕРЕЗАПИСАН.
+     * Если файл не существует, он будет создан.
+     *
+     * @param context Контекст приложения.
+     * @param fileName Имя файла для сохранения (например, "my-data.txt").
+     * @param content Новое содержимое файла.
+     * @return Uri файла или null в случае ошибки.
+     */
+    fun saveOrOverwriteInDownloads(context: Context, fileName: String, content: String): Uri? {
+        // --- Логика для Android 10 (Q) и новее ---
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val contentResolver = context.contentResolver
 
-    private fun writeUsingSystemFilePicker() {
-        StageActivity.messageHandler?.obtainMessage(
-            StageActivity.REGISTER_INTENT, arrayListOf(this))?.sendToTarget()
-    }
+            // 1. Попытка найти существующий файл
+            val projection = arrayOf(MediaStore.MediaColumns._ID)
+            val selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
+            val selectionArgs = arrayOf("${Environment.DIRECTORY_DOWNLOADS}/", fileName)
 
-    private fun writeUsingLegacyExternalStorage() {
-        val fileName = getFileName()
-        createFile(fileName)?.let {
-            val content = userVariable?.value.toString() ?: "0"
-            writeToFile(it, content)
-        }
-    }
+            var existingFileUri: Uri? = null
 
-    fun saveToFile(data: String, fileName: String) {
-        // Проверяем, если имя файла уже содержит расширение
-        val finalFileName = if (fileName.contains(".")) fileName else "$fileName.txt"
-
-        // Получаем путь до папки "Загрузки" (Downloads)
-        val downloadsPath = System.getProperty("user.home") + "/Downloads"
-
-        // Создаем объект File
-        val file = File(downloadsPath, finalFileName)
-
-        // Записываем данные в файл
-        file.writeText(data) // Записываем текст в файл
-        showSuccessMessage(file.name)
-        //println("Данные сохранены в файл: ${file.absolutePath}") // Уведомляем о сохранении
-    }
-
-    private fun writeNew() {
-        val fileName = getFileName()
-        CoroutineScope(Dispatchers.IO).launch {
-            //showSuccessMessage(Constants.DOWNLOAD_DIRECTORY.toString() + "/" + fileName)
-            Log.d("WriteVar", "File: " + fileName)
-            createFile(fileName)?.let { file ->
-                val content = userVariable?.value.toString() ?: "0"
-                val result = writeToFile2(file, content)
-                // Теперь возвращаемся в основной поток для уведомления пользователя
-                withContext(Dispatchers.Main) {
-                    if (result) {
-                        //showSuccessMessage(file.name)
-                    } else {
-                        Log.e(javaClass.simpleName, "Could not write variable value to storage.")
-                    }
+            // Выполняем запрос
+            contentResolver.query(
+                MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
+                projection,
+                selection,
+                selectionArgs,
+                null
+            )?.use { cursor ->
+                // Если курсор не пустой и есть хотя бы одна строка - файл найден
+                if (cursor.moveToFirst()) {
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                    val id = cursor.getLong(idColumn)
+                    existingFileUri = ContentUris.withAppendedId(
+                        MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
+                        id
+                    )
                 }
             }
+
+            try {
+                // 2. Если файл НАЙДЕН - перезаписываем его
+                if (existingFileUri != null) {
+                    // 'w' означает "write mode", который обрезает файл до нуля перед записью (т.е. перезаписывает)
+                    contentResolver.openOutputStream(existingFileUri!!, "w")?.use {
+                        it.write(content.toByteArray(Charsets.UTF_8))
+                    }
+                    println("Файл успешно перезаписан: $existingFileUri")
+                    return existingFileUri
+                }
+                // 3. Если файл НЕ НАЙДЕН - создаем новый
+                else {
+                    val newValues = ContentValues().apply {
+                        put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                        put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                    }
+                    val newFileUri = contentResolver.insert(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), newValues)
+
+                    newFileUri?.let { uri ->
+                        contentResolver.openOutputStream(uri)?.use {
+                            it.write(content.toByteArray(Charsets.UTF_8))
+                        }
+                        println("Новый файл успешно создан: $newFileUri")
+                    }
+                    return newFileUri
+                }
+            } catch (e: Exception) {
+                println("Ошибка при сохранении/перезаписи файла: ${e.message}")
+                return null
+            }
         }
-    }
+        // --- Логика для старых версий Android (до 10) ---
+        else {
+            // Требует разрешения WRITE_EXTERNAL_STORAGE в манифесте для API < 29
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(downloadsDir, fileName)
 
-    @VisibleForTesting
-    fun createFile(fileName: String): File? {
-        val file = File(Constants.DOWNLOAD_DIRECTORY, fileName)
-        return if (file.exists() || file.createNewFile()) {
-            file
-        } else null
-    }
-
-    @VisibleForTesting
-    fun writeToFile(file: File, content: String) {
-        try {
-            file.writeText(content)
-            showSuccessMessage(file.name)
-        } catch (e: IOException) {
-            Log.e(javaClass.simpleName, "Could not write variable value to storage.")
-        }
-    }
-
-    @VisibleForTesting
-    fun writeToFile2(file: File, content: String): Boolean {
-        return try {
-            file.writeText(content)
-            true // Возвращаем true, если запись успешна
-        } catch (e: IOException) {
-            Log.e(javaClass.simpleName, "Could not write variable value to storage.")
-            false // Возвращаем false, если произошла ошибка
+            try {
+                // writeText по умолчанию создает или перезаписывает файл.
+                file.writeText(content, Charsets.UTF_8)
+                println("Файл успешно сохранен/перезаписан: ${file.absolutePath}")
+                // Для старых версий мы не можем легко получить content:// Uri, но можем вернуть файловый Uri.
+                // Однако для совместимости лучше просто вернуть null или true/false.
+                return Uri.fromFile(file)
+            } catch (e: Exception) {
+                println("Ошибка при сохранении/перезаписи файла: ${e.message}")
+                return null
+            }
         }
     }
 

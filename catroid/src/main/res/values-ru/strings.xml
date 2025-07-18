@@ -78,6 +78,44 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="is_password">является паролем</string>
+    <string formatted="false" name="corner_radius">закругленность углов</string>
+    <string formatted="false" name="max_length">макс. длина</string>
+    <string formatted="false" name="type">тип (text, number)</string>
+    <string formatted="false" name="font">шрифт (файлы проекта)</string>
+    <string formatted="false" name="brick_set_callback2">обработчик сообщений</string>
+    <string formatted="false" name="brick_set_callback">Добавить к WebView</string>
+    <string formatted="false" name="brick_eval_web2">внутри WebView</string>
+    <string formatted="false" name="brick_eval_web">Выполнить JS</string>
+    <string formatted="false" name="set_native_layer">Задать слой нативному View</string>
+    <string formatted="false" name="videoplayer_params">(\'myVideoPlayer\')</string>
+    <string formatted="false" name="view_params">(\'myView\')</string>
+    <string formatted="false" name="video_time">время videoplayer</string>
+    <string formatted="false" name="is_video_playing">videoplayer запущен</string>
+    <string formatted="false" name="view_height">высота view</string>
+    <string formatted="false" name="view_width">ширина view</string>
+    <string formatted="false" name="view_y">позиция y view</string>
+    <string formatted="false" name="view_x">позиция x view</string>
+    <string formatted="false" name="seek_video2">на (секунды)</string>
+    <string formatted="false" name="seek_video">Перемотать VideoPlayer</string>
+    <string formatted="false" name="play_video">Запустить VideoPlayer</string>
+    <string formatted="false" name="pause_video">Остановить VideoPlayer</string>
+    <string formatted="false" name="alignment">выравнивание (left, center, right)</string>
+    <string formatted="false" name="hint_color">цвет подсказки</string>
+    <string formatted="false" name="hint_text">подсказка</string>
+    <string formatted="false" name="bg_color">цвет фона</string>
+    <string formatted="false" name="text_color">цвет текста</string>
+    <string formatted="false" name="text_size">размер текста</string>
+    <string formatted="false" name="styles">Стили</string>
+    <string formatted="false" name="default_text">текст по умолчанию</string>
+    <string formatted="false" name="save_to_variable">сохранять в переменную</string>
+    <string formatted="false" name="brick_create_textfield">Создать TextField</string>
+    <string formatted="false" name="project_file">файл проекта</string>
+    <string formatted="false" name="control_enabled">показать управление</string>
+    <string formatted="false" name="loop_enabled">зациклить</string>
+    <string formatted="false" name="position">позиция (x, y)</string>
+    <string formatted="false" name="size_wh">размер (ширина, высота)</string>
+    <string formatted="false" name="brick_video_player">Создать VideoPlayer</string>
     <string formatted="false" name="brick_photo">Сделать снимок и использовать как образ</string>
     <string formatted="false" name="brick_cut_look2">конец (x, y)</string>
     <string formatted="false" name="brick_cut_look1">начало (x, y)</string>
@@ -203,7 +241,7 @@
     <string formatted="false" name="create_web_file2">HTML код</string>
     <string formatted="false" name="create_web_file3">позиция (x, y)</string>
     <string formatted="false" name="create_web_file4">размер (ширина, высота)</string>
-    <string formatted="false" name="delete_web">Удалить WebView с названием</string>
+    <string formatted="false" name="delete_web">Удалить нативный View</string>
     <string formatted="false" name="brick_run_js">Выполнить Micro-JavaScript код</string>
     <string formatted="false" name="brick_run_js2">и сохранить результат в</string>
     <string formatted="false" name="project_files">Файлы проекта</string>

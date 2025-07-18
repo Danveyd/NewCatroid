@@ -104,6 +104,12 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FIND.name(), R.string.formula_editor_function_find);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_X.name(), R.string.formula_editor_function_table_x);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_Y.name(), R.string.formula_editor_function_table_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIEW_X.name(), R.string.view_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIEW_Y.name(), R.string.view_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIEW_WIDTH.name(), R.string.view_width);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIEW_HEIGHT.name(), R.string.view_height);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIDEO_PLAYING.name(), R.string.is_video_playing);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.VIDEO_TIME.name(), R.string.video_time);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FLOATARRAY.name(), R.string.formula_editor_function_floatarray);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_ELEMENT.name(), R.string.formula_editor_function_table_element);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_JOIN.name(), R.string.formula_editor_function_table_join);

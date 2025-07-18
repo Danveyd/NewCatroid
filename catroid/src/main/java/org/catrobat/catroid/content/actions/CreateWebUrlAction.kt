@@ -1,20 +1,9 @@
 package org.catrobat.catroid.content.actions
 
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
-import org.catrobat.catroid.formulaeditor.UserVariable
 import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.stage.StageActivity.IntentListener
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import org.catrobat.catroid.R
-import android.widget.FrameLayout
-import org.catrobat.catroid.content.MyActivityManager
-import org.catrobat.catroid.content.WebViewController
 
 class CreateWebUrlAction : TemporalAction() {
     //private lateinit var rootLayout: FrameLayout // Контейнер для WebView
@@ -37,10 +26,18 @@ class CreateWebUrlAction : TemporalAction() {
         var widthv = width?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
         var heightv = height?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
 
-        //val activity = StageActivity.activeStageActivity.get()
-        //activity?.runOnUiThread {
-        MyActivityManager.stage_activity?.let { activity ->
-            WebViewController.createWebView(activity, namev, urlv, posXv, posYv, widthv, heightv)
+        val activity: StageActivity? = StageActivity.activeStageActivity.get();
+        if (activity == null) return
+
+        activity.runOnUiThread {
+            activity.createWebViewWithUrl(
+                namev,
+                urlv,
+                posXv,
+                posYv,
+                widthv,
+                heightv
+            )
         }
     }
 }

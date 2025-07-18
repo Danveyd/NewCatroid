@@ -36,7 +36,9 @@ import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.formulaeditor.UserVariable
+import org.catrobat.catroid.utils.ErrorLog
 import java.io.File
+import java.io.IOException
 import java.util.ArrayList
 
 class WriteToFilesAction() : TemporalAction() {
@@ -56,9 +58,24 @@ class WriteToFilesAction() : TemporalAction() {
     }
 
     fun writeToFile(file: File, content: String) {
-        // Создаем объект File, указывая путь к файлу
+        try {
+            // Шаг 1: Убедимся, что родительские директории существуют.
+            // Это важный шаг, так как writeText() выдаст ошибку, если папки для файла нет.
+            // `?.` - безопасный вызов, сработает только если родитель не null (т.е. это не корневой файл)
+            // `mkdirs()` - создает все недостающие папки в пути.
+            file.parentFile?.mkdirs()
 
-        // Записываем содержимое в файл
-        file.appendText(content + "\n") // Используйте appendText для добавления текста в конец файла
+            // Шаг 2: Записываем текст в файл, полностью перезаписывая его.
+            // Этот метод автоматически создает файл, если он не существует,
+            // и полностью перезаписывает его, если он уже есть.
+            // Явно указываем кодировку UTF-8 для надежности.
+            file.writeText(content, Charsets.UTF_8)
+
+        } catch (e: IOException) {
+            // Хорошей практикой будет обработать возможные ошибки ввода-вывода
+            println("Произошла ошибка при записи в файл ${file.path}: ${e.message}")
+            ErrorLog.log("Произошла ошибка при записи в файл ${file.path}: ${e.message}")
+            // В реальном приложении здесь может быть логирование или другая обработка.
+        }
     }
 }

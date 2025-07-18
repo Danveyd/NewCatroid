@@ -53,6 +53,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.security.SecureRandom;
@@ -532,10 +533,23 @@ public class FormulaElement implements Serializable {
 						arguments.get(2));
 			case FILE:
 				String fileName = String.valueOf(arguments.get(0));
-				File file = scope.getProject().getFile(fileName);
-				if(file.exists()) {
-					return true;
-				} else {
+				try {
+					File file = scope.getProject().getFile(fileName);
+
+					// --- ЛУЧШАЯ ПРАКТИКА ---
+					// Объединяем все проверки в одну.
+					// Это безопасно и эффективно благодаря "ленивому" вычислению &&.
+					if (file != null && file.exists() && file.isFile() && file.canRead()) {
+						return true;
+					}
+
+					// Если любая из проверок не удалась, возвращаем false.
+					return false;
+
+				} catch (Exception e) {
+					// Добавляем блок try-catch на случай непредвиденных ошибок
+					// (например, если в имени файла есть недопустимые символы).
+					Log.e("FileCheck", "Error while checking file existence for: " + fileName, e);
 					return false;
 				}
 			case LUA:
@@ -582,6 +596,54 @@ public class FormulaElement implements Serializable {
 				Integer ySize = TableManager.Companion.getTableYSize("myTable"); // Получение размера по Y
 				Log.d("TABLE_MANAGER", "Размеры таблицы: " + xSize + " по X и " + ySize + " по Y"); // Выводит: Размеры таблицы: 6 по X и 4 по Y */
 				return TableManager.Companion.getTableXSize(String.valueOf(arguments.get(0)));
+			case VIEW_X:
+				final WeakReference ref = StageActivity.activeStageActivity;
+				StageActivity activity = null;
+				if (ref != null) {
+					activity = StageActivity.activeStageActivity.get();
+				}
+				if (activity == null) return 0;
+				return activity.getViewX(String.valueOf(arguments.get(0)));
+			case VIEW_Y:
+				final WeakReference ref1 = StageActivity.activeStageActivity;
+				StageActivity activity1 = null;
+				if (ref1 != null) {
+					activity1 = StageActivity.activeStageActivity.get();
+				}
+				if (activity1 == null) return 0;
+				return activity1.getViewY(String.valueOf(arguments.get(0)));
+			case VIEW_WIDTH:
+				final WeakReference ref2 = StageActivity.activeStageActivity;
+				StageActivity activity2 = null;
+				if (ref2 != null) {
+					activity2 = StageActivity.activeStageActivity.get();
+				}
+				if (activity2 == null) return 0;
+				return activity2.getViewWidth(String.valueOf(arguments.get(0)));
+			case VIEW_HEIGHT:
+				final WeakReference ref3 = StageActivity.activeStageActivity;
+				StageActivity activity3 = null;
+				if (ref3 != null) {
+					activity3 = StageActivity.activeStageActivity.get();
+				}
+				if (activity3 == null) return 0;
+				return activity3.getViewHeight(String.valueOf(arguments.get(0)));
+			case VIDEO_PLAYING:
+				final WeakReference ref4 = StageActivity.activeStageActivity;
+				StageActivity activity4 = null;
+				if (ref4 != null) {
+					activity4 = StageActivity.activeStageActivity.get();
+				}
+				if (activity4 == null) return false;
+				return activity4.isVideoPlaying(String.valueOf(arguments.get(0)));
+			case VIDEO_TIME:
+				final WeakReference ref5 = StageActivity.activeStageActivity;
+				StageActivity activity5 = null;
+				if (ref5 != null) {
+					activity5 = StageActivity.activeStageActivity.get();
+				}
+				if (activity5 == null) return 0;
+				return activity5.getVideoCurrentTime(String.valueOf(arguments.get(0)));
 			case FLOATARRAY:
 				return FloatArrayManager.INSTANCE.getArraySize(String.valueOf(arguments.get(0)));
 			case TABLE_Y:

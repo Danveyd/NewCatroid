@@ -37,7 +37,7 @@ import org.catrobat.catroid.ProjectManager
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class PlotActor : Actor() {
+/*class PlotActor : Actor() {
     private var buffer: FrameBuffer?
     private val camera: OrthographicCamera
     private val screenRatio: Float
@@ -111,6 +111,77 @@ class PlotActor : Actor() {
         if (buffer != null) {
             buffer!!.dispose()
             buffer = null
+        }
+    }
+
+    private fun calculateScreenRatio(): Float {
+        val metrics = Resources.getSystem().displayMetrics
+        val deviceDiagonalPixel =
+            sqrt(metrics.widthPixels.toFloat().pow(2) + metrics.heightPixels .toFloat().pow(2))
+
+        val header = ProjectManager.getInstance().currentProject.xmlHeader
+        val creatorDiagonalPixel =
+            sqrt(header.getVirtualScreenWidth().toFloat().pow(2) + header.getVirtualScreenHeight
+                ().toFloat().pow(2))
+        return creatorDiagonalPixel / deviceDiagonalPixel
+    }
+}*/
+
+class PlotActor : Actor() {
+    private var buffer: FrameBuffer?
+    private var bufferBatch: Batch?
+    private val camera: OrthographicCamera
+    private val screenRatio: Float
+
+    init {
+        val header = ProjectManager.getInstance().currentProject.xmlHeader
+        buffer = FrameBuffer(
+            Pixmap.Format.RGBA8888,
+            header.virtualScreenWidth,
+            header.virtualScreenHeight,
+            false
+        )
+        bufferBatch = SpriteBatch()
+        camera = OrthographicCamera(
+            header.getVirtualScreenWidth().toFloat(),
+            header.getVirtualScreenHeight().toFloat()
+        )
+        (bufferBatch as SpriteBatch).setProjectionMatrix(camera.combined)
+        screenRatio = calculateScreenRatio()
+        reset()
+    }
+
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        buffer!!.begin()
+        for (sprite in StageActivity.stageListener.spritesFromStage) {
+            val plot = sprite.plot
+            plot.drawLinesForSprite(screenRatio, stage.viewport.camera)
+        }
+        buffer!!.end()
+
+        batch.end()
+        val region = TextureRegion(buffer!!.colorBufferTexture)
+        region.flip(false, true)
+        val image = Image(region)
+        image.setPosition((-buffer!!.width / 2).toFloat(), (-buffer!!.height / 2).toFloat())
+        batch.begin()
+        image.draw(batch, parentAlpha)
+    }
+
+    fun reset() {
+        buffer!!.begin()
+        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        buffer!!.end()
+    }
+
+    fun dispose() {
+        if (buffer != null) {
+            buffer!!.dispose()
+            buffer = null
+        }
+        if (bufferBatch != null) {
+            bufferBatch!!.dispose()
+            bufferBatch = null
         }
     }
 

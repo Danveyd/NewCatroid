@@ -15,9 +15,7 @@ class DeleteWebAction : TemporalAction() {
         //rootLayout = FrameLayout(CatroidApplication.getAppContext())
         var namev = name?.interpretObject(scope)?.toString() ?: ""
 
-        val activity = StageActivity.activeStageActivity.get()
-        //activity?.runOnUiThread {
-        //WebViewController.removeWebView(namev)
-        //}
+        StageActivity.activeStageActivity.get()?.removeView(namev);
+        StageActivity.activeStageActivity.get()?.setWebViewCallback(namev, null)
     }
 }

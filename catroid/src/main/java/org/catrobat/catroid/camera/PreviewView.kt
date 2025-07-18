@@ -31,6 +31,8 @@ import androidx.core.util.Consumer
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
+// В файле org/catrobat/catroid/camera/PreviewView.kt
+
 class PreviewView(context: Context) : FrameLayout(context) {
     val surfaceView = SurfaceView(context)
 
@@ -39,20 +41,32 @@ class PreviewView(context: Context) : FrameLayout(context) {
     }
 
     fun createSurfaceProvider() = SurfaceProvider { request ->
-        with(request.resolution) {
-            surfaceView.holder.setFixedSize(width, height)
-            scaleView(width, height)
-        }
+        // Сначала отдаем Surface, это безопасно
         request.provideSurface(
             surfaceView.holder.surface,
             Executors.newSingleThreadExecutor(),
             Consumer { }
         )
+
+        // ИСПОЛЬЗУЕМ POST, чтобы выполнить масштабирование ПОСЛЕ того, как View будет измерен
+        this.post {
+            // Передаем размеры из запроса камере
+            scaleView(request.resolution.width, request.resolution.height)
+        }
     }
 
     private fun scaleView(imageWidth: Int, imageHeight: Int) {
+        // Проверка на всякий случай
+        if (this.width == 0 || this.height == 0) {
+            return
+        }
+
         val imageAspectRatio = imageHeight.toFloat() / imageWidth
         val screenAspectRatio = this.width.toFloat() / this.height
+
+        // Сбросим масштаб перед новыми расчетами
+        surfaceView.scaleX = 1f
+        surfaceView.scaleY = 1f
 
         if (screenAspectRatio < 1) { // portrait mode
             val scalingFactor = imageAspectRatio / screenAspectRatio

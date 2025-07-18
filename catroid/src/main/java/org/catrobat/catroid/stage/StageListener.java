@@ -642,7 +642,12 @@ public class StageListener implements ApplicationListener {
 
 		CameraManager cameraManager = StageActivity.getActiveCameraManager();
 		if (cameraManager != null) {
-			cameraManager.resume();
+			StageActivity.runOnMainThread(new Runnable() {
+				@Override
+				public void run() {
+					cameraManager.resume();
+				}
+			});
 		}
 
 		if(stopSound) {
@@ -678,7 +683,12 @@ public class StageListener implements ApplicationListener {
 
 		CameraManager cameraManager = StageActivity.getActiveCameraManager();
 		if (cameraManager != null) {
-			cameraManager.resume();
+			StageActivity.runOnMainThread(new Runnable() {
+				@Override
+				public void run() {
+					cameraManager.resume();
+				}
+			});
 		}
 
 		if(stopSound) {
@@ -710,7 +720,12 @@ public class StageListener implements ApplicationListener {
 
 		CameraManager cameraManager = StageActivity.getActiveCameraManager();
 		if (cameraManager != null) {
-			cameraManager.resume();
+			StageActivity.runOnMainThread(new Runnable() {
+				@Override
+				public void run() {
+					cameraManager.resume();
+				}
+			});
 		}
 
 		SoundManager.getInstance().clear();
@@ -741,7 +756,12 @@ public class StageListener implements ApplicationListener {
 
 		CameraManager cameraManager = StageActivity.getActiveCameraManager();
 		if (cameraManager != null) {
-			cameraManager.resume();
+			StageActivity.runOnMainThread(new Runnable() {
+				@Override
+				public void run() {
+					cameraManager.resume();
+				}
+			});
 		}
 
 		SoundManager.getInstance().clear();
@@ -759,6 +779,11 @@ public class StageListener implements ApplicationListener {
 		if (reloadProject) {
 			return;
 		}
+		StageActivity stageActivity = StageActivity.activeStageActivity.get();
+		if (stageActivity != null) {
+			stageActivity.removeAllNativeViews();
+		}
+
 		this.stageDialog = stageDialog;
 		if (!ProjectManager.getInstance().getStartScene().getName().equals(scene.getName())) {
 			transitionToScene(ProjectManager.getInstance().getStartScene().getName());
@@ -812,6 +837,202 @@ public class StageListener implements ApplicationListener {
 	}
 
 	@Override
+	public void render() {
+		Look.tickGlobalFrame();
+		CameraManager cameraManager = StageActivity.getActiveCameraManager();
+		float color = 0f; //cameraManager != null && cameraManager.getPreviewVisible() ? 0f : 1f;
+		Gdx.gl20.glClearColor(color, color, color, 0f);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		if (reloadProject) {
+			stage.clear();
+			if (penActor != null) {
+				penActor.dispose();
+			}
+
+			if (plotActor != null) {
+				plotActor.dispose();
+			}
+
+			embroideryPatternManager.clear();
+
+			SoundManager.getInstance().clear();
+
+			physicsWorld = scene.resetPhysicsWorld();
+
+			initActors(sprites);
+			stage.addActor(passepartout);
+
+			initStageInputListener();
+
+			paused = true;
+			scene.firstStart = true;
+			reloadProject = false;
+
+			cameraPositioner.reset();
+
+			if (stageDialog != null) {
+				synchronized (stageDialog) {
+					stageDialog.notify();
+				}
+			}
+		}
+
+		batch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(camera.combined);
+
+		if (scene.firstStart) {
+			for (Sprite sprite : sprites) {
+				sprite.initializeEventThreads(EventId.START);
+				sprite.initConditionScriptTriggers();
+				sprite.initIfConditionBrickTriggers();
+				if (!sprite.getLookList().isEmpty()) {
+					sprite.look.setLookData(sprite.getLookList().get(0));
+				}
+			}
+			scene.firstStart = false;
+		}
+
+		if (!paused) {
+			float deltaTime = Gdx.graphics.getDeltaTime();
+
+			float optimizedDeltaTime = deltaTime / deltaActionTimeDivisor;
+			long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
+
+			while (deltaTime > 0f) {
+				physicsWorld.step(optimizedDeltaTime);
+				stage.act(optimizedDeltaTime);
+				deltaTime -= optimizedDeltaTime;
+			}
+
+			long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;
+			if (executionTimeOfActionsUpdate <= ACTIONS_COMPUTATION_TIME_MAXIMUM) {
+				deltaActionTimeDivisor += 1f;
+				deltaActionTimeDivisor = Math.min(DELTA_ACTIONS_DIVIDER_MAXIMUM, deltaActionTimeDivisor);
+			} else {
+				deltaActionTimeDivisor -= 1f;
+				deltaActionTimeDivisor = Math.max(1f, deltaActionTimeDivisor);
+			}
+		}
+
+		ShaderProgram customShader = null; //GlobalShaderManager.INSTANCE.getCustomSceneShader();
+
+		if (customShader == null) {
+			// --- СТАНДАРТНЫЙ РЕНДЕРИНГ (без эффектов) ---
+			// Просто рисуем сцену как обычно
+            /*if(cameraManager == null) {
+				Gdx.gl.glClearColor(1, 1, 1, 0);
+			} else if(cameraManager.isCameraActive()) {
+				Gdx.gl.glClearColor(0, 0, 0, 0);
+			} else {
+				Gdx.gl.glClearColor(1, 1, 1, 0);
+			}*/
+			Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			if (!finished) {
+				// Здесь ваша логика отрисовки из прошлого ответа (с группировкой по шейдерам и т.д.)
+				renderSceneNormally(stage); // Вынесите старую логику stage.draw() в отдельный метод
+			}
+		}
+
+		if (makeScreenshot) {
+			Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
+			String manualScreenshotPath = scene.getDirectory()
+					+ "/" + SCREENSHOT_MANUAL_FILE_NAME;
+			File manualScreenshot = new File(manualScreenshotPath);
+			if (!manualScreenshot.exists() || Objects.equals(screenshotName,
+					SCREENSHOT_MANUAL_FILE_NAME)) {
+				byte[] screenshot = ScreenUtils
+						.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth, screenshotHeight, true);
+				screenshotSaver.saveScreenshotAndNotify(
+						screenshot,
+						screenshotName,
+						this::notifyScreenshotCallbackAndCleanup,
+						GlobalScope.INSTANCE
+				);
+			}
+			String automaticScreenShotPath = scene.getDirectory()
+					+ "/" + SCREENSHOT_AUTOMATIC_FILE_NAME;
+			File automaticScreenShot = new File(automaticScreenShotPath);
+			if (manualScreenshot.exists() && automaticScreenShot.exists()) {
+				automaticScreenShot.delete();
+			}
+			makeScreenshot = false;
+		}
+
+		if (axesOn && !finished) {
+			drawAxes();
+		}
+
+		if (PhysicsDebugSettings.Render.RENDER_PHYSIC_OBJECT_LABELING) {
+			printPhysicsLabelOnScreen();
+		}
+
+		if (PhysicsDebugSettings.Render.RENDER_COLLISION_FRAMES && !finished) {
+			physicsWorld.render(camera.combined);
+		}
+
+		if (makeTestPixels) {
+			testPixels = ScreenUtils.getFrameBufferPixels(testX, testY, testWidth, testHeight, false);
+			makeTestPixels = false;
+		}
+
+		cameraPositioner.updateCameraPositionForFocusedSprite();
+	}
+
+	private void renderSceneNormally(Stage stage) {
+		if (!finished) {
+			stage.draw(); // <-- ЗАКОММЕНТИРУЙТЕ ИЛИ УДАЛИТЕ ЭТУ СТРОКУ
+
+			// ▼▼▼ НАЧАЛО НОВОГО КОДА ▼▼▼
+
+			/*Array<Actor> actors = stage.getActors();
+			camera.update(); // Убедимся, что камера обновлена
+			batch.setProjectionMatrix(camera.combined);
+
+			batch.begin();
+
+			// ПРОХОД 1: Рисуем все обычные объекты (без кастомного шейдера)
+			for (Actor actor : actors) {
+				if (actor instanceof Look) {
+					Look look = (Look) actor;
+					/*if (!look.needsCustomShader()) {
+						actor.draw(batch, 1.0f);
+					}*//*
+					actor.draw(batch, 1.0f);
+				} else {
+					// Рисуем все остальные акторы (PenActor, PlotActor, и т.д.)
+					actor.draw(batch, 1.0f);
+				}
+			}*/
+
+			/*batch.flush(); // Завершаем первый проход
+
+			// ПРОХОД 2: Рисуем все объекты с эффектами
+			batch.setShader(brightnessContrastHueShader); // Устанавливаем шейдер ОДИН РАЗ
+			for (Actor actor : actors) {
+				if (actor instanceof Look) {
+					Look look = (Look) actor;
+					if (look.needsCustomShader()) {
+						// Устанавливаем уникальные параметры для этого объекта
+						brightnessContrastHueShader.setBrightness(look.getBrightnessValue());
+						brightnessContrastHueShader.setHue(look.getHueValue());
+						// Рисуем
+						look.draw(batch, 1.0f);
+					}
+				}
+			}
+			batch.setShader(null); // Сбрасываем шейдер ОДИН РАЗ*/
+
+			//batch.end();
+
+			// ▲▲▲ КОНЕЦ НОВОГО КОДА ▲▲▲
+
+			firstFrameDrawn = true;
+		}
+	}
+
+	/*@Override
 	public void render() {
 		Log.d("ShaderDebug", " "); // Пустая строка для разделения кадров
 		Log.d("ShaderDebug", "--- FRAME START ---");
@@ -1118,7 +1339,7 @@ public class StageListener implements ApplicationListener {
 
 		Log.d("ShaderDebug", "--- FRAME END ---");
 		firstFrameDrawn = true;
-	}
+	}*/
 
 	private final Integer unit_to_shader = 0;
 
@@ -1451,16 +1672,16 @@ public class StageListener implements ApplicationListener {
 		batch.dispose();
 	}
 
-    public void gamepadPressed(String buttonType) {
-        // ИЗМЕНЕНО: Добавляем проверку на null
-        if (project == null) {
-            Log.e("StageListener", "Gamepad event received, but project is null. Ignoring.");
-            return; // Просто выходим, чтобы избежать крэша
-        }
-        EventId eventId = new GamepadEventId(buttonType);
-        EventWrapper gamepadEvent = new EventWrapper(eventId, false);
-        project.fireToAllSprites(gamepadEvent);
-    }
+	public void gamepadPressed(String buttonType) {
+		// ИЗМЕНЕНО: Добавляем проверку на null
+		if (project == null) {
+			Log.e("StageListener", "Gamepad event received, but project is null. Ignoring.");
+			return; // Просто выходим, чтобы избежать крэша
+		}
+		EventId eventId = new GamepadEventId(buttonType);
+		EventWrapper gamepadEvent = new EventWrapper(eventId, false);
+		project.fireToAllSprites(gamepadEvent);
+	}
 
 	public void addActor(Actor actor) {
 		stage.addActor(actor);
@@ -1614,7 +1835,12 @@ public class StageListener implements ApplicationListener {
 		axesOn = backup.axesOn;
 		deltaActionTimeDivisor = backup.deltaActionTimeDivisor;
 		if (backup.cameraRunning && cameraManager != null) {
-			cameraManager.resume();
+			StageActivity.runOnMainThread(new Runnable() {
+				@Override
+				public void run() {
+					cameraManager.resume();
+				}
+			});
 		}
 		for (SoundBackup soundBackup : backup.soundBackupList) {
 			SoundManager.getInstance().playSoundFileWithStartTime(soundBackup.getPathToSoundFile(),

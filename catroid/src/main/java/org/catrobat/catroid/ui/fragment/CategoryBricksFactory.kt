@@ -77,7 +77,9 @@ import org.catrobat.catroid.content.bricks.CopyTextBrick
 import org.catrobat.catroid.content.bricks.CreateDialogBrick
 import org.catrobat.catroid.content.bricks.CreateFloatBrick
 import org.catrobat.catroid.content.bricks.CreateTableBrick
+import org.catrobat.catroid.content.bricks.CreateTextFieldBrick
 import org.catrobat.catroid.content.bricks.CreateVarBrick
+import org.catrobat.catroid.content.bricks.CreateVideoBrick
 import org.catrobat.catroid.content.bricks.CreateWebFileBrick
 import org.catrobat.catroid.content.bricks.CreateWebUrlBrick
 import org.catrobat.catroid.content.bricks.CutLookBrick
@@ -107,6 +109,7 @@ import org.catrobat.catroid.content.bricks.DroneTakeOffLandBrick
 import org.catrobat.catroid.content.bricks.DroneTurnLeftBrick
 import org.catrobat.catroid.content.bricks.DroneTurnRightBrick
 import org.catrobat.catroid.content.bricks.EditLookBrick
+import org.catrobat.catroid.content.bricks.EvalWebBrick
 import org.catrobat.catroid.content.bricks.ExitStageBrick
 import org.catrobat.catroid.content.bricks.FadeParticleEffectBrick
 import org.catrobat.catroid.content.bricks.FileUrlBrick
@@ -160,6 +163,7 @@ import org.catrobat.catroid.content.bricks.LunoScriptBrick
 import org.catrobat.catroid.content.bricks.MoveDownloadsBrick
 import org.catrobat.catroid.content.bricks.MoveFilesBrick
 import org.catrobat.catroid.content.bricks.MoveNStepsBrick
+import org.catrobat.catroid.content.bricks.NativeLayerBrick
 import org.catrobat.catroid.content.bricks.NextLookBrick
 import org.catrobat.catroid.content.bricks.NormalizeImgBrick
 import org.catrobat.catroid.content.bricks.NoteBrick
@@ -172,6 +176,7 @@ import org.catrobat.catroid.content.bricks.ParameterizedBrick
 import org.catrobat.catroid.content.bricks.ParameterizedEndBrick
 import org.catrobat.catroid.content.bricks.ParticleEffectAdditivityBrick
 import org.catrobat.catroid.content.bricks.PauseForBeatsBrick
+import org.catrobat.catroid.content.bricks.PauseVideoBrick
 import org.catrobat.catroid.content.bricks.PenDownBrick
 import org.catrobat.catroid.content.bricks.PenUpBrick
 import org.catrobat.catroid.content.bricks.PhiroIfLogicBeginBrick
@@ -187,6 +192,7 @@ import org.catrobat.catroid.content.bricks.PlayNoteForBeatsBrick
 import org.catrobat.catroid.content.bricks.PlaySoundAndWaitBrick
 import org.catrobat.catroid.content.bricks.PlaySoundAtBrick
 import org.catrobat.catroid.content.bricks.PlaySoundBrick
+import org.catrobat.catroid.content.bricks.PlayVideoBrick
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick
 import org.catrobat.catroid.content.bricks.PointToBrick
 import org.catrobat.catroid.content.bricks.PostWebRequestBrick
@@ -220,6 +226,7 @@ import org.catrobat.catroid.content.bricks.SceneIdBrick
 import org.catrobat.catroid.content.bricks.SceneStartBrick
 import org.catrobat.catroid.content.bricks.SceneTransitionBrick
 import org.catrobat.catroid.content.bricks.ScreenShotBrick
+import org.catrobat.catroid.content.bricks.SeekVideoBrick
 import org.catrobat.catroid.content.bricks.SendServerBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundAndWaitBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundBrick
@@ -260,6 +267,7 @@ import org.catrobat.catroid.content.bricks.SetTransparencyBrick
 import org.catrobat.catroid.content.bricks.SetVariableBrick
 import org.catrobat.catroid.content.bricks.SetVelocityBrick
 import org.catrobat.catroid.content.bricks.SetVolumeToBrick
+import org.catrobat.catroid.content.bricks.SetWebBrick
 import org.catrobat.catroid.content.bricks.SetWidthBrick
 import org.catrobat.catroid.content.bricks.SetXBrick
 import org.catrobat.catroid.content.bricks.SetYBrick
@@ -634,7 +642,7 @@ open class CategoryBricksFactory {
         looksBrickList.add(ShowDialogBrick("myDialog"))
         looksBrickList.add(SquareBrick("square", "#ff0000", 0f, 0f, 100f, 100f, 1f, 0f, 0f))
         looksBrickList.add(DelSquareBrick("square"))
-        looksBrickList.add(ShaderBrick("""attribute vec4 a_position;
+        /*looksBrickList.add(ShaderBrick("""attribute vec4 a_position;
 attribute vec2 a_texCoord0;
 
 uniform mat4 u_projTrans;
@@ -667,7 +675,7 @@ void main() {
 
     // 3. Задаем итоговый цвет пикселя
     gl_FragColor = originalColor;
-}"""))
+}"""))*/
         looksBrickList.add(OpenUrlBrick(BrickValues.OPEN_IN_BROWSER))
         return looksBrickList
     }
@@ -774,10 +782,22 @@ void main() {
         deviceBrickList.add(MoveDownloadsBrick("variable.txt"))
         //deviceBrickList.add(OpenFilesBrick("my_actor.png"))
         deviceBrickList.add(OrientationBrick())
-        //deviceBrickList.add(CreateWebUrlBrick("myWebView", "https://example.com", "0", "0", "100", "200"))
-        //deviceBrickList.add(CreateWebFileBrick("myWebView", "", "0", "0", "100", "200"))
-        //deviceBrickList.add(DeleteWebBrick("myWebView"))
-        deviceBrickList.add(ShaderBrick("""attribute vec4 a_position;
+        deviceBrickList.add(CreateWebUrlBrick("myWebView", "https://google.com", "0", "0", "500", "700"))
+        deviceBrickList.add(CreateWebFileBrick("myWebView", "<html><body style='background-color:lightyellow;'>" +
+                "<h1>Привет, мир!</h1>" +
+                "<p>Это WebView, созданный прямо из кода.</p>" +
+                "<button onclick='alert(\"JavaScript работает!\")'>Нажми меня</button>" +
+                "</body></html>", "0", "0", "500", "700"))
+        deviceBrickList.add(SetWebBrick("myWebView"))
+        deviceBrickList.add(EvalWebBrick("Android.postMessage(\"Hello from WebView!\");", "myWebView"))
+        deviceBrickList.add(CreateVideoBrick("myVideoPlayer", "video.mp4", 0, 0, 750, 500, 1, 0))
+        deviceBrickList.add(PlayVideoBrick("myVideoPlayer"))
+        deviceBrickList.add(PauseVideoBrick("myVideoPlayer"))
+        deviceBrickList.add(SeekVideoBrick("myVideoPlayer", 30))
+        deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", "Напишите значение...", "#CCCCCC", "left", 0, 5, -1, "text", "если файла не существует - по умолчанию"))
+        //deviceBrickList.add(NativeLayerBrick(0))
+        deviceBrickList.add(DeleteWebBrick("myWebView"))
+        /*deviceBrickList.add(ShaderBrick("""attribute vec4 a_position;
 attribute vec2 a_texCoord0;
 
 uniform mat4 u_projTrans;
@@ -810,7 +830,7 @@ void main() {
 
     // 3. Задаем итоговый цвет пикселя
     gl_FragColor = originalColor;
-}"""))
+}"""))*/
         deviceBrickList.add(ScreenShotBrick())
         deviceBrickList.add(ResetTimerBrick())
         deviceBrickList.add(TestBrick())

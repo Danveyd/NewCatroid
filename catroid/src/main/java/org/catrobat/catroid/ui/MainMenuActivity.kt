@@ -30,10 +30,7 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
-import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
@@ -46,7 +43,6 @@ import org.catrobat.catroid.R
 import org.catrobat.catroid.cast.CastManager
 import org.catrobat.catroid.common.Constants
 import org.catrobat.catroid.common.FlavoredConstants
-import org.catrobat.catroid.common.FlavoredConstants.CATROBAT_HELP_URL
 import org.catrobat.catroid.common.SharedPreferenceKeys
 import org.catrobat.catroid.common.Survey
 import org.catrobat.catroid.databinding.ActivityMainMenuBinding
@@ -59,7 +55,6 @@ import org.catrobat.catroid.io.asynctask.ProjectLoader
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.io.asynctask.ProjectSaver
 import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.ui.dialogs.TermsOfUseDialogFragment
 import org.catrobat.catroid.ui.recyclerview.dialog.AboutDialogFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.MainMenuFragment
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
@@ -217,6 +212,14 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         loadFragment()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (SettingsFragment.isCastSharedPreferenceEnabled(this)) {
+            // А вот этот вызов ЗАПУСКАЕТ сканирование. И он единственный.
+            CastManager.getInstance().addCallback()
+        }
+    }
+
     private fun loadFragment() {
         supportFragmentManager.beginTransaction()
             .replace(
@@ -243,6 +246,9 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
     public override fun onPause() {
         super.onPause()
+        if (SettingsFragment.isCastSharedPreferenceEnabled(this)) {
+            CastManager.getInstance().removeCallback();
+        }
         val currentProject = projectManager.currentProject
         if (currentProject != null) {
             ProjectSaver(currentProject, applicationContext).saveProjectAsync()

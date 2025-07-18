@@ -286,10 +286,10 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
             val contentResolver = requireActivity().contentResolver
             val fileName = StorageOperations.resolveFileName(contentResolver, uri)
 
-            if (!fileName.endsWith(Constants.CATROBAT_EXTENSION) && !fileName.endsWith(Constants.NEW_CATROBAT_EXTENSION)) {
+            /*if (!fileName.endsWith(Constants.CATROBAT_EXTENSION) && !fileName.endsWith(Constants.NEW_CATROBAT_EXTENSION)) {
                 ToastUtil.showError(requireContext(), R.string.only_select_catrobat_files)
                 continue
-            }
+            }*/
 
             val projectFile = StorageOperations.copyUriToDir(
                 contentResolver, uri, Constants.CACHE_DIRECTORY, fileName
@@ -306,6 +306,12 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
                     continue
                 }*/
                 filesForUnzipAndImportTask?.add(projectFile)
+            } else {
+                try {
+                    filesForUnzipAndImportTask?.add(projectFile)
+                } catch (e: Exception) {
+                    ToastUtil.showError(requireContext(), R.string.only_select_catrobat_files)
+                }
             }
 
             hasUnzipAndImportTaskFinished = false

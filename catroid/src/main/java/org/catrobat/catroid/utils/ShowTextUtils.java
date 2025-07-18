@@ -65,7 +65,11 @@ public final class ShowTextUtils {
 	}
 
 	public static boolean isValidColorString(String color) {
-		return (color != null && color.length() == 7 && color.matches("#[A-F0-9a-f]+"));
+		if (color != null && color.matches("#[A-F0-9a-f]+")) {
+            return color.length() == 7 || color.length() == 9;
+		}
+
+		return false;
 	}
 
 	public static int calculateAlignmentValuesForText(Paint paint, int bitmapWidth, int alignment) {

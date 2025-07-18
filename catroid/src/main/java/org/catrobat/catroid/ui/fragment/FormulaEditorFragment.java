@@ -494,6 +494,8 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 				String currentValue = getSelectedFormulaText();
 				if (currentValue != null && currentValue.matches("^#[0-9A-Fa-f]{6}$")) {
 					return Color.parseColor(currentValue);
+				} else if (currentValue != null && currentValue.matches("^#[0-9A-Fa-f]{8}$")) {
+					return Color.parseColor(currentValue);
 				} else {
 					return 0;
 				}

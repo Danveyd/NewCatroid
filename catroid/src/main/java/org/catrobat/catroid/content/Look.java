@@ -818,7 +818,9 @@ public class Look extends Image {
 		boolean facingWrongDirection = mode == ROTATION_STYLE_LEFT_RIGHT_ONLY && (orientedLeft ^ isFlipped());
 		if (differentModeButFlipped || facingWrongDirection) {
 			getLookData().getTextureRegion().flip(true, false);
-			lookData2.getTextureRegion().flip(true, false);
+			if (lookData2 != null) {
+				lookData2.getTextureRegion().flip(true, false);
+			}
 		}
 	}
 

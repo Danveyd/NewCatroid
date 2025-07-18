@@ -26,6 +26,11 @@ package org.catrobat.catroid.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +71,36 @@ public final class UiUtils {
 			return (AppCompatActivity) context;
 		}
 		return null;
+	}
+
+	/**
+	 * --- НОВЫЙ МЕТОД ---
+	 * Создает повторяющийся (тайловый) Drawable с серо-белым шахматным узором
+	 * для визуализации прозрачности.
+	 * @param context Контекст для получения ресурсов.
+	 * @param tileSize Размер одного квадратика в шахматке (в пикселях).
+	 * @return Drawable, который можно установить как фон.
+	 */
+	public static BitmapDrawable createCheckerboardDrawable(Context context, int tileSize) {
+		Bitmap bitmap = Bitmap.createBitmap(tileSize * 2, tileSize * 2, Bitmap.Config.ARGB_8888);
+		Paint paint = new Paint();
+		paint.setStyle(Paint.Style.FILL);
+
+		Canvas canvas = new Canvas(bitmap);
+
+		int color1 = 0xFFFFFFFF; // Белый
+		int color2 = 0xFFDCDCDC; // Светло-серый
+
+		paint.setColor(color1);
+		canvas.drawRect(0, 0, tileSize, tileSize, paint);
+		canvas.drawRect(tileSize, tileSize, tileSize * 2, tileSize * 2, paint);
+		paint.setColor(color2);
+		canvas.drawRect(0, tileSize, tileSize, tileSize * 2, paint);
+		canvas.drawRect(tileSize, 0, tileSize * 2, tileSize, paint);
+
+		BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+		drawable.setTileModeXY(Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+		return drawable;
 	}
 
 	@Nullable
