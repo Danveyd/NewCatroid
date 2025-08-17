@@ -23,8 +23,11 @@
 
 package org.catrobat.catroid.physics;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import java.util.LinkedList;
 
+@LunoClass
 public class PhysicsObjectStateHandler {
 
 	private PhysicsLook physicsLook;

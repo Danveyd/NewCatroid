@@ -22,9 +22,12 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import java.io.Serializable;
 import java.util.UUID;
 
+@LunoClass
 public class UserVariable implements Serializable, UserData<Object> {
 
 	private static final long serialVersionUID = 1L;

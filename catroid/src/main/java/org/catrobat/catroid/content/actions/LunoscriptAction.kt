@@ -27,9 +27,11 @@ import android.widget.Toast
 import android.content.Context
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import android.app.Activity
+import android.os.Build
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.IntentListener
 import android.util.Log
+import androidx.annotation.RequiresApi
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.R
 
@@ -42,10 +44,13 @@ class LunoscriptAction() : TemporalAction() {
     var scope: Scope? = null
     var code: Formula? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun update(percent: Float) {
         val codeStr: String = code?.interpretString(scope) ?: ""
 
         val lunoEngine = LunoScriptEngine(CatroidApplication.getAppContext(), scope)
-        lunoEngine.execute(codeStr)
+        Thread {
+            lunoEngine.execute(codeStr)
+        }.start()
     }
 }

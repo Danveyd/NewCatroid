@@ -37,6 +37,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.catrobat.catroid.R
@@ -45,6 +46,7 @@ import org.catrobat.catroid.ui.recyclerview.dialog.textwatcher.InputWatcher
 import org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType
 import org.catrobat.catroid.utils.Utils
 
+@LunoClass
 class AddUserDataToUserDefinedBrickFragment : Fragment() {
 
     companion object {

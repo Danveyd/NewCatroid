@@ -36,6 +36,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.catrobat.catroid.BuildConfig;
@@ -110,6 +111,7 @@ import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.CHANG
 import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.X_COORDINATE_BUNDLE_ARGUMENT;
 import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.Y_COORDINATE_BUNDLE_ARGUMENT;
 
+@LunoClass
 public class SpriteActivity extends BaseActivity {
 
 	public static final String TAG = SpriteActivity.class.getSimpleName();

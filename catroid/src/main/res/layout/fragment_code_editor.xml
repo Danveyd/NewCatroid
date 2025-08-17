@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="#2B2B2B"> <!-- Темный фон для всего редактора -->
+
+    <!-- TextView для номеров строк -->
+    <TextView
+        android:id="@+id/line_numbers_view"
+        android:layout_width="wrap_content"
+        android:minWidth="30dp"
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:gravity="top|end"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        android:fontFamily="monospace"
+        android:background="@color/toolbar_background" /> <!-- Чуть другой фон для номеров -->
+
+    <!-- Ваш ScrollView с EditText -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <EditText
+            android:id="@+id/code_editor_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:inputType="textMultiLine|textFilter|textVisiblePassword"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:fontFamily="monospace"
+            android:background="@color/app_background"
+            android:textColor="#A9B7C6"/> <!-- Цвет текста для лучшей читаемости на темном фоне -->
+    </ScrollView>
+
+</LinearLayout>

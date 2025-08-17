@@ -30,6 +30,7 @@ import org.catrobat.catroid.content.Scope;
 import org.catrobat.catroid.content.TableManager;
 import org.catrobat.catroid.content.UserVarsManager;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.formulaeditor.common.Conversions;
 import org.catrobat.catroid.formulaeditor.function.ArduinoFunctionProvider;
 import org.catrobat.catroid.formulaeditor.function.BinaryFunction;
 import org.catrobat.catroid.formulaeditor.function.FormulaFunction;
@@ -40,12 +41,20 @@ import org.catrobat.catroid.formulaeditor.function.RaspiFunctionProvider;
 import org.catrobat.catroid.formulaeditor.function.TernaryFunction;
 import org.catrobat.catroid.formulaeditor.function.TextBlockFunctionProvider;
 import org.catrobat.catroid.formulaeditor.function.TouchFunctionProvider;
+import org.catrobat.catroid.libraries.LibraryManager;
+import org.catrobat.catroid.libraries.LoadedLibrary;
+import org.catrobat.catroid.raptor.ThreeDManager;
 import org.catrobat.catroid.sensing.CollisionDetection;
 import org.catrobat.catroid.sensing.ColorAtXYDetection;
 import org.catrobat.catroid.sensing.ColorCollisionDetection;
 import org.catrobat.catroid.sensing.ColorEqualsColor;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.utils.lunoscript.Interpreter;
+import org.catrobat.catroid.utils.lunoscript.LunoRuntimeError;
+import org.catrobat.catroid.utils.lunoscript.LunoValue;
+import org.catrobat.catroid.utils.lunoscript.Token;
+import org.catrobat.catroid.utils.lunoscript.TokenType;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
@@ -113,6 +122,10 @@ import org.mozilla.javascript.RhinoException; // Rhino
 
 import android.util.Log;
 
+import com.badlogic.gdx.math.Vector3;
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class FormulaElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -502,12 +515,20 @@ public class FormulaElement implements Serializable {
 				for (int i = 0; i < additionalChildren.size(); i++) {
 					actualArguments.add(arguments.get(2 + i));
 				}
-				return interpretCustomJsFunction(customFormula, actualArguments, scope);
+				return interpretCustomLunoFunction(customFormula, actualArguments, scope);
 			} else {
 				Log.e("FormulaElement", "Неизвестная функция: " + name);
 				return FALSE; // Неизвестная функция
 			}
 		}
+	}
+
+	private ThreeDManager getThreeDManager() {
+		//if (StageActivity == null) return null;
+		if (StageActivity.stageListener != null) {
+			return StageActivity.stageListener.getThreeDManager();
+		}
+		return null;
 	}
 
 	private Object interpretFunction(Functions function, Scope scope) {
@@ -573,6 +594,155 @@ public class FormulaElement implements Serializable {
 					result2.append(LETTERS.charAt(index));
 				}
 				return result2.toString();
+			case GET_DIRECTION_X: {
+				// Используем правильный метод для конвертации
+				double angleDegrees = tryInterpretDoubleValue(arguments.get(0));
+				// MathUtils.cosDeg возвращает float, но наш интерпретатор работает с Double
+				return (double) com.badlogic.gdx.math.MathUtils.cosDeg((float) angleDegrees);
+			}
+			case GET_DIRECTION_Y: {
+				double angleDegrees = tryInterpretDoubleValue(arguments.get(0));
+				return (double) com.badlogic.gdx.math.MathUtils.sinDeg((float) angleDegrees);
+			}
+			case GET_ANGLE: {
+				double x = tryInterpretDoubleValue(arguments.get(0));
+				double y = tryInterpretDoubleValue(arguments.get(1));
+				// atan2Degrees возвращает градусы, что более привычно для пользователей Catrobat
+				return (double) com.badlogic.gdx.math.MathUtils.atan2Deg((float) y, (float) x);
+			}
+			case GET_3D_VELOCITY_X: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				return (double) manager.getVelocity(id).x;
+			}
+			case GET_3D_VELOCITY_Y: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				return (double) manager.getVelocity(id).y;
+			}
+			case GET_3D_VELOCITY_Z: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				return (double) manager.getVelocity(id).z;
+			}
+			case GET_3D_POSITION_X: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 pos = manager.getPosition(id);
+				return (pos != null) ? pos.x : 0.0;
+			}
+			case OBJECT_TOUCHES_OBJECT: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return Conversions.FALSE;
+				String id1 = String.valueOf(arguments.get(0));
+				String id2 = String.valueOf(arguments.get(1));
+				boolean result3 = manager.checkCollision(id1, id2);
+				return Conversions.booleanToDouble(result3);
+			}
+			case GET_CAMERA_ROTATION_YAW: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraRotation().y : 0.0;
+			}
+			case GET_CAMERA_ROTATION_PITCH: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraRotation().x : 0.0;
+			}
+			case GET_CAMERA_ROTATION_ROLL: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraRotation().z : 0.0;
+			}
+			case GET_3D_POSITION_Y: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 pos = manager.getPosition(id);
+				return (pos != null) ? pos.y : 0.0;
+			}
+			case GET_3D_POSITION_Z: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 pos = manager.getPosition(id);
+				return (pos != null) ? pos.z : 0.0;
+			}
+			case GET_CAMERA_POS_X: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraPosition().x : 0.0;
+			}
+			case GET_CAMERA_POS_Y: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraPosition().y : 0.0;
+			}
+			case GET_CAMERA_POS_Z: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraPosition().z : 0.0;
+			}
+			case GET_CAMERA_DIR_X: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraDirection().x : 0.0;
+			}
+			case GET_CAMERA_DIR_Y: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraDirection().y : 0.0;
+			}
+			case GET_CAMERA_DIR_Z: {
+				ThreeDManager manager = getThreeDManager();
+				return (manager != null) ? (double) manager.getCameraDirection().z : 0.0;
+			}
+			case GET_3D_ROTATION_YAW: { // Вращение Y = Yaw
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 rot = manager.getRotation(id);
+				return (rot != null) ? rot.y : 0.0;
+			}
+			case GET_3D_ROTATION_PITCH: { // Вращение X = Pitch
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 rot = manager.getRotation(id);
+				return (rot != null) ? rot.x : 0.0;
+			}
+			case GET_3D_ROTATION_ROLL: { // Вращение Z = Roll
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 rot = manager.getRotation(id);
+				return (rot != null) ? rot.z : 0.0;
+			}
+			case GET_3D_SCALE_X: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 scale = manager.getScale(id);
+				return (scale != null) ? scale.x : 0.0;
+			}
+			case GET_3D_SCALE_Y: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 scale = manager.getScale(id);
+				return (scale != null) ? scale.y : 0.0;
+			}
+			case GET_3D_SCALE_Z: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id = String.valueOf(arguments.get(0));
+				Vector3 scale = manager.getScale(id);
+				return (scale != null) ? scale.z : 0.0;
+			}
+			case GET_3D_DISTANCE: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String id1 = String.valueOf(arguments.get(0));
+				String id2 = String.valueOf(arguments.get(1));
+				Float dist = manager.getDistance(id1, id2);
+				return (dist != null) ? dist : 0.0;
+			}
 			case REPEAT:
 				String str3 = String.valueOf(arguments.get(0));
 				Integer times = tryParseIntFromObject(arguments.get(1));
@@ -644,6 +814,18 @@ public class FormulaElement implements Serializable {
 				}
 				if (activity5 == null) return 0;
 				return activity5.getVideoCurrentTime(String.valueOf(arguments.get(0)));
+			case GET_RAY_DISTANCE: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return -1.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRaycastDistance(rayName);
+			}
+			case GET_RAY_HIT_OBJECT: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return "";
+				String rayName = String.valueOf(arguments.get(0));
+				return manager.getRaycastHitObjectId(rayName);
+			}
 			case FLOATARRAY:
 				return FloatArrayManager.INSTANCE.getArraySize(String.valueOf(arguments.get(0)));
 			case TABLE_Y:
@@ -711,102 +893,57 @@ public class FormulaElement implements Serializable {
 		}
 	}
 
-	private Object interpretCustomJsFunction(CustomFormula customFormula, List<Object> arguments, Scope scope) {
-		ensureRhinoInitialized(); // Убедимся, что Rhino готов
-		Context rhinoContext = Context.enter();
-		// Для Android рекомендуется отключать оптимизацию или ставить на -1,
-		// чтобы избежать проблем с компиляцией байт-кода Dex.
-		rhinoContext.setOptimizationLevel(-1);
-		try {
-			Scriptable rhinoScope = rhinoContext.initStandardObjects();
-
-			// Передача параметров в JS как массив 'p'
-			Object[] jsArgs = new Object[customFormula.getParamCount()]; // Используем paramCount из customFormula
-			for (int i = 0; i < customFormula.getParamCount(); i++) {
-				if (i < arguments.size() && arguments.get(i) != null) {
-					Object arg = arguments.get(i);
-					// Конвертация булевых значений Catroid (0.0/1.0) в JS (false/true)
-					if (arg instanceof Double) {
-						if (arg.equals(FALSE)) jsArgs[i] = false;
-						else if (arg.equals(TRUE)) jsArgs[i] = true;
-						else jsArgs[i] = arg;
-					} else if (arg instanceof Boolean) { // Если вдруг уже Boolean
-						jsArgs[i] = arg;
-					}
-					else {
-						jsArgs[i] = arg; // Строки и т.д.
-					}
-				} else {
-					jsArgs[i] = org.mozilla.javascript.Undefined.instance; // Если аргумент отсутствует
-				}
-			}
-			ScriptableObject.putProperty(rhinoScope, "p", Context.javaToJS(jsArgs, rhinoScope));
-
-			// JS код должен вернуть значение. Например: "return p[0] + p[1];"
-			// Или если это просто выражение: "p[0] + p[1]"
-			// Чтобы сделать более надежным, обернем в функцию, если это не сделано
-			String scriptToExecute = customFormula.getJsCode();
-			//if (!scriptToExecute.trim().startsWith("return") && !scriptToExecute.trim().contains("function")) {
-				// Если это просто выражение, Rhino его вычислит.
-				// Если это блок кода, его нужно обернуть, чтобы он вернул последнее выражение,
-				// или явно использовать 'return'. Для простоты ожидаем, что jsCode содержит 'return'.
-			//}
-			// Для большей гибкости можно сделать так, чтобы код всегда был функцией:
-			// String fullScript = "(function(params) { " + customFormula.getJsCode() + " })(p);";
-			// Но тогда в jsCode не нужно писать p[0], а просто params[0] или именованные параметры.
-			// Пока оставим как есть, ожидая "return p[0] + p[1];"
-
-			Log.d(TAG_FORMULA_ELEMENT, "Выполнение JS для " + customFormula.getUniqueName() + ": " + scriptToExecute + " с параметрами: " + Arrays.toString(jsArgs));
-
-			Object result = rhinoContext.evaluateString(rhinoScope, scriptToExecute, customFormula.getUniqueName(), 1, null);
-
-			// Конвертация результата из JS в представление Catroid
-			if (result instanceof org.mozilla.javascript.Undefined) {
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул undefined");
-				return ""; // или FALSE, или специальное значение Catroid для undefined
-			}
-			if (result instanceof Double) {
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул Double: " + result);
-				return result;
-			}
-			if (result instanceof Integer || result instanceof Long || result instanceof Float) {
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул числовой тип: " + result);
-				return ((Number) result).doubleValue();
-			}
-			if (result instanceof Boolean) {
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул Boolean: " + result);
-				return booleanToDouble((Boolean) result); // Конвертируем в 0.0 или 1.0
-			}
-			if (result instanceof String) {
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул String: " + result);
-				return result;
-			}
-			// Другие типы, например ConsString (конкатенация строк в Rhino)
-			if (result instanceof org.mozilla.javascript.ConsString) {
-				String strResult = result.toString();
-				Log.d(TAG_FORMULA_ELEMENT, "JS вернул ConsString: " + strResult);
-				return strResult;
-			}
-
-			Log.w(TAG_FORMULA_ELEMENT, "JS вернул неизвестный тип: " + result.getClass().getName() + " значение: " + Context.toString(result));
-			// Попытка конвертировать в строку, если тип не распознан
-			return Context.toString(result);
-
-		} catch (RhinoException e) {
-			Log.e(TAG_FORMULA_ELEMENT, "Ошибка выполнения JS для " + customFormula.getUniqueName() + ": " + e.getMessage(), e);
-			// Вывод деталей ошибки Rhino
-			Log.e(TAG_FORMULA_ELEMENT, "RhinoException details: " + e.details());
-			Log.e(TAG_FORMULA_ELEMENT, "RhinoException sourceName: " + e.sourceName());
-			Log.e(TAG_FORMULA_ELEMENT, "RhinoException lineNumber: " + e.lineNumber());
-			Log.e(TAG_FORMULA_ELEMENT, "RhinoException columnNumber: " + e.columnNumber());
-			Log.e(TAG_FORMULA_ELEMENT, "RhinoException lineSource: " + e.lineSource());
-			return "NaN"; // или специальное значение ошибки
-		} catch (Exception e) {
-			Log.e(TAG_FORMULA_ELEMENT, "Общая ошибка при выполнении JS для " + customFormula.getUniqueName(), e);
-			return "NaN";
+	private Object interpretCustomLunoFunction(CustomFormula customFormula, List<Object> arguments, Scope scope) {
+		// 1. Находим загруженную библиотеку по ID
+		LoadedLibrary library = LibraryManager.INSTANCE.getLoadedLibrary(customFormula.getOwnerLibraryId());
+		if (library == null) {
+			Log.e(TAG_FORMULA_ELEMENT, "Библиотека " + customFormula.getOwnerLibraryId() + " не загружена для функции " + customFormula.getUniqueName());
+			return "LIB NOT FOUND";
 		}
-		finally {
-			Context.exit();
+
+		// 2. Получаем интерпретатор этой библиотеки
+		Interpreter interpreter = library.getInterpreter();
+
+		try {
+			// 3. Находим Luno-функцию в глобальной области видимости интерпретатора
+			LunoValue functionValue = interpreter.getGlobals().get(new Token(TokenType.IDENTIFIER, customFormula.getLunoFunctionName(), null, -1, -1));
+
+			if (!(functionValue instanceof LunoValue.Callable)) {
+				Log.e(TAG_FORMULA_ELEMENT, "Функция " + customFormula.getLunoFunctionName() + " не найдена или не является функцией в библиотеке " + library.getId());
+				return "FUNC NOT FOUND";
+			}
+			LunoValue.Callable lunoFunction = (LunoValue.Callable) functionValue;
+
+			// 4. Конвертируем аргументы из Java/Catroid в LunoValue
+			List<LunoValue> lunoArgs = new ArrayList<>();
+			for (Object arg : arguments) {
+				lunoArgs.add(LunoValue.Companion.fromKotlin(arg));
+			}
+
+			// 5. Вызываем функцию!
+			LunoValue result = lunoFunction.call(interpreter, lunoArgs, new Token(TokenType.EOF, "", null, -1, -1));
+
+			// 6. Конвертируем результат обратно в Java-тип, который ожидает Catroid
+			Object resultJava;
+			if (result instanceof LunoValue.Number) {
+				resultJava = ((LunoValue.Number) result).getValue(); // Получаем чистый Double
+			} else if (result instanceof LunoValue.String) {
+				resultJava = ((LunoValue.String) result).getValue(); // Получаем чистый String
+			} else if (result instanceof LunoValue.Boolean) {
+				// FormulaElement работает с Double для логики (0.0 = false, 1.0 = true)
+				resultJava = ((LunoValue.Boolean) result).getValue() ? Conversions.TRUE : Conversions.FALSE;
+			} else {
+				// Для всех остальных типов (List, Object, Null) возвращаем их строковое представление
+				resultJava = interpreter.lunoValueToString(result, true);
+			}
+
+			Log.d("LunoFormulaLibs", "Функция " + customFormula.getLunoFunctionName() + " вернула LunoValue: " + result.toString() + ", конвертировано в Java: " + resultJava.toString());
+
+			return resultJava;
+
+		} catch (LunoRuntimeError e) {
+			Log.e(TAG_FORMULA_ELEMENT, "Ошибка выполнения LunoScript для функции " + customFormula.getUniqueName(), e);
+			return "LUNO ERROR";
 		}
 	}
 

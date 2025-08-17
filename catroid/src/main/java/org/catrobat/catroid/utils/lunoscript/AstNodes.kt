@@ -57,3 +57,18 @@ data class SwitchStatement(
     val switchToken: Token,
     override val line: Int
 ) : Statement
+
+data class ImportStatement(
+    val path: List<Token>, // Путь к классу, например ["com", "badlogic", "gdx", "graphics", "Pixmap"]
+    override val line: Int
+) : Statement
+
+data class TryCatchStatement(
+    val tryBlock: Statement,
+    // catchVariable может быть null, если блока catch нет
+    val catchVariable: Token?,
+    val catchBlock: Statement?,
+    // finallyBlock может быть null
+    val finallyBlock: Statement?,
+    override val line: Int
+) : Statement

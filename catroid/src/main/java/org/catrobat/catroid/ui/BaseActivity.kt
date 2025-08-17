@@ -36,9 +36,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
+import com.danvexteam.lunoscript_annotations.LunoClass
 import com.google.android.gms.analytics.HitBuilders.ScreenViewBuilder
 import org.catrobat.catroid.CatroidApplication
-import org.catrobat.catroid.R
 import org.catrobat.catroid.cast.CastManager
 import org.catrobat.catroid.content.MyActivityManager
 import org.catrobat.catroid.ui.MainMenuActivity.Companion.surveyCampaign
@@ -50,6 +50,7 @@ import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 
 internal const val RECOVERED_FROM_CRASH = "RECOVERED_FROM_CRASH"
 
+@LunoClass
 abstract class BaseActivity : AppCompatActivity(), PermissionHandlingActivity {
     lateinit var optionsMenu: Menu
     private val permissionRequestActivityExtension = PermissionRequestActivityExtension()
@@ -60,7 +61,7 @@ abstract class BaseActivity : AppCompatActivity(), PermissionHandlingActivity {
         SettingsFragment.setToChosenLanguage(this)
         applyAccessibilityStyles()
 
-        Thread.setDefaultUncaughtExceptionHandler(BaseExceptionHandler(this))
+        //Thread.setDefaultUncaughtExceptionHandler(BaseExceptionHandler(this))
         checkIfCrashRecoveryAndFinishActivity(this)
         checkIfProcessRecreatedAndFinishActivity(savedInstanceState)
 
@@ -145,11 +146,17 @@ abstract class BaseActivity : AppCompatActivity(), PermissionHandlingActivity {
         permissionRequestActivityExtension.addToRequiresPermissionTaskList(task)
     }
 
+    override fun onDestroy() {
+        MainMenuActivity.pythonEngine.shutdown()
+        super.onDestroy()
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         permissionRequestActivityExtension.onRequestPermissionsResult(
             this,
             requestCode,

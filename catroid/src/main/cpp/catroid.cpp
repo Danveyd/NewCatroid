@@ -4,13 +4,357 @@
 #include <numeric> // Для std::accumulate
 #include <cmath>
 #include <algorithm> // для std::min/max
+#include "earcut.hpp"
 
 #include "onnxruntime_cxx_api.h"
 
+#include <android/log.h>
+// Убедитесь, что путь и версия правильные!
+
 // Глобальные переменные
 Ort::Env env;
+Ort::Env ort_env;
 Ort::Session session{nullptr};
 Ort::AllocatorWithDefaultOptions allocator;
+
+#define LOG_TAG "PythonBridge"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+
+#ifdef __aarch64__  // Эта директива истинна ТОЛЬКО при сборке для arm64-v8a
+#include "include/python3.12/Python.h"
+
+#define JNI_PYTHON_FUNCTION(name) Java_org_catrobat_catroid_python_PythonEngine_##name
+static std::atomic<PyThreadState*> g_worker_thread_state(nullptr);
+// Глобальный ID потока для PyThreadState_SetAsyncExc
+static std::atomic<unsigned long> g_worker_thread_id(0);
+
+// Новая JNI-функция для вызова из Kotlin
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeForceStopPythonScript)(JNIEnv* env, jobject /* this */) {
+    if (!Py_IsInitialized()) {
+        LOGD("Python is not initialized or is finalizing. Skipping force stop.");
+        return; // Безопасно выходим
+    }
+
+    unsigned long thread_id = g_worker_thread_id.load();
+    if (thread_id != 0) {
+        LOGD("Attempting to inject SystemExit exception into thread ID: %lu", thread_id);
+
+        // 2. ЗАХВАТЫВАЕМ GIL ДЛЯ ДОПОЛНИТЕЛЬНОЙ БЕЗОПАСНОСТИ
+        //    Это гарантирует, что мы не помешаем другим операциям.
+        PyGILState_STATE gstate = PyGILState_Ensure();
+
+        PyThreadState_SetAsyncExc(thread_id, PyExc_SystemExit);
+
+        PyGILState_Release(gstate);
+
+    } else {
+        LOGD("No active Python script thread to stop.");
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeInitPython)(
+        JNIEnv* env,
+        jobject /* this */,
+        jobjectArray modulePaths) { // <-- Теперь это массив строк
+
+    PyConfig config;
+    PyConfig_InitPythonConfig(&config);
+    config.install_signal_handlers = 0;
+    config.module_search_paths_set = 1;
+
+    // Итерируемся по массиву путей из Kotlin и добавляем каждый в PyConfig
+    int numPaths = env->GetArrayLength(modulePaths);
+    LOGD("Preparing Python with %d module paths...", numPaths);
+    for (int i = 0; i < numPaths; i++) {
+        jstring path_jstr = (jstring) env->GetObjectArrayElement(modulePaths, i);
+        const char* path_cstr = env->GetStringUTFChars(path_jstr, 0);
+        wchar_t* path_wstr = Py_DecodeLocale(path_cstr, NULL);
+
+        PyWideStringList_Append(&config.module_search_paths, path_wstr);
+        LOGD("Added path %d: %s", i + 1, path_cstr);
+
+        PyMem_RawFree(path_wstr);
+        env->ReleaseStringUTFChars(path_jstr, path_cstr);
+        env->DeleteLocalRef(path_jstr);
+    }
+
+    // Инициализируем Python
+    PyStatus status = Py_InitializeFromConfig(&config);
+    if (PyStatus_Exception(status)) {
+        LOGD("FATAL: Py_InitializeFromConfig failed.");
+        Py_ExitStatusException(status);
+    } else {
+        LOGD("!!! SUCCESS: Python has been initialized correctly !!!");
+    }
+
+    PyConfig_Clear(&config);
+}
+
+// ДОБАВЬТЕ ЭТУ ФУНКЦИЮ В catroid.cpp
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeFinalizePython)(JNIEnv* env, jobject /* this */) {
+    if (Py_IsInitialized()) {
+        Py_FinalizeEx();
+        LOGD("Python environment has been finalized.");
+    } else {
+        LOGD("Python was not initialized, skipping finalization.");
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeInitPython2)(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring pythonHome,
+        jstring projectLibsPath) {
+
+    // --- Ресурсы для очистки ---
+    const char* pyHome_cstr = env->GetStringUTFChars(pythonHome, 0);
+    const char* pyLibsPath_cstr = env->GetStringUTFChars(projectLibsPath, 0);
+    wchar_t *pyHomeW = Py_DecodeLocale(pyHome_cstr, NULL);
+    wchar_t *pyLibsPathW = Py_DecodeLocale(pyLibsPath_cstr, NULL);
+    PyConfig config;
+    PyConfig_InitPythonConfig(&config);
+    bool success = false;
+
+    if (pyHomeW && pyLibsPathW) {
+        LOGD("Preparing Python with FULL PATH OVERRIDE...");
+        config.install_signal_handlers = 0;
+        config.verbose = 0;
+        PyStatus status;
+
+        // ---> НАЧАЛО: ФИНАЛЬНЫЙ И САМЫЙ ВАЖНЫЙ ФИКС <---
+
+        // 1. Говорим Python, что мы полностью переопределяем пути поиска.
+        //    Он больше не будет пытаться угадать их сам.
+        config.module_search_paths_set = 1;
+
+        // 2. Создаем три необходимых пути.
+        std::wstring path_stdlib(pyHomeW); // Путь к стандартным .py файлам
+        std::wstring path_pylibs(pyLibsPathW); // Путь к нашим библиотекам (telebot)
+        std::wstring path_dynload = std::wstring(pyHomeW) + L"/lib-dynload"; // !! КЛЮЧЕВОЙ ПУТЬ К .so МОДУЛЯМ !!
+
+        // 3. Добавляем эти три пути в список поиска модулей.
+        status = PyWideStringList_Append(&config.module_search_paths, path_stdlib.c_str());
+        if (!PyStatus_Exception(status)) {
+            status = PyWideStringList_Append(&config.module_search_paths, path_pylibs.c_str());
+        }
+        if (!PyStatus_Exception(status)) {
+            status = PyWideStringList_Append(&config.module_search_paths, path_dynload.c_str());
+        }
+
+        // ---> КОНЕЦ ФИНАЛЬНОГО ФИКСА <---
+
+        if (PyStatus_Exception(status)) {
+            LOGD("FATAL: Failed to construct module search paths.");
+        } else {
+            LOGD("Module Search Paths set to:");
+            LOGD("1: %ls", path_stdlib.c_str());
+            LOGD("2: %ls", path_pylibs.c_str());
+            LOGD("3: %ls", path_dynload.c_str());
+            LOGD("Initializing with Py_InitializeFromConfig...");
+
+            status = Py_InitializeFromConfig(&config);
+            if (PyStatus_Exception(status)) {
+                LOGD("FATAL: Py_InitializeFromConfig failed.");
+                Py_ExitStatusException(status);
+            } else {
+                LOGD("!!! SUCCESS: Python has been initialized correctly !!!");
+                success = true;
+            }
+        }
+    } else {
+        LOGD("FATAL: Failed to decode Python paths.");
+    }
+
+    // --- Очистка ---
+    PyConfig_Clear(&config);
+    if (pyHomeW) PyMem_RawFree(pyHomeW);
+    if (pyLibsPathW) PyMem_RawFree(pyLibsPathW);
+    env->ReleaseStringUTFChars(pythonHome, pyHome_cstr);
+    env->ReleaseStringUTFChars(projectLibsPath, pyLibsPath_cstr);
+
+    if (!success) {
+        LOGD("Python initialization failed.");
+    }
+}
+
+extern "C" JNIEXPORT jstring JNICALL
+JNI_PYTHON_FUNCTION(nativeRunScript2)(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring script) {
+
+    if (!Py_IsInitialized()) {
+        return env->NewStringUTF("Python is not initialized.");
+    }
+
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    const char* scriptStr = env->GetStringUTFChars(script, 0);
+    int result = PyRun_SimpleString(scriptStr);
+    env->ReleaseStringUTFChars(script, scriptStr);
+
+    jstring errorMessage = NULL;
+
+    if (result != 0) {
+        LOGD("Python script failed! Using traceback module to get full error...");
+
+        if (PyErr_Occurred()) {
+            // Сохраняем ошибку, так как следующие вызовы могут ее перезаписать
+            PyObject *pType, *pValue, *pTraceback;
+            PyErr_Fetch(&pType, &pValue, &pTraceback);
+            PyErr_NormalizeException(&pType, &pValue, &pTraceback);
+
+            // Восстанавливаем ошибку, чтобы модуль traceback мог ее увидеть
+            PyErr_Restore(pType, pValue, pTraceback);
+
+            // --- ИСПОЛЬЗУЕМ МОДУЛЬ TRACEBACK ---
+            PyObject* traceback_module = PyImport_ImportModule("traceback");
+            if (traceback_module != NULL) {
+                PyObject* format_exc_func = PyObject_GetAttrString(traceback_module, "format_exc");
+                if (format_exc_func != NULL) {
+                    PyObject* formatted_exception = PyObject_CallObject(format_exc_func, NULL);
+                    if (formatted_exception != NULL) {
+                        const char* err_str = PyUnicode_AsUTF8(formatted_exception);
+                        if (err_str) {
+                            errorMessage = env->NewStringUTF(err_str);
+                        }
+                        Py_DECREF(formatted_exception);
+                    }
+                    Py_DECREF(format_exc_func);
+                }
+                Py_DECREF(traceback_module);
+            }
+        }
+    }
+
+    if (errorMessage == NULL && result != 0) {
+        // Если даже traceback не сработал, возвращаем старое сообщение
+        errorMessage = env->NewStringUTF("Unknown Python error, and traceback module failed.");
+    }
+
+    PyGILState_Release(gstate);
+    return errorMessage;
+}
+
+// В файле catroid.cpp
+
+extern "C" JNIEXPORT jstring JNICALL
+JNI_PYTHON_FUNCTION(nativeRunScript)(
+        JNIEnv* env,
+        jobject /* this */,
+        jstring script) {
+
+    if (!Py_IsInitialized()) {
+        return env->NewStringUTF("Python is not initialized.");
+    }
+
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    g_worker_thread_id = PyThread_get_thread_ident();
+
+    // --- НАЧАЛО: ПОЛНАЯ СИСТЕМА ПЕРЕХВАТА ВЫВОДА ---
+
+    // 1. Получаем глобальное пространство имен (__main__.__dict__)
+    PyObject* main_module = PyImport_AddModule("__main__");
+    PyObject* main_dict = PyModule_GetDict(main_module);
+
+    // 2. Создаем "обертку" для выполнения кода с перехватом вывода.
+    //    Этот Python-скрипт определяет функцию, которая делает всю грязную работу.
+    const char* capture_script =
+            "import sys, io, traceback\n"
+            "def __run_and_capture(code_to_run):\n"
+            "    buffer = io.StringIO()\n"
+            "    sys.stdout = buffer\n"
+            "    sys.stderr = buffer\n"
+            "    try:\n"
+            "        exec(code_to_run, globals())\n"
+            "    except SystemExit:\n"
+            "        print('\\nScipt stopped')\n"
+            "    except Exception:\n"
+            "        traceback.print_exc()\n"
+            "    sys.stdout = sys.__stdout__\n"
+            "    sys.stderr = sys.__stderr__\n"
+            "    return buffer.getvalue()\n";
+
+    // 3. Выполняем этот скрипт, чтобы функция __run_and_capture появилась в __main__
+    PyRun_String(capture_script, Py_file_input, main_dict, main_dict);
+
+    // 4. Получаем саму эту функцию
+    PyObject* capture_func = PyDict_GetItemString(main_dict, "__run_and_capture");
+
+    jstring result_string = NULL;
+
+    if (capture_func && PyCallable_Check(capture_func)) {
+        // 5. Готовим аргументы: сам скрипт, который передал пользователь
+        PyObject* pArgs = PyTuple_New(1);
+        const char* script_cstr = env->GetStringUTFChars(script, 0);
+        PyObject* pScript = PyUnicode_FromString(script_cstr);
+        PyTuple_SetItem(pArgs, 0, pScript);
+        env->ReleaseStringUTFChars(script, script_cstr);
+
+        // 6. Вызываем нашу функцию: __run_and_capture(script)
+        PyObject* pResult = PyObject_CallObject(capture_func, pArgs);
+        Py_DECREF(pArgs); // pScript будет очищен вместе с pArgs
+
+        // 7. Конвертируем результат (весь захваченный вывод) в строку для Kotlin
+        if (pResult != NULL) {
+            const char* result_cstr = PyUnicode_AsUTF8(pResult);
+            if (result_cstr) {
+                result_string = env->NewStringUTF(result_cstr);
+            }
+            Py_DECREF(pResult);
+        } else {
+            // Если даже наша функция-обертка упала, сообщаем об этом
+            PyErr_Print();
+            result_string = env->NewStringUTF("FATAL: The C++ capture function itself failed.");
+        }
+    } else {
+        result_string = env->NewStringUTF("FATAL: Could not find the __run_and_capture helper function.");
+    }
+
+    // --- КОНЕЦ СИСТЕМЫ ПЕРЕХВАТА ---
+     g_worker_thread_id = 0;
+
+    PyGILState_Release(gstate);
+    return result_string;
+}
+
+#else // ---> Для всех остальных архитектур (x86_64 и т.д.)
+
+#include <android/log.h>
+#define JNI_PYTHON_FUNCTION(name) Java_org_catrobat_catroid_python_PythonEngine_##name
+
+static std::atomic<unsigned long> g_worker_thread_id(0);
+
+// Новая JNI-функция для вызова из Kotlin
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeForceStopPythonScript)(JNIEnv* env, jobject /* this */) {
+    LOGD("Python is not supported on this device architecture.");
+}
+
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeInitPython)(JNIEnv*, jobject, jobjectArray) {
+    // Ничего не делаем
+    __android_log_print(ANDROID_LOG_WARN, "PythonEngine", "nativeInitPython called on unsupported architecture. Doing nothing.");
+}
+
+extern "C" JNIEXPORT jstring JNICALL
+JNI_PYTHON_FUNCTION(nativeRunScript)(JNIEnv* env, jobject, jstring) {
+    // Возвращаем сообщение об ошибке
+    return env->NewStringUTF("Python is not supported on this device architecture.");
+}
+
+// ДОБАВЬТЕ ЭТУ ФУНКЦИЮ В catroid.cpp
+extern "C" JNIEXPORT void JNICALL
+JNI_PYTHON_FUNCTION(nativeFinalizePython)(JNIEnv* env, jobject /* this */) {
+    LOGD("Python is not supported on this device architecture.");
+}
+
+#endif
 
 // ВАШ МАКРОС С ПРАВИЛЬНЫM ПУТЕМ
 #define JNI_FUNCTION(name) Java_org_catrobat_catroid_NN_OnnxSessionManager_##name
@@ -250,13 +594,28 @@ bool aabbs_overlap(const AABB& a, const AABB& b) {
     return true;
 }
 
-// Проверяет пересечение двух выпуклых полигонов методом SAT (Separating Axis Theorem)
-// Это очень быстрая математическая проверка.
-// `vertsA` и `vertsB` - это плоские массивы вершин [x1, y1, x2, y2, ...]
+std::vector<uint32_t> triangulate(const std::vector<float>& vertices) {
+    if (vertices.size() < 6) { // Невозможно триангулировать менее 3 вершин
+        return {};
+    }
+    // Earcut требует специфичный формат данных: std::vector<std::vector<std::array<float, 2>>>
+    std::vector<std::vector<std::array<float, 2>>> polygon_data;
+    std::vector<std::array<float, 2>> ring;
+    ring.reserve(vertices.size() / 2);
+    for (size_t i = 0; i < vertices.size(); i += 2) {
+        ring.push_back({vertices[i], vertices[i+1]});
+    }
+    polygon_data.push_back(ring);
+
+    // Вызываем функцию триангуляции
+    return mapbox::earcut<uint32_t>(polygon_data);
+}
+
+// Ваша функция проверки столкновения ВЫПУКЛЫХ полигонов.
+// Она остается БЕЗ ИЗМЕНЕНИЙ, так как идеально подходит для проверки треугольников.
 bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int countB) {
     // --- Проверка по осям полигона A ---
     for (int i = 0; i < countA; i += 2) {
-        // Находим вектор нормали к текущему ребру
         float p1x = vertsA[i];
         float p1y = vertsA[i + 1];
         float p2x = vertsA[(i + 2) % countA];
@@ -264,7 +623,6 @@ bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int 
         float axisX = -(p2y - p1y);
         float axisY = p2x - p1x;
 
-        // Проецируем обе фигуры на эту ось
         float minA = 1e9, maxA = -1e9, minB = 1e9, maxB = -1e9;
         for (int j = 0; j < countA; j += 2) {
             float dot = vertsA[j] * axisX + vertsA[j + 1] * axisY;
@@ -276,8 +634,6 @@ bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int 
             minB = std::min(minB, dot);
             maxB = std::max(maxB, dot);
         }
-
-        // Если проекции не пересекаются - столкновения нет
         if (maxA < minB || maxB < minA) return false;
     }
 
@@ -301,31 +657,94 @@ bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int 
             minB = std::min(minB, dot);
             maxB = std::max(maxB, dot);
         }
-
         if (maxA < minB || maxB < minA) return false;
     }
-
-    // Если все оси пересекаются - есть столкновение
     return true;
 }
 
 
-// JNI-функция. Имя класса NativeLookOptimizer - то же, что и раньше.
+// НОВАЯ, ИСПРАВЛЕННАЯ ВЕРСИЯ checkSingleCollision
+extern "C" JNIEXPORT jboolean JNICALL
+Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkSingleCollision(
+        JNIEnv* env,
+        jclass /* this */,
+        jobjectArray firstLookPolygons,
+        jobjectArray secondLookPolygons
+) {
+    // 1. Извлекаем все полигоны в C++ векторы для удобства
+    int firstPolygonCount = env->GetArrayLength(firstLookPolygons);
+    std::vector<std::vector<float>> firstPolys(firstPolygonCount);
+    for (int i = 0; i < firstPolygonCount; ++i) {
+        auto poly_jfloatArray = (jfloatArray)env->GetObjectArrayElement(firstLookPolygons, i);
+        jfloat* verts = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
+        int count = env->GetArrayLength(poly_jfloatArray);
+        firstPolys[i].assign(verts, verts + count);
+        env->ReleaseFloatArrayElements(poly_jfloatArray, verts, JNI_ABORT);
+        env->DeleteLocalRef(poly_jfloatArray);
+    }
+
+    int secondPolygonCount = env->GetArrayLength(secondLookPolygons);
+    std::vector<std::vector<float>> secondPolys(secondPolygonCount);
+    for (int i = 0; i < secondPolygonCount; ++i) {
+        auto poly_jfloatArray = (jfloatArray)env->GetObjectArrayElement(secondLookPolygons, i);
+        jfloat* verts = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
+        int count = env->GetArrayLength(poly_jfloatArray);
+        secondPolys[i].assign(verts, verts + count);
+        env->ReleaseFloatArrayElements(poly_jfloatArray, verts, JNI_ABORT);
+        env->DeleteLocalRef(poly_jfloatArray);
+    }
+
+    // 2. Основной цикл: триангулируем полигоны и проверяем треугольники
+    for (const auto& polyA_verts : firstPolys) {
+        std::vector<uint32_t> trianglesA_indices = triangulate(polyA_verts);
+
+        for (const auto& polyB_verts : secondPolys) {
+            std::vector<uint32_t> trianglesB_indices = triangulate(polyB_verts);
+
+            // 3. Проверяем каждую пару треугольников
+            for (size_t i = 0; i < trianglesA_indices.size(); i += 3) {
+                float triangleA[6] = {
+                        polyA_verts[trianglesA_indices[i] * 2], polyA_verts[trianglesA_indices[i] * 2 + 1],
+                        polyA_verts[trianglesA_indices[i+1] * 2], polyA_verts[trianglesA_indices[i+1] * 2 + 1],
+                        polyA_verts[trianglesA_indices[i+2] * 2], polyA_verts[trianglesA_indices[i+2] * 2 + 1]
+                };
+
+                for (size_t j = 0; j < trianglesB_indices.size(); j += 3) {
+                    float triangleB[6] = {
+                            polyB_verts[trianglesB_indices[j] * 2], polyB_verts[trianglesB_indices[j] * 2 + 1],
+                            polyB_verts[trianglesB_indices[j+1] * 2], polyB_verts[trianglesB_indices[j+1] * 2 + 1],
+                            polyB_verts[trianglesB_indices[j+2] * 2], polyB_verts[trianglesB_indices[j+2] * 2 + 1]
+                    };
+
+                    // Вызываем вашу быструю функцию SAT
+                    if (polygons_overlap(triangleA, 6, triangleB, 6)) {
+                        return JNI_TRUE; // Столкновение найдено!
+                    }
+                }
+            }
+        }
+    }
+
+    return JNI_FALSE; // Столкновений не найдено
+}
+
+
+// НОВАЯ, ИСПРАВЛЕННАЯ ВЕРСИЯ checkAllCollisions
 extern "C" JNIEXPORT jintArray JNICALL
 Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         JNIEnv* env,
-        jobject /* this */,
-        jobjectArray allSpritesPolygons // Массив массивов полигонов для каждого спрайта
+        jclass /* this */,
+        jobjectArray allSpritesPolygons
 ) {
     int spriteCount = env->GetArrayLength(allSpritesPolygons);
     if (spriteCount < 2) {
         return env->NewIntArray(0);
     }
 
+    // 1. Извлекаем все данные из Java и считаем AABB
     std::vector<std::vector<std::vector<float>>> spritesData(spriteCount);
     std::vector<AABB> spriteAABBs(spriteCount);
 
-    // 1. Извлекаем все данные из Java в C++ структуры
     for (int i = 0; i < spriteCount; ++i) {
         auto polygonsArray = (jobjectArray)env->GetObjectArrayElement(allSpritesPolygons, i);
         int polygonCount = env->GetArrayLength(polygonsArray);
@@ -339,7 +758,6 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
             int vertexCount = env->GetArrayLength(verticesArray);
             spritesData[i][j].assign(vertices, vertices + vertexCount);
 
-            // Вычисляем AABB для всего спрайта
             for (int k = 0; k < vertexCount; k += 2) {
                 spriteMinX = std::min(spriteMinX, vertices[k]);
                 spriteMinY = std::min(spriteMinY, vertices[k+1]);
@@ -353,21 +771,42 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         env->DeleteLocalRef(polygonsArray);
     }
 
-    // 2. Основной цикл проверки столкновений (N^2) - но теперь в быстром C++!
+    // 2. Основной цикл проверки столкновений
     std::vector<int> collidingPairs;
     for (int i = 0; i < spriteCount; ++i) {
         for (int j = i + 1; j < spriteCount; ++j) {
-            // Broad phase: быстрая проверка по общим рамкам спрайтов
+            // Broad phase: быстрая проверка по AABB
             if (aabbs_overlap(spriteAABBs[i], spriteAABBs[j])) {
-                // Narrow phase: детальная проверка полигонов
+                // Narrow phase: детальная проверка с триангуляцией
                 bool collisionFound = false;
                 for (const auto& polyA : spritesData[i]) {
+                    std::vector<uint32_t> trianglesA = triangulate(polyA);
+
                     for (const auto& polyB : spritesData[j]) {
-                        if (polygons_overlap(polyA.data(), polyA.size(), polyB.data(), polyB.size())) {
-                            collidingPairs.push_back(i);
-                            collidingPairs.push_back(j);
-                            collisionFound = true;
-                            break;
+                        std::vector<uint32_t> trianglesB = triangulate(polyB);
+
+                        for (size_t ti_a = 0; ti_a < trianglesA.size(); ti_a += 3) {
+                            float triangleA_verts[6] = {
+                                    polyA[trianglesA[ti_a] * 2], polyA[trianglesA[ti_a] * 2 + 1],
+                                    polyA[trianglesA[ti_a+1] * 2], polyA[trianglesA[ti_a+1] * 2 + 1],
+                                    polyA[trianglesA[ti_a+2] * 2], polyA[trianglesA[ti_a+2] * 2 + 1]
+                            };
+
+                            for (size_t ti_b = 0; ti_b < trianglesB.size(); ti_b += 3) {
+                                float triangleB_verts[6] = {
+                                        polyB[trianglesB[ti_b] * 2], polyB[trianglesB[ti_b] * 2 + 1],
+                                        polyB[trianglesB[ti_b+1] * 2], polyB[trianglesB[ti_b+1] * 2 + 1],
+                                        polyB[trianglesB[ti_b+2] * 2], polyB[trianglesB[ti_b+2] * 2 + 1]
+                                };
+
+                                if (polygons_overlap(triangleA_verts, 6, triangleB_verts, 6)) {
+                                    collidingPairs.push_back(i);
+                                    collidingPairs.push_back(j);
+                                    collisionFound = true;
+                                    break;
+                                }
+                            }
+                            if (collisionFound) break;
                         }
                     }
                     if (collisionFound) break;
@@ -380,49 +819,4 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
     jintArray resultArray = env->NewIntArray(collidingPairs.size());
     env->SetIntArrayRegion(resultArray, 0, collidingPairs.size(), collidingPairs.data());
     return resultArray;
-}
-
-extern "C" JNIEXPORT jboolean JNICALL
-Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkSingleCollision(
-        JNIEnv* env,
-        jobject /* this */,
-        jobjectArray firstLookPolygons,  // Полигоны первого объекта
-        jobjectArray secondLookPolygons  // Полигоны второго объекта
-) {
-    int firstPolygonCount = env->GetArrayLength(firstLookPolygons);
-    int secondPolygonCount = env->GetArrayLength(secondLookPolygons);
-
-    // Главный цикл проверки в C++
-    for (int i = 0; i < firstPolygonCount; ++i) {
-        auto polyA_jfloatArray = (jfloatArray)env->GetObjectArrayElement(firstLookPolygons, i);
-        jfloat* vertsA = env->GetFloatArrayElements(polyA_jfloatArray, nullptr);
-        int countA = env->GetArrayLength(polyA_jfloatArray);
-
-        for (int j = 0; j < secondPolygonCount; ++j) {
-            auto polyB_jfloatArray = (jfloatArray)env->GetObjectArrayElement(secondLookPolygons, j);
-            jfloat* vertsB = env->GetFloatArrayElements(polyB_jfloatArray, nullptr);
-            int countB = env->GetArrayLength(polyB_jfloatArray);
-
-            // Проверяем пару полигонов
-            if (polygons_overlap(vertsA, countA, vertsB, countB)) {
-                // Столкновение найдено! Освобождаем память и выходим.
-                env->ReleaseFloatArrayElements(polyA_jfloatArray, vertsA, JNI_ABORT);
-                env->ReleaseFloatArrayElements(polyB_jfloatArray, vertsB, JNI_ABORT);
-                env->DeleteLocalRef(polyA_jfloatArray);
-                env->DeleteLocalRef(polyB_jfloatArray);
-                return JNI_TRUE; // Возвращаем true
-            }
-
-            // Освобождаем память для внутреннего цикла
-            env->ReleaseFloatArrayElements(polyB_jfloatArray, vertsB, JNI_ABORT);
-            env->DeleteLocalRef(polyB_jfloatArray);
-        }
-
-        // Освобождаем память для внешнего цикла
-        env->ReleaseFloatArrayElements(polyA_jfloatArray, vertsA, JNI_ABORT);
-        env->DeleteLocalRef(polyA_jfloatArray);
-    }
-
-    // Если ни одна пара не столкнулась
-    return JNI_FALSE; // Возвращаем false
 }

@@ -19,6 +19,28 @@ add_library(onnxruntime SHARED IMPORTED)
 set_target_properties(onnxruntime PROPERTIES IMPORTED_LOCATION
         ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libonnxruntime.so)
 
+if(ANDROID_ABI STREQUAL "arm64-v8a")
+    # Если это arm64-v8a, включаем полную поддержку Python
+    message(STATUS "Python Support: ENABLED for ${ANDROID_ABI}")
+
+    # Добавляем пути к заголовочным файлам Python
+    include_directories(src/main/cpp/include)
+
+    # Определяем библиотеку libpython
+    add_library(libpython SHARED IMPORTED)
+    set_target_properties(libpython PROPERTIES IMPORTED_LOCATION
+            ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libpython3.12.so) # Имя файла должно быть без версий
+
+    # Создаем переменную, чтобы добавить libpython к списку линковки
+    set(PYTHON_LINK_LIBS libpython)
+else()
+    # Для всех других архитектур (x86_64, x86, armeabi-v7a) просто выводим сообщение
+    message(STATUS "Python Support: DISABLED for ${ANDROID_ABI}")
+
+    # Оставляем переменную пустой
+    set(PYTHON_LINK_LIBS "")
+endif()
+
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
@@ -43,5 +65,6 @@ find_library(log-lib log)
 target_link_libraries(
         ${CMAKE_PROJECT_NAME}
         onnxruntime
+        ${PYTHON_LINK_LIBS}
         ${log-lib}
 )

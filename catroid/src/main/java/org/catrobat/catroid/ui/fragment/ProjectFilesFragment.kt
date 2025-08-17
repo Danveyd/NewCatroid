@@ -22,115 +22,45 @@
  */
 package org.catrobat.catroid.ui.fragment
 
-import android.Manifest.permission
 import android.app.Activity
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.text.Editable
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
-import org.catrobat.catroid.ProjectManager
-import org.catrobat.catroid.R
-import org.catrobat.catroid.common.Constants
-import org.catrobat.catroid.common.Nameable
-import org.catrobat.catroid.common.ProjectData
-import org.catrobat.catroid.common.ScreenModes
-import org.catrobat.catroid.content.Project
-import org.catrobat.catroid.databinding.FragmentProjectOptionsBinding
-import org.catrobat.catroid.io.StorageOperations
-import org.catrobat.catroid.io.XstreamSerializer
-import org.catrobat.catroid.io.asynctask.ProjectExportTask
-import org.catrobat.catroid.io.asynctask.loadProject
-import org.catrobat.catroid.io.asynctask.ProjectSaver
-import org.catrobat.catroid.io.asynctask.renameProject
-import org.catrobat.catroid.io.asynctask.saveProjectSerial
-import org.catrobat.catroid.merge.NewProjectNameTextWatcher
-import org.catrobat.catroid.ui.BottomBar.hideBottomBar
-import org.catrobat.catroid.ui.PROJECT_DIR
-import org.catrobat.catroid.ui.ProjectUploadActivity
-import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask
-import org.catrobat.catroid.utils.ToastUtil
-import org.catrobat.catroid.utils.Utils
-import org.catrobat.catroid.utils.notifications.StatusBarNotificationManager
-import org.koin.android.ext.android.inject
-import java.io.File
-import java.io.IOException
-import android.content.Context
-import android.view.ContextThemeWrapper
-import org.catrobat.catroid.BuildConfig
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ContentResolver
-import android.content.ContextWrapper
-import android.preference.PreferenceManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
 import android.provider.OpenableColumns
-import android.text.Html
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
-import android.text.style.ForegroundColorSpan
-import android.view.KeyEvent
-import android.view.MenuItem
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.danvexteam.lunoscript_annotations.LunoClass
+import com.google.android.material.snackbar.Snackbar
+import org.catrobat.catroid.BuildConfig
 import org.catrobat.catroid.CatroidApplication
-import org.catrobat.catroid.cast.CastManager
-import org.catrobat.catroid.common.FlavoredConstants
-import org.catrobat.catroid.common.FlavoredConstants.CATROBAT_HELP_URL
-import org.catrobat.catroid.common.SharedPreferenceKeys
-import org.catrobat.catroid.common.Survey
-import org.catrobat.catroid.databinding.ActivityMainMenuBinding
-import org.catrobat.catroid.databinding.ActivityMainMenuSplashscreenBinding
-import org.catrobat.catroid.databinding.DeclinedTermsOfUseAndServiceAlertViewBinding
-import org.catrobat.catroid.databinding.PrivacyPolicyViewBinding
-import org.catrobat.catroid.databinding.ProgressBarBinding
-import org.catrobat.catroid.io.ZipArchiver
-import org.catrobat.catroid.io.asynctask.ProjectLoader
-import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
-import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.ui.dialogs.TermsOfUseDialogFragment
-import org.catrobat.catroid.ui.recyclerview.dialog.AboutDialogFragment
-import org.catrobat.catroid.ui.recyclerview.fragment.MainMenuFragment
-import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
-import org.catrobat.catroid.utils.FileMetaDataExtractor
-import org.catrobat.catroid.utils.ScreenValueHandler
-import org.catrobat.catroid.utils.setVisibleOrGone
-import org.koin.android.ext.android.inject
-import java.io.OutputStream
-import com.android.apksig.ApkSigner
-import com.android.apksig.internal.x509.Certificate
+import org.catrobat.catroid.ProjectManager
+import org.catrobat.catroid.R
+import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.databinding.FragmentProjectFilesBinding
+import org.catrobat.catroid.io.asynctask.saveProjectSerial
+import org.catrobat.catroid.stage.StageActivity
+import org.catrobat.catroid.ui.BottomBar.hideBottomBar
+import org.catrobat.catroid.ui.PROJECT_DIR
+import org.catrobat.catroid.ui.ProjectUploadActivity
 import org.catrobat.catroid.ui.adapter.FilesAdapter
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.cert.X509Certificate
-import java.util.ArrayList
+import org.catrobat.catroid.utils.Utils
+import org.koin.android.ext.android.inject
+import java.io.File
 import kotlin.random.Random
 
+@LunoClass
 class ProjectFilesFragment : Fragment() {
 
     private val projectManager: ProjectManager by inject()
@@ -178,6 +108,10 @@ class ProjectFilesFragment : Fragment() {
             //handleText()
             handleAdd()
         }
+        binding.projectFilesCmd.setOnClickListener {
+            //handleText()
+            handleCmd()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -188,6 +122,16 @@ class ProjectFilesFragment : Fragment() {
         )
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = filesAdapter
+    }
+
+    private fun handleCmd() {
+        project?.filesDir?.absolutePath?.let { projectPath ->
+            // Создаем и показываем диалог
+            val dialog = CommandPromptDialogFragment.newInstance(projectPath)
+            dialog.show(parentFragmentManager, CommandPromptDialogFragment.TAG)
+        } ?: run {
+            Toast.makeText(requireContext(), "Ошибка: директория проекта не найдена", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun copyToClipboard(text: String) {

@@ -38,12 +38,13 @@ buildscript {
 plugins {
     id "io.gitlab.arturbosch.detekt" version "1.23.0"
     id 'checkstyle'
-    //id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 repositories {
     mavenLocal()
-    maven { url "https://jitpack.io" }
+    maven { url 'https://jitpack.io' }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
@@ -107,8 +108,8 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
     }
 }
 
-def defaultVersionCode = 122
-def defaultVersionName = "2.0.6b"
+def defaultVersionCode = 123
+def defaultVersionName = "2.0.6"
 
 android {
     compileSdk 34
@@ -158,6 +159,7 @@ android {
         buildConfigField "boolean", "FEATURE_EMBROIDERY_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_PLOT_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_NEURAL_ENABLED", "true"
+        buildConfigField "boolean", "FEATURE_THREED_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_INTERNET_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_LEGO_NXT_ENABLED", "true"
         buildConfigField "boolean", "FEATURE_LEGO_EV3_ENABLED", "true"
@@ -192,6 +194,10 @@ android {
                 cppFlags ''
             }
         }
+    }
+
+    aaptOptions {
+        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
 
 
@@ -339,14 +345,16 @@ android {
             resValue "string", "FEATURE_AI_PREFERENCES_ENABLED", "true"
         }
         standalone {
-            /*if (!project.hasProperty('packageName')) {
+            if (!project.hasProperty('packageName')) {
                 applicationIdSuffix '.standalone'
             }
             versionCode 1
             versionName '1.0'
 
-            buildConfigField "String", "START_PROJECT", "\"$projectId\""
-            buildConfigField "String", "PROJECT_NAME", "\"$appName\""*/
+            //buildConfigField "String", "START_PROJECT", "\"$projectId\""
+            //buildConfigField "String", "PROJECT_NAME", "\"$appName\""
+            ext.set("disableGoogleServices", true)
+
             buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "true"
         }
     }
@@ -411,6 +419,7 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$work_manager_version"
     implementation "androidx.work:work-runtime:$work_manager_version"
     implementation "com.android.tools.build:apksig:7.0.0"
+    implementation "androidx.fragment:fragment-ktx:1.6.2"
     //implementation "https://github.com/dvstLab/docker-builder/blob/c66a4711ca3acb38aab03c8636aaee04178afb04/zipsigner-4.0.jar"
 
     // Kotlin
@@ -468,7 +477,16 @@ dependencies {
     implementation("androidx.security:security-crypto:1.0.0")
 
     //FireBase
-    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+
+    // Добавляем саму библиотеку Crashlytics. Версию указывать не нужно,
+    // так как она берется из BoM.
+    implementation "com.google.firebase:firebase-crashlytics-ndk"
+    implementation "com.google.firebase:firebase-crashlytics"
+
+    // Также рекомендуется добавить аналитику, так как Crashlytics
+    // использует ее для некоторых фич.
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database-ktx' // Зависимость для работы с Realtime Database
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
@@ -501,6 +519,11 @@ dependencies {
     // CameraX
     implementation "androidx.camera:camera-camera2:$cameraXVersion"
     implementation "androidx.camera:camera-lifecycle:${cameraXVersion}"
+
+    implementation project(':lunoscript-annotations')
+
+    // Вы запускаете процессор для этого модуля
+    kapt project(':lunoscript-processor')
 
     // ML Kit
     implementation 'com.google.android.gms:play-services-mlkit-face-detection:16.1.4'
@@ -537,6 +560,11 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+    implementation "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
+
+    // Для современных 64-битных устройств (САМАЯ ВАЖНАЯ СТРОКА!)
+    implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
 
     implementation "com.google.android.gms:play-services-auth:17.0.0"
 
@@ -553,6 +581,8 @@ dependencies {
     testImplementation 'org.powermock:powermock:1.6.6'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.0'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
 
     testImplementation 'org.robolectric:robolectric:4.7.3'
 

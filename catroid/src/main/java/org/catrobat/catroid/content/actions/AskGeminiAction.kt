@@ -41,6 +41,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
 import org.catrobat.catroid.content.GeminiManager
 import java.io.IOException
 import org.catrobat.catroid.formulaeditor.FormulaElement
@@ -106,7 +107,7 @@ class AskGeminiAction() : TemporalAction() {
             return
         }
 
-        val mediaType = MediaType.get("application/json; charset=utf-8")
+        val mediaType = "application/json; charset=utf-8".toMediaType()
         val body = RequestBody.create(mediaType, json)
 
         val request = Request.Builder()
@@ -126,7 +127,7 @@ class AskGeminiAction() : TemporalAction() {
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        val bodyStr = response.body()?.string() ?: "Empty response"
+                        val bodyStr = response.body?.string() ?: "Empty response"
                         try {
                             val gson = Gson()
                             val responseData = gson.fromJson(bodyStr, ResponseData::class.java)
@@ -137,8 +138,8 @@ class AskGeminiAction() : TemporalAction() {
                             Log.e("GeminiAPI", "JSON Parsing Error: ${e.message}")
                         }
                     } else {
-                        userVariable?.value = "Error ${response.code()}: ${response.message()}"
-                        val errorBody = response.body()?.string() ?: "Unknown error"
+                        userVariable?.value = "Error ${response.code}: ${response.message}"
+                        val errorBody = response.body?.string() ?: "Unknown error"
                         Log.e("GeminiAPI", "Error body: $errorBody")
                     }
                     // Обновляем UI в основном потоке, если это необходимо

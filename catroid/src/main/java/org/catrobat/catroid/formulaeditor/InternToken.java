@@ -22,12 +22,15 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.sensing.CollisionDetection;
 
 import java.util.List;
 
+@LunoClass
 public class InternToken {
 
 	private String tokenStringValue = "";

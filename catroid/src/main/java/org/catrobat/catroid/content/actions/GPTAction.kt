@@ -39,6 +39,7 @@ import org.catrobat.catroid.web.WebConnection
 import org.catrobat.catroid.web.WebConnection.WebRequestListener
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import kotlin.random.Random
 
 abstract class GPTAction : Action(), WebRequestListener {
     var webConnection: WebConnection? = null
@@ -65,7 +66,9 @@ abstract class GPTAction : Action(), WebRequestListener {
             system = sformula?.interpretString(scope) ?: ""
             val promptEnc = URLEncoder.encode(prompt, StandardCharsets.UTF_8.toString())
             val systemEnc = URLEncoder.encode(system, StandardCharsets.UTF_8.toString())
-            url = "https://text.pollinations.ai/$promptEnc?private=true&system=$systemEnc"
+            val seed = Random.nextInt(0, 999999999)
+
+            url = "https://text.pollinations.ai/$promptEnc?private=true&system=$systemEnc&seed=$seed"
             //url = "https://www.google.com"
             Log.d("GPTAction", "url: " + url)
             return true
@@ -168,7 +171,7 @@ abstract class GPTAction : Action(), WebRequestListener {
 
     @CallSuper
     override fun onRequestSuccess(httpResponse: Response) {
-        Log.i("GPTAction_Callback", "[${System.identityHashCode(this)}] onRequestSuccess CALLED! URL: '$url', HTTP Code: ${httpResponse.code()}")
+        Log.i("GPTAction_Callback", "[${System.identityHashCode(this)}] onRequestSuccess CALLED! URL: '$url', HTTP Code: ${httpResponse.code}")
         requestStatus = RequestStatus.FINISHED
     }
 

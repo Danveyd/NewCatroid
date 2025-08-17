@@ -24,6 +24,8 @@ package org.catrobat.catroid.formulaeditor;
 
 import android.util.Log;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.content.Scope;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ import java.util.EmptyStackException;
 import java.util.List;
 import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
+@LunoClass
 public class InternFormulaParser {
 
 	private class InternFormulaParserException extends Exception {

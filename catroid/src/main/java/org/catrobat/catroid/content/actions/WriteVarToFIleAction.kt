@@ -141,7 +141,8 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
                 else {
                     val newValues = ContentValues().apply {
                         put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                        put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+                        // ИСПРАВЛЕНИЕ: Позволяем системе самой определить тип или используем обобщенный
+                        put(MediaStore.MediaColumns.MIME_TYPE, "*/*") // Вместо "text/plain"
                         put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
                     }
                     val newFileUri = contentResolver.insert(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), newValues)
@@ -181,9 +182,16 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
 
     private fun getFileName(): String {
         var fileName = Utils.sanitizeFileName(formula?.interpretString(scope))
-        if (!fileName.contains(Regex(Constants.ANY_EXTENSION_REGEX))) {
-            fileName += Constants.TEXT_FILE_EXTENSION
+
+        // ИСПРАВЛЕНИЕ: Более простая и надежная проверка.
+        // Если в имени файла нет точки, значит, пользователь не указал расширение.
+        // Тогда добавляем .txt по умолчанию.
+        if (!fileName.contains(".")) {
+            fileName += Constants.TEXT_FILE_EXTENSION // ".txt"
         }
+        // Если точка есть (например, "my_archive.zip"), то ничего не делаем,
+        // оставляя расширение пользователя.
+
         return fileName
     }
 

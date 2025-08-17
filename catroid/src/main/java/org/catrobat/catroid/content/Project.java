@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.CatroidApplication;
@@ -50,6 +51,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,7 @@ import static org.catrobat.catroid.utils.Utils.SPEECH_RECOGNITION_SUPPORTED_LANG
 		"programListOfLists",
 		"programMultiplayerVariableList"
 })
+@LunoClass
 public class Project implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -172,7 +175,13 @@ public class Project implements Serializable {
 	}
 
 	public Scene getDefaultScene() {
-		return sceneList.get(0);
+		//return sceneList.get(0);
+		try {
+			return sceneList.get(0);
+		} catch (Exception e) {
+			//getDirectory().delete();
+			return null;
+		}
 	}
 
 	public <T> boolean hasUserDataChanged(List<T> newUserData, List<T> oldUserData) {
@@ -427,15 +436,16 @@ public class Project implements Serializable {
 
 	public File getFile(String fileName) {
 		File file = new File(getFilesDir(), fileName);
-		if(file.exists()) {
+		/*if(file.exists()) {
 			return file;
 		} else {
 			return null;
-		}
+		}*/
+		return file;
 	}
 
 	public File getLib(String fileName) {
-		File file = new File(getFilesDir(), fileName);
+		File file = new File(getLibsDir(), fileName);
 		if(file.exists()) {
 			return file;
 		} else {

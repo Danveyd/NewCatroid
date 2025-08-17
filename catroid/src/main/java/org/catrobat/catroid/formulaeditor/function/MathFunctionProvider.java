@@ -42,6 +42,7 @@ public class MathFunctionProvider implements FunctionProvider {
 		formulaFunctions.put(Functions.SQRT, new UnaryFunction(Math::sqrt));
 		formulaFunctions.put(Functions.ABS, new UnaryFunction(Math::abs));
 		formulaFunctions.put(Functions.ROUND, new UnaryFunction(argument -> (double) Math.round(argument)));
+		formulaFunctions.put(Functions.ROUNDTO, new BinaryFunction(this::interpretFunctionRoundTo));
 		formulaFunctions.put(Functions.PI, args -> Math.PI);
 		formulaFunctions.put(Functions.ARCSIN, new UnaryFunction(argument -> Math.toDegrees(Math.asin(argument))));
 		formulaFunctions.put(Functions.ARCCOS, new UnaryFunction(argument -> Math.toDegrees(Math.acos(argument))));
@@ -55,6 +56,17 @@ public class MathFunctionProvider implements FunctionProvider {
 		formulaFunctions.put(Functions.TRUE, args -> TRUE);
 		formulaFunctions.put(Functions.FALSE, args -> FALSE);
 		formulaFunctions.put(Functions.MOD, new BinaryFunction(this::interpretFunctionMod));
+	}
+
+	public static double roundTo(double value, double places) {
+		// 1. Создаем множитель. Например, для 2 знаков это 100, для -1 это 0.1
+		double multiplier = Math.pow(10.0, places);
+
+		// 2. Умножаем число, округляем до ближайшего целого (long)
+		//    и делим обратно на множитель.
+		//    (123.456 * 100.0) -> 12345.6 -> round -> 12346L
+		//    12346L / 100.0 -> 123.46
+		return Math.round(value * multiplier) / multiplier;
 	}
 
 	private double interpretFunctionMod(double dividend, double divisor) {
@@ -81,5 +93,9 @@ public class MathFunctionProvider implements FunctionProvider {
 		} else {
 			return Math.toDegrees(Math.atan2(firstArgument, secondArgument));
 		}
+	}
+
+	private double interpretFunctionRoundTo(double firstArgument, double secondArgument) {
+		return(roundTo(firstArgument, secondArgument));
 	}
 }

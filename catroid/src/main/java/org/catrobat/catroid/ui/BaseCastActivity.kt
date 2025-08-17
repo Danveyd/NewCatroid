@@ -24,10 +24,12 @@ package org.catrobat.catroid.ui
 
 import android.view.Menu
 import android.view.MenuItem
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.R
 import org.catrobat.catroid.cast.CastManager
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 
+@LunoClass
 abstract class BaseCastActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (SettingsFragment.isCastSharedPreferenceEnabled(this)) {

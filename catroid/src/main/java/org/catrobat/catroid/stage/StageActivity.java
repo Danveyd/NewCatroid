@@ -30,6 +30,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -70,6 +71,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.danvexteam.lunoscript_annotations.LunoClass;
+import com.google.common.collect.Multimap;
 import com.google.firebase.FirebaseApp;
 
 import org.catrobat.catroid.BuildConfig;
@@ -81,17 +84,23 @@ import org.catrobat.catroid.camera.CameraManager;
 import org.catrobat.catroid.common.CatroidService;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.ServiceProvider;
+import org.catrobat.catroid.content.BackPressedScript;
 import org.catrobat.catroid.content.GlobalManager;
 import org.catrobat.catroid.content.MyActivityManager;
 import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.SafeKeyboardHeightProvider;
 import org.catrobat.catroid.content.Scene;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.RunJSAction;
+import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.devices.raspberrypi.RaspberryPiService;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.io.StageAudioFocus;
 import org.catrobat.catroid.nfc.NfcHandler;
+import org.catrobat.catroid.stage.event.EventManager;
 import org.catrobat.catroid.ui.MarketingActivity;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.recyclerview.dialog.PlaySceneDialog;
@@ -101,6 +110,7 @@ import org.catrobat.catroid.ui.runtimepermissions.PermissionAdaptingActivity;
 import org.catrobat.catroid.ui.runtimepermissions.PermissionHandlingActivity;
 import org.catrobat.catroid.ui.runtimepermissions.PermissionRequestActivityExtension;
 import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask;
+import org.catrobat.catroid.utils.ProjectSecurityChecker;
 import org.catrobat.catroid.utils.Resolution;
 import org.catrobat.catroid.utils.ScreenValueHandler;
 import org.catrobat.catroid.utils.ToastUtil;
@@ -127,6 +137,7 @@ import static org.catrobat.catroid.stage.TestResult.TEST_RESULT_MESSAGE;
 import static org.catrobat.catroid.ui.MainMenuActivity.surveyCampaign;
 import static org.koin.java.KoinJavaComponent.get;
 
+@LunoClass
 public class StageActivity extends AndroidApplication implements ContextProvider,
 		PermissionHandlingActivity,
 		PermissionAdaptingActivity {
@@ -143,6 +154,9 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	public static final int SHOW_DIALOG = 2;
 	public static final int SHOW_TOAST = 3;
 	public static final int SHOW_LONG_TOAST = 4;
+
+	private long backPressedTime = 0;
+	private static final int BACK_PRESS_EXIT_TIMEOUT = 2000;
 
 	StageAudioFocus stageAudioFocus;
 	PendingIntent pendingIntent;
@@ -243,7 +257,10 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		configuration.g = 8;
 		configuration.b = 8;
 		configuration.a = 8;
+
 		gameView = initializeForView(getApplicationListener(), configuration);
+
+		injectSafeKeyboardProvider();
 
 		// --- НАСТРОЙКА ПРОЗРАЧНОСТИ (КЛЮЧЕВОЙ МОМЕНТ) ---
 		if (gameView instanceof android.view.SurfaceView) {
@@ -287,6 +304,27 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 */
 	public void setNativesForeground() {
 		runOnMainThread(() -> activeNativeLayer = foregroundLayout);
+	}
+
+	// Поместите этот метод в любое место внутри класса StageActivity
+	private void injectSafeKeyboardProvider() {
+		try {
+			// 1. Получаем доступ к полю `keyboardHeightProvider` родительского класса AndroidApplication
+			java.lang.reflect.Field field = AndroidApplication.class.getDeclaredField("keyboardHeightProvider");
+
+			// 2. Делаем его доступным для записи (обходя private/protected)
+			field.setAccessible(true);
+
+			// 3. Создаем наш безопасный объект и записываем его в это поле
+			field.set(this, new SafeKeyboardHeightProvider(this));
+
+			Log.i(TAG, "Successfully injected SafeKeyboardHeightProvider via reflection.");
+
+		} catch (Exception e) {
+			// Если что-то пошло не так (например, поле переименовали в другой версии LibGDX),
+			// мы увидим это в логах, но приложение не упадет в этом месте.
+			Log.e(TAG, "Failed to inject SafeKeyboardHeightProvider via reflection. Keyboard-related crashes might occur.", e);
+		}
 	}
 
 	/**
@@ -559,6 +597,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	public static final String STYLE_IS_PASSWORD = "isPassword";         // "true", если поле для пароля
 	public static final String STYLE_MAX_LENGTH = "maxLength";           // Макс. длина текста (например, "50")
 	public static final String STYLE_CORNER_RADIUS = "cornerRadius";     // Радиус скругления углов в пикселях
+	public static final String STYLE_IS_MULTI_LINE = "isMultiLine";
 	/**
 	 * Создает текстовое поле для ввода, связанное с переменной проекта.
 	 *
@@ -658,7 +697,18 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 					editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED);
 				} else {
 					// Стандартный текстовый ввод
-					editText.setInputType(InputType.TYPE_CLASS_TEXT);
+					editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+					// 2. Убираем горизонтальную прокрутку, чтобы текст переносился
+					//editText.setHorizontallyScrolling(false);
+
+					// 3. Устанавливаем максимальное количество строк (можно большое число)
+					editText.setMaxLines(Integer.MAX_VALUE);
+
+					// 4. Важно! Выравниваем текст по верху для многострочного режима
+					int currentGravity = editText.getGravity();
+					// Убираем вертикальное центрирование и добавляем выравнивание по верху
+					editText.setGravity((currentGravity & ~Gravity.VERTICAL_GRAVITY_MASK) | Gravity.TOP);
 				}
 			}
 
@@ -1074,12 +1124,17 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	@Override
 	protected void onDestroy() {
+		// 1. СНАЧАЛА вызываем родительский метод.
+		// Он корректно очистит слушатели и ресурсы LibGDX, пока View еще существуют.
+		super.onDestroy();
+
+		// 2. ТЕПЕРЬ выполняем свою собственную очистку.
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			StageLifeCycleController.stageDestroy(this);
 		}
-		//RunJSAction.Companion.destroyWebView();
+
+		// 3. И очистку WebView в конце.
 		RunJSAction.Companion.destroyWebView();
-		super.onDestroy();
 	}
 
 	AndroidGraphics getGdxGraphics() {
@@ -1145,18 +1200,91 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		}
 	}
 
+	/**
+	 * Проверяет, содержит ли текущий проект хотя бы один скрипт указанного типа.
+	 * @param scriptClass Класс скрипта для поиска (например, BackPressedScript.class).
+	 * @return true, если найден хотя бы один экземпляр, иначе false.
+	 */
+	private boolean projectHasScriptOfType(Class<? extends Script> scriptClass) {
+		Project project = ProjectManager.getInstance().getCurrentProject();
+		if (project == null || scriptClass == null) {
+			return false;
+		}
+		for (Scene scene : project.getSceneList()) {
+			for (Sprite sprite : scene.getSpriteList()) {
+				for (Script script : sprite.getScriptList()) {
+					if (scriptClass.isInstance(script)) {
+						return true; // Нашли, дальше можно не искать
+					}
+				}
+			}
+		}
+		return false; // Не нашли во всем проекте
+	}
+
+	/**
+	 * "Транслирует" событие всем спрайтам на текущей сцене.
+	 * @param eventId ID события для запуска.
+	 */
+	private void broadcastEventToAllSprites(EventId eventId) {
+		Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+		if (scene == null) {
+			return;
+		}
+
+		for (Sprite sprite : scene.getSpriteList()) {
+			Multimap<EventId, ScriptSequenceAction> eventMap = sprite.getIdToEventThreadMap();
+			if (eventMap != null && eventMap.containsKey(eventId)) {
+				// Запускаем все скрипты, которые подписаны на это событие
+				for (ScriptSequenceAction sequence : eventMap.get(eventId)) {
+					sequence.restart(); // Перезапускаем экшн, чтобы его можно было использовать снова
+					sprite.look.addAction(sequence); // look - это Actor из LibGDX, он выполняет действия
+				}
+			}
+		}
+	}
+
 	@Override
 	public void onBackPressed() {
-		if (BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
-			BluetoothDeviceService service = ServiceProvider.getService(CatroidService.BLUETOOTH_DEVICE_SERVICE);
-			if (service != null) {
-				service.disconnectDevices();
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+
+		// 1. ПРОВЕРЯЕМ, ЕСТЬ ЛИ В ПРОЕКТЕ НУЖНЫЙ СКРИПТ
+		boolean backPressedScriptExists = EventManager.projectHasScriptOfType(
+				currentProject, BackPressedScript.class);
+
+		if (backPressedScriptExists) {
+			// 2. ЛОГИКА ДЛЯ ПРОЕКТОВ С НОВЫМ СКРИПТОМ
+
+			// Проверяем, было ли предыдущее нажатие менее 2 секунд назад
+			if (backPressedTime + BACK_PRESS_EXIT_TIMEOUT > System.currentTimeMillis()) {
+				handleBack();
+			} else {
+				// НЕТ, ЭТО ПЕРВОЕ НАЖАТИЕ
+				// а) Запускаем событие для всех скриптов
+				broadcastEventToAllSprites(new EventId(EventId.BACK_PRESSED));
+				// б) Показываем подсказку пользователю
+				Toast.makeText(this, "Нажмите еще раз для вызова меню", Toast.LENGTH_SHORT).show();
+
+				// в) Запоминаем время этого нажатия
+				backPressedTime = System.currentTimeMillis();
 			}
 
-			TextToSpeechHolder.getInstance().deleteSpeechFiles();
+		} else {
+			handleBack();
+		}
+	}
+
+	private void handleBack() {
+		if (BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
+			//BluetoothDeviceService service = ServiceProvider.getService(CatroidService.BLUETOOTH_DEVICE_SERVICE);
+			/*if (service != null) {
+				service.disconnectDevices();
+			}*/
+
+			//TextToSpeechHolder.getInstance().deleteSpeechFiles();
 			//Intent marketingIntent = new Intent(this, MarketingActivity.class);
 			//startActivity(marketingIntent);
-			finish();
+			//finish();
 		} else {
 			StageLifeCycleController.stagePause(this);
 			idlingResource.increment();
@@ -1379,7 +1507,61 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		}
 	}
 
+	private static final String PREFS_NAME = "SecurityPreferences";
+	private static final String PREFS_KEY_SUPPRESS_WARNING = "suppress_security_warning";
+
 	public static void handlePlayButton(ProjectManager projectManager, final Activity activity) {
+		Project project = projectManager.getCurrentProject();
+
+		// Проверяем, содержит ли проект опасные блоки
+		boolean isDangerous = ProjectSecurityChecker.projectContainsDangerousBricks(project);
+
+		// Проверяем, не отключал ли пользователь это предупреждение ранее
+		SharedPreferences prefs = activity.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		boolean shouldSuppressWarning = prefs.getBoolean(PREFS_KEY_SUPPRESS_WARNING, false);
+
+		// Если проект опасен И пользователь не отключал предупреждение, показываем диалог
+		if (isDangerous && !shouldSuppressWarning) {
+			showSecurityWarningDialog(projectManager, activity);
+		} else {
+			// В противном случае (проект безопасен или предупреждение отключено) - запускаем как обычно
+			launchProject(projectManager, activity);
+		}
+	}
+
+	private static void showSecurityWarningDialog(ProjectManager projectManager, Activity activity) {
+		new AlertDialog.Builder(activity)
+				.setTitle("Проект может содержать вредоносный код")
+				.setMessage("В проекте используется LunoScript, Python или Библиотеки, это может быть опасно. Запускайте его только если проверили код или доверяете источнику.")
+				.setCancelable(false) // Запрещаем закрывать диалог кнопкой "назад"
+				.setIcon(android.R.drawable.ic_dialog_alert)
+
+				// Кнопка "Запуск" (Positive)
+				.setPositiveButton("Запуск", (dialog, which) -> {
+					dialog.dismiss();
+					launchProject(projectManager, activity); // Запускаем проект
+				})
+
+				// Кнопка "Отмена" (Negative)
+				.setNegativeButton("Отмена", (dialog, which) -> {
+					dialog.dismiss(); // Просто закрываем диалог
+				})
+
+				// Кнопка "Больше не напоминать" (Neutral)
+				.setNeutralButton("Больше не напоминать", (dialog, which) -> {
+					// Сохраняем выбор пользователя
+					SharedPreferences prefs = activity.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putBoolean(PREFS_KEY_SUPPRESS_WARNING, true);
+					editor.apply();
+
+					dialog.dismiss();
+					launchProject(projectManager, activity); // И запускаем проект
+				})
+				.show();
+	}
+
+	private static void launchProject(ProjectManager projectManager, final Activity activity) {
 		Scene currentScene = projectManager.getCurrentlyEditedScene();
 		Scene defaultScene = projectManager.getCurrentProject().getDefaultScene();
 

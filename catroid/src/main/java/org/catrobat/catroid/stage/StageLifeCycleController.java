@@ -32,6 +32,7 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -57,6 +58,7 @@ import static org.catrobat.catroid.stage.StageResourceHolder.getProjectsRuntimeP
 import static org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask.checkPermission;
 import static org.koin.java.KoinJavaComponent.get;
 
+@LunoClass
 public final class StageLifeCycleController {
 	public static final String TAG = StageLifeCycleController.class.getSimpleName();
 

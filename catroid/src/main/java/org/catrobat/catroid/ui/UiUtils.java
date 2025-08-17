@@ -52,6 +52,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public final class UiUtils {
 
 	private UiUtils() {

@@ -33,6 +33,7 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.ListFragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.R
 import org.catrobat.catroid.ui.BottomBar.hideBottomBar
 import org.catrobat.catroid.ui.BottomBar.showBottomBar
@@ -45,6 +46,7 @@ import org.catrobat.catroid.ui.removeTabLayout
 import org.catrobat.catroid.utils.SnackbarUtil
 import java.util.concurrent.locks.Lock
 
+@LunoClass
 class BrickCategoryFragment : ListFragment() {
     private var previousActionBarTitle: CharSequence? = null
     private var scriptFragment: OnCategorySelectedListener? = null

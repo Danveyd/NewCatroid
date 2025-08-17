@@ -37,6 +37,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.formulaeditor.InternFormula.TokenSelectionType;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressLint("AppCompatCustomView")
+@LunoClass
 public class FormulaEditorEditText extends EditText implements OnTouchListener {
 
 	private static final String TAG = "FormulaEditorEditText"; // Добавьте TAG для логирования

@@ -27,12 +27,14 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.content.Sprite;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@LunoClass
 public class PhysicsCollisionListener implements ContactListener {
 
 	public static final String COLLISION_MESSAGE_ESCAPE_CHAR = "\t";

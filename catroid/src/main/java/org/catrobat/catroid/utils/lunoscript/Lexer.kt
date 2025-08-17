@@ -14,7 +14,11 @@ class Lexer(private val source: String) {
         "this" to TokenType.THIS, "super" to TokenType.SUPER, // 'super' пока не используется
         "while" to TokenType.WHILE, "for" to TokenType.FOR, "in" to TokenType.IN,
         "break" to TokenType.BREAK, "continue" to TokenType.CONTINUE,
-        "switch" to TokenType.SWITCH, "case" to TokenType.CASE, "default" to TokenType.DEFAULT
+        "switch" to TokenType.SWITCH, "case" to TokenType.CASE, "default" to TokenType.DEFAULT,
+        "import" to TokenType.IMPORT, "val" to TokenType.VAR,
+        "try" to TokenType.TRY,
+        "catch" to TokenType.CATCH,
+        "finally" to TokenType.FINALLY,
     )
 
     fun scanTokens(): List<Token> {
@@ -44,15 +48,15 @@ class Lexer(private val source: String) {
     private fun peek(): Char = if (isAtEnd()) '\u0000' else source[current]
     private fun peekNext(): Char = if (current + 1 >= source.length) '\u0000' else source[current + 1]
 
-    private fun string() {
-        while (peek() != '"' && !isAtEnd()) {
+    private fun string(quoteType: Char) {
+        while (peek() != quoteType && !isAtEnd()) {
             if (peek() == '\n') { line++; lineStart = current + 1 }
-            // TODO: Handle escape sequences like \n, \t, \"
             advance()
         }
         if (isAtEnd()) throw LunoSyntaxError("Unterminated string.", line, start - lineStart)
-        advance() // Closing "
-        val value = source.substring(start + 1, current - 1) // TODO: Unescape sequences
+
+        advance() // Съедаем закрывающую кавычку
+        val value = source.substring(start + 1, current - 1)
         addToken(TokenType.STRING_LITERAL, value)
     }
 
@@ -62,7 +66,17 @@ class Lexer(private val source: String) {
             advance() // Consume .
             while (isDigit(peek())) advance()
         }
-        addToken(TokenType.NUMBER_LITERAL, source.substring(start, current).toDouble())
+
+        // --- НОВАЯ ЛОГИКА ---
+        // Проверяем, не является ли следующий символ 'f' или 'F'
+        if (peek().equals('f', ignoreCase = true)) {
+            advance() // "Съедаем" суффикс 'f'
+            // Создаем токен типа FLOAT_LITERAL и преобразуем значение во Float
+            addToken(TokenType.FLOAT_LITERAL, source.substring(start, current - 1).toFloat())
+        } else {
+            // Если суффикса нет, все работает как и раньше
+            addToken(TokenType.NUMBER_LITERAL, source.substring(start, current).toDouble())
+        }
     }
 
     private fun identifier() {
@@ -103,7 +117,13 @@ class Lexer(private val source: String) {
 
             '/' -> {
                 when {
-                    match('/') -> while (peek() != '\n' && !isAtEnd()) advance() // Comment
+                    // --- ИЗМЕНЕНИЕ ЛОГИКИ ---
+                    match('/') -> {
+                        // Идем до конца строки, но не "съедаем" символ новой строки
+                        while (peek() != '\n' && !isAtEnd()) advance()
+                        // Создаем токен для всего комментария
+                        addToken(TokenType.COMMENT)
+                    }
                     match('=') -> addToken(TokenType.DIVIDE_ASSIGN)
                     else -> addToken(TokenType.DIVIDE)
                 }
@@ -113,7 +133,8 @@ class Lexer(private val source: String) {
             ' ', '\r', '\t' -> { /* Ignore */ }
             '\n' -> { line++; lineStart = current }
 
-            '"' -> string()
+            '"' -> string('"')
+            '\'' -> string('\'') // <-- ДОБАВЬ ЭТОТ CASE
             else -> {
                 if (isDigit(c)) number()
                 else if (isAlpha(c)) identifier()

@@ -276,6 +276,12 @@
         <activity
             android:name=".ui.filepicker.FilePickerActivity" />
 
+        <activity
+            android:name=".libraryeditor.data.LibraryEditorActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NewCatroid.LibraryEditor"
+            android:windowSoftInputMode="adjustResize" />
+
         <service
             android:name=".transfers.project.ProjectUploadService"
             android:foregroundServiceType="dataSync" />

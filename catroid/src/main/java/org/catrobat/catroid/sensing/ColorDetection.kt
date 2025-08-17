@@ -40,6 +40,7 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.common.ScreenModes
 import org.catrobat.catroid.content.Look
@@ -48,6 +49,7 @@ import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageListener
 
+@LunoClass
 abstract class ColorDetection(
     protected open val scope: Scope,
     protected open val stageListener: StageListener?

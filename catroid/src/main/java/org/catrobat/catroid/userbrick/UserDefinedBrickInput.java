@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.userbrick;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.formulaeditor.Formula;
@@ -34,6 +35,7 @@ import java.util.UUID;
 import static org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType.INPUT;
 
 @XStreamAlias("userDefinedBrickInput")
+@LunoClass
 public class UserDefinedBrickInput extends UserDefinedBrickData implements Serializable,
 		UserData<Formula> {
 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <!-- Я использовал категорию Control, вы можете поменять на более подходящую -->
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_upload_file_layout"
+        style="@style/BrickContainer.Internet.Big">
+
+        <include layout="@layout/icon_brick_category_control" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_file" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_url"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_upload_url_edit"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_project_file"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_upload_file_path_edit"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_file_type"
+            app:layout_newLine="true"/>
+        <Spinner
+            android:id="@+id/brick_upload_file_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textDirection="locale" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_mime_type"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_upload_mime_type_edit"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_upload_storage_type"
+            app:layout_newLine="true"/>
+        <Spinner
+            android:id="@+id/brick_upload_storage_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textDirection="locale" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

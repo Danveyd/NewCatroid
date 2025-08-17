@@ -180,7 +180,8 @@
 
         <TextView
             android:id="@+id/create_textfield_alignment"
-            style="@style/BrickEditText" />
+            style="@style/BrickEditText"
+            app:layout_newLine="true"/>
 
         <TextView
             style="@style/BrickText.SingleLine"

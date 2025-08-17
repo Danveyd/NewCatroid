@@ -319,6 +319,7 @@
         <item>@string/formula_editor_function_raspi_read_pin_value_digital</item>
         <item>@string/formula_editor_function_regex</item>
         <item>@string/formula_editor_function_round</item>
+        <item>@string/formula_editor_function_roundto</item>
         <item>@string/formula_editor_function_sin</item>
         <item>@string/formula_editor_function_sqrt</item>
         <item>@string/formula_editor_function_tan</item>

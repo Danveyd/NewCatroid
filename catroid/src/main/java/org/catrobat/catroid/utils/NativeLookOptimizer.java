@@ -1,7 +1,9 @@
 package org.catrobat.catroid.utils;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
+@LunoClass
 public class NativeLookOptimizer {
     static {
         // Имя библиотеки должно совпадать с project() в CMakeLists.txt

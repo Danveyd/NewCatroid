@@ -36,6 +36,7 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.ListFragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.cast.CastManager
@@ -47,6 +48,7 @@ import org.catrobat.catroid.utils.SnackbarUtil
 import org.catrobat.catroid.utils.ToastUtil
 import org.koin.java.KoinJavaComponent.inject
 
+@LunoClass
 class AddBrickFragment : ListFragment() {
     private var addBrickListener: OnAddBrickListener? = null
     private var previousActionBarTitle: CharSequence? = null

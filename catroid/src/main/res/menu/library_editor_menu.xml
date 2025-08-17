@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_import_library"
+        android:title="Импорт"
+        android:icon="@drawable/baseline_save_alt_24_w"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_export_library"
+        android:title="Экспорт"
+        android:icon="@drawable/unarchive_24px"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_clear_library"
+        android:title="Очистить"
+        android:icon="@drawable/delete_24px"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.LookData;
@@ -68,6 +69,7 @@ import static org.catrobat.catroid.physics.ParticleConstants.LIFE_HIGH_MAX_ACTIV
 import static org.catrobat.catroid.physics.ParticleConstants.LIFE_HIGH_MAX_DEAD;
 import static org.catrobat.catroid.physics.ParticleConstants.PARTICLE_SCALE;
 
+@LunoClass
 public class Look extends Image {
 
 	@Retention(RetentionPolicy.SOURCE)

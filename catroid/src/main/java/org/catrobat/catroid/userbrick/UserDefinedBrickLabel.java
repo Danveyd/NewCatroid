@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.userbrick;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import java.io.Serializable;
@@ -32,6 +33,7 @@ import androidx.annotation.Nullable;
 import static org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType.LABEL;
 
 @XStreamAlias("userDefinedBrickLabel")
+@LunoClass
 public class UserDefinedBrickLabel extends UserDefinedBrickData implements Serializable {
 
 	@XStreamAlias("label")

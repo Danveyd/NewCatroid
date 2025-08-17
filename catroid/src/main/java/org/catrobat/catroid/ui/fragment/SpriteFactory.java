@@ -22,10 +22,13 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.content.GroupItemSprite;
 import org.catrobat.catroid.content.GroupSprite;
 import org.catrobat.catroid.content.Sprite;
 
+@LunoClass
 public class SpriteFactory {
 
 	public static final String SPRITE_BASE = Sprite.class.getSimpleName();

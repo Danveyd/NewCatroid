@@ -23,10 +23,13 @@
 
 package org.catrobat.catroid.physics;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.content.Sprite;
 
 import java.util.Objects;
 
+@LunoClass
 public class CollidingSprites {
 	public final Sprite sprite1;
 	public final Sprite sprite2;

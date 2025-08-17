@@ -49,6 +49,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.common.io.Files;
 
 import org.catrobat.catroid.ProjectManager;
@@ -124,6 +125,7 @@ import org.catrobat.catroid.formulaeditor.InternToken; // Убедитесь, ч
 
 import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
 
+@LunoClass
 public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener,
 		DataListFragment.FormulaEditorDataInterface {
 
@@ -160,7 +162,6 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 
 	private CategoryListRVAdapter.CategoryListItem chosenCategoryItem = null;
 	private UserData<?> chosenUserDataItem = null;
-	private FormulaEditorClipboard formulaEditorClipboard;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -321,8 +322,6 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 		formulaEditorBrick = fragmentView.findViewById(R.id.formula_editor_brick_space);
 		formulaEditorEditText = fragmentView.findViewById(R.id.formula_editor_edit_field);
 		formulaEditorKeyboard = fragmentView.findViewById(R.id.formula_editor_keyboardview);
-		formulaEditorClipboard =
-				new FormulaEditorClipboard(formulaEditorEditText);
 
 		updateBrickView();
 
@@ -429,10 +428,10 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 							showColorPickerDialog(view);
 							return true;
 						case R.id.formula_editor_keyboard_paste:
-							formulaEditorClipboard.paste();
+							FormulaEditorClipboard.INSTANCE.paste(formulaEditorEditText);
 							return true;
 						case R.id.formula_editor_keyboard_copy:
-							formulaEditorClipboard.checkIfSelectedAndCopy();
+							FormulaEditorClipboard.INSTANCE.checkIfSelectedAndCopy(formulaEditorEditText);
 							return true;
 						default:
 							formulaEditorEditText.handleKeyEvent(view.getId(), "");

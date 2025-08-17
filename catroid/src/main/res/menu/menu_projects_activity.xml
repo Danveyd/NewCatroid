@@ -68,5 +68,10 @@
         android:title="@string/sort_projects"
         app:showAsAction="never"
         android:icon="@drawable/ic_sort"/>
+    <item
+        android:id="@+id/libs_menu"
+        android:title="@string/libs_createlib"
+        app:showAsAction="never"
+        android:icon="@drawable/sdk_24px"/>
 
 </menu>

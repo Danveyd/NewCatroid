@@ -54,6 +54,12 @@
         android:title="@string/preference_title_enable_embroidery_bricks" />
 
     <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="setting_old_drag"
+        android:summary="@string/preference_title_old_dragd"
+        android:title="@string/preference_title_old_drag" />
+
+    <CheckBoxPreference
         android:defaultValue="@string/FEATURE_EMBROIDERY_PREFERENCES_ENABLED"
         android:key="setting_embroidery_bricks_checkbox_preference"
         android:summary="@string/preference_description_embroidery_bricks"
@@ -70,6 +76,12 @@
         android:key="setting_neural_bricks"
         android:summary="@string/preference_description_neural_bricks"
         android:title="@string/preference_title_enable_neural_bricks" />
+
+    <CheckBoxPreference
+        android:defaultValue="@string/FEATURE_EMBROIDERY_PREFERENCES_ENABLED"
+        android:key="setting_threed_bricks"
+        android:summary="@string/preference_description_threed"
+        android:title="@string/preference_title_enable_threed_bricks" />
 
     <CheckBoxPreference
         android:defaultValue="@string/FEATURE_EMBROIDERY_PREFERENCES_ENABLED"

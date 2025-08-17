@@ -26,9 +26,12 @@ package org.catrobat.catroid.visualplacement;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@LunoClass
 public class VisualPlacementTouchListener {
 
 	private Mode mode;

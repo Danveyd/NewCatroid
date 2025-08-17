@@ -22,12 +22,15 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.content.bricks.Brick;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+@LunoClass
 public class FormulaEditorHistory {
 
 	private static final int MAXIMUM_HISTORY_LENGTH = 32;

@@ -92,6 +92,9 @@ import static org.catrobat.catroid.utils.ShowTextUtils.calculateColorRGBs;
 import static org.catrobat.catroid.utils.ShowTextUtils.isValidColorString;
 import static org.catrobat.catroid.utils.ShowTextUtils.sanitizeTextSize;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class VisualPlacementActivity extends BaseCastActivity implements View.OnTouchListener,
 		DialogInterface.OnClickListener, CoordinateInterface {
 

@@ -280,7 +280,7 @@ class ListSelectorFragment : Fragment(), RVAdapter.SelectionListener,
                 R.id.show_details,
                 R.id.project_options,
                 R.id.project_files,
-                //R.id.project_libs,
+                R.id.project_libs,
                 R.id.from_library,
                 R.id.from_local
         )

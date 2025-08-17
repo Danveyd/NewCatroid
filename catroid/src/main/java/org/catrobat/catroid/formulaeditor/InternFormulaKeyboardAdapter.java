@@ -42,9 +42,15 @@ import static org.catrobat.catroid.formulaeditor.InternTokenType.STRING;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_DEFINED_BRICK_INPUT;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_LIST;
 import static org.catrobat.catroid.formulaeditor.InternTokenType.USER_VARIABLE;
+
+import android.annotation.SuppressLint;
+
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
 import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
+@LunoClass
 public class InternFormulaKeyboardAdapter {
 
 	public static final int FORMULA_EDITOR_USER_VARIABLE_RESOURCE_ID = 0;
@@ -53,7 +59,8 @@ public class InternFormulaKeyboardAdapter {
 	public static final int FORMULA_EDITOR_COLLIDE_RESOURCE_ID = 3;
 	public final int CUSTOM_JS_FUNCTION_RESOURCE_ID = -100;
 
-	public List<InternToken> createInternTokenListByResourceId(int resource, String name) {
+	@SuppressLint("NonConstantResourceId")
+    public List<InternToken> createInternTokenListByResourceId(int resource, String name) {
 
 		if ((resource == FORMULA_EDITOR_USER_VARIABLE_RESOURCE_ID) && !name.isEmpty()) {
 			return buildUserVariable(name);
@@ -119,6 +126,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.ABS, NUMBER, "1");
 			case R.string.formula_editor_function_round:
 				return buildSingleParameterFunction(Functions.ROUND, NUMBER, "1.6");
+			case R.string.formula_editor_function_roundto:
+				return buildDoubleParameterFunction(Functions.ROUNDTO, NUMBER, "123.456", NUMBER, "1");
 			case R.string.formula_editor_function_mod:
 				return buildDoubleParameterFunction(Functions.MOD,
 						NUMBER, "3",
@@ -215,6 +224,53 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.VIDEO_PLAYING, STRING,"myVideoPlayer");
 			case R.string.video_time:
 				return buildSingleParameterFunction(Functions.VIDEO_TIME, STRING,"myVideoPlayer");
+			case R.string.formula_3d_pos_x:
+				return buildSingleParameterFunction(Functions.GET_3D_POSITION_X, STRING, "myObject");
+			case R.string.formula_3d_touches:
+				return buildDoubleParameterFunction(Functions.OBJECT_TOUCHES_OBJECT, STRING, "object1", STRING, "object2");
+			case R.string.formula_3d_velo_x:
+				return buildSingleParameterFunction(Functions.GET_3D_VELOCITY_X, STRING, "myObject");
+			case R.string.formula_3d_velo_y:
+				return buildSingleParameterFunction(Functions.GET_3D_VELOCITY_Y, STRING, "myObject");
+			case R.string.formula_3d_velo_z:
+				return buildSingleParameterFunction(Functions.GET_3D_VELOCITY_Z, STRING, "myObject");
+			case R.string.formula_3d_pos_y:
+				return buildSingleParameterFunction(Functions.GET_3D_POSITION_Y, STRING, "myObject");
+			case R.string.formula_3d_pos_z:
+				return buildSingleParameterFunction(Functions.GET_3D_POSITION_Z, STRING, "myObject");
+			case R.string.formula_3d_rot_yaw:
+				return buildSingleParameterFunction(Functions.GET_3D_ROTATION_YAW, STRING, "myObject");
+			case R.string.formula_3d_rot_pitch:
+				return buildSingleParameterFunction(Functions.GET_3D_ROTATION_PITCH, STRING, "myObject");
+			case R.string.formula_3d_rot_roll:
+				return buildSingleParameterFunction(Functions.GET_3D_ROTATION_ROLL, STRING, "myObject");
+			case R.string.formula_3d_scale_x:
+				return buildSingleParameterFunction(Functions.GET_3D_SCALE_X, STRING, "myObject");
+			case R.string.formula_3d_scale_y:
+				return buildSingleParameterFunction(Functions.GET_3D_SCALE_Y, STRING, "myObject");
+			case R.string.formula_3d_scale_z:
+				return buildSingleParameterFunction(Functions.GET_3D_SCALE_Z, STRING, "myObject");
+			case R.string.formula_3d_distance:
+				return buildDoubleParameterFunction(Functions.GET_3D_DISTANCE, STRING, "object1", STRING, "object2");
+			case R.string.formula_vector_dir_x:
+				return buildSingleParameterFunction(Functions.GET_DIRECTION_X, NUMBER, "60");
+			case R.string.formula_vector_dir_y:
+				return buildSingleParameterFunction(Functions.GET_DIRECTION_Y, NUMBER, "60");
+			case R.string.formula_vector_angle:
+				return buildDoubleParameterFunction(Functions.GET_ANGLE, NUMBER, "0.6", NUMBER, "1");
+			case R.string.formula_ray_distance:
+				return buildSingleParameterFunction(Functions.GET_RAY_DISTANCE, STRING, "ray");
+			case R.string.formula_ray_hit_object:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_OBJECT, STRING, "ray");
+			case R.string.formula_cam_pos_x: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_X);
+			case R.string.formula_cam_pos_y: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_Y);
+			case R.string.formula_cam_pos_z: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_Z);
+			case R.string.formula_cam_dir_x: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_DIR_X);
+			case R.string.formula_cam_dir_y: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_DIR_Y);
+			case R.string.formula_cam_dir_z: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_DIR_Z);
+			case R.string.formula_cam_rot_pitch: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_ROTATION_PITCH);
+			case R.string.formula_cam_rot_yaw: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_ROTATION_YAW);
+			case R.string.formula_cam_rot_roll: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_ROTATION_ROLL);
 			case R.string.formula_editor_function_table_y:
 				return buildSingleParameterFunction(Functions.TABLE_Y, STRING,"myTable");
 			case R.string.formula_editor_function_floatarray:
@@ -683,6 +739,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildSensor(Sensors.FREQ);
 			case R.string.formula_editor_sensor_internet:
 				return buildSensor(Sensors.INTERNET);
+			case R.string.formula_editor_sensor_architecture:
+				return buildSensor(Sensors.ARCH);
 
 			case R.string.formula_editor_function_get_id_of_detected_object:
 				return buildSingleParameterFunction(Functions.ID_OF_DETECTED_OBJECT, NUMBER, "1");

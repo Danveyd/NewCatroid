@@ -33,6 +33,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import static org.catrobat.catroid.ui.settingsfragments.AccessibilityProfilesFragment.SETTINGS_FRAGMENT_INTENT_KEY;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class SettingsActivity extends BaseActivity {
 
 	@Override

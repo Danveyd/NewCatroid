@@ -1,3 +1,11 @@
 # ninja log v5
-0	4883	7733239445608737	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
-4904	5031	7733239447409766	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so	755b3f22be84ee65
+2	1227	7762907883182702	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
+1227	1298	7762907884050079	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so	755b3f22be84ee65
+0	7	0	clean	d60c0ea4c7f1e19
+3	2751	7770358510263529	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
+2	1533	7770360459659010	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
+1534	1625	7770360460509013	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so	755b3f22be84ee65
+143	7550	7770834907990435	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
+7550	9160	7770834924368174	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so	755b3f22be84ee65
+52	1971	7771299418999869	CMakeFiles/catroid.dir/catroid.cpp.o	abd5d4d5722fea2a
+1971	2347	7771299422827867	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so	755b3f22be84ee65

@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.content;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@LunoClass
 public abstract class Script implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;

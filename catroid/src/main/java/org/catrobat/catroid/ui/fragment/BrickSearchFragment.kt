@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.ui.fragment
 
+import android.database.Cursor
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.preference.PreferenceManager
@@ -31,12 +32,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.ListFragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants.PROGESSIVE_INPUT_COUNTDOWN_INTERVALL
@@ -49,11 +52,10 @@ import org.catrobat.catroid.ui.hideKeyboard
 import org.catrobat.catroid.ui.settingsfragments.AccessibilityProfile
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import org.catrobat.catroid.utils.ToastUtil
-import java.util.Locale
-import android.widget.AbsListView
-import android.database.Cursor
 import org.catrobat.catroid.utils.setVisibleOrGone
+import java.util.Locale
 
+@LunoClass
 class BrickSearchFragment : ListFragment() {
 
     private var previousActionBarTitle: CharSequence? = null

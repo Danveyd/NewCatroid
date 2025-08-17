@@ -22,30 +22,31 @@
  */
 package org.catrobat.catroid.ui.filepicker
 
-import org.catrobat.catroid.ui.BaseCastActivity
-import org.catrobat.catroid.ui.filepicker.ListProjectFilesTask.OnListProjectFilesListener
-import org.catrobat.catroid.ui.filepicker.SelectActionModeCallback.ActionModeClickListener
-import org.catrobat.catroid.ui.recyclerview.fragment.ProjectListFragment.ProjectImportFinishedListener
-import androidx.recyclerview.widget.RecyclerView
-import android.os.Bundle
-import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
-import org.catrobat.catroid.R
-import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask
 import android.Manifest.permission
 import android.annotation.SuppressLint
-import org.catrobat.catroid.ui.recyclerview.adapter.RVAdapter
-import org.catrobat.catroid.ui.recyclerview.viewholder.CheckableViewHolder
-import org.catrobat.catroid.utils.ToastUtil
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
+import com.danvexteam.lunoscript_annotations.LunoClass
+import org.catrobat.catroid.R
+import org.catrobat.catroid.ui.BaseCastActivity
+import org.catrobat.catroid.ui.filepicker.ListProjectFilesTask.OnListProjectFilesListener
+import org.catrobat.catroid.ui.filepicker.SelectActionModeCallback.ActionModeClickListener
+import org.catrobat.catroid.ui.recyclerview.adapter.RVAdapter
 import org.catrobat.catroid.ui.recyclerview.adapter.multiselection.MultiSelectionManager
+import org.catrobat.catroid.ui.recyclerview.fragment.ProjectListFragment.ProjectImportFinishedListener
+import org.catrobat.catroid.ui.recyclerview.viewholder.CheckableViewHolder
+import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask
+import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
+import org.catrobat.catroid.utils.ToastUtil
 import java.io.File
-import java.util.ArrayList
 
+@LunoClass
 class FilePickerActivity : BaseCastActivity(), OnListProjectFilesListener, ActionModeClickListener,
     ProjectImportFinishedListener {
     private var recyclerView: RecyclerView? = null

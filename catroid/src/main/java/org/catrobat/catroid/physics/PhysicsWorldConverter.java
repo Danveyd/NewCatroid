@@ -23,7 +23,9 @@
 package org.catrobat.catroid.physics;
 
 import com.badlogic.gdx.math.Vector2;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
+@LunoClass
 public final class PhysicsWorldConverter {
 
 	private PhysicsWorldConverter() {

@@ -23,11 +23,12 @@
 package org.catrobat.catroid.web
 
 import android.util.Log
-import okhttp3.ConnectionSpec.CLEARTEXT
-import okhttp3.ConnectionSpec.COMPATIBLE_TLS
-import okhttp3.ConnectionSpec.MODERN_TLS
+import okhttp3.ConnectionSpec
+import okhttp3.ConnectionSpec.Companion.COMPATIBLE_TLS
+import okhttp3.ConnectionSpec.Companion.MODERN_TLS
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 //import okhttp3.logging.HttpLoggingInterceptor
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
@@ -50,17 +51,21 @@ class WebConnectionHolder {
             level = HttpLoggingInterceptor.Level.BODY // Логировать заголовки и тело запроса/ответа
         }*/
 
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY) // Уровень BODY покажет все: заголовки и тело запроса/ответа
+
         okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
             .connectTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_DURATION, TimeUnit.SECONDS)
-            .connectionSpecs(listOf(MODERN_TLS, COMPATIBLE_TLS))
+            .connectionSpecs(listOf(MODERN_TLS, COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
             .dispatcher(Dispatcher())
             //.addInterceptor(loggingInterceptor) // <--- Добавляем интерсептор
             .build()
 
-        okHttpClient.dispatcher().maxRequests = MAX_CONNECTIONS
-        okHttpClient.dispatcher().maxRequestsPerHost = MAX_CONNECTIONS
+        okHttpClient.dispatcher.maxRequests = MAX_CONNECTIONS
+        okHttpClient.dispatcher.maxRequestsPerHost = MAX_CONNECTIONS
     }
 
     @Synchronized

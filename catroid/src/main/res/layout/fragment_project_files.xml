@@ -26,4 +26,16 @@
         app:backgroundTint="@color/action_button"
         app:elevation="10dp" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/project_files_cmd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/project_files_add"
+        android:layout_alignEnd="@id/project_files_add"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/code_24px"
+        android:tint="@color/solid_white"
+        app:backgroundTint="@color/action_button"
+        app:elevation="10dp" />
+
 </RelativeLayout>

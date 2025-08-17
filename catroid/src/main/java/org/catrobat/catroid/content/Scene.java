@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.content;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.ProjectManager;
@@ -50,6 +51,7 @@ import androidx.annotation.NonNull;
 		"name",
 		"objectList"
 })
+@LunoClass
 public class Scene implements Nameable, Serializable {
 
 	private static final long serialVersionUID = 1L;

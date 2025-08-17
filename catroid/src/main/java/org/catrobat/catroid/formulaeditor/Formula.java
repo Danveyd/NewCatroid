@@ -35,6 +35,9 @@ import java.util.Set;
 
 import static org.catrobat.catroid.utils.NumberFormats.trimTrailingCharacters;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class Formula implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" />
+
+    <!-- Используем стиль "Libraries", который можно создать в styles.xml -->
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_custom_layout"
+        style="@style/BrickContainer.Libs.Medium"> <!-- Или свой стиль -->
+
+        <include layout="@layout/icon_brick_category_libs" /> <!-- Иконка для категории -->
+
+        <!-- Текстовая часть №1 (до первого параметра) -->
+        <TextView
+            android:id="@+id/custom_brick_header_part_1"
+            style="@style/BrickText.SingleLine"
+            android:text=""/>
+
+        <!-- Параметр №1 (может быть Formula или Spinner) -->
+        <TextView
+            android:id="@+id/custom_brick_formula_1"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+        <Spinner
+            android:id="@+id/custom_brick_spinner_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_2"
+            style="@style/BrickText.SingleLine"
+            android:text=""/>
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_set_directional_light_layout"
+        style="@style/BrickContainer.Threed.Big">
+
+        <include layout="@layout/icon_brick_category_threed" />
+
+        <TextView style="@style/BrickText.SingleLine" android:text="@string/brick_set_directional_light_id"/>
+        <TextView android:id="@+id/brick_set_directional_light_id" style="@style/BrickEditText" app:layout_newLine="true"/>
+
+        <TextView style="@style/BrickText.SingleLine" android:text="@string/brick_set_directional_light_color" app:layout_newLine="true"/>
+        <TextView style="@style/BrickText.SingleLine" android:text=" R:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_r" style="@style/BrickEditText" />
+        <TextView style="@style/BrickText.SingleLine" android:text=" G:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_g" style="@style/BrickEditText" />
+        <TextView style="@style/BrickText.SingleLine" android:text=" B:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_b" style="@style/BrickEditText" />
+
+        <TextView style="@style/BrickText.SingleLine" android:text="@string/brick_set_directional_light_dir" app:layout_newLine="true"/>
+        <TextView style="@style/BrickText.SingleLine" android:text=" X:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_x" style="@style/BrickEditText" />
+        <TextView style="@style/BrickText.SingleLine" android:text=" Y:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_y" style="@style/BrickEditText" />
+        <TextView style="@style/BrickText.SingleLine" android:text=" Z:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_directional_light_z" style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

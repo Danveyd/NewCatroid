@@ -38,12 +38,15 @@ import android.view.View
 import android.widget.ListAdapter
 import android.widget.ListView
 import androidx.annotation.VisibleForTesting
+import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.bricks.Brick
 import org.catrobat.catroid.content.bricks.CompositeBrick
 import org.catrobat.catroid.content.bricks.EndBrick
+import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import java.util.ArrayList
 
 private const val SMOOTH_SCROLL_BY = 15
+private const val SMOOTH_SCROLL_BY_NEW = 20
 private const val ANIMATION_DURATION = 250
 private const val TRANSLUCENT_BLACK_ALPHA = 128
 private const val OBJECT_ANIMATOR_VALUE = 255
@@ -51,6 +54,11 @@ private const val ANIMATION_REPEAT_COUNT = 5
 private const val UPPER_SCROLL_BOUND_DIVISOR = 8
 private const val LOWER_SCROLL_BOUND_DIVISOR = 48
 private const val Y_TRANSLATION_CONSTANT = 10
+
+enum class DragMode {
+    NEW, // Новая, исправленная логика
+    LEGACY // Старая, более простая логика
+}
 
 class BrickListView : ListView {
     private var upperScrollBound = 0
@@ -65,6 +73,7 @@ class BrickListView : ListView {
     private var invalidateHoveringItem = false
     private var brickAdapterInterface: BrickAdapterInterface? = null
     private val translucentBlack = Color.argb(TRANSLUCENT_BLACK_ALPHA, 0, 0, 0)
+    var dragMode: DragMode = DragMode.NEW
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attributes: AttributeSet?) : super(context, attributes)
@@ -103,6 +112,11 @@ class BrickListView : ListView {
     }
 
     fun startMoving(brickToMove: Brick?) {
+        dragMode = if(SettingsFragment.isOldDragEnabled(CatroidApplication.getAppContext())) {
+            DragMode.NEW
+        } else {
+            DragMode.LEGACY
+        }
         cancelMove()
         val flatList: MutableList<Brick> = ArrayList()
         brickToMove?.addToFlatList(flatList)
@@ -116,8 +130,18 @@ class BrickListView : ListView {
             flatList.removeAt(0)
         }
 
-        upperScrollBound = height / UPPER_SCROLL_BOUND_DIVISOR
-        lowerScrollBound = height / LOWER_SCROLL_BOUND_DIVISOR
+        when (dragMode) {
+            DragMode.NEW -> {
+                // Новый, более "умный" режим с зонами в 25% от краев
+                upperScrollBound = height / 4 // Верхние 25%
+                lowerScrollBound = height * 3 / 4 // Нижние 25%
+            }
+            DragMode.LEGACY -> {
+                // Старый, простой режим
+                upperScrollBound = height / UPPER_SCROLL_BOUND_DIVISOR
+                lowerScrollBound = height / LOWER_SCROLL_BOUND_DIVISOR
+            }
+        }
         currentPositionOfHoveringBrick = brickAdapterInterface!!.getPosition(this.brickToMove)
         invalidateHoveringItem = true
 
@@ -268,10 +292,43 @@ class BrickListView : ListView {
     }
 
     private fun scrollWhileDragging() {
-        if (downY > lowerScrollBound) {
-            smoothScrollBy(SMOOTH_SCROLL_BY, 0)
-        } else if (downY < upperScrollBound) {
-            smoothScrollBy(-SMOOTH_SCROLL_BY, 0)
+        val scrollSpeed: Int
+
+        dragMode = if(SettingsFragment.isOldDragEnabled(CatroidApplication.getAppContext())) {
+            DragMode.NEW
+        } else {
+            DragMode.LEGACY
+        }
+
+        when (dragMode) {
+            DragMode.NEW -> {
+                // Новый режим с плавной скоростью прокрутки
+                val scrollZoneSize = height / 5 // Размер зоны = 20%
+                var distance = 0f
+
+                if (downY < upperScrollBound) {
+                    distance = (upperScrollBound - downY) / scrollZoneSize
+                    scrollSpeed = (-SMOOTH_SCROLL_BY_NEW * distance).toInt() // Прокрутка вверх
+                } else if (downY > lowerScrollBound) {
+                    distance = (downY - lowerScrollBound) / scrollZoneSize
+                    scrollSpeed = (SMOOTH_SCROLL_BY_NEW * distance).toInt() // Прокрутка вниз
+                } else {
+                    scrollSpeed = 0
+                }
+            }
+            DragMode.LEGACY -> {
+                // Старый режим с постоянной скоростью
+                if (downY > lowerScrollBound) {
+                    smoothScrollBy(SMOOTH_SCROLL_BY, 0)
+                } else if (downY < upperScrollBound) {
+                    smoothScrollBy(-SMOOTH_SCROLL_BY, 0)
+                }
+                scrollSpeed = 0
+            }
+        }
+
+        if (scrollSpeed != 0) {
+            smoothScrollBy(scrollSpeed, 0)
         }
     }
 

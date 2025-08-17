@@ -29,7 +29,7 @@ import androidx.annotation.IntDef;
 
 public class EventId {
 	@Retention(RetentionPolicy.SOURCE)
-	@IntDef({TAP, TAP_BACKGROUND, START, START_AS_CLONE, ANY_NFC, OTHER})
+	@IntDef({TAP, TAP_BACKGROUND, START, START_AS_CLONE, ANY_NFC, OTHER, PROJECT_EXIT, BACK_PRESSED})
 	public @interface EventType {
 	}
 
@@ -39,6 +39,9 @@ public class EventId {
 	public static final int START = 3;
 	public static final int START_AS_CLONE = 4;
 	public static final int ANY_NFC = 5;
+
+	public static final int PROJECT_EXIT = 6;
+	public static final int BACK_PRESSED = 7;
 
 	@EventType
 	private final int type;

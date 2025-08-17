@@ -1,10 +1,12 @@
 package org.catrobat.catroid.content
 
+import com.danvexteam.lunoscript_annotations.LunoClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
+@LunoClass
 class TableManager {
     companion object {
         private val tables: MutableMap<String, MutableMap<Pair<Int, Int>, Any?>> = mutableMapOf()

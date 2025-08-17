@@ -36,6 +36,7 @@ import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.stageListener
 import org.catrobat.catroid.web.WebConnection
 import org.catrobat.catroid.web.WebConnection.WebRequestListener
+import okhttp3.logging.HttpLoggingInterceptor
 
 abstract class WebAction : Action(), WebRequestListener {
     var webConnection: WebConnection? = null

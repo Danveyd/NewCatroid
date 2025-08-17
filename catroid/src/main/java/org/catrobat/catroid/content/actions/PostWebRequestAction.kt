@@ -39,6 +39,8 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.catrobat.catroid.content.MyActivityManager
 import java.io.IOException
 import org.catrobat.catroid.formulaeditor.FormulaElement
@@ -84,7 +86,7 @@ class PostWebRequestAction() : TemporalAction() {
             return
         }
 
-        val mediaType = MediaType.parse(mediaTypeString) ?: MediaType.get("application/json") // Фолбэк на JSON, если тип не валиден
+        val mediaType = mediaTypeString.toMediaTypeOrNull() ?: "application/json".toMediaType() // Фолбэк на JSON, если тип не валиден
         //val latch = CountDownLatch(1) // Создаем CountDownLatch с 1
         var responseBody: String? = null
         var errorMessage: String? = null
@@ -104,13 +106,13 @@ class PostWebRequestAction() : TemporalAction() {
 
                 override fun onResponse(call: okhttp3.Call, response: Response) {
                     if (response.isSuccessful) {
-                        val bodyStr = response.body()?.string() ?: "Empty response"
+                        val bodyStr = response.body?.string() ?: "Empty response"
                         // Обновляем UI в основном потоке
                         MyActivityManager.stage_activity?.runOnUiThread {
                             userVariable?.value = bodyStr
                         }
                     } else {
-                        val errorMessage = "Error ${response.code()}: ${response.message()}"
+                        val errorMessage = "Error ${response.code}: ${response.message}"
                         // Обновляем UI в основном потоке
                         MyActivityManager.stage_activity?.runOnUiThread {
                             userVariable?.value = errorMessage

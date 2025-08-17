@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -75,6 +76,7 @@ import androidx.annotation.VisibleForTesting;
 import static org.catrobat.catroid.common.Constants.CURRENT_CATROBAT_LANGUAGE_VERSION;
 import static org.catrobat.catroid.common.Constants.PERMISSIONS_FILE_NAME;
 
+@LunoClass
 public final class ProjectManager {
 
 	private static ProjectManager instance;

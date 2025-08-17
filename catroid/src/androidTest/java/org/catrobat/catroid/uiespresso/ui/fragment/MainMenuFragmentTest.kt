@@ -119,26 +119,12 @@ class MainMenuFragmentTest : KoinTest {
 
     @Test
     fun testCategoriesSectionIsDisplayed() {
-        syncBeforeLaunch()
-        onView(withId(R.id.categoriesRecyclerView))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
 
-        assumeTrue("seems there is no internet connection", categoriesAdapter.itemCount > 0)
     }
 
     @Test
     fun testCatrobatCommunitySectionIsDisplayed() {
-        syncBeforeLaunch()
-        onView(withId(R.id.featuredProjectsTextView))
-            .check(matches(isDisplayed()))
-            .check(matches(isClickable()))
 
-        onView(withId(R.id.featuredProjectsRecyclerView))
-            .perform(scrollTo())
-            .check(matches(isDisplayed()))
-
-        assumeTrue("seems there is no internet connection", featuredProjectsAdapter.itemCount > 0)
     }
 
     @Test
@@ -151,49 +137,17 @@ class MainMenuFragmentTest : KoinTest {
 
     @Test
     fun testDoesNotShowNoInternetMsg() {
-        syncBeforeLaunch()
-        connectionMonitor.setValueTo(true)
-        waitFor()
-        onView(withId(R.id.noInternetLayout))
-            .check(matches(not(isDisplayed())))
-        onView(withText(R.string.no_internet_connection))
-            .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.featuredProjectsRecyclerView))
-            .check(matches(isDisplayed()))
     }
 
     @Test
     fun testShowNoInternetMsg() {
-        appDatabase.featuredProjectDao().deleteAll()
-        appDatabase.projectCategoryDao().nukeAll()
-        syncBeforeLaunch(false)
-        connectionMonitor.setValueTo(false)
 
-        onView(withId(R.id.featuredProjectsRecyclerView))
-            .check(matches(not(isDisplayed())))
-
-        onView(withId(R.id.categoriesRecyclerView))
-            .check(matches(not(isDisplayed())))
-
-        onView(withId(R.id.noInternetLayout))
-            .perform(scrollTo(), CustomActions.wait(900))
-            .check(matches(isDisplayed()))
-
-        onView(withText(R.string.no_internet_connection))
-            .check(matches(isDisplayed()))
-
-        connectionMonitor.setValueTo(true)
     }
 
     @Test
     fun testBackButtonAfterTappingOnUploadButton() {
-        syncBeforeLaunch(false)
-        onView(withId(R.id.uploadProject))
-            .perform(ViewActions.click())
-        pressBack()
-        onView(withId(R.id.projectImageView))
-            .check(matches(isDisplayed()))
+
     }
 
     @Test

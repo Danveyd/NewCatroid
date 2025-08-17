@@ -1,0 +1,17 @@
+// В lunoscript-annotations/build.gradle
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    // Только стандартная библиотека Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}

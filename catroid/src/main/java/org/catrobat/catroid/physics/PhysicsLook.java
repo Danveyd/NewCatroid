@@ -24,12 +24,14 @@ package org.catrobat.catroid.physics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Sprite;
 
+@LunoClass
 public class PhysicsLook extends Look {
 
 	public static final float SCALE_FACTOR_ACCURACY = 10000.0f;

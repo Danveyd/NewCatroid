@@ -12,61 +12,134 @@ class Parser(private val tokens: List<Token>) {
     fun parse(): ProgramNode {
         val statements = mutableListOf<Statement>()
         val startLine = if (tokens.isNotEmpty() && tokens[0].type != TokenType.EOF) tokens[0].line else 1
+        Log.d("LunoParser-Trace", "--- STARTING PARSE ---")
         while (!isAtEnd()) {
+            skipComments()
+            if (isAtEnd()) break
             try {
                 declaration()?.let { statements.add(it) }
             } catch (error: LunoSyntaxError) {
                 println("Parser encountered an error: ${error.message}")
-                synchronize() // Попытка восстановления после ошибки (пропускаем токены до следующей инструкции)
-                // Не добавляем null в statements, просто продолжаем или выбрасываем, если хотим остановить парсинг
-            } catch (error: ParseError) { // ParseError уже содержит LunoSyntaxError
+                synchronize()
+            } catch (error: ParseError) {
                 println("Parser encountered an error: ${error.message}")
                 synchronize()
             }
         }
+        Log.d("LunoParser-Trace", "--- FINISHED PARSE ---")
         return ProgramNode(statements, startLine)
     }
 
-    // --- Top-level parsing: declarations or statements ---
     private fun declaration(): Statement? {
-        return try {
-            when {
-                match(TokenType.CLASS) -> classDeclaration()
-                match(TokenType.FUN) -> funDeclaration("function")
-                match(TokenType.VAR) -> varDeclaration()
-                else -> statement()
-            }
+        try {
+            skipComments()
+            if (isAtEnd()) return null
+            if (match(TokenType.FUN)) return funDeclaration("function")
+            if (match(TokenType.CLASS)) return classDeclaration()
+            if (match(TokenType.VAR)) return varDeclaration()
+            if (match(TokenType.IMPORT)) return importStatement()
+            return statement()
         } catch (e: ParseError) {
-            throw e // Перебросить для обработки выше или синхронизации
+            synchronize()
+            return null
+        }
+    }
+
+    private fun tryStatement(): Statement {
+        val tryToken = previous()
+
+        // Напрямую парсим блок TRY
+        consume(TokenType.LBRACE, "Expect '{' before 'try' body.")
+        val tryBlockBody = blockStatements()
+        consume(TokenType.RBRACE, "Expect '}' after 'try' body.")
+        val tryBlock = BlockStatement(tryBlockBody, tryToken.line)
+
+        var catchVariable: Token? = null
+        var catchBlock: Statement? = null
+        if (match(TokenType.CATCH)) {
+            consume(TokenType.LPAREN, "Expect '(' after 'catch'.")
+            catchVariable = consume(TokenType.IDENTIFIER, "Expect exception variable name.")
+            consume(TokenType.RPAREN, "Expect ')' after exception variable.")
+
+            // Напрямую парсим блок CATCH
+            consume(TokenType.LBRACE, "Expect '{' before 'catch' body.")
+            val catchBlockBody = blockStatements()
+            consume(TokenType.RBRACE, "Expect '}' after 'catch' body.")
+            catchBlock = BlockStatement(catchBlockBody, catchVariable.line)
+        }
+
+        var finallyBlock: Statement? = null
+        if (match(TokenType.FINALLY)) {
+            // Напрямую парсим блок FINALLY
+            consume(TokenType.LBRACE, "Expect '{' before 'finally' body.")
+            val finallyBlockBody = blockStatements()
+            consume(TokenType.RBRACE, "Expect '}' after 'finally' body.")
+            finallyBlock = BlockStatement(finallyBlockBody, previous().line)
+        }
+
+        if (catchBlock == null && finallyBlock == null) {
+            throw error(tryToken, "A 'try' statement must have at least a 'catch' or a 'finally' block.")
+        }
+
+        // tryBlock уже является Statement (BlockStatement), так что передаем его напрямую
+        return TryCatchStatement(tryBlock, catchVariable, catchBlock, finallyBlock, tryToken.line)
+    }
+
+    private fun importStatement(): Statement {
+        val importToken = previous() // 'import'
+        val path = mutableListOf<Token>()
+
+        // Парсим путь, состоящий из идентификаторов, разделенных точками
+        do {
+            path.add(consume(TokenType.IDENTIFIER, "Expect package or class name."))
+        } while (match(TokenType.DOT))
+
+        consumeSemicolon("Expect ';' or newline after import statement.")
+        return ImportStatement(path, importToken.line)
+    }
+
+    private fun skipComments() {
+        while (check(TokenType.COMMENT)) {
+            advance()
         }
     }
 
     private fun classDeclaration(): Statement {
         val classToken = previous()
         val name = consume(TokenType.IDENTIFIER, "Expect class name.")
-        val superclass = if (match(TokenType.LT)) { // Простой синтаксис < для наследования (пока не используется)
+        Log.d("LunoParser-Trace", ">>> Entering classDeclaration for '${name.lexeme}'")
+        val superclass = if (match(TokenType.LT)) {
             VariableExpr(consume(TokenType.IDENTIFIER, "Expect superclass name."), previous().line)
         } else null
 
         consume(TokenType.LBRACE, "Expect '{' before class body.")
         val methods = mutableListOf<FunDeclarationStatement>()
+
         while (!check(TokenType.RBRACE) && !isAtEnd()) {
-            // Внутри класса могут быть только объявления методов (fun)
-            // Поля класса будут как var внутри init или через this.field = ...
-            if (match(TokenType.FUN)) {
-                methods.add(funDeclaration("method") as FunDeclarationStatement)
-            } else {
-                throw error(peek(), "Only 'fun' (methods) are allowed directly inside a class body. Fields are typically initialized in 'init' or used with 'this'.")
+            skipComments()
+            if (check(TokenType.RBRACE)) break
+
+            try {
+                if (match(TokenType.FUN)) {
+                    methods.add(funDeclaration("method") as FunDeclarationStatement)
+                } else {
+                    throw error(peek(), "Only 'fun' declarations are allowed inside a class body.")
+                }
+            } catch (e: ParseError) {
+                println("Parser error inside class '${name.lexeme}': ${e.message}")
+                synchronize()
             }
         }
+
         consume(TokenType.RBRACE, "Expect '}' after class body.")
+        Log.d("LunoParser-Trace", "<<< Exiting classDeclaration for '${name.lexeme}'")
         return ClassDeclarationStatement(name, methods, superclass, classToken.line)
     }
 
-
-    private fun funDeclaration(kind: String): Statement { // kind: "function" or "method"
-        val funToken = previous() // 'fun' token
+    private fun funDeclaration(kind: String): Statement {
+        val funToken = previous()
         val name = consume(TokenType.IDENTIFIER, "Expect $kind name.")
+        Log.d("LunoParser-Trace", ">>> Entering funDeclaration for '${name.lexeme}' (kind: $kind)")
         consume(TokenType.LPAREN, "Expect '(' after $kind name.")
         val parameters = mutableListOf<Token>()
         if (!check(TokenType.RPAREN)) {
@@ -77,12 +150,19 @@ class Parser(private val tokens: List<Token>) {
         }
         consume(TokenType.RPAREN, "Expect ')' after parameters.")
         consume(TokenType.LBRACE, "Expect '{' before $kind body.")
-        val body = BlockStatement(blockStatements(), previous().line) // Line of LBRACE
+
+        val bodyStatements = blockStatements() // ВЫЗОВ КЛЮЧЕВОЙ ФУНКЦИИ
+
+        consume(TokenType.RBRACE, "Expect '}' after $kind body.")
+
+        val body = BlockStatement(bodyStatements, funToken.line)
+        Log.d("LunoParser-Trace", "<<< Exiting funDeclaration for '${name.lexeme}'")
         return FunDeclarationStatement(name, parameters, body, funToken.line)
     }
 
     private fun varDeclaration(): Statement {
         val name = consume(TokenType.IDENTIFIER, "Expect variable name.")
+        Log.d("LunoParser", "Creating VarDeclarationStatement for '${name.lexeme}'")
         val initializer = if (match(TokenType.ASSIGN)) expression() else null
         consumeSemicolon("Expect ';' or newline after variable declaration.")
         return VarDeclarationStatement(name, initializer, name.line)
@@ -135,7 +215,6 @@ class Parser(private val tokens: List<Token>) {
 
             if (match(TokenType.CASE)) {
                 isDefault = false
-                // Parse one or more expressions for this case, separated by commas, until ':'
                 do {
                     values.add(expression())
                 } while (match(TokenType.COMMA) && !check(TokenType.COLON))
@@ -148,12 +227,7 @@ class Parser(private val tokens: List<Token>) {
 
             consume(TokenType.COLON, "Expect ':' after case/default.")
             val caseStatements = mutableListOf<Statement>()
-            // Read statements until next case, default, or RBRACE. No implicit fall-through by default.
-            // LunoScript switch will require 'break' for C-style fall-through if desired,
-            // or each case block is distinct. For simplicity, let's make each case block distinct.
-            // To allow multiple statements without braces, we need a loop.
-            // A single statement is simpler for now.
-            // For multiple statements, a BlockStatement is better.
+
             val caseBody = statement() // This will parse a single statement or a block { ... }
 
             val currentCase = SwitchCase(if (isDefault) null else values, caseBody, caseOrDefaultToken, isDefault)
@@ -165,40 +239,21 @@ class Parser(private val tokens: List<Token>) {
         return SwitchStatement(expr, cases, switchToken, switchToken.line)
     }
 
-
-    private fun blockStatements(): List<Statement> {
-        val statements = mutableListOf<Statement>()
-        Log.d("LunoScriptParser", "Parser.blockStatements: Entering block. Current token: ${peek().type} ('${peek().lexeme}') line ${peek().line}")
-        while (!check(TokenType.RBRACE) && !isAtEnd()) {
-            val decl = declaration()
-            if (decl != null) {
-                statements.add(decl)
-            } else {
-                // Если declaration() вернул null (например, из-за ошибки и synchronize),
-                // и synchronize не продвинул нас до RBRACE или EOF, мы можем застрять.
-                // НО! Если synchronize работает правильно, он должен либо выйти на "хорошем" токене,
-                // либо пропустить текущий.
-                // Если мы здесь, и decl == null, значит, была ошибка, и synchronize уже отработал.
-                // `peek()` должен был измениться. Если нет, то проблема в synchronize.
-                if (!isAtEnd() && !check(TokenType.RBRACE)) {
-                    // Это состояние не должно достигаться, если synchronize правильно выходит или продвигает.
-                    // Если мы все же здесь, это значит, что synchronize вернул управление,
-                    // но peek() все еще не RBRACE, и declaration() вернул null.
-                    // Это может быть, если synchronize вышел на SEMICOLON, а следующий токен не парсится.
-                    Log.e("LunoScriptParser", "Parser.blockStatements: declaration() is null, but not at RBRACE or EOF after synchronize. Peek: ${peek().type}. Breaking to avoid infinite loop.")
-                    break; // Защита от бесконечного цикла, если synchronize не справляется
-                }
-            }
-        }
-        Log.d("LunoScriptParser", "Parser.blockStatements: Exiting block. Current token is ${peek().type} ('${peek().lexeme}') line ${peek().line}")
-        return statements
-    }
-
     private fun returnStatement(): Statement {
         val keyword = previous()
         val value = if (!check(TokenType.SEMICOLON) && !check(TokenType.RBRACE)) expression() else null
         consumeSemicolon("Expect ';' or newline after return value.")
         return ReturnStatement(keyword, value, keyword.line)
+    }
+
+    private fun blockStatements(): List<Statement> {
+        Log.d("LunoParser-Trace", "    [BS] >> Entering blockStatements. Looking for RBRACE. Current token: ${peek().lexeme}")
+        val statements = mutableListOf<Statement>()
+        while (!check(TokenType.RBRACE) && !isAtEnd()) {
+            declaration()?.let { statements.add(it) }
+        }
+        Log.d("LunoParser-Trace", "    [BS] << Exiting blockStatements. Current token: ${peek().lexeme}")
+        return statements
     }
 
     private fun breakStatement(): Statement {
@@ -215,97 +270,25 @@ class Parser(private val tokens: List<Token>) {
 
 
     private fun expressionStatement(): Statement {
-        // Сначала парсим то, что может быть левой частью присваивания (l-value) или самостоятельным выражением.
-        // `call()` здесь хорошо подходит, так как оно может распарсить `ident`, `obj.prop`, `obj[idx]`, `func()`.
-        val expr = call() // Используем call() вместо expression() чтобы получить l-value
+        val expr = call()
 
-        // Теперь смотрим на следующий токен
         if (peek().type.isAssignmentOperator()) {
-            // Это присваивание (простое или составное)
+            Log.d("LunoParser", "Creating AssignmentStatement for target: $expr")
             if (!(expr is VariableExpr || expr is GetExpr || expr is IndexAccessExpr || expr is ThisExpr)) {
-                // ThisExpr тоже может быть слева, если this.field = ...
                 throw error(peek(), "Invalid assignment target. Left side must be a variable, property, or index access.")
             }
-            val operator = advance() // Съедаем оператор присваивания
-            val value = expression() // Парсим правую часть (r-value)
+            val operator = advance()
+            val value = expression()
             consumeSemicolon("Expect ';' or newline after assignment statement.")
             return AssignmentStatement(expr, value, operator, operator.line)
         } else {
-            // Это не присваивание, значит, expr - это просто выражение, которое нужно выполнить.
+            Log.d("LunoParser", "Creating ExpressionStatement for expr: $expr")
             consumeSemicolon("Expect ';' or newline after expression statement.")
             return ExpressionStatement(expr, expr.line)
         }
     }
 
     // --- Expression parsing (Pratt style with precedence) ---
-
-    // Assignment has the lowest precedence for expressions that can be on the right of '='
-    // but `=` itself is not an expression in Kotlin-like LunoScript, it's part of AssignmentStatement.
-    // This function handles the right-hand side of an assignment or other expressions.
-    // If we wanted `a = b = 5` where assignment is an expression, this would be different.
-    // For now, assignment logic is mostly in `parseAssignmentTargetAndValue`.
-    private fun assignment(): Expression {
-        val expr = logicalOr() // Start with the next higher precedence
-
-        // This is where `IDENTIFIER = value` would be handled IF assignment were an expression.
-        // Since we made it a statement, this part is simpler.
-        // However, compound assignments like `a += 1` ARE statements but parse like expressions.
-        // Let's make `AssignmentStatement` capable of handling this.
-        // The `expr` here is the potential target.
-
-        if (match(TokenType.ASSIGN, TokenType.PLUS_ASSIGN, TokenType.MINUS_ASSIGN,
-                TokenType.MULTIPLY_ASSIGN, TokenType.DIVIDE_ASSIGN, TokenType.MODULO_ASSIGN)) {
-            val operator = previous()
-            val value = assignment() // Right-associative
-
-            // The target 'expr' must be assignable (VariableExpr or GetExpr)
-            if (expr is VariableExpr || expr is GetExpr || expr is IndexAccessExpr) {
-                // This is tricky. We are in an expression parsing function,
-                // but assignment is a statement. This indicates that assignment
-                // cannot be freely mixed like `print(a = 1)`.
-                // It should be parsed by `statement()` directly.
-                // This `assignment()` function should only parse expressions
-                // that *could be* on the right-hand side of an assignment or used elsewhere.
-                // So, if we encounter an '=', it's an error here unless we change assignment to be an expression.
-
-                // For Kotlin-like behavior, direct assignment (`=`) is a statement.
-                // `var x = (a = 10);` should be illegal.
-                // `a = 10;` is handled by `ExpressionStatement` wrapping an `AssignmentExpr` if assign is expr,
-                // OR by `AssignmentStatement` directly. We chose the latter.
-
-                // Let's assume this `assignment()` function is for parsing the RHS of an actual AssignmentStatement
-                // or expressions that are NOT assignments themselves.
-                // If we hit an assignment operator here, it implies an error in grammar design or call.
-                // The `statement()` function should distinguish `IDENTIFIER = ...` as `AssignmentStatement`.
-
-                // For now, we'll throw an error if an assignment operator is found where an expression is expected
-                // unless it's a compound assignment that we could desugar or handle via a specific node.
-                // Let's re-think: `expressionStatement` calls `expression()`. If `expression()` sees `ident = val`,
-                // it should be parsed as an assignment.
-
-                // Correct approach: `expression()` calls `logicalOr()`. `logicalOr()` will NOT parse assignment.
-                // `AssignmentStatement` is created by `statement()` if it sees `target OP value`.
-                // So, the `ASSIGN` etc. check here is if we allow `a = (b = 5)`.
-                // If LunoScript assignment IS an expression (returns the assigned value):
-                if (expr is VariableExpr || expr is GetExpr || expr is IndexAccessExpr) {
-                    // Create an Assignment EXPRESSION node if we want assignments to be expressions
-                    // For now, we don't have an AssignmentExpr distinct from AssignmentStatement.
-                    // So this indicates `a = b = 5` would need `AssignmentExpr` to be returned.
-                    // Let's stick to assignment being a statement for now.
-                    // This means `expression()` should not parse `=`.
-                    // This part of code should probably not exist if assignment is not an expression.
-                    throw error(operator, "Assignment ('=') is a statement, not an expression. Compound assignments like '+=' are also statements.")
-                } else {
-                    throw error(operator, "Invalid assignment target.")
-                }
-
-            }
-            // If we *did* have AssignmentExpr: return AssignmentExpr(expr, operator, value, operator.line)
-        }
-        return expr // If no assignment operator, return the parsed higher-precedence expression
-    }
-
-
     private fun logicalOr(): Expression {
         var expr = logicalAnd()
         while (match(TokenType.OR)) {
@@ -420,6 +403,7 @@ class Parser(private val tokens: List<Token>) {
             match(TokenType.NULL) -> LiteralExpr(LunoValue.Null, previous().line)
             match(TokenType.THIS) -> ThisExpr(previous(), previous().line)
             match(TokenType.NUMBER_LITERAL) -> LiteralExpr(LunoValue.Number(previous().literal as Double), previous().line)
+            match(TokenType.FLOAT_LITERAL) -> LiteralExpr(LunoValue.Float(previous().literal as Float), previous().line)
             match(TokenType.STRING_LITERAL) -> LiteralExpr(LunoValue.String(previous().literal as String), previous().line)
             match(TokenType.IDENTIFIER) -> VariableExpr(previous(), previous().line)
             match(TokenType.LPAREN) -> {
@@ -488,127 +472,39 @@ class Parser(private val tokens: List<Token>) {
     // Overrides the `expressionStatement` to handle assignment as a statement.
     // This is part of the key to making `ident = value` a statement.
     private fun statement(): Statement {
-        // Сначала проверяем специфичные для инструкций ключевые слова
+        skipComments() // Пропускаем комменты перед любой инструкцией
+        if (isAtEnd()) throw error(peek(), "Unexpected end of file.")
+
+        // Диспетчер для всех инструкций, которые НЕ являются объявлениями
         return when {
             match(TokenType.IF) -> ifStatement()
             match(TokenType.WHILE) -> whileStatement()
             match(TokenType.FOR) -> forStatement()
             match(TokenType.SWITCH) -> switchStatement()
-            match(TokenType.LBRACE) -> {
-                val lbraceToken = previous()
-                Log.d("LunoScriptParser", "Statement: Matched LBRACE at line ${lbraceToken.line}. Parsing block body...")
-                val blockStmts = blockStatements() // current указывает на RBRACE после этого
-                Log.d("LunoScriptParser", "Statement: blockStatements returned. Next token is ${peek().lexeme} (${peek().type}) line ${peek().line}. Expecting RBRACE.")
-                consume(TokenType.RBRACE, "Expect '}' after block body. " + lbraceToken.line) // current указывает на то, что ПОСЛЕ RBRACE
-                Log.d("LunoScriptParser", "Statement: Consumed RBRACE. Next token is ${peek().lexeme} (${peek().type}) line ${peek().line}.")
-                BlockStatement(blockStmts, lbraceToken.line)
-            }
             match(TokenType.RETURN) -> returnStatement()
             match(TokenType.BREAK) -> breakStatement()
             match(TokenType.CONTINUE) -> continueStatement()
-            // Если это не специальная инструкция, пробуем expressionStatement,
-            // которое внутри себя разберется с присваиваниями
+            match(TokenType.TRY) -> tryStatement()
+
+            // Блок {...} - это самостоятельная инструкция
+            match(TokenType.LBRACE) -> {
+                val lbraceToken = previous()
+                val statements = blockStatements()
+                consume(TokenType.RBRACE, "Expect '}' after block.")
+                BlockStatement(statements, lbraceToken.line)
+            }
+
+            // Если ничего не подошло - это выражение (вызов, присваивание и т.д.)
             else -> expressionStatement()
         }
     }
 
-    private fun isPotentialAssignment(): Boolean {
-        // Heuristic: check if current tokens could form `lvalue ASSIGN_OP ...`
-        // This is tricky without full backtracking or more sophisticated lookahead.
-        // A simpler way: `expressionStatement` calls `expression()`. If `expression()`
-        // itself can parse assignment (as an expression), then `ExpressionStatement` wraps it.
-        // If assignment is purely a statement, then `statement()` must distinguish it.
-
-        // Let's try parsing an l-value (target) and then check for an assignment operator.
-        var k = 0
-        if (!isLValueStart(tokens[current + k])) return false
-        k++
-        // Skip over .prop or [index] parts of the l-value
-        while (true) {
-            if (tokens.getOrNull(current + k)?.type == TokenType.DOT &&
-                tokens.getOrNull(current + k + 1)?.type == TokenType.IDENTIFIER) {
-                k += 2
-            } else if (tokens.getOrNull(current + k)?.type == TokenType.LBRACKET) {
-                // Need to skip the whole expression inside brackets, too complex for simple lookahead
-                // For now, just check for LBRACKET then an assignment op
-                k++
-                // Simplification: if we see LBRACKET, assume it could be part of an LValue
-                // then check for assignment operator right after what could be `expr]`
-                // This lookahead is getting complicated.
-                // Let's parse the target expression, then check the next token.
-                return true // Assume it might be, let `parseAssignmentStatement` confirm.
-            } else {
-                break
-            }
-        }
-        val operatorToken = tokens.getOrNull(current + k)
-        return operatorToken?.type?.isAssignmentOperator() == true
-    }
-
     private fun expression(): Expression = logicalOr() // Начинаем с логического ИЛИ (или другой операции с нужным приоритетом)
-
-// assignment() в иерархии выражений больше НЕ НУЖЕН, если простое присваивание - это инструкция.
-// Если бы присваивание было выражением (как в C, где a = 5 возвращает 5), тогда бы он был нужен.
-// Убираем его из цепочки: expression -> logicalOr -> logicalAnd -> ...
-// private fun assignment(): Expression { ... } // ЭТОТ МЕТОД УДАЛИТЬ ИЗ ИЕРАРХИИ ВЫРАЖЕНИЙ
 
     // Вспомогательная функция для TokenType (если ее еще нет)
     private fun TokenType.isAssignmentOperator(): Boolean {
         return this == TokenType.ASSIGN || this == TokenType.PLUS_ASSIGN || this == TokenType.MINUS_ASSIGN ||
                 this == TokenType.MULTIPLY_ASSIGN || this == TokenType.DIVIDE_ASSIGN || this == TokenType.MODULO_ASSIGN
-    }
-
-
-    private fun isLValueStart(token: Token?): Boolean {
-        return token?.type == TokenType.IDENTIFIER || token?.type == TokenType.THIS // Add other valid starts like LPAREN for (obj).prop
-    }
-
-    private fun parseAssignmentStatement(): Statement {
-        // Parse the target (l-value). This should be `call()` or `primary()` to get `a.b` or `a[i]`.
-        val targetExpr = call() // `call()` can parse `ident`, `ident.prop`, `ident[idx]`
-
-        if (!(targetExpr is VariableExpr || targetExpr is GetExpr || targetExpr is IndexAccessExpr)) {
-            throw error(peek(), "Invalid assignment target. Expected variable, property, or index access.")
-        }
-
-        if (peek().type.isAssignmentOperator()) {
-            val operator = advance() // Consume the assignment operator
-            val value = expression() // Parse the RHS value
-            consumeSemicolon("Expect ';' or newline after assignment.")
-            return AssignmentStatement(targetExpr, value, operator, operator.line)
-        } else {
-            // This wasn't an assignment after all, it was just an expression.
-            // This indicates the `isPotentialAssignment` heuristic was too broad or there's a parsing flow issue.
-            // Fallback to parsing as a normal expression statement.
-            // This requires careful handling to avoid consuming tokens incorrectly.
-            // For now, let's assume `isPotentialAssignment` is good enough or `parseAssignmentStatement` is called only when sure.
-            // This implies that `statement()` needs to be smarter.
-            // A common technique is to parse an expression, and if the next token is an assignment operator
-            // and the parsed expression is a valid l-value, then "upgrade" it to an assignment.
-
-            // Let's simplify: `statement()` tries to parse specific statement types.
-            // If none match, it calls `expressionStatement()`.
-            // `expressionStatement()` will parse an expression.
-            // If that expression is `a = b`, and assignment is an EXPRESSION, it works.
-            // If assignment is a STATEMENT, then `expressionStatement` should not get `a = b`.
-            // The main `statement()` dispatcher needs to identify `a = b` as `AssignmentStatement`.
-            // The `isPotentialAssignment()` check and this function are an attempt at that.
-            // If `isPotentialAssignment()` is true, we commit to parsing an assignment here.
-            // If it fails (e.g. no assignment operator after target), it's a syntax error.
-            throw error(peek(), "Expected assignment operator after target.")
-        }
-    }
-
-    private fun expressionStatementAllowingNoAssignmentInExpression(): Statement {
-        // This version of expression parsing should not successfully parse an assignment as the top-level expression
-        // if assignment is meant to be a statement.
-        // The `expression()` called here should use a grammar where assignment has very low precedence or is not part of the expression rules.
-        // Our current `expression()` (which calls `assignment()`, then `logicalOr()`) ISN'T set up for that if `assignment()` parses `=`.
-        // The fix was that `assignment()` in the expression hierarchy throws an error on `ASSIGN`.
-        val expr = expression()
-        val line = expr.line
-        consumeSemicolon("Expect ';' or newline after expression statement.")
-        return ExpressionStatement(expr, line)
     }
 
 
@@ -664,11 +560,38 @@ class Parser(private val tokens: List<Token>) {
         Log.d("LunoScriptParser", "SYNC: Attempting to recover. Error occurred at or before: ${problemToken.lexeme} (${problemToken.type}) L${problemToken.line}. Previous: ${if(current > 0) previous().lexeme else "N/A"}")
 
         if (!isAtEnd()) {
-            Log.d("LunoScriptParser", "SYNC: Advancing past token: ${problemToken.lexeme}")
-            advance() // Пропускаем токен, вызвавший ошибку (или на котором остановились)
+            advance() // Пропускаем токен, вызвавший ошибку
         }
-        // Больше ничего не делаем, пусть главный цикл parse() попробует снова
-        // с токена, следующего за проблемным.
-        Log.d("LunoScriptParser", "SYNC: Recovery attempted. Next token to parse: ${if(!isAtEnd()) peek().lexeme else "EOF"}")
+
+        // Ищем следующую точку для безопасного возобновления
+        while (!isAtEnd()) {
+            // Если предыдущий токен - точка с запятой, мы, вероятно, в безопасной точке
+            if (previous().type == TokenType.SEMICOLON) {
+                Log.d("LunoScriptParser", "SYNC: Resuming after semicolon.")
+                return
+            }
+
+            // Ищем ключевые слова, с которых обычно начинаются новые инструкции
+            when (peek().type) {
+                TokenType.CLASS,
+                TokenType.FUN,
+                TokenType.VAR,
+                TokenType.FOR,
+                TokenType.IF,
+                TokenType.WHILE,
+                TokenType.SWITCH,
+                TokenType.RETURN,
+                TokenType.TRY,
+                TokenType.RBRACE -> { // RBRACE - важная точка для остановки
+                    Log.d("LunoScriptParser", "SYNC: Resuming at keyword ${peek().type}.")
+                    return
+                }
+                else -> {
+                    // Ничего не делаем, просто пропускаем токен
+                }
+            }
+            advance()
+        }
+        Log.d("LunoScriptParser", "SYNC: Recovery reached EOF.")
     }
 }

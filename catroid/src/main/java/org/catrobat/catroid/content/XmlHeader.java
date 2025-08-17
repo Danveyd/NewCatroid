@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.CatroidApplication;
@@ -39,6 +40,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+@LunoClass
 public class XmlHeader implements Serializable {
 
 	private static final long serialVersionUID = 1L;

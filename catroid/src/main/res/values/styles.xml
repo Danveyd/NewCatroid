@@ -354,6 +354,40 @@
         <item name="android:background">@drawable/brick_3h_cyan</item>
     </style>
 
+    <style name="BrickContainer.Threed" />
+
+    <style name="BrickContainer.Threed.Small">
+        <item name="android:minHeight">@dimen/brick_height_small</item>
+        <item name="android:background">@drawable/brick_1h_yellow</item>
+    </style>
+
+    <style name="BrickContainer.Threed.Medium">
+        <item name="android:minHeight">@dimen/brick_height_medium</item>
+        <item name="android:background">@drawable/brick_2h_yellow</item>
+    </style>
+
+    <style name="BrickContainer.Threed.Big" tools:ignore="UnusedResources">
+        <item name="android:minHeight">@dimen/brick_height_big</item>
+        <item name="android:background">@drawable/brick_3h_yellow</item>
+    </style>
+
+    <style name="BrickContainer.Libs" />
+
+    <style name="BrickContainer.Libs.Small">
+        <item name="android:minHeight">@dimen/brick_height_small</item>
+        <item name="android:background">@drawable/brick_1h_pink</item>
+    </style>
+
+    <style name="BrickContainer.Libs.Medium">
+        <item name="android:minHeight">@dimen/brick_height_medium</item>
+        <item name="android:background">@drawable/brick_2h_pink</item>
+    </style>
+
+    <style name="BrickContainer.Libs.Big" tools:ignore="UnusedResources">
+        <item name="android:minHeight">@dimen/brick_height_big</item>
+        <item name="android:background">@drawable/brick_3h_pink</item>
+    </style>
+
     <style name="BrickContainer.Internet" />
 
     <style name="BrickContainer.Internet.Small">
@@ -675,6 +709,14 @@
 
     <style name="BrickCategory.Neural">
         <item name="android:background">@drawable/brick_categories_cyan</item>
+    </style>
+
+    <style name="BrickCategory.Threed">
+        <item name="android:background">@drawable/brick_categories_yellow</item>
+    </style>
+
+    <style name="BrickCategory.Libs">
+        <item name="android:background">@drawable/brick_categories_pink</item>
     </style>
 
     <style name="BrickCategory.Internet">

@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.Array;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.content.Sprite;
 
@@ -40,6 +41,7 @@ import java.util.Arrays;
 
 import androidx.annotation.VisibleForTesting;
 
+@LunoClass
 public class PhysicsObject {
 
 	public enum Type {

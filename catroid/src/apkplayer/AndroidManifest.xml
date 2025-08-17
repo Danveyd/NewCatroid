@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        tools:replace="android:theme, android:label"
+        android:theme="@style/AppTheme.Player"
+        android:label="APK Template">
+        <!-- app_name_player мы создадим ниже -->
+
+        <!-- Удаляем лишние intent-фильтры -->
+        <activity
+            android:name=".ui.ProjectListActivity"
+            android:exported="true"
+            tools:node="merge">
+            <intent-filter tools:node="removeAll" />
+        </activity>
+        <activity
+            android:name="org.catrobat.paintroid.MainActivity"
+            android:exported="true"
+            tools:node="merge">
+            <intent-filter tools:node="removeAll" />
+        </activity>
+        <activity
+            android:name=".ui.MainMenuActivity"
+            android:exported="true"
+            tools:node="merge">
+            <intent-filter
+                android:autoVerify="true"
+                tools:node="remove" />
+        </activity>
+    </application>
+</manifest>

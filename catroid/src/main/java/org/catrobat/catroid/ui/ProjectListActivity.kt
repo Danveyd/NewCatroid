@@ -26,12 +26,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.BuildConfig
 import org.catrobat.catroid.R
 import org.catrobat.catroid.databinding.ActivityRecyclerBinding
 import org.catrobat.catroid.ui.dialogs.NewProjectDialogFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.ProjectListFragment
 
+@LunoClass
 class ProjectListActivity : BaseCastActivity() {
     private lateinit var binding: ActivityRecyclerBinding
 

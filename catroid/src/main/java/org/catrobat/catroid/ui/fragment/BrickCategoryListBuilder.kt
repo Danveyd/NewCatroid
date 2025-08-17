@@ -26,14 +26,15 @@ package org.catrobat.catroid.ui.fragment
 import android.preference.PreferenceManager
 import android.view.View
 import androidx.fragment.app.FragmentActivity
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.ui.adapter.BrickCategoryAdapter
 import org.catrobat.catroid.ui.settingsfragments.AccessibilityProfile
 import org.catrobat.catroid.ui.settingsfragments.RaspberryPiSettingsFragment
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
-import java.util.ArrayList
 
+@LunoClass
 class BrickCategoryListBuilder(private val activity: FragmentActivity) {
 
     private fun onlyBeginnerBricks(): Boolean = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(
@@ -54,6 +55,9 @@ class BrickCategoryListBuilder(private val activity: FragmentActivity) {
         }
         if (SettingsFragment.isNeuralSharedPreferenceEnabled(activity)) {
             categories.add(inflater.inflate(R.layout.brick_category_neural, null))
+        }
+        if (SettingsFragment.isThreedSharedPreferenceEnabled(activity)) {
+            categories.add(inflater.inflate(R.layout.brick_category_threed, null))
         }
         if (SettingsFragment.isInternetSharedPreferenceEnabled(activity)) {
             categories.add(inflater.inflate(R.layout.brick_category_internet, null))
@@ -99,6 +103,9 @@ class BrickCategoryListBuilder(private val activity: FragmentActivity) {
         if (!onlyBeginnerBricks()) {
             categories.add(inflater.inflate(R.layout.brick_category_userbrick, null))
         }
+
+        categories.add(inflater.inflate(R.layout.brick_category_libs, null))
+
         if (SettingsFragment.isTestSharedPreferenceEnabled(activity)) {
             categories.add(inflater.inflate(R.layout.brick_category_assert, null))
         }

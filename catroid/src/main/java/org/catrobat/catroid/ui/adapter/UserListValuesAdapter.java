@@ -30,10 +30,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.R;
 
 import java.util.List;
 
+@LunoClass
 public class UserListValuesAdapter extends BaseAdapter implements View.OnClickListener {
 
 	private Context context;

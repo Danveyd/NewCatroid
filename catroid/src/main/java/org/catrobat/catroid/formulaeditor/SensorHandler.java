@@ -55,6 +55,7 @@ import org.catrobat.catroid.devices.arduino.phiro.Phiro;
 import org.catrobat.catroid.devices.mindstorms.ev3.LegoEV3;
 import org.catrobat.catroid.devices.mindstorms.nxt.LegoNXT;
 import org.catrobat.catroid.nfc.NfcHandler;
+import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.utils.TouchUtil;
 import org.catrobat.catroid.content.VolumeManager;
 
@@ -404,6 +405,8 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				return VolumeManager.Companion.getFrequency();
 			case INTERNET:
 				return NetworkUtils.isInternetAvailable();
+			case ARCH:
+				return MainMenuActivity.Companion.getCpuArchitecture();
 			default:
 				return Objects.requireNonNull(instance.sensorValueMap.getOrDefault(sensor, 0.0d));
 		}

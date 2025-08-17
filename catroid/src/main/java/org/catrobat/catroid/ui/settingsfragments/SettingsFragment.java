@@ -86,6 +86,8 @@ public class SettingsFragment extends PreferenceFragment {
 	public static final String SETTINGS_SHOW_RASPI_BRICKS = "setting_raspi_bricks";
 	public static final String SETTINGS_SHOW_PLOT_BRICKS = "setting_plot_bricks";
 	public static final String SETTINGS_SHOW_NEURAL_BRICKS = "setting_neural_bricks";
+	public static final String SETTINGS_OLD_DRAG = "setting_old_drag";
+	public static final String SETTINGS_SHOW_THREED_BRICKS = "setting_threed_bricks";
 	public static final String SETTINGS_SHOW_INTERNET_BRICKS = "setting_internet_bricks";
 
 	public static final String SETTINGS_SHOW_NFC_BRICKS = "setting_nfc_bricks";
@@ -169,6 +171,13 @@ public class SettingsFragment extends PreferenceFragment {
 					(CheckBoxPreference) findPreference(SETTINGS_SHOW_NEURAL_BRICKS);
 			neuralPreference.setEnabled(false);
 			screen.removePreference(neuralPreference);
+		}
+
+		if (!BuildConfig.FEATURE_THREED_ENABLED) {
+			CheckBoxPreference threedPreference =
+					(CheckBoxPreference) findPreference(SETTINGS_SHOW_THREED_BRICKS);
+			threedPreference.setEnabled(false);
+			screen.removePreference(threedPreference);
 		}
 
 		if (!BuildConfig.FEATURE_INTERNET_ENABLED) {
@@ -306,6 +315,12 @@ public class SettingsFragment extends PreferenceFragment {
 	public static boolean isNeuralSharedPreferenceEnabled(Context context) {
 		return getBooleanSharedPreference(false, SETTINGS_SHOW_NEURAL_BRICKS, context);
 	}
+	public static boolean isOldDragEnabled(Context context) {
+		return getBooleanSharedPreference(false, SETTINGS_OLD_DRAG, context);
+	}
+	public static boolean isThreedSharedPreferenceEnabled(Context context) {
+		return getBooleanSharedPreference(false, SETTINGS_SHOW_THREED_BRICKS, context);
+	}
 	public static boolean isInternetSharedPreferenceEnabled(Context context) {
 		return getBooleanSharedPreference(false, SETTINGS_SHOW_INTERNET_BRICKS, context);
 	}
@@ -368,6 +383,18 @@ public class SettingsFragment extends PreferenceFragment {
 	public static void setNeuralSharedPreferenceEnabled(Context context, boolean value) {
 		getSharedPreferences(context).edit()
 				.putBoolean(SETTINGS_SHOW_NEURAL_BRICKS, value)
+				.apply();
+	}
+
+	public static void setOldDragEnabled(Context context, boolean value) {
+		getSharedPreferences(context).edit()
+				.putBoolean(SETTINGS_OLD_DRAG, value)
+				.apply();
+	}
+
+	public static void setThreedSharedPreferenceEnabled(Context context, boolean value) {
+		getSharedPreferences(context).edit()
+				.putBoolean(SETTINGS_SHOW_THREED_BRICKS, value)
 				.apply();
 	}
 

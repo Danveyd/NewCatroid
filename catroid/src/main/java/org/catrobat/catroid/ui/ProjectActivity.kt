@@ -29,11 +29,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants
@@ -50,12 +52,13 @@ import org.catrobat.catroid.databinding.DialogNewActorBinding
 import org.catrobat.catroid.databinding.ProgressBarBinding
 import org.catrobat.catroid.io.StorageOperations
 import org.catrobat.catroid.io.asynctask.ProjectSaver
+import org.catrobat.catroid.libraries.LibraryManager
 import org.catrobat.catroid.merge.ImportProjectHelper
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.TestResult
 import org.catrobat.catroid.ui.BottomBar.showBottomBar
-import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.controller.ActorsAndObjectsManager
+import org.catrobat.catroid.ui.controller.BackpackListManager
 import org.catrobat.catroid.ui.dialogs.LegoSensorConfigInfoDialog
 import org.catrobat.catroid.ui.fragment.ProjectFilesFragment
 import org.catrobat.catroid.ui.fragment.ProjectLibsFragment
@@ -66,6 +69,8 @@ import org.catrobat.catroid.ui.recyclerview.controller.SceneController
 import org.catrobat.catroid.ui.recyclerview.dialog.NewSpriteDialogFragment
 import org.catrobat.catroid.ui.recyclerview.dialog.TextInputDialog
 import org.catrobat.catroid.ui.recyclerview.dialog.textwatcher.DuplicateInputTextWatcher
+import org.catrobat.catroid.ui.recyclerview.fragment.ProjectListFragment
+import org.catrobat.catroid.ui.recyclerview.fragment.ProjectListFragment.Companion
 import org.catrobat.catroid.ui.recyclerview.fragment.RecyclerViewFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.SceneListFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.SpriteListFragment
@@ -78,6 +83,7 @@ import org.catrobat.catroid.visualplacement.VisualPlacementActivity
 import org.koin.android.ext.android.inject
 import java.io.File
 
+@LunoClass
 class ProjectActivity : BaseCastActivity() {
 
     companion object {
@@ -128,6 +134,14 @@ class ProjectActivity : BaseCastActivity() {
         }
         projectManager.currentProject.checkIfSpriteNameEqualBackground(this)
         MyActivityManager.project_activity = this
+
+        val loadedProject = projectManager.currentProject
+        if (loadedProject != null) {
+            Log.i(ProjectListFragment.TAG, "Проект '${loadedProject.name}' загружен, запускаю синхронизацию библиотек...")
+            LibraryManager.syncAndLoadLibraries(loadedProject)
+        } else {
+            Log.w(ProjectListFragment.TAG, "Проект успешно загружен, но projectManager.currentProject равен null. Синхронизация пропущена.")
+        }
     }
 
     private fun loadFragment(fragmentPosition: Int) {
@@ -181,13 +195,13 @@ class ProjectActivity : BaseCastActivity() {
                 )
                 .addToBackStack(ProjectFilesFragment.TAG)
                 .commit()
-            /*R.id.project_libs -> supportFragmentManager.beginTransaction()
+            R.id.project_libs -> supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container, ProjectLibsFragment(),
                     ProjectLibsFragment.TAG
                 )
                 .addToBackStack(ProjectLibsFragment.TAG)
-                .commit()*/
+                .commit()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
@@ -213,6 +227,8 @@ class ProjectActivity : BaseCastActivity() {
             showBottomBar(this)
             return
         } else {
+            LibraryManager.unloadAllLibraries()
+
             projectManager.resetProjectManager()
         }
         val multiSceneProject = projectManager.currentProject.sceneList.size > 1

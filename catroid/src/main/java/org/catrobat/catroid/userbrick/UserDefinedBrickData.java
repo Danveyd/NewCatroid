@@ -23,6 +23,9 @@
 
 package org.catrobat.catroid.userbrick;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public abstract class UserDefinedBrickData {
 	public enum UserDefinedBrickDataType {
 		INPUT,

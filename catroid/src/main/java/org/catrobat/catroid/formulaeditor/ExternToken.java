@@ -22,6 +22,9 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class ExternToken {
 
 	private int startIndex;

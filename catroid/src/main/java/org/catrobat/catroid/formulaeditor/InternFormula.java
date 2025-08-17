@@ -33,6 +33,9 @@ import java.util.List;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class InternFormula {
 	private static final String TAG = InternFormula.class.getSimpleName();
 

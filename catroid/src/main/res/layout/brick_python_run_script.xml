@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <!-- ИЗМЕНЕНИЕ: Стиль изменен на Big, так как полей стало больше -->
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_python_run_script_layout"
+        style="@style/BrickContainer.Device.Medium">
+
+        <include layout="@layout/icon_brick_category_device" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/python_run_script" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/python_script_content"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/brick_python_script_text"
+            style="@style/BrickEditText" />
+
+        <!-- ДОБАВЛЕНО: Новые поля для имени переменной -->
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/python_save_log_to"
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/brick_python_script_variable_name"
+            style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

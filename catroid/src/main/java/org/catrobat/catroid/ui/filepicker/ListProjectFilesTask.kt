@@ -23,12 +23,13 @@
 package org.catrobat.catroid.ui.filepicker
 
 import android.os.AsyncTask
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.common.Constants
 import org.catrobat.catroid.common.FlavoredConstants
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
+@LunoClass
 class ListProjectFilesTask(listener: OnListProjectFilesListener) :
     AsyncTask<File?, Void?, List<File>>() {
     private val weakListenerReference: WeakReference<OnListProjectFilesListener> = WeakReference(listener)

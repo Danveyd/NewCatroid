@@ -36,6 +36,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class FilePickerAdapter extends RVAdapter<File> {
 
 	protected FilePickerAdapter(List<File> items) {

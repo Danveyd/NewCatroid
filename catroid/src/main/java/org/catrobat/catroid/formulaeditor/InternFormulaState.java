@@ -22,9 +22,12 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import java.util.LinkedList;
 import java.util.List;
 
+@LunoClass
 public class InternFormulaState {
 
 	private List<InternToken> internTokenFormulaList;

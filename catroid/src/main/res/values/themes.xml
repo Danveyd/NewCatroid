@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основная тема для LibraryEditorActivity -->
+    <style name="Theme.NewCatroid.LibraryEditor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Цвета тулбара и статус-бара -->
+        <item name="colorPrimary">@color/toolbar_background</item>
+        <item name="colorPrimaryVariant">@color/toolbar_background</item>
+        <item name="colorOnPrimary">@color/toolbar_title</item>
+
+        <!-- Основные цвета фона и текста -->
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:textColor">@color/solid_white</item>
+
+        <!-- Акцентный цвет для виджетов -->
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorSecondary">@color/accent</item>
+
+        <!-- Стили для ключевых виджетов -->
+        <item name="toolbarStyle">@style/Widget.NewCatroid.Toolbar</item>
+        <item name="tabStyle">@style/Widget.NewCatroid.TabLayout</item>
+        <item name="materialCardViewStyle">@style/Widget.NewCatroid.CardView</item>
+        <item name="textInputStyle">@style/Widget.NewCatroid.TextInputLayout</item>
+        <item name="alertDialogTheme">@style/Theme.NewCatroid.Dialog</item>
+    </style>
+
+    <!-- Стили для виджетов -->
+    <style name="Widget.NewCatroid.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/toolbar_background</item>
+        <item name="titleTextColor">@color/toolbar_title</item>
+    </style>
+
+    <style name="Widget.NewCatroid.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="android:background">@color/toolbar_background</item>
+        <item name="tabIndicatorColor">@color/accent</item>
+        <item name="tabTextColor">@color/spinner_icon_and_inactive_elements</item>
+        <item name="tabSelectedTextColor">@color/solid_white</item>
+    </style>
+
+    <style name="Widget.NewCatroid.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/button_background</item>
+    </style>
+
+    <style name="Widget.NewCatroid.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">@color/spinner_icon_and_inactive_elements</item>
+        <item name="boxStrokeColor">@color/accent</item>
+        <item name="hintTextColor">@color/accent</item>
+    </style>
+
+    <!-- Стиль для диалоговых окон -->
+    <style name="Theme.NewCatroid.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:textColorPrimary">@color/solid_white</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.NewCatroid.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.NewCatroid.DialogButton</item>
+        <item name="android:textColorHint">@color/spinner_icon_and_inactive_elements</item>
+        <item name="android:editTextColor">@color/solid_white</item>
+    </style>
+
+    <style name="Widget.NewCatroid.DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+</resources>

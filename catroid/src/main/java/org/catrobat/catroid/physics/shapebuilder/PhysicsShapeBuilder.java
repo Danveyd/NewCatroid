@@ -25,9 +25,14 @@ package org.catrobat.catroid.physics.shapebuilder;
 import android.util.Log;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.physics.PhysicsWorldConverter;
+import org.catrobat.catroid.sensing.CollisionInformation;
 import org.catrobat.catroid.utils.Utils;
 
 import java.util.HashMap;
@@ -53,12 +58,12 @@ public final class PhysicsShapeBuilder {
 	private PhysicsShapeBuilder() {
 	}
 
-	public void reset() {
+	/*public void reset() {
 		strategy = new PhysicsShapeBuilderStrategyFastHull();
 		imageShapesMap = new HashMap<>();
-	}
+	}*/
 
-	public synchronized Shape[] getScaledShapes(LookData lookData, float scaleFactor) throws RuntimeException {
+	/*public synchronized Shape[] getScaledShapes(LookData lookData, float scaleFactor) throws RuntimeException {
 		if (scaleFactor < 0) {
 			throw new RuntimeException("scaleFactor can not be smaller than 0");
 		} else if (lookData == null) {
@@ -85,6 +90,76 @@ public final class PhysicsShapeBuilder {
 		}
 
 		return PhysicsShapeScaleUtils.scaleShapes(shapes, scaleFactor);
+	}*/
+
+	public synchronized Shape[] getScaledShapes(LookData lookData, float scaleFactor) {
+		if (lookData == null) {
+			return null;
+		}
+
+		// 1. Получаем ВСЕ полигоны (треугольники)
+		CollisionInformation collisionInfo = lookData.getCollisionInformation();
+		if (collisionInfo.collisionPolygons == null) {
+			collisionInfo.loadCollisionPolygon();
+		}
+		Polygon[] originalPolygons = collisionInfo.collisionPolygons;
+
+		if (originalPolygons == null || originalPolygons.length == 0) {
+			return null;
+		}
+
+		// --- ▼▼▼ НАЧАЛО ИСПРАВЛЕНИЙ ▼▼▼ ---
+
+		// Используем динамический список, чтобы собирать только валидные формы
+		java.util.ArrayList<Shape> validShapes = new java.util.ArrayList<>();
+
+		// Временный массив для вершин одного треугольника
+		Vector2[] triangleVertices = new Vector2[3];
+
+		// 2. В цикле обрабатываем КАЖДЫЙ полигон (треугольник)
+		for (int i = 0; i < originalPolygons.length; i++) {
+			Polygon poly = originalPolygons[i];
+			if (poly == null) {
+				continue; // Пропускаем null полигоны
+			}
+
+			float[] vertices = poly.getVertices();
+			if (vertices == null || vertices.length != 6) { // Убедимся, что это точно треугольник
+				continue;
+			}
+
+			// 3. Масштабируем и центрируем
+			float halfWidth = lookData.getPixmap().getWidth() / 2.0f;
+			float halfHeight = lookData.getPixmap().getHeight() / 2.0f;
+
+			for (int j = 0; j < 3; j++) {
+				float localX = vertices[j * 2] - halfWidth;
+				float localY = vertices[j * 2 + 1] - halfHeight;
+
+				float scaledX = PhysicsWorldConverter.convertNormalToBox2dCoordinate(localX * scaleFactor);
+				float scaledY = PhysicsWorldConverter.convertNormalToBox2dCoordinate(localY * scaleFactor);
+
+				triangleVertices[j] = new Vector2(scaledX, scaledY);
+			}
+
+			// 4. Создаем PolygonShape и добавляем в наш список ВАЛИДНЫХ форм
+			PolygonShape shape = new PolygonShape();
+			shape.set(triangleVertices);
+			validShapes.add(shape);
+		}
+
+		// 5. Конвертируем список в массив
+		if (validShapes.isEmpty()) {
+			return null; // Если не нашлось ни одной валидной формы, возвращаем null
+		}
+
+		return validShapes.toArray(new Shape[0]);
+
+		// --- ▲▲▲ КОНЕЦ ИСПРАВЛЕНИЙ ▲▲▲ ---
+	}
+
+	public void reset() {
+		// Логика с кешем больше не нужна, но оставим метод пустым.
 	}
 
 	private static float getAccuracyLevel(float scaleFactor) {

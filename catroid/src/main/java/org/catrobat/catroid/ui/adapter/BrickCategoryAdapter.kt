@@ -27,7 +27,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.danvexteam.lunoscript_annotations.LunoClass
 
+@LunoClass
 class BrickCategoryAdapter(private val categories: List<View>) : BaseAdapter() {
     override fun getCount(): Int = categories.size
 

@@ -78,6 +78,181 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string name="brick_run_shell2" formatted="false">and save output to</string>
+    <string name="brick_run_shell" formatted="false">Execute command</string>
+    <string formatted="false" name="preference_title_old_drag">Old drag and drop mode</string>
+    <string formatted="false" name="preference_title_old_dragd">Enables drag and drop mode for blocks from Pocket Code 1.2.4</string>
+    <string name="brick_when_back_pressed" formatted="false">When back pressed</string>
+    <string name="brick_when_project_exits" formatted="false">When project exits</string>
+    <string name="brick_set_sound_volume_text" formatted="false">Set volume for sound</string>
+    <string name="brick_set_sound_volume_volume" formatted="false">Volume (%)</string>
+    <string name="brick_copy_file_text" formatted="false">Copy project file</string>
+    <string name="brick_copy_file_source" formatted="false">Source file</string>
+    <string name="brick_copy_file_destination" formatted="false">New name</string>
+    <string formatted="false" name="formula_editor_function_roundto">round to</string>
+    <string formatted="false" name="formula_editor_function_roundto_parameter">(123.456, 1)</string>
+    <string formatted="false" name="libs_createlib">Create library</string>
+    <string formatted="false" name="libs_exported">Library exported</string>
+    <string formatted="false" name="libs_exportede">Export error</string>
+    <string formatted="false" name="libs_importede">File import error</string>
+    <string formatted="false" name="libs_imported">The library was imported successfully.</string>
+    <string formatted="false" name="libs_cleaned">Project cleared</string>
+    <string formatted="false" name="libs_clearpd">All unsaved changes will be lost. This action cannot be undone.</string>
+    <string formatted="false" name="libs_clearp">Clear project?</string>
+    <string formatted="false" name="libs_clear">Clear</string>
+    <string formatted="false" name="libs_formulas">Formulas</string>
+    <string formatted="false" name="libs_bricks">Bricks</string>
+    <string formatted="false" name="libs_code">Code</string>
+    <string formatted="false" name="libs_newlib">New library</string>
+    <string formatted="false" name="libs_delete_wf">Delete formula?</string>
+    <string formatted="false" name="libs_def">Default value</string>
+    <string formatted="false" name="libs_type2">Type (NUMBER/STRING)</string>
+    <string formatted="false" name="libs_edit_form">Edit formula</string>
+    <string formatted="false" name="libs_new_form">New formula</string>
+    <string formatted="false" name="libs_delete">Delete</string>
+    <string formatted="false" name="libs_delete_w2">Are you sure you want to delete</string>
+    <string formatted="false" name="libs_delete_w">Delete brick?</string>
+    <string formatted="false" name="libs_error_f">Function not found in code!</string>
+    <string formatted="false" name="libs_error_n">All fields must be filled in</string>
+    <string formatted="false" name="libs_cname">Internal name</string>
+    <string formatted="false" name="libs_type1">Type (TEXT_FIELD)</string>
+    <string formatted="false" name="libs_cancel">Cancel</string>
+    <string formatted="false" name="libs_save">Save</string>
+    <string formatted="false" name="libs_edit_brick">Edit Brick</string>
+    <string formatted="false" name="libs_new_brick">New Brick</string>
+    <string formatted="false" name="libs_htext">Header text (e.g. \'Show {0}\')</string>
+    <string formatted="false" name="libs_add_brick">Add Brick</string>
+    <string formatted="false" name="libs_add_form">Add Formula</string>
+    <string formatted="false" name="libs_del_param">Delete parameter</string>
+    <string formatted="false" name="libs_value">Value</string>
+    <string formatted="false" name="libs_nametype">Name/Type</string>
+    <string formatted="false" name="libs_add_param">Add parameter</string>
+    <string formatted="false" name="libs_params">Parameters</string>
+    <string formatted="false" name="libs_func">Function name (in code)</string>
+    <string formatted="false" name="libs_name">Display name</string>
+    <string formatted="false" name="libs_id">ID (Unique)</string>
+    <string name="python_save_log_to">output to local var</string>
+    <string name="python_run_script">Run Python script</string>
+    <string name="python_script_content">Script</string>
+    <string name="python_load_library">Load Py library</string>
+    <string name="python_library_file_name">Library file (.whl, .zip)</string>
+    <string name="python_load_native_module">Load Py native module</string>
+    <string name="python_module_file_name">Module file (.so)</string>
+    <string name="python_clear_environment">Clear Python environment</string>
+    <string name="brick_set_shader_uniform_vec3" formatted="false">Set Uniform (Vector)</string>
+    <string name="brick_set_shader_uniform_float" formatted="false">Set Uniform (Number)</string>
+    <string name="brick_shader_uniform_name" formatted="false">Name</string>
+    <string name="brick_shader_uniform_value" formatted="false">Value</string>
+    <string name="brick_set_shader_code" formatted="false">Set 3D GLSL Shader</string>
+    <string name="brick_shader_vertex" formatted="false">Vertex</string>
+    <string name="brick_shader_fragment" formatted="false">Fragment</string>
+    <string name="brick_set_ccd" formatted="false">Set continuous collision</string>
+    <string name="brick_set_ccd_for_object">for object ID</string>
+    <string name="brick_upload_file">Upload file to server</string>
+    <string name="brick_upload_url">URL</string>
+    <string name="brick_upload_project_file">Project file path</string>
+    <string name="brick_upload_file_type">File type</string>
+    <string name="brick_upload_mime_type">MIME type</string>
+    <string name="brick_upload_storage_type">Storage type</string>
+
+    <string-array name="upload_file_types">
+        <item>Standard (Text)</item>
+        <item>Binary</item>
+    </string-array>
+
+    <string-array name="upload_storage_types">
+        <item>Permanent</item>
+        <item>Temporary</item>
+    </string-array>
+    <string name="brick_set_3d_fog">Set Fog</string>
+    <string name="brick_3d_fog_r">R (0–1)</string>
+    <string name="brick_3d_fog_g">G (0–1)</string>
+    <string name="brick_3d_fog_b">B (0–1)</string>
+    <string name="brick_3d_fog_density">density</string>
+    <string name="brick_create_sphere" formatted="false">Create sphere with ID</string>
+    <string name="formula_3d_touches" formatted="false">object touches object</string>
+    <string name="formula_3d_touches_param" formatted="false">(\'object ID 1\', \'object ID 2\')</string>
+    <string name="brick_set_sky_color" formatted="false">Set sky color to (0-1)</string>
+    <string name="formula_cam_rot_yaw" formatted="false">camera rotation Y</string>
+    <string name="formula_cam_rot_pitch" formatted="false">camera rotation X</string>
+    <string name="formula_cam_rot_roll" formatted="false">camera rotation Z</string>
+    <string name="formula_3d_velo_x" formatted="false">3D velocity X</string>
+    <string name="formula_3d_velo_y" formatted="false">3D velocity Y</string>
+    <string name="formula_3d_velo_z" formatted="false">3D velocity Z</string>
+    <string name="formula_cam_pos_x" formatted="false">camera position X</string>
+    <string name="formula_cam_pos_y" formatted="false">camera position Y</string>
+    <string name="formula_cam_pos_z" formatted="false">camera position Z</string>
+    <string name="formula_cam_dir_x" formatted="false">camera direction X</string>
+    <string name="formula_cam_dir_y" formatted="false">camera direction Y</string>
+    <string name="formula_cam_dir_z" formatted="false">camera direction Z</string>
+    <string name="formula_no_param" formatted="false">()</string>
+    <string name="brick_cast_ray_name" formatted="false">Cast ray named</string>
+    <string name="brick_cast_ray_from" formatted="false">from position</string>
+    <string name="brick_cast_ray_dir" formatted="false">in direction</string>
+    <string name="formula_ray_distance" formatted="false">ray hit distance</string>
+    <string name="formula_ray_hit_object" formatted="false">ray hit object ID</string>
+    <string name="formula_ray_param" formatted="false">(\'ray\')</string>
+    <string name="formula_vector_dir_x" formatted="false">direction X from angle</string>
+    <string name="formula_vector_dir_y" formatted="false">direction Y from angle</string>
+    <string name="formula_vector_angle" formatted="false">angle from direction</string>
+    <string name="formula_vector_dir_param" formatted="false">(60)</string>
+    <string name="formula_vector_angle_param" formatted="false">(0.6, 1)</string>
+    <string name="formula_3d_pos_x" formatted="false">3D position z</string>
+    <string name="formula_3d_pos_y" formatted="false">3D position y</string>
+    <string name="formula_3d_pos_z" formatted="false">3D position z</string>
+    <string name="formula_3d_rot_yaw" formatted="false">3D rotation y</string>
+    <string name="formula_3d_rot_pitch" formatted="false">3D rotation x</string>
+    <string name="formula_3d_rot_roll" formatted="false">3D rotation z</string>
+    <string name="formula_3d_scale_x" formatted="false">3D scale x</string>
+    <string name="formula_3d_scale_y" formatted="false">3D scale y</string>
+    <string name="formula_3d_scale_z" formatted="false">3D scale z</string>
+    <string name="formula_3d_distance" formatted="false">3D distance between</string>
+    <string name="formula_3d_single_param" formatted="false">(\'object ID\')</string>
+    <string name="formula_3d_double_param" formatted="false">(\'object ID 1\', \'object ID 2\')</string>
+    <string name="brick_set_restitution_of" formatted="false">Set bounciness of</string>
+    <string name="brick_set_restitution_to" formatted="false">to</string>
+    <string name="brick_set_friction_to" formatted="false">to</string>
+    <string name="brick_set_friction_of" formatted="false">Set friction of</string>
+    <string name="brick_create_cube" formatted="false">Create cube with ID</string>
+    <string name="brick_set_camera_rotation" formatted="false">Set camera rotation to</string>
+    <string name="brick_set_object_texture_of" formatted="false">Set texture of object</string>
+    <string name="brick_set_object_texture_to" formatted="false">to project file</string>
+    <string name="brick_set_object_color_of" formatted="false">Set color of object</string>
+    <string name="brick_set_object_color_to" formatted="false">to (0-1)</string>
+    <string name="brick_apply_3d_force2" formatted="false">with vector</string>
+    <string name="brick_apply_3d_force" formatted="false">Apply force to object</string>
+    <string name="brick_set_3d_velocity2" formatted="false">Vector</string>
+    <string name="brick_set_3d_velocity" formatted="false">Set velocity to object</string>
+    <string name="brick_set_3d_gravity" formatted="false">Set 3D world gravity to</string>
+    <string name="brick_set_physics_state_of" formatted="false">Set physics state of</string>
+    <string name="brick_set_physics_state_to" formatted="false">to</string>
+    <string name="brick_set_physics_state_mass" formatted="false">with mass</string>
+    <string-array name="brick_physics_states">
+        <item>None</item>
+        <item>Static (Box)</item>
+        <item>Dynamic (Box)</item>
+        <item>Mesh Static (Complex)</item>
+    </string-array>
+    <string name="brick_set_directional_light_id" formatted="false">Set directional light ID</string>
+    <string name="brick_set_directional_light_color" formatted="false">color (0-1)</string>
+    <string name="brick_set_directional_light_dir" formatted="false">direction</string>
+    <string name="brick_set_ambient_light" formatted="false">Set ambient light (color 0-1)</string>
+    <string name="brick_set_3d_position_of" formatted="false">Set 3D position of object</string>
+    <string name="brick_set_3d_position_to" formatted="false">to coordinates</string>
+    <string name="brick_object_look_at_object" formatted="false">Point object</string>
+    <string name="brick_object_look_at_to" formatted="false">towards point</string>
+    <string name="brick_set_3d_scale_of" formatted="false">Set 3D scale of object</string>
+    <string name="brick_set_3d_scale_to" formatted="false">to</string>
+    <string name="brick_set_3d_rotation_of" formatted="false">Set 3D rotation of object</string>
+    <string name="brick_set_3d_rotation_to" formatted="false">to angles</string>
+    <string name="brick_set_3d_rotation_yaw" formatted="false">Yaw (Y)</string>
+    <string name="brick_set_3d_rotation_pitch" formatted="false">Pitch (X)</string>
+    <string name="brick_set_3d_rotation_roll" formatted="false">Roll (Z)</string>
+    <string name="brick_camera_look_at" formatted="false">Point camera to</string>
+    <string name="brick_set_camera_position" formatted="false">Set camera position to</string>
+    <string name="brick_remove_3d_object_text" formatted="false">Remove 3D object</string>
+    <string name="brick_create_3d_object_text_1" formatted="false">Create 3D object with ID</string>
+    <string name="brick_create_3d_object_text_2" formatted="false">from model file</string>
     <string formatted="false" name="brick_set_callback2">callback to variable</string>
     <string formatted="false" name="brick_set_callback">Add to WebView</string>
     <string formatted="false" name="brick_eval_web2">in WebView</string>
@@ -276,6 +451,7 @@
     <string formatted="false" name="brick_show_toast_short">Short</string>
     <string formatted="false" name="brick_show_toast_long">Long</string>
     <string formatted="false" name="formula_editor_sensor_internet">connected to internet</string>
+    <string formatted="false" name="formula_editor_sensor_architecture">cpu architecture</string>
     <string formatted="false" name="formula_editor_sensor_micro">micro volume</string>
     <string formatted="false" name="brick_listen_micro">Start listen micro in times</string>
     <string formatted="false" name="brick_listen_micro2">ms</string>
@@ -526,10 +702,13 @@
     <string formatted="false" name="category_internet">Internet</string>
     <string formatted="false" name="preference_title_enable_internet_bricks">Internet Extension</string>
     <string formatted="false" name="preference_description_neural_bricks">allows you to use Gemini models and create yur own neural networks</string>
+    <string formatted="false" name="preference_title_enable_threed_bricks">3D Extension</string>
+    <string formatted="false" name="preference_description_threed">Allows to create 3D scenes and projects</string>
     <string formatted="false" name="preference_title_enable_nfc_bricks">Near Field Communication extension</string>
     <string formatted="false" name="preference_description_nfc_bricks">Allow the app to use NFC tags in projects</string>
     <string formatted="false" name="preference_title_enable_crash_reports">Sending anonymous crash reports</string>
     <string formatted="false" name="preference_description_crash_reports">Allow the app to send crash reports automatically</string>
+    <string formatted="false" name="category_libraries">Libraries</string>
     <!-- -->
     <string formatted="false" name="preference_title_enable_raspi_bricks">Raspberry Pi extension</string>
     <string formatted="false" name="preference_description_raspi_bricks">Allow the app to control Raspberry Pi computers</string>
@@ -1205,6 +1384,7 @@
     <string formatted="false" name="category_pen">Pen</string>
     <string formatted="false" name="category_plot">Plot</string>
     <string formatted="false" name="category_neural">Neural Networks</string>
+    <string formatted="false" name="category_threed">3D</string>
     <string formatted="false" name="category_sound">Sound</string>
     <string formatted="false" name="category_control">Control</string>
     <string formatted="false" name="category_event">Event</string>

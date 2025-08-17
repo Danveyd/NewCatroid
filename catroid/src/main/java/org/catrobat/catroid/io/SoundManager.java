@@ -69,6 +69,35 @@ public class SoundManager {
 		playSoundFileWithStartTime(soundFilePath, sprite, 0);
 	}
 
+	/**
+	 * Устанавливает громкость для конкретного проигрываемого звука.
+	 *
+	 * @param soundFilePath Путь к файлу звука.
+	 * @param sprite        Спрайт, который запустил звук.
+	 * @param volume        Новая громкость в процентах (0-100).
+	 */
+	public synchronized void setVolumeForSound(String soundFilePath, Sprite sprite, float volume) {
+		if (volume > 100.0f) {
+			volume = 100.0f;
+		} else if (volume < 0.0f) {
+			volume = 0.0f;
+		}
+
+		float volumeScalar = volume * 0.01f;
+
+		for (MediaPlayerWithSoundDetails mediaPlayer : mediaPlayers) {
+			// Ищем плеер, который сейчас играет, запущен нужным спрайтом и проигрывает нужный файл
+			if (mediaPlayer.isPlaying() &&
+					mediaPlayer.getStartedBySprite() == sprite &&
+					mediaPlayer.getPathToSoundFile().equals(soundFilePath)) {
+
+				mediaPlayer.setVolume(volumeScalar, volumeScalar);
+				// Можно было бы выйти из цикла, если звук уникален, но на всякий случай
+				// изменим громкость у всех совпадений.
+			}
+		}
+	}
+
 	public synchronized void playSoundFileWithStartTime(String soundFilePath,
 			Sprite sprite, int startTimeInMilSeconds) {
 		stopSameSoundInSprite(soundFilePath, sprite);

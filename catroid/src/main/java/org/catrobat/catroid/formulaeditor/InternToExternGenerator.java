@@ -25,6 +25,8 @@ package org.catrobat.catroid.formulaeditor;
 import android.content.Context;
 import android.util.Log;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.utils.FormatNumberUtil;
@@ -35,6 +37,7 @@ import java.util.List;
 import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
 import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
 
+@LunoClass
 public class InternToExternGenerator {
 	private static final String TAG = InternToExternGenerator.class.getSimpleName();
 
@@ -60,6 +63,7 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAND.name(), R.string.formula_editor_function_rand);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.ABS.name(), R.string.formula_editor_function_abs);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.ROUND.name(), R.string.formula_editor_function_round);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.ROUNDTO.name(), R.string.formula_editor_function_roundto);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.MOD.name(), R.string.formula_editor_function_mod);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.ARCSIN.name(), R.string.formula_editor_function_arcsin);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.ARCCOS.name(), R.string.formula_editor_function_arccos);
@@ -113,6 +117,34 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FLOATARRAY.name(), R.string.formula_editor_function_floatarray);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_ELEMENT.name(), R.string.formula_editor_function_table_element);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.TABLE_JOIN.name(), R.string.formula_editor_function_table_join);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_DIRECTION_X.name(), R.string.formula_vector_dir_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_DIRECTION_Y.name(), R.string.formula_vector_dir_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_ANGLE.name(), R.string.formula_vector_angle);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_POSITION_X.name(), R.string.formula_3d_pos_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.OBJECT_TOUCHES_OBJECT.name(), R.string.formula_3d_touches);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_ROTATION_YAW.name(), R.string.formula_cam_rot_yaw);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_ROTATION_ROLL.name(), R.string.formula_cam_rot_roll);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_ROTATION_PITCH.name(), R.string.formula_cam_rot_pitch);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_POSITION_Y.name(), R.string.formula_3d_pos_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_POS_X.name(), R.string.formula_cam_pos_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_VELOCITY_X.name(), R.string.formula_3d_velo_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_VELOCITY_Y.name(), R.string.formula_3d_velo_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_VELOCITY_Z.name(), R.string.formula_3d_velo_z);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_POS_Y.name(), R.string.formula_cam_pos_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_POS_Z.name(), R.string.formula_cam_pos_z);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_DIR_X.name(), R.string.formula_cam_dir_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_DIR_Y.name(), R.string.formula_cam_dir_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_CAMERA_DIR_Z.name(), R.string.formula_cam_dir_z);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_POSITION_Z.name(), R.string.formula_3d_pos_z);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_ROTATION_YAW.name(), R.string.formula_3d_rot_yaw);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_ROTATION_PITCH.name(), R.string.formula_3d_rot_pitch);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_ROTATION_ROLL.name(), R.string.formula_3d_rot_roll);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_SCALE_X.name(), R.string.formula_3d_scale_x);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_SCALE_Y.name(), R.string.formula_3d_scale_y);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_SCALE_Z.name(), R.string.formula_3d_scale_z);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_3D_DISTANCE.name(), R.string.formula_3d_distance);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_RAY_DISTANCE.name(), R.string.formula_ray_distance);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.GET_RAY_HIT_OBJECT.name(), R.string.formula_ray_hit_object);
 
 		//DRONE SENSORS
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.DRONE_BATTERY_STATUS.name(), R.string.formula_editor_sensor_drone_battery_status);
@@ -309,6 +341,8 @@ public class InternToExternGenerator {
 				R.string.formula_editor_sensor_frequency);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.INTERNET.name(),
 				R.string.formula_editor_sensor_internet);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.ARCH.name(),
+				R.string.formula_editor_sensor_architecture);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.TIMER.name(), R.string.formula_editor_sensor_timer);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.DATE_YEAR.name(), R.string.formula_editor_sensor_date_year);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.DATE_MONTH.name(), R.string.formula_editor_sensor_date_month);

@@ -75,6 +75,9 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 import static org.koin.java.KoinJavaComponent.get;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class StageResourceHolder implements GatherCollisionInformationTask.OnPolygonLoadedListener {
 	private static final String TAG = StageResourceHolder.class.getSimpleName();
 
@@ -287,7 +290,7 @@ public class StageResourceHolder implements GatherCollisionInformationTask.OnPol
 		}
 
 		if (requiredResourcesSet.contains(Brick.NETWORK_CONNECTION)) {
-			if (!Utils.isNetworkAvailable(stageActivity)) {
+			/*if (!Utils.isNetworkAvailable(stageActivity)) {
 				new AlertDialog.Builder(new ContextThemeWrapper(stageActivity, R.style.Theme_AppCompat_Dialog))
 					.setTitle(R.string.error_no_network_title)
 					.setPositiveButton(R.string.preference_title, (dialog, whichButton) -> {
@@ -303,7 +306,8 @@ public class StageResourceHolder implements GatherCollisionInformationTask.OnPol
 					.show();
 			} else {
 				resourceInitialized();
-			}
+			}*/
+			resourceInitialized();
 		}
 
 		if (requiredResourcesSet.contains(Brick.SOCKET_RASPI)) {
@@ -343,7 +347,8 @@ public class StageResourceHolder implements GatherCollisionInformationTask.OnPol
 		return requiredResourceCounter == 0 && failedResources.isEmpty();
 	}
 
-	public void initFinishedRunStage() {
+	@SuppressLint("WrongConstant")
+    public void initFinishedRunStage() {
 		try {
 			ServiceProvider.getService(CatroidService.BLUETOOTH_DEVICE_SERVICE).initialise();
 		} catch (MindstormsException e) {
@@ -354,7 +359,7 @@ public class StageResourceHolder implements GatherCollisionInformationTask.OnPol
 		Intent intent = new Intent(stageActivity, getClass());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 			int flags = PendingIntent.FLAG_IMMUTABLE | Intent.FLAG_ACTIVITY_SINGLE_TOP;
-			intent.addFlags(PendingIntent.FLAG_IMMUTABLE | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			stageActivity.pendingIntent = PendingIntent.getActivity(stageActivity, 0, intent,
 					flags);
 		} else {

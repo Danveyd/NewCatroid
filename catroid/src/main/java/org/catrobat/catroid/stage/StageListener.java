@@ -69,6 +69,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.danvexteam.lunoscript_annotations.LunoClass;
+import com.google.common.collect.Multimap;
 
 import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
@@ -78,13 +80,16 @@ import org.catrobat.catroid.common.ScreenModes;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.ThreadScheduler;
 import org.catrobat.catroid.content.EventWrapper;
+import org.catrobat.catroid.content.ExitProjectScript;
 import org.catrobat.catroid.content.GlobalManager;
 import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.SoundBackup;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.XmlHeader;
+import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.content.eventids.GamepadEventId;
 import org.catrobat.catroid.embroidery.DSTPatternManager;
@@ -98,14 +103,18 @@ import org.catrobat.catroid.physics.PhysicsObject;
 import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.physics.shapebuilder.PhysicsShapeBuilder;
 import org.catrobat.catroid.pocketmusic.mididriver.MidiSoundManager;
+import org.catrobat.catroid.raptor.ThreeDManager;
 import org.catrobat.catroid.sensing.CollisionDetection;
 import org.catrobat.catroid.sensing.ColorAtXYDetection;
+import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.recyclerview.controller.SpriteController;
 import org.catrobat.catroid.utils.GlobalShaderManager;
+import org.catrobat.catroid.utils.ModelPathProcessor;
 import org.catrobat.catroid.utils.Resolution;
 import org.catrobat.catroid.utils.TouchUtil;
 import org.catrobat.catroid.utils.VibrationManager;
+import org.catrobat.catroid.utils.lunoscript.RenderManager;
 import org.catrobat.catroid.web.WebConnectionHolder;
 
 import java.io.File;
@@ -124,6 +133,7 @@ import static org.catrobat.catroid.common.Constants.SCREENSHOT_AUTOMATIC_FILE_NA
 import static org.catrobat.catroid.common.Constants.SCREENSHOT_MANUAL_FILE_NAME;
 import static org.koin.java.KoinJavaComponent.get;
 
+@LunoClass
 public class StageListener implements ApplicationListener {
 
 	private static final int AXIS_WIDTH = 4;
@@ -220,9 +230,17 @@ public class StageListener implements ApplicationListener {
 	private ScreenshotSaverCallback screenshotSaverCallback = null;
 	private ScreenshotSaver screenshotSaver;
 
-	private ModelBatch modelBatch;
+	/*private ModelBatch modelBatch;
 	private Model yourModel;
-	private ModelInstance yourModelInstance;
+	private ModelInstance yourModelInstance;*/
+	private ThreeDManager threeDManager;
+
+	// ▼▼▼ ДОБАВЬТЕ ЭТОТ МЕТОД ▼▼▼
+	public ThreeDManager getThreeDManager() {
+		return threeDManager;
+	}
+
+	private com.badlogic.gdx.graphics.g3d.Environment environment;
 
 	private FrameBuffer sceneFbo;
 	private FrameBuffer postProcessFbo;
@@ -244,7 +262,56 @@ public class StageListener implements ApplicationListener {
 		project = ProjectManager.getInstance().getCurrentProject();
 		scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
 
+		threeDManager = new ThreeDManager();
+		threeDManager.init();
+
 		//modelBatch = new ModelBatch();
+		/*modelBatch = new ModelBatch();
+
+		try {
+			FileHandle originalObjHandle = Gdx.files.internal("models/dom/Residential Buildings 001.obj"); // <--- УКАЖИТЕ ИМЯ ВАШЕГО ФАЙЛА
+
+			// 2. ОБРАБАТЫВАЕМ ФАЙЛЫ С ПОМОЩЬЮ НАШЕГО КЛАССА
+			FileHandle patchedObjHandle = ModelPathProcessor.process(originalObjHandle);
+
+			// 3. Загружаем модель, используя ИСПРАВЛЕННЫЙ handle
+			com.badlogic.gdx.assets.loaders.ModelLoader loader =
+					new com.badlogic.gdx.graphics.g3d.loader.ObjLoader();
+
+			yourModel = loader.loadModel(patchedObjHandle);
+			yourModelInstance = new ModelInstance(yourModel);
+
+		} catch (Exception e) {
+			Log.e("3D_LOADING", "Не удалось загрузить OBJ модель, создаем куб для теста.", e);
+			// ... ваш запасной код с созданием куба ...
+			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+			yourModel = modelBuilder.createBox(50f, 50f, 50f,
+					new com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(Color.RED)), // Сделаем его красным, чтобы отличать
+					com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal);
+			yourModelInstance = new ModelInstance(yourModel);
+		}
+
+		environment = new com.badlogic.gdx.graphics.g3d.Environment();
+
+		// 2. Добавляем фоновый (ambient) свет.
+		// Это предотвратит появление абсолютно черных областей.
+		// Параметры: R, G, B интенсивность (от 0 до 1) и альфа (всегда 1).
+		// 0.4f - это умеренно-серый свет.
+		environment.set(new com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute(
+				com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+
+		// 3. Добавляем направленный (directional) свет, как солнце.
+		// Параметры set(): цвет (R, G, B) и вектор направления (X, Y, Z).
+		// Вектор (-1f, -0.8f, -0.2f) означает, что свет светит "сверху-справа-спереди" на объект.
+		// Этот свет создаст основные блики и тени.
+		environment.add(new com.badlogic.gdx.graphics.g3d.environment.DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+
+		threeDCamera = new com.badlogic.gdx.graphics.PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		threeDCamera.position.set(200f, 200f, 200f); // Позиция камеры в 3D пространстве
+		threeDCamera.lookAt(0,0,0); // Смотрим на центр координат
+		threeDCamera.near = 1f; // Ближняя плоскость отсечения
+		threeDCamera.far = 500f; // Дальняя плоскость отсечения
+		threeDCamera.update();*/
 
 		//yourModel = new ModelLoader.loadModel(Gdx.files.internal("path/to/your/model.g3db"));
 
@@ -271,6 +338,8 @@ public class StageListener implements ApplicationListener {
 
 		embroideryPatternManager = new DSTPatternManager();
 		initActors(sprites);
+
+		RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		Gdx.app.log("CacheWarming", "Starting asset pre-loading...");
 		for (Sprite sprite : sprites) {
@@ -330,6 +399,7 @@ public class StageListener implements ApplicationListener {
 
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+		//throw new RuntimeException("Test Crash from DanVexTeam!");
 	}
 
 	private BitmapFont getLabelFont(Project project) {
@@ -776,13 +846,21 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void reloadProject(StageDialog stageDialog) {
+		executeExitScriptsSynchronously();
+
 		if (reloadProject) {
 			return;
 		}
+
 		StageActivity stageActivity = StageActivity.activeStageActivity.get();
 		if (stageActivity != null) {
 			stageActivity.removeAllNativeViews();
 		}
+
+		//if (threeDManager != null) {
+		//	threeDManager.dispose();
+		//}
+		//threeDManager = null;
 
 		this.stageDialog = stageDialog;
 		if (!ProjectManager.getInstance().getStartScene().getName().equals(scene.getName())) {
@@ -810,6 +888,10 @@ public class StageListener implements ApplicationListener {
 		}
 		GlobalManager.Companion.setStopSounds(true);
 		GlobalManager.Companion.setSaveScenes(true);
+
+		//threeDManager = new ThreeDManager();
+		//threeDManager.init();
+
 		reloadProject = true;
 	}
 
@@ -839,12 +921,20 @@ public class StageListener implements ApplicationListener {
 	@Override
 	public void render() {
 		Look.tickGlobalFrame();
-		CameraManager cameraManager = StageActivity.getActiveCameraManager();
+		//CameraManager cameraManager = StageActivity.getActiveCameraManager();
 		float color = 0f; //cameraManager != null && cameraManager.getPreviewVisible() ? 0f : 1f;
 		Gdx.gl20.glClearColor(color, color, color, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // <-- ИЗМЕНЕНО
 
 		if (reloadProject) {
+			if (threeDManager != null) {
+				threeDManager.dispose();
+			}
+
+			// 2. Создаем и инициализируем новый менеджер
+			threeDManager = new ThreeDManager();
+			threeDManager.init();
+
 			stage.clear();
 			if (penActor != null) {
 				penActor.dispose();
@@ -927,13 +1017,21 @@ public class StageListener implements ApplicationListener {
 			} else {
 				Gdx.gl.glClearColor(1, 1, 1, 0);
 			}*/
-			Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			//Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
+			//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			if (!finished) {
+				if (!paused) {
+					if (threeDManager != null) {
+						threeDManager.update(Gdx.graphics.getDeltaTime());
+					}
+				}
+				threeDManager.render();
 				// Здесь ваша логика отрисовки из прошлого ответа (с группировкой по шейдерам и т.д.)
 				renderSceneNormally(stage); // Вынесите старую логику stage.draw() в отдельный метод
 			}
 		}
+
+		RenderManager.INSTANCE.render();
 
 		if (makeScreenshot) {
 			Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
@@ -1454,12 +1552,7 @@ public class StageListener implements ApplicationListener {
 	}
 
 	private void render3DScene() {
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		// Устанавливаем проекцию и вид
-		//modelBatch.begin(camera);
-		//modelBatch.render(yourModelInstance);
-		//modelBatch.end();
 	}
 
 
@@ -1518,8 +1611,65 @@ public class StageListener implements ApplicationListener {
 	public void resize(int width, int height) {
 	}
 
+	/**
+	 * ПРИНУДИТЕЛЬНО и СИНХРОННО выполняет все скрипты "При выходе из проекта".
+	 * Этот метод не зависит от игрового цикла и флага 'paused'.
+	 */
+	public void executeExitScriptsSynchronously() {
+		Log.d("StageListener", "Force-executing exit scripts...");
+		Project project = ProjectManager.getInstance().getCurrentProject();
+		if (project == null || sprites == null) {
+			Log.e("StageListener", "Cannot execute exit scripts, project or sprites are null.");
+			return;
+		}
+
+		for (Sprite sprite : sprites) {
+			for (Script script : sprite.getScriptList()) {
+				// Ищем конкретно наш тип скрипта
+				if (script instanceof ExitProjectScript && !script.isCommentedOut()) {
+					Log.d("StageListener", "Found exit script in sprite: " + sprite.getName());
+					// 1. Создаем последовательность действий (как это делает система)
+					ScriptSequenceAction sequence = sprite.createSequenceAction(script);
+
+					// 2. ПРИНУДИТЕЛЬНО ВЫПОЛНЯЕМ ЕЕ
+					// Метод act() с большим delta временем заставит выполниться все действия внутри
+					// последовательности за один вызов.
+					sequence.act(Float.MAX_VALUE);
+				}
+			}
+		}
+		Log.d("StageListener", "Finished executing exit scripts.");
+	}
+
+	/**
+	 * "Транслирует" событие всем спрайтам на текущей сцене.
+	 * @param eventId ID события для запуска.
+	 */
+	/**
+	 * "Транслирует" событие всем спрайтам на текущей сцене.
+	 * @param eventId ID события для запуска.
+	 */
+	private void broadcastEventToAllSprites(EventId eventId) {
+		// Проверка на случай, если спрайты еще не инициализированы
+		if (sprites == null) {
+			return;
+		}
+
+		for (Sprite sprite : sprites) {
+			Multimap<EventId, ScriptSequenceAction> eventMap = sprite.getIdToEventThreadMap();
+			if (eventMap != null && eventMap.containsKey(eventId)) {
+				for (ScriptSequenceAction sequence : eventMap.get(eventId)) {
+					sequence.restart();
+					sprite.look.addAction(sequence);
+				}
+			}
+		}
+	}
+
 	@Override
 	public void dispose() {
+		executeExitScriptsSynchronously();
+
 		if (brightnessContrastHueShader != null) { // <-- ДОБАВЬТЕ ЭТОТ БЛОК
 			brightnessContrastHueShader.dispose();
 		}
@@ -1533,9 +1683,17 @@ public class StageListener implements ApplicationListener {
 			postProcessFbo.dispose();
 		}
 
+		if (threeDManager != null) {
+			threeDManager.dispose();
+		}
+
 		if (postProcessShader != null) {
 			postProcessShader.dispose();
 		}
+
+		RenderManager.INSTANCE.dispose();
+
+		MainMenuActivity.pythonEngine.clearEnvironment();
 
 		disposeStageButKeepActors();
 		font.dispose();

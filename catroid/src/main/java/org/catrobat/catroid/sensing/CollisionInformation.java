@@ -29,12 +29,17 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.ShortArray;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.utils.ImageEditing;
+import org.catrobat.catroid.utils.PolygonDecomposer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +50,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 import ar.com.hjg.pngj.PngjInputException;
 
+@LunoClass
 public class CollisionInformation {
 	private static final String TAG = CollisionInformation.class.getSimpleName();
 	private static final String TAG_COLLISION_POLYGON = "CollisionPolygon";
@@ -118,7 +124,7 @@ public class CollisionInformation {
 		}
 	}
 
-	public void loadCollisionPolygon() {
+	/*public void loadCollisionPolygon() {
 		isCalculationThreadCancelled = false;
 		String path = lookData.getFile().getAbsolutePath();
 
@@ -133,9 +139,39 @@ public class CollisionInformation {
 		if (collisionPolygons.length == 0) {
 			createCollisionPolygon(path);
 		}
+	}*/
+
+	public void loadCollisionPolygon() {
+		// Если полигоны уже были рассчитаны, просто выходим
+		if (this.collisionPolygons != null) {
+			return;
+		}
+
+		// Устанавливаем флаг, что мы начали работу
+		isCalculationThreadCancelled = false;
+		String path = lookData.getFile().getAbsolutePath();
+
+		// --- НАЧАЛО БЛОКИРУЮЩЕЙ ЛОГИКИ ---
+
+		// Попытка загрузить из кеша PNG
+		Polygon[] cachedPolygons = getCollisionPolygonFromPNGMeta(path);
+		if (cachedPolygons.length > 0) {
+			this.collisionPolygons = cachedPolygons;
+			Log.i(TAG, "Successfully loaded " + collisionPolygons.length + " polygons from PNG cache.");
+			return; // Успешно загрузили из кеша, выходим
+		}
+
+		// Если в кеше нет, то СОЗДАЕМ их ПРЯМО ЗДЕСЬ И СЕЙЧАС (в текущем потоке)
+		// Метод createCollisionPolygon теперь будет вызван синхронно.
+		createCollisionPolygon(path);
+
+		// Проверяем, не был ли процесс отменен во время создания
+		if(isCalculationThreadCancelled) {
+			this.collisionPolygons = null;
+		}
 	}
 
-	private void createCollisionPolygon(String path) {
+	/*private void createCollisionPolygon(String path) {
 		Log.i(TAG, "No Collision information from PNG file, creating new one.");
 		if (isCalculationThreadCancelled) {
 			return;
@@ -193,6 +229,204 @@ public class CollisionInformation {
 
 		writeCollisionVerticesToPNGMeta(collisionPolygons, path);
 		Log.i(TAG_COLLISION_POLYGON, "Polygon size of look " + lookData.getName() + ": " + getNumberOfVertices());
+	}*/
+
+	/*private void createCollisionPolygon(String path) {
+		Log.i(TAG, "No Collision information from PNG file, creating new one.");
+		if (isCalculationThreadCancelled) {
+			return;
+		}
+
+		ArrayList<ArrayList<CollisionPolygonVertex>> boundingPolygon = createBoundingPolygonVertices(path, lookData);
+		if (boundingPolygon.size() == 0) {
+			Bitmap bitmap = BitmapFactory.decodeFile(path);
+			if (bitmap != null) {
+				collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+			}
+			return;
+		}
+
+		float epsilon = Constants.COLLISION_POLYGON_CREATION_EPSILON;
+
+		do {
+			if (isCalculationThreadCancelled) {
+				return;
+			}
+
+			ArrayList<Polygon> temporaryConcavePolygons = new ArrayList<>();
+
+			for (int i = 0; i < boundingPolygon.size(); i++) {
+				if (isCalculationThreadCancelled) {
+					return;
+				}
+
+				ArrayList<PointF> points = getPointsFromPolygonVertices(boundingPolygon.get(i));
+				if (points.size() < 3) continue;
+
+				ArrayList<PointF> simplified = simplifyPolygon(points, 0, points.size() - 1, epsilon);
+
+				if (simplified.size() >= 2) {
+					float dx = simplified.get(simplified.size() - 1).x - simplified.get(0).x;
+					float dy = simplified.get(simplified.size() - 1).y - simplified.get(0).y;
+					if (Math.hypot(dx, dy) < epsilon) {
+						simplified.remove(simplified.size() - 1);
+					}
+				}
+
+				if (simplified.size() < 3) continue;
+
+				temporaryConcavePolygons.add(createPolygonFromPoints(simplified));
+			}
+
+			// --- Вот магия ---
+			com.badlogic.gdx.utils.Array<Polygon> finalConvexPolygons = new com.badlogic.gdx.utils.Array<>();
+			for (Polygon concavePolygon : temporaryConcavePolygons) {
+				// Вызываем наш новый, подключенный класс
+				com.badlogic.gdx.utils.Array<Polygon> convexParts = PolygonDecomposer.decompose(concavePolygon);
+				finalConvexPolygons.addAll(convexParts);
+			}
+
+			collisionPolygons = finalConvexPolygons.toArray(Polygon.class);
+			// --- Конец магии ---
+
+			epsilon *= 1.2f;
+
+		} while (getNumberOfVertices() > Constants.COLLISION_VERTEX_LIMIT);
+
+		if (collisionPolygons == null || collisionPolygons.length == 0) {
+			Bitmap bitmap = BitmapFactory.decodeFile(path);
+			if (bitmap != null) {
+				collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+			}
+		}
+
+		if (isCalculationThreadCancelled || !lookData.isValid()) {
+			return;
+		}
+
+		writeCollisionVerticesToPNGMeta(collisionPolygons, path);
+		Log.i(TAG_COLLISION_POLYGON, "Polygon size of look " + lookData.getName() + ": " + getNumberOfVertices() + " vertices in " + collisionPolygons.length + " convex shapes.");
+	}*/
+
+	private void createCollisionPolygon(String path) {
+		Log.i(TAG, "No Collision information from PNG file, creating new one.");
+		if (isCalculationThreadCancelled) {
+			return;
+		}
+
+		Bitmap bitmap = BitmapFactory.decodeFile(path);
+		if (bitmap == null) {
+			// Если битмап не загрузился, выходим
+			return;
+		}
+
+		// Устанавливаем порог. Например, 32x32 пикселя.
+		// Все что меньше, будет использовать простой прямоугольный хитбокс.
+		final int MIN_SIZE_FOR_COMPLEX_COLLISION = 100;
+
+		/*if (bitmap.getWidth() < MIN_SIZE_FOR_COMPLEX_COLLISION || bitmap.getHeight() < MIN_SIZE_FOR_COMPLEX_COLLISION) {
+			Log.i(TAG, "Sprite is too small (" + bitmap.getWidth() + "x" + bitmap.getHeight() + "). Using simple hitbox instead of complex polygon.");
+			collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+
+			// Не забываем записать результат в кеш PNG, если это нужно
+			if (!isCalculationThreadCancelled && lookData.isValid()) {
+				writeCollisionVerticesToPNGMeta(collisionPolygons, path);
+			}
+
+			// Выходим из метода, так как работа сделана
+			return;
+		}*/
+
+		ArrayList<ArrayList<CollisionPolygonVertex>> boundingPolygon = createBoundingPolygonVertices(path, lookData);
+		if (boundingPolygon.size() == 0) {
+			if (bitmap != null) {
+				collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+			}
+			return;
+		}
+
+		float minDimension = Math.min(bitmap.getWidth(), bitmap.getHeight());
+		float epsilon = Math.max(1.0f, minDimension * 0.05f);
+
+		do {
+			if (isCalculationThreadCancelled) {
+				return;
+			}
+
+			// Этот список будет хранить исходные, упрощенные полигоны (возможно, вогнутые)
+			ArrayList<Polygon> simplifiedPolygons = new ArrayList<>();
+
+			for (int i = 0; i < boundingPolygon.size(); i++) {
+				// ... (Ваш код упрощения полигона остается таким же)
+				ArrayList<PointF> points = getPointsFromPolygonVertices(boundingPolygon.get(i));
+				if (points.size() < 3) continue;
+				ArrayList<PointF> simplified = simplifyPolygon(points, 0, points.size() - 1, epsilon);
+				if (simplified.size() >= 2) {
+					float dx = simplified.get(simplified.size() - 1).x - simplified.get(0).x;
+					float dy = simplified.get(simplified.size() - 1).y - simplified.get(0).y;
+					if (Math.hypot(dx, dy) < epsilon) {
+						simplified.remove(simplified.size() - 1);
+					}
+				}
+				if (simplified.size() < 3) continue;
+				simplifiedPolygons.add(createPolygonFromPoints(simplified));
+			}
+
+			// --- ▼▼▼ НОВЫЙ, НАДЕЖНЫЙ КОД ТРИАНГУЛЯЦИИ ▼▼▼ ---
+
+			// Создаем экземпляр триангулятора
+			EarClippingTriangulator triangulator = new EarClippingTriangulator();
+			// Этот список будет хранить все треугольники от всех полигонов
+			com.badlogic.gdx.utils.Array<Polygon> finalTriangles = new com.badlogic.gdx.utils.Array<>();
+
+			// Проходим по каждому упрощенному полигону
+			for (Polygon poly : simplifiedPolygons) {
+				float[] vertices = poly.getVertices(); // Получаем его вершины
+				if (vertices.length < 6) continue;
+
+				// Выполняем триангуляцию. Результат - массив индексов.
+				ShortArray triangleIndices = triangulator.computeTriangles(vertices);
+
+				// Создаем полигоны-треугольники на основе индексов
+				for (int i = 0; i < triangleIndices.size; i += 3) {
+					// Получаем индексы трех вершин треугольника
+					int p1_index = triangleIndices.get(i) * 2;
+					int p2_index = triangleIndices.get(i + 1) * 2;
+					int p3_index = triangleIndices.get(i + 2) * 2;
+
+					// Создаем массив float для нового полигона-треугольника
+					float[] triangleVertices = {
+							vertices[p1_index], vertices[p1_index + 1],
+							vertices[p2_index], vertices[p2_index + 1],
+							vertices[p3_index], vertices[p3_index + 1]
+					};
+
+					finalTriangles.add(new Polygon(triangleVertices));
+				}
+			}
+
+			// Сохраняем результат
+			collisionPolygons = finalTriangles.toArray(Polygon.class);
+
+			// --- ▲▲▲ КОНЕЦ НОВОГО КОДА ▲▲▲ ---
+
+			epsilon *= 1.2f;
+
+		} while (getNumberOfVertices() > Constants.COLLISION_VERTEX_LIMIT);
+
+		if (collisionPolygons == null || collisionPolygons.length == 0) {
+			if (bitmap != null) {
+				collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+			}
+		}
+
+		if (isCalculationThreadCancelled || !lookData.isValid()) {
+			return;
+		}
+
+		writeCollisionVerticesToPNGMeta(collisionPolygons, path);
+		// Теперь лог должен показать гораздо большее количество "shapes"
+		Log.i(TAG_COLLISION_POLYGON, "Polygon size of look " + lookData.getName() + ": " + getNumberOfVertices() + " vertices in " + collisionPolygons.length + " convex shapes (triangles).");
 	}
 
 	public static ArrayList<ArrayList<CollisionPolygonVertex>> createBoundingPolygonVertices(String absoluteBitmapPath,
@@ -449,12 +683,23 @@ public class CollisionInformation {
 		if (metaToWrite.length() > 0) {
 			metaToWrite = new StringBuilder(metaToWrite.substring(0, metaToWrite.length() - 1));
 			ImageEditing.writeMetaDataStringToPNG(absolutePath, Constants.COLLISION_PNG_META_TAG_KEY, metaToWrite.toString());
+			ImageEditing.writeMetaDataStringToPNG(absolutePath, Constants.COLLISION_PNG_META_VERSION_KEY, Constants.LATEST_COLLISION_VERSION);
 		}
 	}
 
 	public static Polygon[] getCollisionPolygonFromPNGMeta(String absolutePath) {
 		String metadata;
+		String version;
 		try {
+			version = ImageEditing.readMetaDataStringFromPNG(absolutePath, Constants.COLLISION_PNG_META_VERSION_KEY);
+
+			// 2. Проверяем версию. Если она не совпадает с нашей последней, считаем кеш недействительным.
+			if (!Constants.LATEST_COLLISION_VERSION.equals(version)) {
+				Log.i(TAG, "Old or invalid collision cache version detected. Forcing regeneration.");
+				return new Polygon[0]; // Возвращаем пустой массив, чтобы запустить пересчет
+			}
+
+
 			metadata = ImageEditing.readMetaDataStringFromPNG(absolutePath, Constants.COLLISION_PNG_META_TAG_KEY);
 		} catch (PngjInputException e) {
 			Log.e(TAG, "Error reading metadata from png!");
@@ -496,10 +741,58 @@ public class CollisionInformation {
 	public static Polygon[] createCollisionPolygonByHitbox(Bitmap bitmap) {
 		float width = bitmap.getWidth();
 		float height = bitmap.getHeight();
-		float[] vertices = {0f, 0f, width, 0f, width, height, 0f, height};
+
+		// Эти вершины соответствуют прямоугольнику, который был перевернут по оси Y.
+		// Его координаты находятся в той же системе, что и у сложных полигонов,
+		// но описывают простую прямоугольную область.
+		// Порядок: нижний левый, нижний правый, верхний правый, верхний левый
+		// для системы координат с Y вверх.
+		float[] vertices = {
+				0f, 0f,
+				width, 0f,
+				width, height,
+				0f, height
+		};
+
 		Polygon polygon = new Polygon(vertices);
+
+		// ЭТОТ КОД МЫ ДОБАВЛЯЛИ ДЛЯ ЦЕНТРИРОВАНИЯ - ОН БЫЛ ОШИБКОЙ. УБИРАЕМ ЕГО.
+		// Вместо этого мы должны применить то же преобразование, что и сложный алгоритм,
+		// но только к вершинам, а не ко всему битмапу.
+		// Сложный алгоритм инвертирует Y и центрирует позже. Мы должны сделать то же самое.
+		// НЕТ, еще проще: сложный алгоритм просто инвертирует Y. Сделаем только это.
+
+		// Отменяем все предыдущие исправления и делаем единственно правильное.
+		// Вершины должны быть заданы в перевернутой системе координат.
+		// (0,0) -> (0, height)
+		// (width, 0) -> (width, height)
+		// (width, height) -> (width, 0)
+		// (0, height) -> (0, 0)
+		// Это НЕВЕРНО. Проблема глубже.
+
+		// ДАВАЙТЕ ВЕРНЕМСЯ К САМОМУ НАЧАЛУ.
+		// Сложный алгоритм делает Y-flip. Значит, его вершины находятся в пространстве, где Y растет вверх.
+		// Простой алгоритм должен делать то же самое.
+		// Прямоугольник от (0,0) до (width, height) в пространстве Y-up - это и есть
+		// {0,0, width,0, width,height, 0,height}.
+
+		// Это означает, что мой предыдущий код по центрированию был неверным.
+		// А проблема в том, что сложный код НЕ ЦЕНТРИРУЕТСЯ.
+		// Поэтому, чтобы все работало, простой код тоже НЕ ДОЛЖЕН ЦЕНТРИРОВАТЬСЯ.
+
+		// Итоговый, финальный код, который приводит все к единому знаменателю:
+		// "Нецентрированный хитбокс в перевернутой по Y системе координат".
+
+		float[] finalVertices = {
+				0f, 0f,
+				width, 0f,
+				width, height,
+				0f, height
+		};
+
+		Polygon finalPolygon = new Polygon(finalVertices);
 		Polygon[] polygons = new Polygon[1];
-		polygons[0] = polygon;
+		polygons[0] = finalPolygon;
 		return polygons;
 	}
 

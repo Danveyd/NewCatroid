@@ -23,6 +23,7 @@
 
 package org.catrobat.catroid.physics;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.common.base.Objects;
 
 import org.catrobat.catroid.ProjectManager;
@@ -30,6 +31,7 @@ import org.catrobat.catroid.content.EventWrapper;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.eventids.BounceOffEventId;
 
+@LunoClass
 public class PhysicalCollision {
 
 	private int contactCounter = 0;

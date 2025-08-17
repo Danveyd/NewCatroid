@@ -27,16 +27,21 @@ import android.widget.Toast
 import android.content.Context
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import android.app.Activity
+import android.content.ContentUris
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageActivity.IntentListener
 import android.util.Log
+import androidx.annotation.RequiresApi
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.R
 
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import java.io.File
+import java.io.IOException
 import java.util.ArrayList
 
 class MoveDownloadsAction() : TemporalAction() {
@@ -44,12 +49,13 @@ class MoveDownloadsAction() : TemporalAction() {
     var scope: Scope? = null
     var fileName: Formula? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun update(percent: Float) {
         val fileName_s = scope?.project?.checkExtension(fileName?.interpretString(scope), "txt") ?: "variable.txt"
         scope?.project?.let {
             val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName_s)
 
-            copyFileToDir(file, it.filesDir)
+            copyFileFromDownloads(CatroidApplication.getAppContext(), fileName_s, it.filesDir)
         }
     }
 
@@ -57,5 +63,50 @@ class MoveDownloadsAction() : TemporalAction() {
         val newFile = File(dir, file.name)
         file.copyTo(newFile, overwrite = true)
         return newFile
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun copyFileFromDownloads(context: Context, fileName: String, destinationDir: File): File? {
+        val resolver = context.contentResolver
+
+        // 1. Описываем, какой файл мы ищем в MediaStore
+        val collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME)
+        val selection = "${MediaStore.Downloads.DISPLAY_NAME} = ?"
+        val selectionArgs = arrayOf(fileName)
+        val sortOrder = "${MediaStore.Downloads.DATE_ADDED} DESC" // Берем самый новый, если есть дубликаты
+
+        try {
+            // 2. Выполняем запрос к MediaStore
+            resolver.query(collection, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    // 3. Файл найден! Получаем его ID
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
+                    val id = cursor.getLong(idColumn)
+
+                    // 4. Формируем URI файла, используя его ID
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
+
+                    // 5. Открываем InputStream из этого URI
+                    resolver.openInputStream(contentUri)?.use { inputStream ->
+                        val destinationFile = File(destinationDir, fileName)
+
+                        // 6. Открываем OutputStream в нашу приватную папку
+                        destinationFile.outputStream().use { outputStream ->
+                            // 7. Копируем байты
+                            inputStream.copyTo(outputStream)
+                        }
+                        return destinationFile
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("MoveDownloadsAction", "Error copying file from Downloads: ${e.message}")
+            return null
+        }
+
+        // Если файл не был найден в MediaStore
+        Log.w("MoveDownloadsAction", "File '$fileName' not found in Downloads.")
+        return null
     }
 }

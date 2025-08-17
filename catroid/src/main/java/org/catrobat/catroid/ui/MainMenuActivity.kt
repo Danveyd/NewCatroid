@@ -22,12 +22,15 @@
  */
 package org.catrobat.catroid.ui
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -35,9 +38,12 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.BuildConfig
+import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.cast.CastManager
@@ -54,6 +60,7 @@ import org.catrobat.catroid.io.ZipArchiver
 import org.catrobat.catroid.io.asynctask.ProjectLoader
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.io.asynctask.ProjectSaver
+import org.catrobat.catroid.python.PythonEngine
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.ui.recyclerview.dialog.AboutDialogFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.MainMenuFragment
@@ -66,9 +73,11 @@ import org.catrobat.catroid.utils.setVisibleOrGone
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
+import kotlin.time.Duration
 
 private const val SDK_VERSION = 24
 
+@LunoClass
 class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
     private lateinit var privacyPolicyBinding: PrivacyPolicyViewBinding
@@ -102,7 +111,45 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         if (BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
             prepareStandaloneProject()
         }
+
+        pythonEngine = PythonEngine(applicationContext)
     }
+
+    /*private fun testPython(): String {
+        Log.d("MainMenuActivity", "Running DIAGNOSTIC Python script...")
+
+        val script = """
+    # Шаг 1: Проверяем, что Python видит наши пути
+    import sys
+    print("--- sys.path ---")
+    for p in sys.path:
+        print(p)
+    print("----------------")
+    
+    # Шаг 2: Проверяем базовый импорт из стандартной библиотеки
+    try:
+        import os
+        print("Successfully imported 'os' module")
+        print(f"OS name: {os.name}")
+    except Exception as e:
+        print(f"FAILED to import 'os': {e}")
+
+    # Шаг 3: Проверяем ГЛАВНОГО ПОДОЗРЕВАЕМОГО - модуль SSL
+    try:
+        import ssl
+        print("Successfully imported 'ssl' module")
+        print(f"SSL version: {ssl.OPENSSL_VERSION}")
+    except Exception as e:
+        print(f"FAILED to import 'ssl': {e}")
+        # Выводим полный traceback ошибки, если она случилась здесь
+        import traceback
+        traceback.print_exc()
+
+    print("--- Diagnostic script finished ---")
+    """.trimIndent()
+
+        return pythonEngine.runScript(script)
+    }*/
 
     private fun showTermsOfUseDialog() {
         /*privacyPolicyBinding = PrivacyPolicyViewBinding.inflate(layoutInflater)
@@ -283,6 +330,53 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         return true
     }
 
+    private fun copyAssets(assetPath: String, destDir: File) {
+        try {
+            val assetManager = this.assets
+            val assets = assetManager.list(assetPath)
+            if (assets.isNullOrEmpty()) {
+                // Если список пуст, это может быть пустая папка или файл.
+                // Но наша логика вызывает рекурсию только для папок с содержимым,
+                // поэтому сюда мы попадем только для пустых папок.
+                // На всякий случай создадим ее.
+                if (!destDir.exists()) {
+                    destDir.mkdirs()
+                }
+                return
+            }
+
+            // Убедимся, что директория назначения существует
+            if (!destDir.exists()) {
+                destDir.mkdirs()
+            }
+
+            for (assetName in assets) {
+                val sourcePath = if (assetPath.isEmpty()) assetName else "$assetPath/$assetName"
+                val destFile = File(destDir, assetName)
+
+                // ---> НОВАЯ, НАДЕЖНАЯ ЛОГИКА ПРОВЕРКИ <---
+                // Если мы можем получить список дочерних элементов, это точно папка.
+                val isDir = assetManager.list(sourcePath)?.isNotEmpty() == true
+
+                if (isDir) {
+                    // Если это папка, создаем ее и запускаем рекурсию
+                    destFile.mkdirs()
+                    copyAssets(sourcePath, destFile)
+                } else {
+                    // Если это файл, просто копируем его
+                    assetManager.open(sourcePath).use { inputStream ->
+                        java.io.FileOutputStream(destFile).use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Ловим любые исключения, чтобы увидеть, если что-то пойдет не так
+            Log.e("PythonEngine", "FATAL ERROR in copyAssets for path: $assetPath", e)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_rate_app -> if (Utils.checkIsNetworkAvailableAndShowErrorMessage(this)) {
@@ -308,6 +402,32 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
                     Uri.parse(FlavoredConstants.PRIVACY_POLICY_URL)
                 )
                 startActivity(browserIntent)
+                /*Toast.makeText(this, "Starting Python script...", Toast.LENGTH_SHORT).show()
+                Thread {
+                    // Внутри фонового потока Thread { ... }
+
+                    try {
+                        // Определяем папку нашего тестового проекта
+                        val projectDir = File(applicationContext.filesDir, "projects/MyNumpyProject")
+                        projectDir.mkdirs()
+
+                        // Копируем библиотеки для этого проекта (эмуляция "установки")
+                        copyAssets("numpy_test_pylibs", File(projectDir, "pylibs"))
+                        copyAssets("numpy_test_pylibs_native", File(projectDir, "pylibs_native"))
+
+                        // Инициализируем Python именно для этого проекта
+                        pythonEngine.initialize(projectDir)
+
+                        // Запускаем тестовый скрипт
+                        val output = testPython() // Ваш тестовый скрипт для NumPy
+                        Log.d("PythonThread", "--- NUMPY OUTPUT ---")
+                        Log.d("PythonThread", output)
+                        Log.d("PythonThread", "--------------------")
+
+                    } catch (e: Exception) {
+                        Log.e("PythonThread", "Error in python thread", e)
+                    }
+                }.start()*/
             }
             R.id.menu_about -> AboutDialogFragment().show(
                 supportFragmentManager,
@@ -334,6 +454,22 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
     }
 
     private fun prepareStandaloneProject() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val isFirstRun = prefs.getBoolean("standalone_first_run", true)
+
+        // ▼▼▼ ГЛАВНОЕ ИЗМЕНЕНИЕ ▼▼▼
+        if (!isFirstRun) {
+            // Если это не первый запуск, просто загружаем существующий проект
+            val projectDir = File(
+                FlavoredConstants.DEFAULT_ROOT_DIRECTORY,
+                FileMetaDataExtractor.encodeSpecialCharsForFileSystem(BuildConfig.PROJECT_NAME)
+            )
+            ProjectLoader(projectDir, this)
+                .setListener(this)
+                .loadProjectAsync()
+            return // Выходим, чтобы не распаковывать zip
+        }
+
         try {
             Log.d("STANDALONE", BuildConfig.START_PROJECT + ".zip")
             val inputStream = assets.open(BuildConfig.START_PROJECT + ".zip")
@@ -378,7 +514,31 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
     companion object {
         val TAG = MainMenuActivity::class.java.simpleName
 
+        lateinit var pythonEngine: PythonEngine
+
         @JvmField
         var surveyCampaign: Survey? = null
+
+        fun toast(text: String, duration: Int) {
+            val toast = Toast(CatroidApplication.getAppContext())
+            toast.setText(text)
+            toast.duration = duration
+            toast.show()
+        }
+
+        fun getCpuArchitecture(): String {
+            // Build.SUPPORTED_ABIS возвращает массив типа ["arm64-v8a", "armeabi-v7a", "armeabi"]
+            // Первый элемент - это основная архитектура.
+            val abis = Build.SUPPORTED_ABIS
+
+            return if (abis != null && abis.isNotEmpty()) {
+                abis[0]
+            } else {
+                // Очень старый и редкий случай, когда SUPPORTED_ABIS недоступен.
+                // Можно использовать устаревшее свойство как запасной вариант.
+                @Suppress("DEPRECATION")
+                Build.CPU_ABI
+            }
+        }
     }
 }

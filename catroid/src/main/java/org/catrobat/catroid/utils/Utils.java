@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.common.base.Splitter;
 import com.huawei.hms.mlsdk.asr.MLAsrConstants;
 
@@ -91,6 +92,7 @@ import static org.catrobat.catroid.web.ServerAuthenticationConstants.TOKEN_CODE_
 import static org.catrobat.catroid.web.ServerAuthenticationConstants.TOKEN_LENGTH;
 import static org.koin.java.KoinJavaComponent.get;
 
+@LunoClass
 public final class Utils {
 
 	private static final String TAG = Utils.class.getSimpleName();

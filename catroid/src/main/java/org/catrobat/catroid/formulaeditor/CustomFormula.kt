@@ -1,17 +1,22 @@
 package org.catrobat.catroid.formulaeditor
 
 import android.util.Log
+import com.danvexteam.lunoscript_annotations.LunoClass
 
 // Убедитесь, что InternTokenType импортирован или доступен
 // import org.catrobat.catroid.formulaeditor.InternTokenType
 
+@LunoClass
 data class CustomFormula(
-    val uniqueName: String, // Уникальное имя для внутренней идентификации и значения токена
-    val displayName: String, // Отображаемое имя для пользователя в списке. Позже можно сделать ключом ресурса.
+    val uniqueName: String,
+    val displayName: String,
     val paramCount: Int,
     val defaultParamValues: List<String>,
-    val defaultParamTypes: List<InternTokenType>, // Должно совпадать по размеру с defaultParamValues
-    val jsCode: String // JavaScript код, который должен вернуть значение, например, "return p[0] + p[1];"
+    val defaultParamTypes: List<InternTokenType>,
+
+    // --- ЗАМЕНЯЕМ JS НА ЭТО ---
+    val lunoFunctionName: String, // Имя функции в code.txt
+    val ownerLibraryId: String    // ID библиотеки (имя файла .newlib)
 ) {
     init {
         require(defaultParamValues.size == paramCount) {
@@ -23,6 +28,7 @@ data class CustomFormula(
     }
 }
 
+@LunoClass
 object CustomFormulaManager {
     val formulas: MutableList<CustomFormula> = mutableListOf()
 
@@ -66,5 +72,10 @@ object CustomFormulaManager {
 
     fun getFormulaByUniqueName(name: String): CustomFormula? {
         return formulas.find { it.uniqueName == name }
+    }
+
+    fun removeFormulasByOwner(libraryId: String) {
+        formulas.removeAll { it.ownerLibraryId == libraryId }
+        Log.i("CustomFormulaManager", "Удалены формулы, принадлежащие $libraryId")
     }
 }

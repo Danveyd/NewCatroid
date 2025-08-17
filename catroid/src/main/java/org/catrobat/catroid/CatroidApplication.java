@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid;
 
+import static org.catrobat.catroid.common.FlavoredConstants.DEFAULT_ROOT_DIRECTORY;
+
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
@@ -29,6 +31,7 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.huawei.agconnect.AGConnectInstance;
@@ -37,10 +40,13 @@ import com.huawei.hms.mlsdk.common.MLApplication;
 
 import org.catrobat.catroid.formulaeditor.CustomFormulaManager;
 import org.catrobat.catroid.koin.CatroidKoinHelperKt;
+import org.catrobat.catroid.utils.FileMetaDataExtractor;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.File;
 import java.util.Locale;
 
+@LunoClass
 public class CatroidApplication extends Application {
 
 	private static final String TAG = CatroidApplication.class.getSimpleName();

@@ -41,6 +41,7 @@ import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.catrobat.catroid.BuildConfig;
@@ -69,6 +70,7 @@ import static org.catrobat.catroid.common.FlavoredConstants.LIBRARY_BASE_URL;
 import static org.catrobat.catroid.ui.MainMenuActivity.surveyCampaign;
 
 @SuppressLint("SetJavaScriptEnabled")
+@LunoClass
 public class WebViewActivity extends AppCompatActivity {
 
 	private static final String TAG = WebViewActivity.class.getSimpleName();

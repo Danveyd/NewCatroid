@@ -34,20 +34,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.content.bricks.UserDefinedBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
 import org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType
-import org.catrobat.catroid.utils.ToastUtil
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-
 import org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType.INPUT
 import org.catrobat.catroid.userbrick.UserDefinedBrickData.UserDefinedBrickDataType.LABEL
+import org.catrobat.catroid.utils.ToastUtil
 import org.koin.android.ext.android.inject
 
+@LunoClass
 class AddUserDefinedBrickFragment : Fragment() {
     companion object {
         const val TAG: String = "add_user_defined_brick_fragment"

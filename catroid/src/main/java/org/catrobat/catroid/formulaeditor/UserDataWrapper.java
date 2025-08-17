@@ -24,6 +24,7 @@
 package org.catrobat.catroid.formulaeditor;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
@@ -33,6 +34,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserDefinedScript;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 
+@LunoClass
 public final class UserDataWrapper {
 
 	public static UserVariable getUserVariable(String name, Scope scope) {

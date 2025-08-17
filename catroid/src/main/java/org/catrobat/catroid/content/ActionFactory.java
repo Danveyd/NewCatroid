@@ -25,6 +25,7 @@ package org.catrobat.catroid.content;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.BrickValues;
@@ -56,6 +57,7 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.io.DeviceListAccessor;
 import org.catrobat.catroid.io.DeviceUserDataAccessor;
 import org.catrobat.catroid.io.DeviceVariableAccessor;
+import org.catrobat.catroid.libraries.CustomBrickDefinition;
 import org.catrobat.catroid.physics.PhysicsLook;
 import org.catrobat.catroid.physics.PhysicsObject;
 import org.catrobat.catroid.stage.SpeechSynthesizer;
@@ -75,6 +77,7 @@ import static org.koin.java.KoinJavaComponent.get;
 
 import android.util.Log;
 
+@LunoClass
 public class ActionFactory extends Actions {
 
 	public EventAction createUserBrickAction(Sprite sprite, SequenceAction sequence,
@@ -97,11 +100,40 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action RunShellAction(Sprite sprite, SequenceAction sequence, Formula command, UserVariable variable) {
+		RunShellAction action = action(RunShellAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setCommand(command);
+		action.setUserVariable(variable);
+		return action;
+	}
+
 	public Action createWaitAction(Sprite sprite, SequenceAction sequence, Formula delay) {
 		WaitAction action = action(WaitAction.class);
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
 		action.setDelay(delay);
+		return action;
+	}
+
+	public Action createCopyProjectFileAction(Sprite sprite, SequenceAction sequence,
+											  Formula sourceFileName, Formula newFileName) {
+		CopyProjectFileAction action = action(CopyProjectFileAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setSourceFileName(sourceFileName);
+		action.setNewFileName(newFileName);
+		return action;
+	}
+
+	public Action createSetSoundVolumeAction(Sprite sprite, SequenceAction sequence,
+											 SoundInfo sound, Formula volume) {
+		SetSoundVolumeAction action = action(SetSoundVolumeAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setSound(sound);
+		action.setVolume(volume);
 		return action;
 	}
 
@@ -112,6 +144,279 @@ public class ActionFactory extends Actions {
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
 		action.setDelay(delay);
+		return action;
+	}
+
+	public Action createCreate3dObjectAction(Sprite sprite, ScriptSequenceAction sequence,
+											 Formula objectId, Formula modelPath) {
+		Create3dObjectAction action = Actions.action(Create3dObjectAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setObjectId(objectId);
+		action.setModelPath(modelPath);
+		return action;
+	}
+
+	public Action createSetFogAction(Sprite sprite, SequenceAction sequence, Formula r, Formula g, Formula b, Formula density) {
+		SetFogAction action = Actions.action(SetFogAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.red = r;
+		action.green = g;
+		action.blue = b;
+		action.density = density;
+		return action;
+	}
+
+	public Action createCastRayAction(Sprite sprite, ScriptSequenceAction sequence,
+									  Formula rayName,
+									  Formula fromX, Formula fromY, Formula fromZ,
+									  Formula dirX, Formula dirY, Formula dirZ) {
+		CastRayAction action = Actions.action(CastRayAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.rayName = rayName;
+		action.fromX = fromX; action.fromY = fromY; action.fromZ = fromZ;
+		action.dirX = dirX; action.dirY = dirY; action.dirZ = dirZ;
+		return action;
+	}
+
+	public Action createSetSkyColorAction(Sprite sprite, ScriptSequenceAction sequence,
+										  Formula red, Formula green, Formula blue) {
+		SetSkyColorAction action = Actions.action(SetSkyColorAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.red = red;
+		action.green = green;
+		action.blue = blue;
+		return action;
+	}
+
+	public Action createRemove3dObjectAction(Sprite sprite, ScriptSequenceAction sequence, Formula objectId) {
+		Remove3dObjectAction action = Actions.action(Remove3dObjectAction.class);
+        action.scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.objectId = objectId;
+		return action;
+	}
+
+	public Action createSet3dPositionAction(Sprite sprite, ScriptSequenceAction sequence,
+											Formula objectId, Formula x, Formula y, Formula z) {
+		Set3dPositionAction action = Actions.action(Set3dPositionAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action set3dVelocity(Sprite sprite, ScriptSequenceAction sequence,
+											Formula objectId, Formula x, Formula y, Formula z) {
+		Set3dVelocityAction action = Actions.action(Set3dVelocityAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action apply3dForce(Sprite sprite, ScriptSequenceAction sequence,
+								Formula objectId, Formula x, Formula y, Formula z) {
+		Apply3dForceAction action = Actions.action(Apply3dForceAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action createSetObjectTextureAction(Sprite sprite, ScriptSequenceAction sequence,
+											   Formula objectId, Formula textureName) {
+		SetObjectTextureAction action = Actions.action(SetObjectTextureAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.textureName = textureName;
+		return action;
+	}
+
+	public Action createSetCameraRotationAction(Sprite sprite, ScriptSequenceAction sequence,
+												Formula yaw, Formula pitch, Formula roll) {
+		SetCameraRotationAction action = Actions.action(SetCameraRotationAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.yaw = yaw;
+		action.pitch = pitch;
+		action.roll = roll;
+		return action;
+	}
+
+	public Action createCube(Sprite sprite, ScriptSequenceAction sequence,
+												Formula name) {
+		CreateCubeAction action = Actions.action(CreateCubeAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = name;
+		return action;
+	}
+
+	public Action set3dGravity(Sprite sprite, ScriptSequenceAction sequence, Formula x, Formula y, Formula z) {
+		Set3dGravityAction action = Actions.action(Set3dGravityAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action createSetObjectColorAction(Sprite sprite, ScriptSequenceAction sequence,
+											 Formula id, Formula r, Formula g, Formula b) {
+		SetObjectColorAction action = Actions.action(SetObjectColorAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = id;
+		action.red = r;
+		action.green = g;
+		action.blue = b;
+		return action;
+	}
+
+	public Action createSetAmbientLightAction(Sprite sprite, ScriptSequenceAction sequence,
+											  Formula r, Formula g, Formula b) {
+		SetAmbientLightAction action = Actions.action(SetAmbientLightAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.red = r;
+		action.green = g;
+		action.blue = b;
+		return action;
+	}
+
+	public Action createSetDirectionalLightAction(Sprite sprite, ScriptSequenceAction sequence,
+												  Formula id, Formula r, Formula g, Formula b, Formula dx, Formula dy, Formula dz) {
+		SetDirectionalLightAction action = Actions.action(SetDirectionalLightAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.lightId = id;
+		action.red = r;
+		action.green = g;
+		action.blue = b;
+		action.dirX = dx;
+		action.dirY = dy;
+		action.dirZ = dz;
+		return action;
+	}
+
+	public Action createUploadFileAction(Sprite sprite, SequenceAction sequence, Formula url, Formula filePath, int fileTypeSelection, Formula mimeType, int storageTypeSelection) {
+		UploadFileAction action = Actions.action(UploadFileAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.url = url;
+		action.filePath = filePath;
+		action.fileTypeSelection = fileTypeSelection;
+		action.mimeType = mimeType;
+		action.storageTypeSelection = storageTypeSelection;
+		return action;
+	}
+
+	public Action createSetShaderUniformAction(Sprite sprite, SequenceAction sequence, Formula name, Formula x, Formula y, Formula z) {
+		SetShaderUniformAction action = Actions.action(SetShaderUniformAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setUniformName(name);
+		action.setValueX(x);
+		action.setValueY(y); // Будет null для float
+		action.setValueZ(z); // Будет null для float
+		return action;
+	}
+
+	public Action createSetShaderCodeAction(Sprite sprite, SequenceAction sequence, Formula vertexCode, Formula fragmentCode) {
+		SetShaderCodeAction action = Actions.action(SetShaderCodeAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setVertexCode(vertexCode);
+		action.setFragmentCode(fragmentCode);
+		return action;
+	}
+
+	// в org.catrobat.catroid.content
+	public Action createSetCCDAction(Sprite sprite, SequenceAction sequence, Formula objectId, Formula enabled) {
+		SetCCDAction action = Actions.action(SetCCDAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setObjectId(objectId);
+		action.setEnabled(enabled);
+		return action;
+	}
+
+	public Action createSetPhysicsStateAction(Sprite sprite, ScriptSequenceAction sequence,
+											  Formula objectId, int stateSelection, Formula mass) {
+		SetPhysicsStateAction action = Actions.action(SetPhysicsStateAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.stateSelection = stateSelection;
+		action.mass = mass;
+		return action;
+	}
+
+	public Action createSetCameraPositionAction(Sprite sprite, ScriptSequenceAction sequence,
+												Formula x, Formula y, Formula z) {
+		SetCameraPositionAction action = Actions.action(SetCameraPositionAction.class);
+        action.scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action createCameraLookAtAction(Sprite sprite, ScriptSequenceAction sequence,
+										   Formula x, Formula y, Formula z) {
+		CameraLookAtAction action = Actions.action(CameraLookAtAction.class);
+        action.scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
+		return action;
+	}
+
+	public Action createSet3dRotationAction(Sprite sprite, ScriptSequenceAction sequence,
+											Formula objectId, Formula yaw, Formula pitch, Formula roll) {
+		Set3dRotationAction action = Actions.action(Set3dRotationAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.yaw = yaw;
+		action.pitch = pitch;
+		action.roll = roll;
+		return action;
+	}
+
+	public Action createSet3dScaleAction(Sprite sprite, ScriptSequenceAction sequence,
+										 Formula objectId, Formula scaleX, Formula scaleY, Formula scaleZ) {
+		Set3dScaleAction action = Actions.action(Set3dScaleAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.scaleX = scaleX;
+		action.scaleY = scaleY;
+		action.scaleZ = scaleZ;
+		return action;
+	}
+
+	public Action createObjectLookAtAction(Sprite sprite, ScriptSequenceAction sequence,
+										   Formula objectId, Formula x, Formula y, Formula z) {
+		ObjectLookAtAction action = Actions.action(ObjectLookAtAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.xValue = x;
+		action.yValue = y;
+		action.zValue = z;
 		return action;
 	}
 
@@ -1003,6 +1308,19 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createCustomAction(Sprite sprite, SequenceAction sequence,
+									 CustomBrickDefinition definition, List<Formula> parameterFormulas) {
+		CustomAction action = Actions.action(CustomAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+
+		// Используем сеттеры для настройки
+		action.setScope(scope);
+		action.setDefinition(definition);
+		action.setParameterFormulas(parameterFormulas);
+
+		return action;
+	}
+
 	public Action createAskAction(Sprite sprite, SequenceAction sequence, Formula questionFormula,
 			UserVariable answerVariable) {
 		AskAction action = Actions.action(AskAction.class);
@@ -1271,6 +1589,42 @@ public class ActionFactory extends Actions {
 		action.setScope(scope);
 		action.setName(name);
 		action.setText(text);
+		return action;
+	}
+
+	public Action createRunPythonScriptAction(Sprite sprite, SequenceAction sequence, Formula script, Formula variableName) {
+		RunPythonScriptAction action = action(RunPythonScriptAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		//scope.setContext(sprite.getContext());
+		action.setScope(scope);
+		action.setScript(script);
+		action.setVariableName(variableName); // Устанавливаем новое поле
+		return action;
+	}
+
+	public Action createLoadPythonLibraryAction(Sprite sprite, SequenceAction sequence, Formula fileName) {
+		LoadPythonLibraryAction action = action(LoadPythonLibraryAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		//scope.setContext(sprite.getContext());
+		action.setScope(scope);
+		action.setFileName(fileName);
+		return action;
+	}
+
+	public Action createLoadNativeModuleAction(Sprite sprite, SequenceAction sequence, Formula fileName) {
+		LoadNativeModuleAction action = action(LoadNativeModuleAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		//scope.setContext(sprite.getContext());
+		action.setScope(scope);
+		action.setFileName(fileName);
+		return action;
+	}
+
+	public Action createClearPythonEnvironmentAction(Sprite sprite, SequenceAction sequence) {
+		ClearPythonEnvironmentAction action = action(ClearPythonEnvironmentAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		//scope.setContext(sprite.getContext());
+		action.setScope(scope);
 		return action;
 	}
 
@@ -2066,6 +2420,34 @@ public class ActionFactory extends Actions {
 		action.setDuration(5);
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
+		return action;
+	}
+
+	public Action createSet3dFrictionAction(Sprite sprite, SequenceAction sequence,Formula id, Formula fric) {
+		Set3dFrictionAction action = action(Set3dFrictionAction.class);
+
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.friction = fric;
+		action.objectId = id;
+		return action;
+	}
+
+	public Action createCreateSphereAction(Sprite sprite, ScriptSequenceAction sequence, Formula objectId) {
+		CreateSphereAction action = Actions.action(CreateSphereAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		return action;
+	}
+
+	public Action createSetRestitutionAction(Sprite sprite, ScriptSequenceAction sequence,
+											 Formula objectId, Formula restitution) {
+		SetRestitutionAction action = Actions.action(SetRestitutionAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.scope = scope;
+		action.objectId = objectId;
+		action.restitution = restitution;
 		return action;
 	}
 

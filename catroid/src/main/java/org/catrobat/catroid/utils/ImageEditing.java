@@ -38,6 +38,7 @@ import ar.com.hjg.pngj.IImageLine;
 import ar.com.hjg.pngj.PngReader;
 import ar.com.hjg.pngj.PngWriter;
 import ar.com.hjg.pngj.PngjException;
+import ar.com.hjg.pngj.PngjInputException;
 import ar.com.hjg.pngj.chunks.ChunkCopyBehaviour;
 import ar.com.hjg.pngj.chunks.ChunkHelper;
 import ar.com.hjg.pngj.chunks.PngChunk;
@@ -222,29 +223,55 @@ public final class ImageEditing {
 		return "";
 	}
 
+	// В файле: org/catrobat/catroid/utils/ImageEditing.java
+
 	public static synchronized void writeMetaDataStringToPNG(String absolutePath, String key, String value) {
-		String tempFilename = absolutePath.substring(0, absolutePath.length() - 4) + "___temp.png";
-
 		File oldFile = new File(absolutePath);
-		File newFile = new File(tempFilename);
 
-		PngReader pngr = new PngReader(oldFile);
-		PngWriter pngw = new PngWriter(newFile, pngr.imgInfo, true);
-		pngw.copyChunksFrom(pngr.getChunksList(), ChunkCopyBehaviour.COPY_ALL);
-		pngw.getMetadata().setText(key, value);
-		for (int row = 0; row < pngr.imgInfo.rows; row++) {
-			IImageLine l1 = pngr.readRow();
-			pngw.writeRow(l1);
-		}
-		pngr.end();
-		pngw.end();
+		// --- НАЧАЛО ИСПРАВЛЕНИЯ ---
 
-		if (!oldFile.delete()) {
-			Log.e(TAG, "writeMetaDataStringToPNG: Failed to delete old file");
+		// Быстрая проверка: если это точно не PNG, даже не пытаемся.
+		// Это не 100% гарантия (файл может быть переименован), но отсечет большинство случаев.
+		if (!absolutePath.toLowerCase(Locale.US).endsWith(".png")) {
+			return;
 		}
-		if (!newFile.renameTo(new File(absolutePath))) {
-			Log.e(TAG, "writeMetaDataStringToPNG: Failed to rename new file");
+
+		// Блок try-catch - это главная защита. Он поймает ошибку, если файл
+		// окажется не-PNG, даже если у него расширение .png.
+		try {
+			String tempFilename = absolutePath.substring(0, absolutePath.length() - 4) + "___temp.png";
+			File newFile = new File(tempFilename);
+
+			PngReader pngr = new PngReader(oldFile);
+			PngWriter pngw = new PngWriter(newFile, pngr.imgInfo, true);
+
+			pngw.copyChunksFrom(pngr.getChunksList(), ChunkCopyBehaviour.COPY_ALL);
+			pngw.getMetadata().setText(key, value);
+
+			for (int row = 0; row < pngr.imgInfo.rows; row++) {
+				IImageLine l1 = pngr.readRow();
+				pngw.writeRow(l1);
+			}
+
+			pngr.end();
+			pngw.end();
+
+			if (!oldFile.delete()) {
+				Log.e(TAG, "writeMetaDataStringToPNG: Failed to delete old file");
+			}
+			if (!newFile.renameTo(new File(absolutePath))) {
+				Log.e(TAG, "writeMetaDataStringToPNG: Failed to rename new file");
+			}
+
+		} catch (PngjInputException e) {
+			// Ловим конкретную ошибку "Bad PNG signature" и просто игнорируем ее.
+			// Это означает, что мы пытались обработать не-PNG файл, и это нормально.
+			Log.w(TAG, "Tried to write metadata to a non-PNG or corrupted file: " + absolutePath);
+		} catch (Exception e) {
+			// Ловим любые другие возможные ошибки при работе с файлами.
+			Log.e(TAG, "Generic error while writing PNG metadata for: " + absolutePath, e);
 		}
+		// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 	}
 
 	public static boolean isPixelTransparent(int[] pixels, int width, int x, int y) {

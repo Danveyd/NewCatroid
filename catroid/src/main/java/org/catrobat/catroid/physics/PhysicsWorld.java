@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Look;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@LunoClass
 public class PhysicsWorld {
 	static {
 		GdxNativesLoader.load();
@@ -69,7 +71,7 @@ public class PhysicsWorld {
 	public static final int POSITION_ITERATIONS = 3;
 
 	public static final Vector2 DEFAULT_GRAVITY = new Vector2(0.0f, -10.0f);
-	public static final boolean IGNORE_SLEEPING_OBJECTS = false;
+	public static final boolean IGNORE_SLEEPING_OBJECTS = true;
 	public static Vector2 activeArea;
 
 	public static final int STABILIZING_STEPS = 6;

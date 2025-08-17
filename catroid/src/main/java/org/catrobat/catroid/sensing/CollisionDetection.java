@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Look;
@@ -18,6 +19,7 @@ import org.catrobat.catroid.utils.NativeLookOptimizer;
 import java.util.ArrayList;
 import java.util.List;
 
+@LunoClass
 public final class CollisionDetection {
 
 	// --- Pre-allocated vectors to reduce garbage collection ---

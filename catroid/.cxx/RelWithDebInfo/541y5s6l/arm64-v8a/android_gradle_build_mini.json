@@ -22,7 +22,8 @@
       "abi": "arm64-v8a",
       "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\RelWithDebInfo\\541y5s6l\\obj\\arm64-v8a\\libcatroid.so",
       "runtimeFiles": [
-        "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\arm64-v8a\\libonnxruntime.so"
+        "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\arm64-v8a\\libonnxruntime.so",
+        "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\arm64-v8a\\libpython3.12.so"
       ]
     }
   }

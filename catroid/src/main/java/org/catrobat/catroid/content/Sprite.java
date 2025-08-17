@@ -27,6 +27,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -84,7 +85,7 @@ import androidx.annotation.NonNull;
 		"userLists",
 		"userDefinedBrickList"
 })
-
+@LunoClass
 public class Sprite implements Nameable, Serializable {
 
 	private static final long serialVersionUID = 1L;

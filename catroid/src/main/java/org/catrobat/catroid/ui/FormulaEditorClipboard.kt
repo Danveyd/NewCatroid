@@ -31,11 +31,12 @@ import org.catrobat.catroid.formulaeditor.InternToken
 import java.util.ArrayList
 
 @SuppressLint("InflateParams")
-class FormulaEditorClipboard(private val formulaEditorEditText: FormulaEditorEditText) {
+object FormulaEditorClipboard {
 
-    @VisibleForTesting
-    var clipboard: List<InternToken>? = null
+    // 2. Поле для хранения теперь часть синглтона. Делаем его приватным.
+    private var clipboard: List<InternToken>? = null
 
+    // 3. Вспомогательные методы делаем приватными.
     private fun cloneTokens(tokens: List<InternToken>): List<InternToken> {
         val clonedTokens = ArrayList<InternToken>()
         tokens.forEach { token -> clonedTokens.add(token.deepCopy()) }
@@ -50,19 +51,18 @@ class FormulaEditorClipboard(private val formulaEditorEditText: FormulaEditorEdi
         }
     }
 
-    fun copy() {
-        copyTokens(formulaEditorEditText.selectedTokens)
-    }
-
-    fun checkIfSelectedAndCopy() {
-        if (formulaEditorEditText.selectedTokens != null) {
-            copyTokens(formulaEditorEditText.selectedTokens)
+    // 4. Публичные методы теперь принимают EditText как параметр.
+    fun checkIfSelectedAndCopy(editText: FormulaEditorEditText) {
+        if (editText.selectedTokens != null) {
+            copyTokens(editText.selectedTokens)
         } else {
-            copyTokens(formulaEditorEditText.internFormula.internTokenFormulaList)
+            // Если ничего не выделено, копируем всю формулу целиком
+            copyTokens(editText.internFormula.internTokenFormulaList)
         }
     }
 
-    fun paste() {
-        clipboard?.let { formulaEditorEditText.addTokens(cloneTokens(it)); }
+    fun paste(editText: FormulaEditorEditText) {
+        // Логика та же, но используем переданный editText
+        clipboard?.let { editText.addTokens(cloneTokens(it)) }
     }
 }

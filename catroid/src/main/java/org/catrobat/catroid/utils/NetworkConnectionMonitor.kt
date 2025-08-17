@@ -33,6 +33,28 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 
+import kotlin.math.pow
+import kotlin.math.round
+
+/**
+ * Округляет число Double до указанного количества знаков после запятой.
+ * @param places Количество знаков.
+ *               > 0: знаки после запятой (2 -> 123.45)
+ *               = 0: до целого числа (0 -> 123.0)
+ *               < 0: до десятков, сотен и т.д. (-1 -> 120.0, -2 -> 100.0)
+ */
+fun Double.roundTo(places: Int): Double {
+    val multiplier = 10.0.pow(places.toDouble())
+    return round(this * multiplier) / multiplier
+}
+
+/**
+ * Аналогичная функция для Float.
+ */
+fun Float.roundTo(places: Int): Float {
+    return this.toDouble().roundTo(places).toFloat()
+}
+
 class NetworkConnectionMonitor(private val context: Context) : LiveData<Boolean>() {
 
     companion object {

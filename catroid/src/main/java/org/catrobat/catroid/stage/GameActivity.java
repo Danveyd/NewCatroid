@@ -8,8 +8,11 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.R;
 
+@LunoClass
 public class GameActivity extends AppCompatActivity {
     private WebView myWebView;
 

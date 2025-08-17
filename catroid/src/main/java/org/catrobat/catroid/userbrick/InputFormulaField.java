@@ -29,6 +29,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
+@LunoClass
 public class InputFormulaField implements Brick.FormulaField {
 
 	String input;

@@ -33,15 +33,14 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.math.Matrix4
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.content.Look
 import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.content.Scope
-import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.formulaeditor.common.Conversions.convertArgumentToDouble
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageListener
-import org.catrobat.catroid.utils.ErrorLog
 import kotlin.math.roundToInt
 
 private const val COLOR_HEX_PREFIX = "#"
@@ -52,6 +51,7 @@ private const val ARGB_END_INDEX = 8
 private const val HEX_COLOR_BLACK = "#000000"
 private const val TAG = "COLORATXY"
 
+@LunoClass
 class ColorAtXYDetection(
     scope: Scope,
     stageListener: StageListener?

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" />
+
+    <!-- Используем стиль "Libraries", который можно создать в styles.xml -->
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_custom_layout"
+        style="@style/BrickContainer.Libs.Big"> <!-- Или свой стиль -->
+
+        <include layout="@layout/icon_brick_category_libs" /> <!-- Иконка для категории -->
+
+        <!-- Текстовая часть №1 (до первого параметра) -->
+        <TextView
+            android:id="@+id/custom_brick_header_part_1"
+            style="@style/BrickText.SingleLine"
+            android:text=""/>
+
+        <!-- Параметр №1 (может быть Formula или Spinner) -->
+        <TextView
+            android:id="@+id/custom_brick_formula_1"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+        <Spinner
+            android:id="@+id/custom_brick_spinner_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Текстовая часть №2 (между параметрами) -->
+        <TextView
+            android:id="@+id/custom_brick_header_part_2"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/> <!-- Перенос строки для наглядности -->
+
+        <!-- Параметр №2 (может быть Formula или Spinner) -->
+        <TextView
+            android:id="@+id/custom_brick_formula_2"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+        <Spinner
+            android:id="@+id/custom_brick_spinner_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <!-- Текстовая часть №3 (после всех параметров) -->
+        <TextView
+            android:id="@+id/custom_brick_header_part_3"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_3"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_4"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_4"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_5"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_5"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_6"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_6"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_7"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_7"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_brick_header_part_8"
+            style="@style/BrickText.SingleLine"
+            android:text=""
+            app:layout_newLine="true"/>
+
+        <TextView
+            android:id="@+id/custom_brick_formula_8"
+            style="@style/BrickEditText"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/custom_brick_spinner_8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

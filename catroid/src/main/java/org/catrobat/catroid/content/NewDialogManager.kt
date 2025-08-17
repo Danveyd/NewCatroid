@@ -2,7 +2,6 @@ package org.catrobat.catroid.content
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Color
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
@@ -10,8 +9,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.R
 
+@LunoClass
 class NewDialogManager {
     companion object {
         private var context: Activity? = null

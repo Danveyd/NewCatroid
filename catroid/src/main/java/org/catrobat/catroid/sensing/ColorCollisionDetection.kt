@@ -26,6 +26,7 @@ import androidx.annotation.VisibleForTesting
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Matrix4
+import com.danvexteam.lunoscript_annotations.LunoClass
 import org.catrobat.catroid.content.Look
 import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.content.Scope
@@ -36,6 +37,7 @@ import kotlin.math.sqrt
 
 private const val MAX_PIXELS = 10_000f
 
+@LunoClass
 class ColorCollisionDetection(
     scope: Scope,
     stageListener: StageListener?

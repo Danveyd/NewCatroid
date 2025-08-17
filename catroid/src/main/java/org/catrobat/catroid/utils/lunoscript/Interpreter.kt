@@ -3,6 +3,7 @@ package org.catrobat.catroid.utils.lunoscript
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.math.Rectangle
 import org.catrobat.catroid.CatroidApplication
@@ -40,17 +41,53 @@ import org.catrobat.catroid.formulaeditor.UserList
 import org.catrobat.catroid.formulaeditor.UserVariable
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.userbrick.UserDefinedBrickData
+import org.catrobat.catroid.utils.ErrorLog
 import java.io.File
 import java.util.ArrayList // For LunoValue.List elements
 import kotlin.math.pow
+import org.catrobat.catroid.utils.lunoscript.generated.registerAllNatives
+import org.json.JSONArray
+import org.json.JSONObject
+import java.nio.charset.Charset
 
 inline fun <reified T : Any> LunoValue.asSpecificKotlinType(
-    functionNameForError: String, // Для понятных сообщений об ошибках
-    argPositionForError: Int      // Для понятных сообщений об ошибках
+    functionNameForError: String,
+    argPositionForError: Int
 ): T {
-    if (this is LunoValue.NativeObject && this.obj is T) {
-        return this.obj // Компилятор сам сделает умный каст к T
+    // Проверяем, какой Kotlin-тип от нас ожидают (T)
+    // и пытаемся извлечь соответствующее значение из LunoValue
+    val result: Any? = when (T::class) {
+        // --- ОБНОВЛЕННАЯ ЛОГИКА ДЛЯ ЧИСЕЛ ---
+        Double::class -> when (this) {
+            is LunoValue.Number -> this.value
+            is LunoValue.Float -> this.value.toDouble() // Float можно передать туда, где ожидают Double
+            else -> null
+        }
+        Float::class -> when (this) {
+            is LunoValue.Float -> this.value          // Идеально: LunoValue.Float -> Float
+            is LunoValue.Number -> this.value.toFloat() // Удобно: LunoValue.Number (Double) -> Float
+            else -> null
+        }
+        Int::class -> when (this) {
+            is LunoValue.Number -> this.value.toInt()
+            is LunoValue.Float -> this.value.toInt()
+            else -> null
+        }
+        // --- КОНЕЦ ОБНОВЛЕННОЙ ЛОГИКИ ---
+
+        String::class -> (this as? LunoValue.String)?.value
+        Boolean::class -> (this as? LunoValue.Boolean)?.value
+
+        // Для всех остальных сложных типов (Sprite, Look, File, etc.) используем NativeObject
+        else -> (this as? LunoValue.NativeObject)?.obj
     }
+
+    // Теперь проверяем, что извлеченное значение действительно того типа, что нам нужен
+    if (result is T) {
+        return result
+    }
+
+    // Если нет - выбрасываем понятную ошибку
     val gotType = if (this is LunoValue.NativeObject) this.obj?.javaClass?.name ?: "null native object" else this::class.simpleName
     throw LunoRuntimeError(
         "$functionNameForError: Argument $argPositionForError expected to contain a Kotlin type '${T::class.java.simpleName}', but got '$gotType'.",
@@ -61,6 +98,8 @@ inline fun <reified T : Any> LunoValue.asSpecificKotlinType(
 // Тип для нативных функций остается здесь для использования в Interpreter,
 // но LunoValue.NativeCallable будет хранить CallableNativeLunoFunction
 typealias RawNativeLunoFunction = (interpreter: Interpreter, arguments: List<LunoValue>) -> LunoValue
+
+class PauseExecutionSignal : RuntimeException(null, null, false, false)
 
 class Interpreter(
     private val androidContext: Context? = null, // For Android specific native functions
@@ -80,13 +119,17 @@ class Interpreter(
             LunoValue.NativeObject(CatroidApplication.getAppContext())
         }
 
-        defineNative("MakeToast", 1..1) { _, args -> // <--- ИЗМЕНЕНО НА 1..1 (один аргумент)
-            val messageLunoValue = args[0] // args теперь содержит только один элемент
-            if (messageLunoValue !is LunoValue.String) {
-                throw LunoRuntimeError("MakeToast first argument must be a String.", -1)
-            }
+        defineNative("GetStageListener", 0..0) { _, _ ->
+            LunoValue.NativeObject(StageActivity.stageListener)
+        }
 
-            val actualMessageString = messageLunoValue.value // Получаем чистую Kotlin строку
+        defineNative("StageActivity", 0..0) { _, _ ->
+            LunoValue.NativeObject(StageActivity.activeStageActivity)
+        }
+
+        defineNative("MakeToast", 1..Int.MAX_VALUE) { _, args ->
+
+            val actualMessageString =args.joinToString(" ") { lunoValueToString(it, humanReadable = true) }
             val params = ArrayList<Any>(listOf(actualMessageString))
 
             // Предполагается, что StageActivity.messageHandler и StageActivity.SHOW_TOAST доступны статически
@@ -95,8 +138,26 @@ class Interpreter(
             LunoValue.Null
         }
 
+        defineNative("delay", 1..1) { _, args ->
+            val delayMs = (args[0] as? LunoValue.Number)?.value?.toLong()
+                ?: throw LunoRuntimeError("delay expects a number (milliseconds).", -1)
+
+            try {
+                Thread.sleep(delayMs) // Просто усыпляем поток
+            } catch (e: InterruptedException) {
+                // В LunoScript пока не обрабатываем прерывания потока
+            }
+
+            LunoValue.Null
+        }
+
         defineNative("print", 0..Int.MAX_VALUE) { _, args ->
             Log.d("LunoScript", args.joinToString(" ") { lunoValueToString(it, humanReadable = true) } )
+            LunoValue.Null
+        }
+
+        defineNative("error", 0..Int.MAX_VALUE) { _, args ->
+            ErrorLog.log(args.joinToString(" ") { lunoValueToString(it, humanReadable = true) })
             LunoValue.Null
         }
 
@@ -106,6 +167,53 @@ class Interpreter(
                 is LunoValue.List -> LunoValue.Number(arg.elements.size.toDouble())
                 is LunoValue.LunoObject -> LunoValue.Number(arg.fields.size.toDouble()) // Размер объекта = кол-во полей
                 else -> throw LunoRuntimeError("Unsupported type for len(): ${arg::class.simpleName}", -1)
+            }
+        }
+
+        defineNative("getBytes", 1..2) { _, args ->
+            LunoValue.NativeObject(when (val arg = args[0]) {
+                is LunoValue.String -> {
+                    var chs = Charsets.UTF_8
+                    if (args.size > 1) {
+                        val lunoArg = args[1]
+                        if (lunoArg is LunoValue.NativeObject) {
+                            // Шаг 2: Извлекаем обернутый Kotlin-объект
+                            val wrappedKotlinObject: Any = lunoArg.obj
+
+                            // Шаг 3: Проверяем, является ли обернутый объект экземпляром твоего класса Scope
+                            // Замени org.catrobat.catroid.content.Scope на реальный импортированный класс Scope
+                            if (wrappedKotlinObject is Charset) { // Убедись, что Scope импортирован или указано полное имя
+                                // Шаг 4: Безопасно приводим тип
+                                chs = wrappedKotlinObject as Charset
+                            } else {
+                                throw LunoRuntimeError("Argument 2 must be 'java. nio. charset'. Got: ${wrappedKotlinObject::class}", -1)
+                            }
+                        } else {
+                            throw LunoRuntimeError("Argument 2 must be 'NativeOject'. Got: ${lunoArg::class.simpleName}", -1)
+                        }
+                    }
+                    arg.value.toByteArray(chs)
+                }
+                else -> throw LunoRuntimeError("Argument 1 for 'getBytes()' must be String. Got: ${arg::class.simpleName}", -1)
+            })
+        }
+
+        defineNative("bytesSize", 1 .. 1) { _, args ->
+            val lunoArg = args[0]
+            if (lunoArg is LunoValue.NativeObject) {
+                // Шаг 2: Извлекаем обернутый Kotlin-объект
+                val wrappedKotlinObject: Any = lunoArg.obj
+
+                // Шаг 3: Проверяем, является ли обернутый объект экземпляром твоего класса Scope
+                // Замени org.catrobat.catroid.content.Scope на реальный импортированный класс Scope
+                if (wrappedKotlinObject is ByteArray) { // Убедись, что Scope импортирован или указано полное имя
+                    // Шаг 4: Безопасно приводим тип
+                    LunoValue.Number(wrappedKotlinObject.size.toDouble())
+                } else {
+                    throw LunoRuntimeError("Argument 1 must be 'ByteArray'. Got: ${wrappedKotlinObject::class}", -1)
+                }
+            } else {
+                throw LunoRuntimeError("Argument 1 must be 'NativeOject'. Got: ${lunoArg::class.simpleName}", -1)
             }
         }
 
@@ -122,6 +230,10 @@ class Interpreter(
                 is LunoValue.Null -> LunoValue.String("Null")
                 is LunoValue.NativeObject -> LunoValue.String("NativeObject")
                 is LunoValue.NativeCallable -> LunoValue.String("NativeCallable")
+                is LunoValue.Float -> LunoValue.String("Float")
+                is LunoValue.NativeClass -> LunoValue.String("NativeClass")
+                is LunoValue.BoundMethod -> LunoValue.String("BoundMethod")
+                is LunoValue.BoundMethod2 -> LunoValue.String("BoundMethod")
                 else -> LunoValue.Null
             }
         }
@@ -337,79 +449,6 @@ class Interpreter(
             LunoValue.NativeObject(Formula(args[0].toString()))
         }
 
-        defineNative("RegisterFormula", 5..5) { interpreter, args -> // Ожидаем 5 аргументов
-            // Аргумент 0: uniqueName (String)
-            val uniqueNameLuno = args[0]
-            if (uniqueNameLuno is LunoValue.Null) { // Правильная проверка на null
-                // Если uniqueName не может быть null, можно выбросить ошибку или просто ничего не делать
-                println("RegisterFormula: uniqueName is null, skipping.")
-                return@defineNative LunoValue.Null // Используем return с меткой для лямбды
-            }
-            if (uniqueNameLuno !is LunoValue.String) {
-                throw LunoRuntimeError("RegisterFormula: uniqueName (arg 0) must be a String.", -1)
-            }
-            val uniqueName = uniqueNameLuno.value
-
-            // Аргумент 1: displayName (String)
-            val displayNameLuno = args[1]
-            if (displayNameLuno !is LunoValue.String) {
-                throw LunoRuntimeError("RegisterFormula: displayName (arg 1) must be a String.", -1)
-            }
-            val displayName = displayNameLuno.value
-
-            // Аргумент 2: defaultParamValues (List of Strings)
-            val defaultValuesLunoList = args[2]
-            if (defaultValuesLunoList !is LunoValue.List) {
-                throw LunoRuntimeError("RegisterFormula: defaultParamValues (arg 2) must be a List.", -1)
-            }
-            val defaultParamValues = defaultValuesLunoList.elements.map {
-                if (it !is LunoValue.String) {
-                    throw LunoRuntimeError("RegisterFormula: all elements in defaultParamValues must be Strings.", -1)
-                }
-                it.value // Получаем Kotlin String
-            }
-
-            // Вычисляем paramCount
-            val paramCount = defaultParamValues.size
-
-            // Аргумент 3: defaultParamTypes (List of Strings, которые нужно смапить в InternTokenType)
-            val defaultTypesLunoList = args[3]
-            if (defaultTypesLunoList !is LunoValue.List) {
-                throw LunoRuntimeError("RegisterFormula: defaultParamTypes (arg 3) must be a List.", -1)
-            }
-            if (defaultTypesLunoList.elements.size != paramCount) {
-                throw LunoRuntimeError("RegisterFormula: defaultParamTypes list must have the same size ($paramCount) as defaultParamValues list.", -1)
-            }
-            val defaultParamTypes = defaultTypesLunoList.elements.map { typeNameLuno ->
-                if (typeNameLuno !is LunoValue.String) {
-                    throw LunoRuntimeError("RegisterFormula: all elements in defaultParamTypes must be Strings representing type names.", -1)
-                }
-                // Функция для маппинга строки в InternTokenType
-                mapStringToInternTokenType(typeNameLuno.value)
-            }
-
-            // Аргумент 4: jsCode (String)
-            val jsCodeLuno = args[4]
-            if (jsCodeLuno !is LunoValue.String) {
-                throw LunoRuntimeError("RegisterFormula: jsCode (arg 4) must be a String.", -1)
-            }
-            val jsCode = jsCodeLuno.value
-
-            // Создаем и добавляем формулу
-            CustomFormulaManager.addFormula(
-                CustomFormula(
-                    uniqueName = uniqueName,
-                    displayName = displayName,
-                    paramCount = paramCount,
-                    defaultParamValues = defaultParamValues,
-                    defaultParamTypes = defaultParamTypes,
-                    jsCode = jsCode
-                )
-            )
-
-            LunoValue.Null
-        }
-
         // --- String Functions ---
         defineNative("toUpperCase", 1..1) { _, args ->
             val str = args[0] as? LunoValue.String ?: throw LunoRuntimeError("toUpperCase expects a string argument.", -1)
@@ -567,45 +606,53 @@ class Interpreter(
         // --- JSON Functions --- (Базовая реализация)
         // Для полноценного JSON.parse лучше использовать библиотеку org.json или kotlinx.serialization
         // Это очень упрощенная версия для простых случаев.
-        defineNative("JSON_parse", 1..1) { interpreter, args -> // interpreter может понадобиться для рекурсии
-            val jsonString = (args[0] as? LunoValue.String)?.value ?: throw LunoRuntimeError("JSON.parse expects a string argument.", -1)
+        defineNative("JSON_parse", 1..1) { interpreter, args ->
+            val jsonString = (args[0] as? LunoValue.String)?.value
+                ?: throw LunoRuntimeError("JSON.parse expects a string argument.", -1)
+
             try {
-                // Внимание: это ОЧЕНЬ упрощенный парсер. Не для продакшена.
-                // Он не будет обрабатывать вложенные структуры, массивы в объектах и т.д. корректно.
-                // Лучше заменить на вызов org.json.JSONObject или kotlinx.serialization.json.Json
-                fun parseJsonValue(value: Any?): LunoValue {
+                // Рекурсивная функция для конвертации
+                fun fromJson(value: Any): LunoValue {
                     return when (value) {
-                        null -> LunoValue.Null
-                        is kotlin.String -> LunoValue.String(value)
-                        is kotlin.Number -> LunoValue.Number(value.toDouble())
-                        is kotlin.Boolean -> LunoValue.Boolean(value)
-                        is kotlin.collections.List<*> -> LunoValue.List(value.map { parseJsonValue(it) }.toMutableList())
-                        is Map<*, *> -> {
+                        is JSONObject -> {
                             val fields = mutableMapOf<String, LunoValue>()
-                            value.forEach { (k, v) -> fields[k.toString()] = parseJsonValue(v) }
+                            for (key in value.keys()) {
+                                fields[key] = fromJson(value.get(key))
+                            }
                             LunoValue.LunoObject(null, fields)
                         }
-                        else -> throw LunoRuntimeError("Unsupported type in JSON parse: ${value?.javaClass?.simpleName}", -1)
+                        is JSONArray -> {
+                            val elements = mutableListOf<LunoValue>()
+                            for (i in 0 until value.length()) {
+                                elements.add(fromJson(value.get(i)))
+                            }
+                            LunoValue.List(elements)
+                        }
+                        is String -> LunoValue.String(value)
+                        is Number -> LunoValue.Number(value.toDouble())
+                        is Boolean -> LunoValue.Boolean(value)
+                        JSONObject.NULL -> LunoValue.Null
+                        else -> LunoValue.Null // Неподдерживаемые типы
                     }
                 }
 
-                // Пример использования org.json (если бы была подключена библиотека)
-                // val jsonTokener = org.json.JSONTokener(jsonString)
-                // val root = jsonTokener.nextValue()
-                // return parseJsonValue(root)
-
-                // Заглушка, так как нет библиотеки JSON здесь:
-                if (jsonString.trim().startsWith("{") && jsonString.trim().endsWith("}")) {
-                    LunoValue.LunoObject(null, mutableMapOf("parsed" to LunoValue.String("Object (basic)")))
-                } else if (jsonString.trim().startsWith("[") && jsonString.trim().endsWith("]")) {
-                    LunoValue.List(mutableListOf(LunoValue.String("Array (basic)")))
+                // Определяем, с чего начинается строка
+                val trimmed = jsonString.trim()
+                val rootNode = if (trimmed.startsWith("{")) {
+                    JSONObject(jsonString)
+                } else if (trimmed.startsWith("[")) {
+                    JSONArray(jsonString)
                 } else {
-                    throw LunoRuntimeError("Basic JSON.parse expects a simple object or array structure like {} or [] or simple values.", -1)
+                    // Если это просто число или строка, JSON-парсер их не возьмет.
+                    // Для таких случаев можно вернуть как есть или обернуть.
+                    // Но API Telegram всегда возвращает объект.
+                    throw LunoRuntimeError("JSON string must start with { or [", -1)
                 }
-                // Для реального использования эту функцию нужно заменить!
 
-            } catch (e: Exception) { // Например, org.json.JSONException
-                throw LunoRuntimeError("Failed to parse JSON string: ${e.message}", -1)
+                return@defineNative fromJson(rootNode)
+
+            } catch (e: org.json.JSONException) {
+                throw LunoRuntimeError("Failed to parse JSON string: ${e.message}", -1, e)
             }
         }
 
@@ -1234,6 +1281,56 @@ class Interpreter(
                 proj.addFile(File(args[1].toString()))
                 LunoValue.Null
             }
+        }
+
+        defineNative("render", 1..1) { interpreter, args ->
+            val renderFunction = args[0]
+
+            // Проверяем, что нам передали именно функцию
+            if (renderFunction !is LunoValue.LunoFunction) {
+                throw LunoRuntimeError("Render_AddTask expects a function as its only argument.", -1)
+            }
+
+            // Проверяем, что функция принимает ровно один аргумент (для рендерера)
+            if (renderFunction.arity().first != 1 || renderFunction.arity().last != 1) {
+                throw LunoRuntimeError("The function passed to Render_AddTask must accept exactly one argument (the renderer).", -1)
+            }
+
+            // Создаем задачу и регистрируем ее
+            val task = RenderTask(renderFunction, interpreter) // Передаем и функцию, и текущий интерпретатор
+            RenderManager.addTask(task)
+
+            LunoValue.Null
+        }
+
+        defineNative("renderWidth", 0..0) { _, _ ->
+            // Эта функция вернет ширину нашего FBO, в котором происходит рисование
+            LunoValue.Number(RenderManager.getWidth().toDouble())
+        }
+
+        defineNative("renderHeight", 0..0) { _, _ ->
+            // Эта функция вернет высоту нашего FBO
+            LunoValue.Number(RenderManager.getHeight().toDouble())
+        }
+
+        defineNative("renderDelete", 1..1) { interpreter, args ->
+            val renderFunction = args[0]
+
+            // Проверяем, что нам передали именно функцию
+            if (renderFunction !is LunoValue.LunoFunction) {
+                throw LunoRuntimeError("Render_AddTask expects a function as its only argument.", -1)
+            }
+
+            // Проверяем, что функция принимает ровно один аргумент (для рендерера)
+            if (renderFunction.arity().first != 1 || renderFunction.arity().last != 1) {
+                throw LunoRuntimeError("The function passed to Render_AddTask must accept exactly one argument (the renderer).", -1)
+            }
+
+            // Создаем задачу и регистрируем ее
+            val task = RenderTask(renderFunction, interpreter) // Передаем и функцию, и текущий интерпретатор
+            RenderManager.deleteTask(task)
+
+            LunoValue.Null
         }
 
         defineNative("ProjectDeleteFile", 2..2) { _, args ->
@@ -3119,6 +3216,8 @@ class Interpreter(
 
             LunoValue.NativeObject(brickInstance)
         }
+
+        registerAllNatives(this)
     }
 
     private fun toKotlinType(value: LunoValue): Any? {
@@ -3131,6 +3230,8 @@ class Interpreter(
             is LunoValue.LunoObject -> value.fields.mapValues { toKotlinType(it.value) }.toMutableMap() // LunoValue.LunoObject -> MutableMap<String, Any?>
             is LunoValue.NativeObject -> value.obj // LunoValue.NativeObject -> Any (исходный обернутый объект)
             is LunoValue.Callable -> value.toString() // Или другое представление, т.к. Callable не имеет прямого Kotlin-эквивалента для данных
+            is LunoValue.Float -> value.value
+            else -> value
         }
     }
 
@@ -3193,7 +3294,7 @@ class Interpreter(
         }
     }
 
-    private fun defineNative(name: String, arity: IntRange, function: RawNativeLunoFunction) {
+    internal fun defineNative(name: String, arity: IntRange, function: RawNativeLunoFunction) {
         globals.define(name, LunoValue.NativeCallable(CallableNativeLunoFunction(name, arity, function)))
     }
 
@@ -3232,6 +3333,65 @@ class Interpreter(
             is BreakStatement -> executeBreakStatement(statement)
             is ContinueStatement -> executeContinueStatement(statement)
             is ClassDeclarationStatement -> executeClassDeclaration(statement)
+            is ImportStatement -> executeImportStatement(statement)
+            is TryCatchStatement -> executeTryCatchStatement(statement)
+        }
+    }
+
+    private fun executeTryCatchStatement(stmt: TryCatchStatement) {
+        try {
+            execute(stmt.tryBlock)
+        } catch (e: LunoRuntimeError) {
+            // Мы поймали ошибку времени выполнения LunoScript
+            if (stmt.catchBlock != null && stmt.catchVariable != null) {
+                // Если есть блок catch, выполняем его
+                val catchScope = Scope(currentScope)
+
+                // Создаем объект-ошибку для LunoScript
+                val errorObject = LunoValue.LunoObject(null, mutableMapOf(
+                    "message" to LunoValue.String(e.message ?: "Unknown error"),
+                    "line" to LunoValue.Number(e.line.toDouble())
+                ))
+
+                catchScope.define(stmt.catchVariable.lexeme, errorObject)
+
+                // Выполняем блок catch в новой области видимости с переменной ошибки
+                executeBlock(listOf(stmt.catchBlock), catchScope)
+            } else {
+                // Если блока catch нет, пробрасываем ошибку дальше
+                throw e
+            }
+        } finally {
+            // Блок finally выполняется всегда
+            if (stmt.finallyBlock != null) {
+                execute(stmt.finallyBlock)
+            }
+        }
+    }
+
+    private fun executeImportStatement(stmt: ImportStatement) {
+        // 1. Собираем полный путь к классу из токенов
+        val fullClassName = stmt.path.joinToString(".") { it.lexeme }
+
+        try {
+            // 2. Используем рефлексию для динамической загрузки класса
+            val loadedClass = Class.forName(fullClassName)
+
+            // 3. Получаем короткое имя класса, которое станет именем переменной
+            val simpleName = loadedClass.simpleName
+
+            // 4. Создаем наш новый LunoValue.NativeClass
+            val classValue = LunoValue.NativeClass(loadedClass)
+
+            // 5. Помещаем его в текущую область видимости
+            currentScope.define(simpleName, classValue)
+
+        } catch (e: ClassNotFoundException) {
+            // Если класс не найден, выбрасываем ошибку времени выполнения
+            throw LunoRuntimeError("Class '$fullClassName' not found.", stmt.line, e)
+        } catch (e: Exception) {
+            // Другие возможные ошибки (например, проблемы с инициализацией класса)
+            throw LunoRuntimeError("Error while importing '$fullClassName': ${e.message}", stmt.line, e)
         }
     }
 
@@ -3268,6 +3428,45 @@ class Interpreter(
             valueToAssign = evaluateCompoundAssignment(currentValue, stmt.operatorToken, rightValue, stmt.line)
         } else {
             valueToAssign = evaluate(stmt.value)
+        }
+
+        if (target is GetExpr) {
+            val objValue = evaluate(target.obj)
+            if (objValue is LunoValue.NativeObject) {
+                val nativeObj = objValue.obj
+                val propName = target.name.lexeme
+                val valueToAssign = evaluate(stmt.value) // было stmt.value
+
+                // --- НОВАЯ, УЛУЧШЕННАЯ ЛОГИКА ---
+                // 1. Ищем сеттер: setPropName(value)
+                val setterName = "set" + propName.capitalize()
+                try {
+                    val setter = nativeObj::class.java.methods.find {
+                        it.name == setterName && it.parameterCount == 1
+                    }
+                    if (setter != null) {
+                        // --- НОВОЕ: КОНВЕРТИРУЕМ ЗНАЧЕНИЕ В ТИП СЕТТЕРА ---
+                        val expectedType = setter.parameterTypes[0]
+                        val kotlinValue = lunoValueToKotlin(valueToAssign, expectedType)
+                        // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+                        setter.invoke(nativeObj, kotlinValue) // Вызываем сеттер
+                        return // Успешно, выходим
+                    }
+                } catch (e: Exception) { /* ... */ }
+
+                // 2. Если сеттера нет, ищем ПУБЛИЧНОЕ ПОЛЕ
+                try {
+                    val field = nativeObj::class.java.getField(propName)
+                    // --- НОВОЕ: КОНВЕРТИРУЕМ ЗНАЧЕНИЕ В ТИП ПОЛЯ ---
+                    val expectedType = field.type
+                    val kotlinValue = lunoValueToKotlin(valueToAssign, expectedType)
+                    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+                    field.set(nativeObj, kotlinValue)
+                    return
+                } catch (e: NoSuchFieldException) { /* ... */ }
+
+                throw LunoRuntimeError("Property '$propName' not found or is not writable.", target.line)
+            }
         }
 
         when (target) {
@@ -3433,6 +3632,7 @@ class Interpreter(
 
 
     private fun executeFunDeclaration(stmt: FunDeclarationStatement) {
+        Log.d("LUNO_INTERPRETER", "Executing FunDeclaration for: ${stmt.name.lexeme}")
         val function = LunoValue.LunoFunction(stmt, currentScope) // Capture current scope as closure
         currentScope.define(stmt.name.lexeme, function)
     }
@@ -3453,6 +3653,7 @@ class Interpreter(
     }
 
     private fun executeClassDeclaration(stmt: ClassDeclarationStatement) {
+        Log.d("LUNO_INTERPRETER", "Executing ClassDeclaration for: ${stmt.name.lexeme}")
         val methods = stmt.methods.associate {
             it.name.lexeme to LunoValue.LunoFunction(it, currentScope) // Methods capture class scope
         }
@@ -3505,53 +3706,96 @@ class Interpreter(
 
 
     private fun operateBinary(left: LunoValue, op: Token, right: LunoValue, line: Int): LunoValue {
-        // Type Coercion and Operation Logic
-        return when (op.type) {
-            // Arithmetic
-            TokenType.PLUS -> when {
-                left is LunoValue.Number && right is LunoValue.Number -> LunoValue.Number(left.value + right.value)
-                left is LunoValue.String || right is LunoValue.String -> {
-                    // Получаем "сырые" строковые значения, не оборачивая их в кавычки.
-                    val leftString = if (left is LunoValue.String) left.value else lunoValueToString(left, humanReadable = true)
-                    val rightString = if (right is LunoValue.String) right.value else lunoValueToString(right, humanReadable = true)
-                    LunoValue.String(leftString + rightString)
+        // --- АРИФМЕТИЧЕСКИЕ ОПЕРАЦИИ (+, -, *, /, %) ---
+        if (op.type in setOf(TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
+
+            // Особый случай для сложения: конкатенация строк и списков
+            if (op.type == TokenType.PLUS) {
+                if (left is LunoValue.String || right is LunoValue.String) {
+                    val leftString = lunoValueToString(left, humanReadable = true)
+                    val rightString = lunoValueToString(right, humanReadable = true)
+                    return LunoValue.String(leftString + rightString)
                 }
-                left is LunoValue.List && right is LunoValue.List -> LunoValue.List((left.elements + right.elements).toMutableList())
-                else -> throw LunoRuntimeError("Operands for '+' must be numbers, strings, or lists. Got ${left::class.simpleName} and ${right::class.simpleName}", line)
+                if (left is LunoValue.List && right is LunoValue.List) {
+                    return LunoValue.List((left.elements + right.elements).toMutableList())
+                }
             }
-            TokenType.MINUS -> numOp(left, right, line, Double::minus)
-            TokenType.MULTIPLY -> when {
-                left is LunoValue.Number && right is LunoValue.Number -> LunoValue.Number(left.value * right.value)
-                left is LunoValue.String && right is LunoValue.Number -> LunoValue.String(left.value.repeat(right.value.toInt().coerceAtLeast(0)))
-                left is LunoValue.Number && right is LunoValue.String -> LunoValue.String(right.value.repeat(left.value.toInt().coerceAtLeast(0)))
-                left is LunoValue.List && right is LunoValue.Number -> {
+
+            // Особый случай для умножения: повторение строк и списков
+            if (op.type == TokenType.MULTIPLY) {
+                val num = (if (left is LunoValue.Number) left.value.toInt() else (right as? LunoValue.Number)?.value?.toInt()) ?: -1
+                val str = (if (left is LunoValue.String) left.value else (right as? LunoValue.String)?.value)
+                val list = (if (left is LunoValue.List) left.elements else (right as? LunoValue.List)?.elements)
+
+                if (num >= 0 && str != null) {
+                    return LunoValue.String(str.repeat(num.coerceAtLeast(0)))
+                }
+                if (num >= 0 && list != null) {
                     val repeatedList = mutableListOf<LunoValue>()
-                    repeat(right.value.toInt().coerceAtLeast(0)) { repeatedList.addAll(left.elements) }
-                    LunoValue.List(repeatedList)
+                    repeat(num.coerceAtLeast(0)) { repeatedList.addAll(list) }
+                    return LunoValue.List(repeatedList)
                 }
-                else -> throw LunoRuntimeError("Operands for '*' must be two numbers, or string/list and number. Got ${left::class.simpleName} and ${right::class.simpleName}", line)
-            }
-            TokenType.DIVIDE -> {
-                val r = right as? LunoValue.Number ?: throw LunoRuntimeError("Right operand for '/' must be a number.", line)
-                if (r.value == 0.0) throw LunoRuntimeError("Division by zero.", line)
-                numOp(left, right, line, Double::div)
-            }
-            TokenType.MODULO -> {
-                val rVal = right as? LunoValue.Number ?: throw LunoRuntimeError("Right operand for '%' must be a number.", line)
-                if (rVal.value == 0.0) throw LunoRuntimeError("Modulo by zero.", line)
-                numOp(left, right, line, Double::rem)
             }
 
-            // Comparison
-            TokenType.GT -> cmpOp(left, right, line) { l, r -> l > r }
-            TokenType.GTE -> cmpOp(left, right, line) { l, r -> l >= r }
-            TokenType.LT -> cmpOp(left, right, line) { l, r -> l < r }
-            TokenType.LTE -> cmpOp(left, right, line) { l, r -> l <= r }
-            TokenType.EQ -> LunoValue.Boolean(isEqual(left, right))
-            TokenType.NEQ -> LunoValue.Boolean(!isEqual(left, right))
+            // --- ОБЩАЯ ЛОГИКА ДЛЯ ЧИСЕЛ ---
+            // Преобразуем оба операнда в Double, чтобы легко их проверить.
+            val leftNum = (left as? LunoValue.Number)?.value ?: (left as? LunoValue.Float)?.value?.toDouble()
+            val rightNum = (right as? LunoValue.Number)?.value ?: (right as? LunoValue.Float)?.value?.toDouble()
 
-            else -> throw LunoRuntimeError("Unknown binary operator: ${op.lexeme}", line)
+            // Если хотя бы один из операндов не является числом, выбрасываем ошибку.
+            if (leftNum == null || rightNum == null) {
+                throw LunoRuntimeError("Operands for '${op.lexeme}' must be numbers. Got ${left::class.simpleName} and ${right::class.simpleName}", line)
+            }
+
+            // Проверка деления на ноль
+            if ((op.type == TokenType.DIVIDE || op.type == TokenType.MODULO) && rightNum == 0.0) {
+                throw LunoRuntimeError("Division by zero.", line)
+            }
+
+            // Вычисляем результат как Double
+            val result: Double = when (op.type) {
+                TokenType.PLUS -> leftNum + rightNum
+                TokenType.MINUS -> leftNum - rightNum
+                TokenType.MULTIPLY -> leftNum * rightNum
+                TokenType.DIVIDE -> leftNum / rightNum
+                TokenType.MODULO -> leftNum % rightNum
+                else -> throw LunoRuntimeError("Unreachable: Unknown arithmetic operator.", line)
+            }
+
+            // Если ОБА исходных операнда были Float, возвращаем Float. Иначе - Double.
+            return if (left is LunoValue.Float && right is LunoValue.Float) {
+                LunoValue.Float(result.toFloat())
+            } else {
+                LunoValue.Number(result)
+            }
         }
+
+        // --- ОПЕРАЦИИ СРАВНЕНИЯ (>, >=, <, <=) ---
+        if (op.type in setOf(TokenType.GT, TokenType.GTE, TokenType.LT, TokenType.LTE)) {
+            val leftNum = (left as? LunoValue.Number)?.value ?: (left as? LunoValue.Float)?.value?.toDouble()
+            val rightNum = (right as? LunoValue.Number)?.value ?: (right as? LunoValue.Float)?.value?.toDouble()
+
+            if (leftNum == null || rightNum == null) {
+                // Можно добавить сравнение строк, если нужно
+                throw LunoRuntimeError("Operands for comparison must be numbers. Got ${left::class.simpleName} and ${right::class.simpleName}", line)
+            }
+
+            val result: Boolean = when (op.type) {
+                TokenType.GT -> leftNum > rightNum
+                TokenType.GTE -> leftNum >= rightNum
+                TokenType.LT -> leftNum < rightNum
+                TokenType.LTE -> leftNum <= rightNum
+                else -> throw LunoRuntimeError("Unreachable: Unknown comparison operator.", line)
+            }
+            return LunoValue.Boolean(result)
+        }
+
+        // --- ОПЕРАЦИИ РАВЕНСТВА (==, !=) ---
+        if (op.type == TokenType.EQ) return LunoValue.Boolean(isEqual(left, right))
+        if (op.type == TokenType.NEQ) return LunoValue.Boolean(!isEqual(left, right))
+
+        // Если ни одна из веток не сработала
+        throw LunoRuntimeError("Unknown binary operator: ${op.lexeme}", line)
     }
 
     private fun evaluateLogicalExpr(expr: LogicalExpr): LunoValue {
@@ -3571,30 +3815,54 @@ class Interpreter(
             TokenType.BANG -> LunoValue.Boolean(!right.isTruthy())
             TokenType.MINUS -> {
                 if (right is LunoValue.Number) LunoValue.Number(-right.value)
+                if (right is LunoValue.Float) LunoValue.Float(-right.value)
                 else throw LunoRuntimeError("Operand for unary '-' must be a number. Got ${right::class.simpleName}", expr.line)
             }
             else -> throw LunoRuntimeError("Unknown unary operator: ${expr.operator.lexeme}", expr.line)
         }
     }
 
+    // В Interpreter.kt
+
     private fun evaluateCallExpr(expr: CallExpr): LunoValue {
         val callee = evaluate(expr.callee)
-        // ДОБАВЬ ЛОГ ЗДЕСЬ:
-        android.util.Log.d("LunoCallExpr", "Calling ${expr.callee}, evaluated callee type: ${callee::class.simpleName}, value: $callee")
         val arguments = expr.arguments.map { evaluate(it) }
 
-        if (callee !is LunoValue.Callable) {
-            android.util.Log.e("LunoCallExpr", "ERROR: Callee is not LunoValue.Callable! It is: $callee of type ${callee::class.simpleName}")
-            throw LunoRuntimeError("Can only call functions, methods, or classes. Got ${callee::class.simpleName}.", expr.line)
-        }
+        android.util.Log.d("LunoCallExpr", "Calling ${expr.callee}, evaluated callee type: ${callee::class.simpleName}, value: $callee")
 
-        // Arity check is now inside LunoValue.Callable types (LunoFunction, NativeCallable, LunoClass)
-        // We pass expr.parenToken to use its line number for arity error reporting if needed
-        // For LunoFunction or LunoClass (constructor), 'this' binding happens within their 'call'
-        val result = callee.call(this, arguments, expr.parenToken)
-        // ДОБАВЬ ЛОГ ЗДЕСЬ:
-        android.util.Log.d("LunoCallExpr", "Call to ${expr.callee} returned: $result (type: ${result::class.simpleName})")
-        return result
+        // --- НАЧАЛО ГЛАВНОГО ИСПРАВЛЕНИЯ ---
+        // Вместо одной проверки "is Callable", мы проверяем каждый тип отдельно.
+        // Это полностью обходит проблему с override и несоответствием сигнатур.
+        when (callee) {
+            is LunoValue.LunoFunction -> {
+                // Напрямую вызываем call из LunoFunction
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            is LunoValue.NativeCallable -> {
+                // Напрямую вызываем call из NativeCallable
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            is LunoValue.BoundMethod -> {
+                // Напрямую вызываем call из BoundMethod
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            is LunoValue.NativeClass -> {
+                // Напрямую вызываем call из BoundMethod
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            // Добавьте сюда LunoClass, когда он станет вызываемым
+            is LunoValue.LunoClass -> {
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            is LunoValue.BoundMethod2 -> { // <-- ДОБАВИТЬ ЭТОТ CASE
+                return callee.call(this, arguments, expr.parenToken)
+            }
+            else -> {
+                // Если это ни один из известных вызываемых типов, выбрасываем ошибку.
+                throw LunoRuntimeError("Can only call functions, methods, or classes. Got ${callee::class.simpleName}.", expr.line)
+            }
+        }
+        // --- КОНЕЦ ГЛАВНОГО ИСПРАВЛЕНИЯ ---
     }
 
 
@@ -3602,16 +3870,20 @@ class Interpreter(
         val objValue = evaluate(expr.obj)
         when (objValue) {
             is LunoValue.LunoObject -> {
-                // Field access
+                // Сначала ищем поле
                 if (objValue.fields.containsKey(expr.name.lexeme)) {
                     return objValue.fields[expr.name.lexeme]!!
                 }
-                // Method access (bind 'this')
+
+                // --- ИСПРАВЛЕНИЕ ---
+                // Если поля нет, ищем метод в классе этого объекта
                 objValue.klass?.findMethod(expr.name.lexeme)?.let { method ->
-                    val boundMethod = method.copy(closure = Scope(method.closure).apply { define("this", objValue) })
-                    return boundMethod
+                    // НАШЛИ МЕТОД! Возвращаем не саму функцию, а "связанный метод".
+                    return LunoValue.BoundMethod2(objValue, method)
                 }
-                if (allowUndefined) return LunoValue.Null // Or throw error: "Undefined property or method..."
+                // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+                if (allowUndefined) return LunoValue.Null
                 throw LunoRuntimeError("Undefined property or method '${expr.name.lexeme}' on object.", expr.line)
             }
             is LunoValue.String -> { // String methods/properties
@@ -3629,17 +3901,119 @@ class Interpreter(
                     else -> if (allowUndefined) LunoValue.Null else throw LunoRuntimeError("Undefined property '${expr.name.lexeme}' on List.", expr.line)
                 }
             }
-            is LunoValue.NativeObject -> { // Accessing properties of native objects (e.g. from a Map)
-                if (objValue.obj is Map<*,*>) {
-                    @Suppress("UNCHECKED_CAST")
-                    val map = objValue.obj as Map<String, Any?>
-                    return LunoValue.fromKotlin(map[expr.name.lexeme])
+            // В файле Interpreter.kt -> evaluateGetExpr
+
+            is LunoValue.NativeObject -> {
+                val nativeObj = objValue.obj
+                val propName = expr.name.lexeme
+
+                // 1. Попытка найти геттер (getPropName, isPropName)
+                try {
+                    val getterName = "get" + propName.capitalize()
+                    val isGetterName = "is" + propName.capitalize()
+                    val getter = nativeObj::class.java.methods.find {
+                        (it.name == getterName || it.name == isGetterName) && it.parameterCount == 0
+                    }
+                    if (getter != null) {
+                        return LunoValue.fromKotlin(getter.invoke(nativeObj))
+                    }
+                } catch (e: Exception) { /* Игнорируем */ }
+
+                // 2. Попытка найти публичное поле
+                try {
+                    val field = nativeObj::class.java.getField(propName)
+                    return LunoValue.fromKotlin(field.get(nativeObj))
+                } catch (e: NoSuchFieldException) {
+                    // Поле не найдено. Это ожидаемо, если это метод.
                 }
-                // Could use reflection for Java object properties, but that's complex and slow.
-                if (allowUndefined) return LunoValue.Null
-                throw LunoRuntimeError("Cannot get property '${expr.name.lexeme}' from native object of type ${objValue.obj::class.simpleName}.", expr.line)
+
+                /*try {
+                    val property = nativeObj::class.members.find { it.name == propName }
+                    if (property != null && property is kotlin.reflect.KProperty1<*, *>) {
+                        @Suppress("UNCHECKED_CAST")
+                        val value = (property as kotlin.reflect.KProperty1<Any, *>).get(nativeObj)
+                        return LunoValue.fromKotlin(value)
+                    }
+                } catch (e: InternalError) {
+                    // ЛОВИМ КОНКРЕТНУЮ ОШИБКУ РЕФЛЕКСИИ и игнорируем ее,
+                    // так как это значит, что мы наткнулись на проблемный класс.
+                    Log.w("LunoInterpreter", "KotlinReflectionInternalError while accessing '${propName}'. Falling back to method call. Error: ${e.message}")
+                } catch (e: Exception) {
+                    // Другие неожиданные ошибки рефлексии тоже лучше проигнорировать и считать, что это метод.
+                    Log.w("LunoInterpreter", "Generic reflection error while accessing '${propName}'. Falling back to method call. Error: ${e.message}")
+                }*/
+
+                // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ ---
+                // 3. Если это не поле и не геттер, то это ДОЛЖЕН БЫТЬ МЕТОД.
+                // Мы не проверяем его существование здесь. Мы просто возвращаем
+                // "обещание" вызвать метод с таким именем. `callNativeMethod`
+                // позже сам выбросит ошибку, если метод не будет найден.
+                return LunoValue.BoundMethod(nativeObj, LunoValue.String(propName))
             }
-            else -> throw LunoRuntimeError("Can only access properties or methods on objects, strings, or lists. Got ${objValue::class.simpleName}.", expr.line)
+            is LunoValue.NativeClass -> {
+                // Мы пытаемся получить доступ к члену класса, а не экземпляра. Это статический доступ.
+                val nativeClass = objValue.klass
+                val memberName = expr.name.lexeme
+
+                // 1. Попытка найти статическое ПОЛЕ
+                try {
+                    val field = nativeClass.getField(memberName)
+                    // Проверяем, что поле действительно статическое
+                    if (java.lang.reflect.Modifier.isStatic(field.modifiers)) {
+                        val value = field.get(null) // для статических полей передаем null
+                        return LunoValue.fromKotlin(value)
+                    }
+                } catch (e: NoSuchFieldException) {
+                    // Поле не найдено, это нормально, может быть, это метод.
+                }
+
+                // 2. Попытка найти статический МЕТОД
+                // Для простоты мы вернем "связанный" статический метод.
+                // Мы можем создать новый тип LunoValue, но можно обойтись и специальной оберткой.
+                // Для начала, давай просто проверим, существует ли такой метод.
+                val staticMethods = nativeClass.methods.filter {
+                    java.lang.reflect.Modifier.isStatic(it.modifiers) && it.name == memberName
+                }
+
+                if (staticMethods.isNotEmpty()) {
+                    // Мы нашли статический метод! Вернем специальный Callable, который его вызовет.
+                    // Это немного сложнее, чем поля. Давай используем твой BoundMethod,
+                    // но в качестве instance передадим сам Class-объект.
+                    // Нам понадобится немного доработать callNativeMethod для этого.
+                    return LunoValue.BoundMethod(nativeClass, LunoValue.String(memberName))
+                }
+
+                if (allowUndefined) return LunoValue.Null
+                throw LunoRuntimeError("Static property or method '$memberName' not found on class '${nativeClass.simpleName}'.", expr.line)
+            }
+            else -> throw LunoRuntimeError("Can only access properties or methods on objects or classes. Got ${objValue::class.simpleName}.", expr.line)
+        }
+    }
+
+    fun callNativeMethod(instanceOrClass: Any, methodName: String, lunoArgs: List<LunoValue>, line: Int): LunoValue {
+        val isStaticCall = instanceOrClass is Class<*>
+        val targetClass = if (isStaticCall) instanceOrClass as Class<*> else instanceOrClass::class.java
+
+        // Ищем подходящий метод через рефлексию
+        val method = targetClass.methods.find { m ->
+            val isStaticMethod = java.lang.reflect.Modifier.isStatic(m.modifiers)
+            (isStaticCall == isStaticMethod) && m.name == methodName && m.parameterCount == lunoArgs.size
+            // TODO: Более умная проверка совместимости типов аргументов здесь, если есть перегрузки
+        } ?: throw LunoRuntimeError("Method '$methodName(${lunoArgs.size} args)' not found on '${targetClass.simpleName}'.", line)
+
+        try {
+            // --- НОВОЕ: УМНАЯ КОНВЕРТАЦИЯ АРГУМЕНТОВ ---
+            val kotlinArgs = lunoArgs.mapIndexed { index, lunoValue ->
+                val expectedType = method.parameterTypes[index]
+                lunoValueToKotlin(lunoValue, expectedType) // Используем наш новый конвертер!
+            }.toTypedArray()
+            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+
+            val instanceForInvoke = if (isStaticCall) null else instanceOrClass
+            val result = method.invoke(instanceForInvoke, *kotlinArgs)
+            return LunoValue.fromKotlin(result)
+        } catch (e: Exception) {
+            throw LunoRuntimeError("Error while executing method '$methodName': ${e.cause?.message ?: e.message}", line, e)
         }
     }
 
@@ -3688,6 +4062,63 @@ class Interpreter(
         }
     }
 
+    /**
+     * Преобразует LunoValue в конкретный тип Kotlin, основываясь на целевом классе.
+     * @param value LunoValue для конвертации.
+     * @param targetClass Класс, в который нужно преобразовать значение (например, Int::class.java).
+     * @return Сконвертированный объект Kotlin/Java или null.
+     * @throws LunoRuntimeError если конвертация невозможна.
+     */
+    fun lunoValueToKotlin(value: LunoValue, targetClass: Class<*>): Any? {
+        // 1. Сначала обрабатываем null.
+        if (value is LunoValue.Null) {
+            // Если параметр метода может быть null, рефлексия примет null.
+            // Если не может - она сама выбросит ошибку, что корректно.
+            return null
+        }
+
+        // 2. Быстрый путь: если у нас уже есть NativeObject с объектом нужного типа.
+        if (value is LunoValue.NativeObject && targetClass.isAssignableFrom(value.obj.javaClass)) {
+            return value.obj
+        }
+
+        // 3. Главная логика конвертации для числовых типов
+        if (value is LunoValue.Number || value is LunoValue.Float) {
+            val doubleValue = if (value is LunoValue.Number) value.value else (value as LunoValue.Float).value.toDouble()
+
+            return when {
+                targetClass == Int::class.java || targetClass == Integer.TYPE -> doubleValue.toInt()
+                targetClass == Long::class.java || targetClass == Long.javaClass -> doubleValue.toLong()
+                targetClass == Float::class.java || targetClass == Float.javaClass -> doubleValue.toFloat()
+                targetClass == Double::class.java || targetClass == Double.javaClass -> doubleValue
+                // Можно добавить Short, Byte и т.д. по необходимости
+                targetClass == String::class.java -> doubleValue.toString() // Неявное преобразование числа в строку
+                else -> null // Не смогли конвертировать число, попробуем другие правила ниже
+            }
+        }
+
+        // 4. Конвертация для других Luno-типов
+        val result: Any? = when(value) {
+            is LunoValue.String -> if (targetClass == String::class.java) value.value else null
+            is LunoValue.Boolean -> if (targetClass == Boolean::class.java || targetClass == java.lang.Boolean.TYPE) value.value else null
+            // Если ожидается List, а у нас LunoValue.List, конвертируем его рекурсивно
+            is LunoValue.List -> if (targetClass.isAssignableFrom(List::class.java)) {
+                // Эта логика более сложная, т.к. нужно знать тип элементов списка.
+                // Для простоты пока вернем простой список Any?
+                value.elements.map { toKotlinType(it) }.toMutableList()
+            } else null
+            else -> null
+        }
+
+        if (result != null) {
+            return result
+        }
+
+        // 5. Если ни одно из правил не сработало, выбрасываем понятную ошибку.
+        val valueTypeName = if (value is LunoValue.NativeObject) value.obj::class.java.simpleName else value::class.simpleName
+        throw LunoRuntimeError("Cannot convert LunoValue type `${valueTypeName}` to native type `${targetClass.simpleName}`")
+    }
+
 
     // --- Helpers for operations ---
     private fun numOp(l: LunoValue, r: LunoValue, line: Int, op: (Double, Double) -> Double): LunoValue.Number {
@@ -3704,6 +4135,14 @@ class Interpreter(
     }
 
     private fun isEqual(a: LunoValue, b: LunoValue): Boolean {
+        if (a is LunoValue.Number && b is LunoValue.Number) return a.value == b.value
+        if (a is LunoValue.Float && b is LunoValue.Float) return a.value == b.value
+        if (a is LunoValue.Number && b is LunoValue.Float) return a.value == b.value.toDouble()
+        if (a is LunoValue.Float && b is LunoValue.Number) return a.value.toDouble() == b.value
+
+        if (a is LunoValue.Null && b is LunoValue.Null) return true
+        if (a is LunoValue.Null || b is LunoValue.Null) return false
+
         return when {
             a is LunoValue.Null && b is LunoValue.Null -> true
             // If one is null and the other isn't, they are not equal (unless a === b handles this, but explicit is clearer)
@@ -3723,7 +4162,7 @@ class Interpreter(
         }
     }
 
-    private fun lunoValueToString(value: LunoValue?, humanReadable: Boolean = false): String {
+    fun lunoValueToString(value: LunoValue?, humanReadable: Boolean = false): String {
         return when (value) {
             null -> "null"
             is LunoValue.Null -> "null"
@@ -3748,6 +4187,7 @@ class Interpreter(
 
             is LunoValue.Callable -> value.toString() // LunoFunction, LunoClass, NativeCallable имеют свой toString
             is LunoValue.NativeObject -> "<NativeObject: ${value.obj::class.simpleName}>"
+            else -> value.toString()
         }
     }
 

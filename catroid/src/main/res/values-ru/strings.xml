@@ -78,6 +78,177 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string name="brick_run_shell2" formatted="false">и сохранить вывод в</string>
+    <string name="brick_run_shell" formatted="false">Выполнить команду</string>
+    <string name="brick_when_back_pressed" formatted="false">При нажатии на "назад"</string>
+    <string name="brick_when_project_exits" formatted="false">При выходе из проекта</string>
+    <string name="brick_set_sound_volume_text" formatted="false">Громкость для звука</string>
+    <string name="brick_set_sound_volume_volume" formatted="false">Громкость (%)</string>
+    <string name="brick_copy_file_text" formatted="false">Копировать файл проекта</string>
+    <string name="brick_copy_file_source" formatted="false">Исходный файл</string>
+    <string name="brick_copy_file_destination" formatted="false">Новое имя</string>
+    <string formatted="false" name="libs_createlib">Создать библиотеку</string>
+    <string formatted="false" name="libs_exported">Библиотека экспортирована</string>
+    <string formatted="false" name="libs_exportede">Ошибка экспорта</string>
+    <string formatted="false" name="libs_importede">Ошибка импорта файла</string>
+    <string formatted="false" name="libs_imported">Библиотека импортирована успешно</string>
+    <string formatted="false" name="libs_cleaned">Проект очищен</string>
+    <string formatted="false" name="libs_clearpd">Все несохраненные изменения будут утеряны. Это действие нельзя отменить.</string>
+    <string formatted="false" name="libs_clearp">Очистить проект?</string>
+    <string formatted="false" name="libs_clear">Очистить</string>
+    <string formatted="false" name="libs_formulas">Формулы</string>
+    <string formatted="false" name="libs_bricks">Блоки</string>
+    <string formatted="false" name="libs_code">Код</string>
+    <string formatted="false" name="libs_newlib">Новая библиотека</string>
+    <string formatted="false" name="libs_def">Значение по умолч.</string>
+    <string formatted="false" name="libs_edit_form">Редактировать формулу</string>
+    <string formatted="false" name="libs_new_form">Новая формула</string>
+    <string formatted="false" name="libs_delete">Удалить</string>
+    <string formatted="false" name="libs_delete_w2">Вы уверены, что хотите удалить</string>
+    <string formatted="false" name="libs_delete_wf">Удалить формулу?</string>
+    <string formatted="false" name="libs_delete_w">Удалить блок?</string>
+    <string formatted="false" name="libs_error_f">Функция не найдена в коде!</string>
+    <string formatted="false" name="libs_error_n">Все поля должны быть заполнены</string>
+    <string formatted="false" name="libs_cname">Внутреннее имя</string>
+    <string formatted="false" name="libs_type2">Тип (NUMBER/STRING)</string>
+    <string formatted="false" name="libs_type1">Тип (TEXT_FIELD)</string>
+    <string formatted="false" name="libs_cancel">Отмена</string>
+    <string formatted="false" name="libs_save">Сохранить</string>
+    <string formatted="false" name="libs_edit_brick">Редактировать блок</string>
+    <string formatted="false" name="libs_new_brick">Новый блок</string>
+    <string formatted="false" name="libs_htext">Текст заголовка (например, \'Показать {0}\')</string>
+    <string formatted="false" name="libs_add_brick">Добавить блок</string>
+    <string formatted="false" name="libs_add_form">Добавить формулу</string>
+    <string formatted="false" name="libs_del_param">Удалить параметр</string>
+    <string formatted="false" name="libs_value">Значение</string>
+    <string formatted="false" name="libs_nametype">Имя/Тип</string>
+    <string formatted="false" name="libs_add_param">Добавить параметр</string>
+    <string formatted="false" name="libs_params">Параметры</string>
+    <string formatted="false" name="libs_func">Имя функции в коде</string>
+    <string formatted="false" name="libs_name">Отображаемое имя</string>
+    <string formatted="false" name="libs_id">ID (уникальный)</string>
+    <string name="python_save_log_to">вывод в локальную переменную</string>
+    <string name="python_run_script">Запустить Python</string>
+    <string name="python_script_content">Скрипт</string>
+    <string name="python_load_library">Загрузить библиотеку (Python)</string>
+    <string name="python_library_file_name">Файл (.whl, .zip)</string>
+    <string name="python_load_native_module">Загрузить модуль (Python)</string>
+    <string name="python_module_file_name">Файл (.so)</string>
+    <string name="python_clear_environment">Очистить окружение (Python)</string>
+    <string name="brick_set_shader_uniform_vec3" formatted="false">Задать uniform (вектор)</string>
+    <string name="brick_set_shader_uniform_float" formatted="false">Задать uniform (число)</string>
+    <string name="brick_shader_uniform_name" formatted="false">Имя</string>
+    <string name="brick_shader_uniform_value" formatted="false">Значение</string>
+    <string name="brick_set_shader_code" formatted="false">Задать 3D GLSL шейдер</string>
+    <string name="brick_shader_vertex" formatted="false">Вершинный</string>
+    <string name="brick_shader_fragment" formatted="false">Фрагментный</string>
+    <string name="brick_set_ccd" formatted="false">Точное столкновение</string>
+    <string name="brick_set_ccd_for_object">для объекта</string>
+    <string name="brick_upload_file">Отправить файл на сервер</string>
+    <string name="brick_upload_url">Ссылка</string>
+    <string name="brick_upload_project_file">Путь к файлу проекта</string>
+    <string name="brick_upload_file_type">Тип файла</string>
+    <string name="brick_upload_mime_type">Тип MIME</string>
+    <string name="brick_upload_storage_type">Тип хранения</string>
+
+    <string-array name="upload_file_types">
+        <item>Стандартный (Текст)</item>
+        <item>Бинарный</item>
+    </string-array>
+
+    <string-array name="upload_storage_types">
+        <item>Постоянный</item>
+        <item>Временный</item>
+    </string-array>
+    <string name="brick_set_3d_fog">Задать туман</string>
+    <string name="brick_3d_fog_r">R (0–1)</string>
+    <string name="brick_3d_fog_g">G (0–1)</string>
+    <string name="brick_3d_fog_b">B (0–1)</string>
+    <string name="brick_3d_fog_density">плотность</string>
+    <string name="brick_create_sphere" formatted="false">Создать шар с ID</string>
+    <string name="formula_3d_touches" formatted="false">объект касается объекта</string>
+    <string name="formula_3d_touches_param" formatted="false">(\'ID объекта 1\', \'ID объекта 2\')</string>
+    <string name="brick_set_sky_color" formatted="false">Задать цвет неба на (0-1)</string>
+    <string name="formula_cam_rot_yaw" formatted="false">вращение камеры Y</string>
+    <string name="formula_cam_rot_pitch" formatted="false">вращение камеры X</string>
+    <string name="formula_cam_rot_roll" formatted="false">вращение камеры Z</string>
+    <string name="formula_3d_velo_x" formatted="false">3D скорость X</string>
+    <string name="formula_3d_velo_y" formatted="false">3D скорость Y</string>
+    <string name="formula_3d_velo_z" formatted="false">3D скорость Z</string>
+    <string name="formula_cam_pos_x" formatted="false">позиция камеры X</string>
+    <string name="formula_cam_pos_y" formatted="false">позиция камеры Y</string>
+    <string name="formula_cam_pos_z" formatted="false">позиция камеры Z</string>
+    <string name="formula_cam_dir_x" formatted="false">направление камеры X</string>
+    <string name="formula_cam_dir_y" formatted="false">направление камеры Y</string>
+    <string name="formula_cam_dir_z" formatted="false">направление камеры Z</string>
+    <string name="formula_no_param" formatted="false">()</string>
+    <string name="brick_cast_ray_name" formatted="false">Выпустить луч с именем</string>
+    <string name="brick_cast_ray_from" formatted="false">из позиции</string>
+    <string name="brick_cast_ray_dir" formatted="false">в направлении</string>
+    <string name="formula_ray_distance" formatted="false">длина луча</string>
+    <string name="formula_ray_hit_object" formatted="false">объект луча</string>
+    <string name="formula_ray_param" formatted="false">(\'луч\')</string>
+    <string name="formula_vector_dir_x" formatted="false">направление X из угла</string>
+    <string name="formula_vector_dir_y" formatted="false">направление Y из угла</string>
+    <string name="formula_vector_angle" formatted="false">угол из направления</string>
+    <string name="formula_vector_dir_param" formatted="false">(60)</string>
+    <string name="formula_vector_angle_param" formatted="false">(0.6, 1)</string>
+    <string name="formula_3d_pos_x" formatted="false">3D позиция x</string>
+    <string name="formula_3d_pos_y" formatted="false">3D позиция y</string>
+    <string name="formula_3d_pos_z" formatted="false">3D позиция z</string>
+    <string name="formula_3d_rot_yaw" formatted="false">3D вращение y</string>
+    <string name="formula_3d_rot_pitch" formatted="false">3D вращение x</string>
+    <string name="formula_3d_rot_roll" formatted="false">3D вращение z</string>
+    <string name="formula_3d_scale_x" formatted="false">3D размер x</string>
+    <string name="formula_3d_scale_y" formatted="false">3D размер y</string>
+    <string name="formula_3d_scale_z" formatted="false">3D размер z</string>
+    <string name="formula_3d_distance" formatted="false">3D расстояние между</string>
+    <string name="formula_3d_single_param" formatted="false">(\'ID объекта\')</string>
+    <string name="formula_3d_double_param" formatted="false">(\'ID объекта 1\', \'ID объекта 2\')</string>
+    <string name="brick_set_restitution_of" formatted="false">Задать упругость для</string>
+    <string name="brick_set_restitution_to" formatted="false">на</string>
+    <string name="brick_set_friction_to" formatted="false">на</string>
+    <string name="brick_set_friction_of" formatted="false">Задать трение для</string>
+    <string name="brick_create_cube" formatted="false">Создать куб с ID</string>
+    <string name="brick_set_camera_rotation" formatted="false">Задать вращение камеры на</string>
+    <string name="brick_set_object_texture_of" formatted="false">Задать текстуру объекта</string>
+    <string name="brick_set_object_texture_to" formatted="false">из файла проекта</string>
+    <string name="brick_set_object_color_of" formatted="false">Задать цвет объекта</string>
+    <string name="brick_set_object_color_to" formatted="false">на (0-1)</string>
+    <string name="brick_apply_3d_force2" formatted="false">с вектором</string>
+    <string name="brick_apply_3d_force" formatted="false">Применить силу к обьекту</string>
+    <string name="brick_set_3d_velocity2" formatted="false">вектор</string>
+    <string name="brick_set_3d_velocity" formatted="false">Задать скорость обьекту</string>
+    <string name="brick_set_3d_gravity" formatted="false">Задать гравитацию 3D миру</string>
+    <string name="brick_set_physics_state_of" formatted="false">Задать физ. состояние</string>
+    <string name="brick_set_physics_state_to" formatted="false">на</string>
+    <string name="brick_set_physics_state_mass" formatted="false">с массой</string>
+    <string-array name="brick_physics_states">
+        <item>Без физики</item>
+        <item>Статичный (Примитив)</item>
+        <item>Динамичный (Примитив)</item>
+        <item>Сложный статичный</item>
+    </string-array>
+    <string name="brick_set_directional_light_id" formatted="false">Направленный свет с ID</string>
+    <string name="brick_set_directional_light_color" formatted="false">цвет (0-1)</string>
+    <string name="brick_set_directional_light_dir" formatted="false">направление</string>
+    <string name="brick_set_ambient_light" formatted="false">Задать фоновый свет (цвет 0-1)</string>
+    <string name="brick_set_3d_position_of" formatted="false">Задать 3D позицию объекта</string>
+    <string name="brick_set_3d_position_to" formatted="false">на координаты</string>
+    <string name="brick_object_look_at_object" formatted="false">Повернуть объект</string>
+    <string name="brick_object_look_at_to" formatted="false">в точку</string>
+    <string name="brick_set_3d_scale_of" formatted="false">Задать 3D размер объекта</string>
+    <string name="brick_set_3d_scale_to" formatted="false">на</string>
+    <string name="brick_set_3d_rotation_of" formatted="false">Задать вращение объекта</string>
+    <string name="brick_set_3d_rotation_to" formatted="false">на углы</string>
+    <string name="brick_set_3d_rotation_yaw" formatted="false">Рыскание(Y)</string>
+    <string name="brick_set_3d_rotation_pitch" formatted="false">Тангаж(X)</string>
+    <string name="brick_set_3d_rotation_roll" formatted="false">Крен(Z)</string>
+    <string name="brick_camera_look_at" formatted="false">Направить камеру в точку</string>
+    <string name="brick_set_camera_position" formatted="false">Задать позицию камеры на</string>
+    <string name="brick_remove_3d_object_text" formatted="false">Удалить 3D объект</string>
+    <string name="brick_create_3d_object_text_1" formatted="false">Создать 3D объект с ID</string>
+    <string name="brick_create_3d_object_text_2" formatted="false">из файла модели</string>
     <string formatted="false" name="is_password">является паролем</string>
     <string formatted="false" name="corner_radius">закругленность углов</string>
     <string formatted="false" name="max_length">макс. длина</string>
@@ -256,6 +427,7 @@
     <string formatted="false" name="formula_editor_function_var_value">значение локальной переменной</string>
     <string formatted="false" name="formula_editor_function_var_value_parameter">(0)</string>
     <string formatted="false" name="brick_gemini_request">Спросить у Gemini</string>
+    <string formatted="false" name="category_libraries">Библиотеки</string>
     <string formatted="false" name="gemini_model">модель</string>
     <string formatted="false" name="brick_gemini_request2">и сохранить ответ в</string>
     <string formatted="false" name="brick_set_gemini_key">Задать API ключ (Gemini)</string>
@@ -269,6 +441,7 @@
     <string formatted="false" name="brick_divide_poland">Разделить Польшу</string>
     <string formatted="false" name="formula_editor_sensor_frequency">частота звука</string>
     <string formatted="false" name="formula_editor_sensor_internet">подключен к интернету</string>
+    <string formatted="false" name="formula_editor_sensor_architecture">архитектура процессора</string>
     <string formatted="false" name="brick_listen_micro">Начать слушать микрофон в отрезках
         по</string>
     <string formatted="false" name="brick_listen_micro2">милисекунд</string>
@@ -294,14 +467,19 @@
     <string formatted="false" name="brick_show_toast">Показать тост</string>
     <string formatted="false" name="category_plot">Чертежи</string>
     <string formatted="false" name="category_neural">Нейросети</string>
+    <string formatted="false" name="category_threed">3D</string>
     <string formatted="false" name="category_internet">Сеть</string>
     <string formatted="false" name="preference_title_enable_plot_bricks">Расширение
         чертежей</string>
+    <string formatted="false" name="preference_title_old_drag">Старый режим перетаскивания</string>
+    <string formatted="false" name="preference_title_old_dragd">Включает режим перетаскивания блоков из Pocket Code 1.2.4</string>
     <string formatted="false" name="preference_title_enable_neural_bricks">Расширение нейросетей</string>
     <string formatted="false" name="preference_title_enable_internet_bricks">Расширение сети</string>
     <string formatted="false" name="preference_description_plot_bricks">Включает блоки для работы
         с .svg</string>
+    <string formatted="false" name="preference_title_enable_threed_bricks">Расширение 3D</string>
     <string formatted="false" name="preference_description_neural_bricks">Позволяет использовать модели Gemini и создавать свои нейросети</string>
+    <string formatted="false" name="preference_description_threed">Позволяет создавать 3D сцены и проекты</string>
     <string formatted="false" name="preference_description_internet_bricks">Расширяет возможности взаимодействия с интернетом и позволяет создавать локальные сервера</string>
     <string formatted="false" name="formula_editor_function_subtext">обрезать</string>
     <string formatted="false" name="formula_editor_function_file">файл проекта</string>
@@ -1279,12 +1457,12 @@
     <!--  -->
     <!-- Physics -->
     <string formatted="false" name="brick_set_physics_object_type">Задать тип движения</string>
-    <string formatted="false" name="brick_set_physics_object_type_dynamic">передвигаться и отталкиваться под гравитацией</string>
-    <string formatted="false" name="brick_set_physics_object_type_fixed">не двигаться под гравитацией, но другие отталкиваются от тебя под гравитацией</string>
-    <string formatted="false" name="brick_set_physics_object_type_no">без отталкивания и прыжков под гравитацией (по умолчанию)</string>
+    <string formatted="false" name="brick_set_physics_object_type_dynamic">динамичный</string>
+    <string formatted="false" name="brick_set_physics_object_type_fixed">статичный</string>
+    <string formatted="false" name="brick_set_physics_object_type_no">без физики (по умолчанию)</string>
     <string formatted="false" name="brick_set_mass">"Задать массу "</string>
     <string formatted="false" name="brick_set_mass_unit">килограмм</string>
-    <string formatted="false" name="brick_set_gravity_to">"Задать силу тяжести для всех актеров или объектов"</string>
+    <string formatted="false" name="brick_set_gravity_to">"Задать силу тяжести сцены"</string>
     <string formatted="false" name="brick_set_gravity_unit">шагов в секунду²</string>
     <string formatted="false" name="brick_set_velocity_to">"Задать скорость "</string>
     <string formatted="false" name="brick_set_velocity_unit">шагов в секунду</string>
@@ -2007,6 +2185,8 @@
     <string formatted="false" name="formula_editor_function_abs_parameter">(1)</string>
     <string formatted="false" name="formula_editor_function_round">округлить</string>
     <string formatted="false" name="formula_editor_function_round_parameter">(1.6)</string>
+    <string formatted="false" name="formula_editor_function_roundto">округлить до</string>
+    <string formatted="false" name="formula_editor_function_roundto_parameter">(123.456, 1)</string>
     <string formatted="false" name="formula_editor_function_mod">модуль</string>
     <string formatted="false" name="formula_editor_function_mod_parameter">(3,2)</string>
     <string formatted="false" name="formula_editor_function_arcsin">арксинус</string>

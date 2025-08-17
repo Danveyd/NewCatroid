@@ -126,7 +126,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_ln, R.string.formula_editor_function_log,
 			R.string.formula_editor_function_pi, R.string.formula_editor_function_sqrt,
 			R.string.formula_editor_function_rand, R.string.formula_editor_function_abs,
-			R.string.formula_editor_function_round, R.string.formula_editor_function_mod,
+			R.string.formula_editor_function_round, R.string.formula_editor_function_roundto,
+			R.string.formula_editor_function_mod,
 			R.string.formula_editor_function_arcsin, R.string.formula_editor_function_arccos,
 			R.string.formula_editor_function_arctan, R.string.formula_editor_function_arctan2,
 			R.string.formula_editor_function_exp, R.string.formula_editor_function_power,
@@ -140,7 +141,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_ln_parameter, R.string.formula_editor_function_log_parameter,
 			R.string.formula_editor_function_pi_parameter, R.string.formula_editor_function_sqrt_parameter,
 			R.string.formula_editor_function_rand_parameter, R.string.formula_editor_function_abs_parameter,
-			R.string.formula_editor_function_round_parameter, R.string.formula_editor_function_mod_parameter,
+			R.string.formula_editor_function_round_parameter, R.string.formula_editor_function_roundto_parameter,
+			R.string.formula_editor_function_mod_parameter,
 			R.string.formula_editor_function_arcsin_parameter, R.string.formula_editor_function_arccos_parameter,
 			R.string.formula_editor_function_arctan_parameter, R.string.formula_editor_function_arctan2_parameter,
 			R.string.formula_editor_function_exp_parameter, R.string.formula_editor_function_power_parameter,
@@ -203,6 +205,30 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_flatten_parameter,
 			R.string.formula_editor_function_connect_parameter,
 			R.string.formula_editor_function_find_parameter);
+
+	private static final List<Integer> THREED_FUNCTIONS = asList(
+			R.string.formula_3d_pos_x, R.string.formula_3d_pos_y, R.string.formula_3d_pos_z,
+			R.string.formula_3d_rot_yaw, R.string.formula_3d_rot_pitch, R.string.formula_3d_rot_roll,
+			R.string.formula_3d_scale_x, R.string.formula_3d_scale_y, R.string.formula_3d_scale_z,
+			R.string.formula_3d_velo_x, R.string.formula_3d_velo_y, R.string.formula_3d_velo_z,
+			R.string.formula_3d_distance, R.string.formula_3d_touches,
+			R.string.formula_cam_pos_x, R.string.formula_cam_pos_y, R.string.formula_cam_pos_z,
+			R.string.formula_cam_dir_x, R.string.formula_cam_dir_y, R.string.formula_cam_dir_z,
+			R.string.formula_cam_rot_pitch, R.string.formula_cam_rot_yaw, R.string.formula_cam_rot_roll,
+			R.string.formula_vector_dir_x, R.string.formula_vector_dir_y, R.string.formula_vector_angle,
+			R.string.formula_ray_distance, R.string.formula_ray_hit_object
+	);
+	private static final List<Integer> THREED_PARAMS = asList(
+			R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_single_param,
+			R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_single_param,
+			R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_single_param,
+			R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_touches_param,
+			R.string.formula_3d_double_param, R.string.formula_no_param, R.string.formula_no_param, R.string.formula_no_param,
+			R.string.formula_no_param, R.string.formula_no_param, R.string.formula_no_param, R.string.formula_no_param,
+			R.string.formula_no_param, R.string.formula_no_param,
+			R.string.formula_vector_dir_param, R.string.formula_vector_dir_param, R.string.formula_vector_angle_param,
+			R.string.formula_ray_param, R.string.formula_ray_param
+	);
 	private static final List<Integer> LOGIC_BOOL = asList(R.string.formula_editor_logic_and,
 			R.string.formula_editor_logic_or, R.string.formula_editor_logic_not,
 			R.string.formula_editor_function_true, R.string.formula_editor_function_false);
@@ -214,7 +240,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_touched, R.string.formula_editor_sensor_stage_width,
 			R.string.formula_editor_sensor_stage_height, R.string.formula_editor_sensor_micro, R.string.formula_editor_sensor_ip, R.string.formula_editor_sensor_port, R.string.formula_editor_sensor_battary,
 			//R.string.formula_editor_sensor_frequency,
-			R.string.formula_editor_sensor_internet);
+			R.string.formula_editor_sensor_internet, R.string.formula_editor_sensor_architecture);
 	private static final List<Integer> OBJECT_COLOR_COLLISION =
 			asList(R.string.formula_editor_function_collides_with_color, R.string.formula_editor_function_color_touches_color);
 	private static final List<Integer> OBJECT_COLOR_PARAMS =
@@ -930,6 +956,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 				getString(R.string.formula_editor_functions_strings)));
 		result.addAll(addHeader(toCategoryListItems(LIST_FUNCTIONS, LIST_PARAMS),
 				getString(R.string.formula_editor_functions_lists)));
+		result.addAll(addHeader(toCategoryListItems(THREED_FUNCTIONS, THREED_PARAMS),
+				"3D"));
 
 		// Добавление кастомных функций
 		List<CustomFormula> customFormulas = CustomFormulaManager.INSTANCE.getFormulas();

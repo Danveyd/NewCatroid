@@ -77,11 +77,11 @@
         android:title="@string/project_files"
         app:showAsAction="never"
         android:icon="@drawable/folder_copy_24px"/>
-    <!--<item
+    <item
         android:id="@+id/project_libs"
         android:title="@string/project_libs"
         app:showAsAction="never"
-        android:icon="@drawable/ic_media_library_look"/>-->
+        android:icon="@drawable/sdk_24px"/>
     <item
         android:id="@+id/from_library"
         android:title="@string/from_library"

@@ -29,7 +29,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.danvexteam.lunoscript_annotations.LunoClass;
 
+@LunoClass
 public class PhysicsBoundaryBox {
 
 	public static final int FRAME_SIZE = 5;

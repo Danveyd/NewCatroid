@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_set_3d_position_layout"
+        style="@style/BrickContainer.Threed.Big">
+
+        <include layout="@layout/icon_brick_category_threed" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_set_3d_gravity"
+            app:layout_newLine="true"/>
+
+        <TextView style="@style/BrickText.SingleLine" android:text="X:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_3d_gravity_x" style="@style/BrickEditText" />
+
+        <TextView style="@style/BrickText.SingleLine" android:text="Y:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_3d_gravity_y" style="@style/BrickEditText" />
+
+        <TextView style="@style/BrickText.SingleLine" android:text="Z:" app:layout_newLine="true"/>
+        <TextView android:id="@+id/brick_set_3d_gravity_z" style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

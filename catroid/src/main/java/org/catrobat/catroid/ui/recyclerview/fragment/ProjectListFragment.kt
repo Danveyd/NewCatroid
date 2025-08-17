@@ -53,6 +53,8 @@ import org.catrobat.catroid.io.asynctask.ProjectLoader
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
 import org.catrobat.catroid.io.asynctask.ProjectRenamer
 import org.catrobat.catroid.io.asynctask.ProjectUnZipperAndImporter
+import org.catrobat.catroid.libraries.LibraryManager
+import org.catrobat.catroid.libraryeditor.data.LibraryEditorActivity
 import org.catrobat.catroid.ui.BottomBar
 import org.catrobat.catroid.ui.ProjectActivity
 import org.catrobat.catroid.ui.ProjectListActivity
@@ -168,9 +170,17 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
         when (item.itemId) {
             R.id.import_project -> showImportChooser()
             R.id.sort_projects -> sortProjects()
+            R.id.libs_menu -> libsMenu()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    private fun libsMenu() {
+        val intent = Intent(context, LibraryEditorActivity::class.java)
+        // Если хочешь открыть существующий черновик:
+        // intent.putExtra("DRAFT_ID", "some-uuid-string")
+        startActivity(intent)
     }
 
     private fun sortProjects() {
@@ -494,7 +504,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
                 R.id.delete -> deleteItems(itemList)
                 R.id.project_options -> showProjectOptionsFragment(item)
                 R.id.project_files -> showProjectFilesFragment(item)
-                //R.id.project_libs -> showProjectLibsFragment(item)
+                R.id.project_libs -> showProjectLibsFragment(item)
             }
             true
         }

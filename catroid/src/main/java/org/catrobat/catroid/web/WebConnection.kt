@@ -98,7 +98,7 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
 
             override fun onResponse(call: Call, response: Response) {
                 // Добавим логирование для отладки
-                Log.d("WebConnectionCallback", "[${System.identityHashCode(this@WebConnection)}] onResponse ENTERED. URL: $url. Code: ${response.code()}. Listener ref: ${weakListenerReference?.get()}") // ++ Лог
+                Log.d("WebConnectionCallback", "[${System.identityHashCode(this@WebConnection)}] onResponse ENTERED. URL: $url. Code: ${response.code}. Listener ref: ${weakListenerReference?.get()}") // ++ Лог
                 val listener = popListener()
                 if (listener == null) {
                     Log.w("WebConnectionCallback", "onResponse: Listener was null for URL: $url. Closing response body.")
@@ -111,10 +111,10 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
                     // который считывает и ЗАКРЫВАЕТ тело ответа.
                     listener.onRequestSuccess(response)
                 } else {
-                    listener.onRequestError(response.code().toString())
+                    listener.onRequestError(response.code.toString())
                     // Для НЕУСПЕШНЫХ ответов тело ответа НЕ было считано и закрыто слушателем.
                     // Закрываем его здесь, чтобы освободить ресурсы.
-                    Log.d("WebConnectionCallback", "Closing response body for unsuccessful request. URL: $url, Code: ${response.code()}")
+                    Log.d("WebConnectionCallback", "Closing response body for unsuccessful request. URL: $url, Code: ${response.code}")
                     response.close() // <--- ВАЖНОЕ ИСПРАВЛЕНИЕ
                 }
             }
@@ -122,7 +122,7 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
     }
 
     fun cancelCall() {
-        okHttpClient.dispatcher()?.executorService()?.execute {
+        okHttpClient.dispatcher.executorService.execute {
             call?.cancel()
         }
     }

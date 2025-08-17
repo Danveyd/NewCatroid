@@ -282,7 +282,8 @@ public final class Constants {
 	public static final String COLLISION_PNG_META_TAG_KEY = "CollisionPolygonVertices";
 	public static final int COLLISION_VERTEX_LIMIT = 100;
 	public static final float COLLISION_POLYGON_CREATION_EPSILON = 10.0f;
-	public static final String COLLISION_POLYGON_METADATA_PATTERN = "((((\\d+\\.\\d+);(\\d+\\.\\d+);){2,}(\\d+\\.\\d+);(\\d+\\.\\d+))\\|)*((\\d+\\.\\d+);(\\d+\\.\\d+);){2,}(\\d+\\.\\d+);(\\d+\\.\\d+)";
+	// ИСПРАВЛЕННАЯ ВЕРСИЯ
+	public static final String COLLISION_POLYGON_METADATA_PATTERN = "^(((\\-?\\d+(\\.\\d+)?);)*(\\-?\\d+(\\.\\d+)?))(\\|(((\\-?\\d+(\\.\\d+)?);)*(\\-?\\d+(\\.\\d+)?)))*$";
 	public static final float COLLISION_WITH_FINGER_TOUCH_RADIUS = 50;
 
 	public static final int CAST_IDLE_BACKGROUND_COLOR = 0x66000000;
@@ -381,6 +382,9 @@ public final class Constants {
 	public static final String PREFRENCE_APPGALLERY_PHIRO_URL = "https://appgallery.huawei.com/app/C100085769";
 
 	public static final String DEVICE_BRAND_HUAWEI = "huawei";
+
+	public static final String COLLISION_PNG_META_VERSION_KEY = "CatrobatCollisionVersion";
+	public static final String LATEST_COLLISION_VERSION = "4_epsilon";
 
 	private Constants() {
 		throw new AssertionError("No.");

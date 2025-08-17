@@ -1,0 +1,3 @@
+D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/armeabi-v7a/CMakeFiles/catroid.dir
+D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/armeabi-v7a/CMakeFiles/rebuild_cache.dir

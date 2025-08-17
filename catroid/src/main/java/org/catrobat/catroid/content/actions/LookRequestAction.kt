@@ -112,15 +112,15 @@ open class LookRequestAction : WebAction() {
 
     // Внутри класса LookRequestAction
     override fun onRequestSuccess(httpResponse: Response) {
-        val body = httpResponse.body()
+        val body = httpResponse.body
         response = body?.byteStream() // Получаем InputStream как и раньше
 
         val contentType = body?.contentType() // Получаем MIME-тип от сервера
         var determinedExtension: String? = null
 
         if (contentType != null) {
-            val type = contentType.type().lowercase() // Используем lowercase() для Kotlin
-            val subtype = contentType.subtype().lowercase()
+            val type = contentType.type.lowercase() // Используем lowercase() для Kotlin
+            val subtype = contentType.subtype.lowercase()
             Log.d("LookRequestAction", "Received Content-Type: $type/$subtype") // Логируем для отладки
 
             when ("$type/$subtype") {

@@ -32,6 +32,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.danvexteam.lunoscript_annotations.LunoClass;
+import com.danvexteam.lunoscript_annotations.LunoFunction;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import org.catrobat.catroid.content.bricks.Brick;
@@ -46,6 +48,7 @@ import java.io.Serializable;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+@LunoClass
 public class LookData implements Cloneable, Nameable, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -76,6 +79,10 @@ public class LookData implements Cloneable, Nameable, Serializable {
 	private boolean isWebRequest = false;
 
 	public LookData() {
+	}
+
+	public LookData(String name) {
+		this.name = name;
 	}
 
 	public LookData(String name, @NonNull File file) {

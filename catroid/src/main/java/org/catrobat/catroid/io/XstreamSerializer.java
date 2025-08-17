@@ -120,6 +120,8 @@ public final class XstreamSerializer {
 		xstream = new BackwardCompatibleCatrobatLanguageXStream(
 				new PureJavaReflectionProvider(new FieldDictionary(new CatroidFieldKeySorter())));
 
+		//xstream.registerConverter(new FormulaListConverter());
+
 		xstream.allowTypesByWildcard(new String[] {"org.catrobat.catroid.**"});
 
 		xstream.processAnnotations(projectClass);
@@ -130,6 +132,7 @@ public final class XstreamSerializer {
 		xstream.processAnnotations(Setting.class);
 		xstream.processAnnotations(UserVariableBrickWithFormula.class);
 		xstream.processAnnotations(UserListBrick.class);
+		xstream.processAnnotations(CustomBrick.class);
 		xstream.processAnnotations(UserDefinedBrickData.class);
 		xstream.processAnnotations(UserDefinedBrickInput.class);
 		xstream.processAnnotations(UserDefinedBrickLabel.class);
@@ -213,16 +216,52 @@ public final class XstreamSerializer {
 		xstream.alias("brick", SetGeminiKeyBrick.class);
 		xstream.alias("brick", AskGeminiBrick.class);
 		xstream.alias("brick", AskGemini2Brick.class);
+		xstream.alias("brick", CustomBrick.class);
+		xstream.alias("brick", SetPhysicsStateBrick.class);
 		xstream.alias("brick", SetDnsBrick.class);
+		xstream.alias("brick", SetDirectionalLightBrick.class);
+		xstream.alias("brick", Set3dVelocityBrick.class);
 		xstream.alias("brick", ChooseFileBrick.class);
 		xstream.alias("brick", NativeLayerBrick.class);
 		xstream.alias("brick", SetWebBrick.class);
 		xstream.alias("brick", EvalWebBrick.class);
+		xstream.alias("brick", CreateSphereBrick.class);
+		xstream.alias("brick", Set3dPositionBrick.class);
+		xstream.alias("brick", SetCCDBrick.class);
+		xstream.alias("brick", SetShaderUniformFloatBrick.class);
+		xstream.alias("brick", SetShaderUniformVec3Brick.class);
+		xstream.alias("brick", SetShaderCodeBrick.class);
+		xstream.alias("brick", UploadFileBrick.class);
+		xstream.alias("brick", SetFogBrick.class);
+		xstream.alias("brick", CastRayBrick.class);
+		xstream.alias("brick", SetSkyColorBrick.class);
+		xstream.alias("brick", SetAmbientLightBrick.class);
 		xstream.alias("brick", CreateFloatBrick.class);
 		xstream.alias("brick", TableToFloatBrick.class);
+		xstream.alias("brick", Create3dObjectBrick.class);
+		xstream.alias("brick", CopyProjectFileBrick.class);
+		xstream.alias("brick", SetSoundVolumeBrick.class);
+		xstream.alias("brick", RunPythonScriptBrick.class);
+		xstream.alias("brick", RunShellBrick.class);
+		xstream.alias("brick", LoadNativeModuleBrick.class);
+		xstream.alias("brick", LoadPythonLibraryBrick.class);
+		xstream.alias("brick", LoadPythonLibraryBrick.class);
+		xstream.alias("brick", ClearPythonEnvironmentBrick.class);
+		xstream.alias("brick", Remove3dObjectBrick.class);
+		xstream.alias("brick", SetCameraPositionBrick.class);
+		xstream.alias("brick", CameraLookAtBrick.class);
+		xstream.alias("brick", Set3dFrictionBrick.class);
+		xstream.alias("brick", SetRestitutionBrick.class);
 		xstream.alias("brick", PutFloatBrick.class);
+		xstream.alias("brick", Set3dRotationBrick.class);
+		xstream.alias("brick", ObjectLookAtBrick.class);
+		xstream.alias("brick", Set3dScaleBrick.class);
+		xstream.alias("brick", SetCameraRotationBrick.class);
 		xstream.alias("brick", DeleteFloatBrick.class);
+		xstream.alias("brick", SetObjectColorBrick.class);
 		xstream.alias("brick", ResizeImgBrick.class);
+		xstream.alias("brick", Set3dGravityBrick.class);
+		xstream.alias("brick", Apply3dForceBrick.class);
 		xstream.alias("brick", GrayscaleImgBrick.class);
 		xstream.alias("brick", NormalizeImgBrick.class);
 		xstream.alias("brick", LoadNNBrick.class);
@@ -394,6 +433,8 @@ public final class XstreamSerializer {
 		xstream.alias("brick", WhenConditionBrick.class);
 		xstream.alias("brick", WhenBackgroundChangesBrick.class);
 		xstream.alias("brick", WhenStartedBrick.class);
+		xstream.alias("brick", WhenProjectExitsBrick.class);
+		xstream.alias("brick", WhenBackPressedBrick.class);
 		xstream.alias("brick", WhenClonedBrick.class);
 		xstream.alias("brick", WriteVariableOnDeviceBrick.class);
 		xstream.alias("brick", ReadVariableFromFileBrick.class);

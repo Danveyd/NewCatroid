@@ -24,6 +24,8 @@ package org.catrobat.catroid.ui.fragment;
 
 import android.content.Context;
 
+import com.danvexteam.lunoscript_annotations.LunoClass;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
@@ -68,13 +70,16 @@ import org.catrobat.catroid.content.bricks.ThinkForBubbleBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
+import org.catrobat.catroid.content.bricks.WhenBackPressedBrick;
 import org.catrobat.catroid.content.bricks.WhenClonedBrick;
+import org.catrobat.catroid.content.bricks.WhenProjectExitsBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.content.bricks.WhenTouchDownBrick;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@LunoClass
 public class CategoryBeginnerBricksFactory extends CategoryBricksFactory {
 
 	@Override
@@ -90,6 +95,8 @@ public class CategoryBeginnerBricksFactory extends CategoryBricksFactory {
 		}
 		eventBrickList.add(new BroadcastReceiverBrick(new BroadcastScript(broadcastMessage)));
 		eventBrickList.add(new BroadcastBrick(broadcastMessage));
+		eventBrickList.add(new WhenProjectExitsBrick());
+		eventBrickList.add(new WhenBackPressedBrick());
 		return eventBrickList;
 	}
 
