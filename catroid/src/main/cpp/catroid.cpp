@@ -1,14 +1,33 @@
 #include <jni.h>
+#include <map>
 #include <string>
+#include <mutex>
 #include <vector>
 #include <numeric> // Для std::accumulate
 #include <cmath>
 #include <algorithm> // для std::min/max
 #include "earcut.hpp"
+#include <android/native_window_jni.h> // Для ANativeWindow_fromSurface
+#include <dlfcn.h>                     // Для dlopen, dlsym, dlclose
+#include <fstream>
+#include <unwind.h>
+#include <dlfcn.h>
+#include <sstream>
+#include <signal.h>
+#include <cstring>
+#include <spawn.h>
+#include <unistd.h> // для pid_t
+#include <sys/wait.h> // для waitpid
+#include <thread>
 
 #include "onnxruntime_cxx_api.h"
 
 #include <android/log.h>
+
+#include "newcatroid_gl_api.h"
+
+extern char **environ;
+
 // Убедитесь, что путь и версия правильные!
 
 // Глобальные переменные
@@ -19,6 +38,81 @@ Ort::AllocatorWithDefaultOptions allocator;
 
 #define LOG_TAG "PythonBridge"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+
+static std::string g_crashLogPath;
+static JavaVM* g_JavaVM = nullptr;
+
+std::map<std::string, pid_t> g_RunningVMs;
+std::mutex g_VmMutex; // Мьютекс для потокобезопасного доступа к карте
+
+struct BacktraceState {
+    _Unwind_Ptr* frames;
+    size_t frame_count;
+    size_t max_frames;
+};
+
+static _Unwind_Reason_Code unwind_callback(struct _Unwind_Context* context, void* arg) {
+    BacktraceState* state = static_cast<BacktraceState*>(arg);
+    _Unwind_Ptr ip = _Unwind_GetIP(context);
+    if (ip) {
+        if (state->frame_count < state->max_frames) {
+            state->frames[state->frame_count++] = ip;
+        } else {
+            return _URC_END_OF_STACK;
+        }
+    }
+    return _URC_NO_REASON;
+}
+
+void capture_backtrace(std::ostream& out) {
+    const size_t max_frames = 50;
+    _Unwind_Ptr frames[max_frames];
+    BacktraceState state = {frames, 0, max_frames};
+
+    _Unwind_Backtrace(unwind_callback, &state);
+
+    for (size_t i = 0; i < state.frame_count; ++i) {
+        _Unwind_Ptr addr = frames[i];
+        const char* symbol = "";
+        Dl_info info;
+        if (dladdr((void*)addr, &info) && info.dli_sname) {
+            symbol = info.dli_sname;
+        }
+        out << "  #" << i << ": " << (void*)addr << " (" << symbol << ")\n";
+    }
+}
+
+void signal_handler(int signal_num, siginfo_t *info, void *context) {
+    if (!g_crashLogPath.empty()) {
+        std::ofstream log_file(g_crashLogPath, std::ios::app);
+        if (log_file.is_open()) {
+            log_file << "\n\n===== NATIVE CRASH DETECTED =====\n";
+            log_file << "Signal: " << signal_num << " (" << strsignal(signal_num) << ")\n";
+            log_file << "Fault Address: " << info->si_addr << "\n";
+            log_file << "Stack Trace:\n";
+            capture_backtrace(log_file);
+            log_file << "===================================\n";
+            log_file.close();
+        }
+    }
+    signal(signal_num, SIG_DFL);
+    raise(signal_num);
+}
+
+JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+    g_JavaVM = vm;
+
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa)); // Теперь memset будет найден в <cstring>
+    sigemptyset(&sa.sa_mask);
+    sa.sa_sigaction = signal_handler;
+    sa.sa_flags = SA_SIGINFO | SA_ONSTACK;
+
+    sigaction(SIGSEGV, &sa, nullptr);
+    sigaction(SIGABRT, &sa, nullptr);
+
+    return JNI_VERSION_1_6;
+}
 
 #ifdef __aarch64__  // Эта директива истинна ТОЛЬКО при сборке для arm64-v8a
 #include "include/python3.12/Python.h"
@@ -820,3 +914,430 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
     env->SetIntArrayRegion(resultArray, 0, collidingPairs.size(), collidingPairs.data());
     return resultArray;
 }
+
+
+// --- Структуры для управления GL ---
+
+// API функции, которые мы будем загружать из .so
+struct CoreAPI {
+    void (*initialize)(ResolvePathCallback);
+    void (*on_surface_created)(const char*, ANativeWindow*);
+    void (*on_surface_changed)(const char*, int, int);
+    void (*on_surface_destroyed)(const char*);
+    void (*on_touch_event)(const char*, int, float, float, int);
+    void (*shutdown)();
+};
+
+// Хранилище для каждой активной C++ части
+struct GLInstance {
+    void*               so_handle; // Указатель на библиотеку из dlopen
+    CoreAPI             api;       // Указатели на функции
+    ANativeWindow*      window;    // Нативное окно (может быть nullptr)
+    std::string         view_name;
+};
+
+// Глобальный менеджер. Ключ - имя GLSurfaceView.
+std::map<std::string, GLInstance> g_GlInstances;
+std::mutex g_Mutex; // Для потокобезопасного доступа к карте
+
+// --- JNI Функции для управления GL ---
+
+#define JNI_GL_FUNCTION(name) Java_org_catrobat_catroid_utils_NativeBridge_##name
+
+extern "C" {
+
+const char* resolve_project_file_path(const char* fileName) {
+    static std::string result_path;
+
+    JNIEnv* env = nullptr;
+    // Используем AttachCurrentThreadAsDaemon, чтобы избежать проблем с "зависанием" потока
+    if (g_JavaVM->AttachCurrentThreadAsDaemon(&env, nullptr) != JNI_OK) {
+        return nullptr;
+    }
+    if (!env) return nullptr;
+
+    jclass bridgeClass = env->FindClass("org/catrobat/catroid/utils/NativeBridge");
+    if (!bridgeClass) return nullptr;
+
+    jmethodID methodId = env->GetStaticMethodID(bridgeClass, "getProjectFilePath", "(Ljava/lang/String;)Ljava/lang/String;");
+    if (!methodId) return nullptr;
+
+    jstring jFileName = env->NewStringUTF(fileName);
+    auto jPath = (jstring)env->CallStaticObjectMethod(bridgeClass, methodId, jFileName);
+
+    result_path.clear();
+    if (jPath) {
+        const char* path_chars = env->GetStringUTFChars(jPath, nullptr);
+        result_path = path_chars;
+        env->ReleaseStringUTFChars(jPath, path_chars);
+        env->DeleteLocalRef(jPath);
+    }
+
+    env->DeleteLocalRef(jFileName);
+    // g_JavaVM->DetachCurrentThread(); // Не вызываем, это может быть неэффективно
+
+    return result_path.empty() ? nullptr : result_path.c_str();
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(attachSoToView)(JNIEnv *env, jobject thiz, jstring view_name_j, jstring path_to_so_j) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    const char* pathToSo = env->GetStringUTFChars(path_to_so_j, nullptr);
+
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    void* handle = dlopen(pathToSo, RTLD_LAZY);
+    if (!handle) {
+        __android_log_print(ANDROID_LOG_ERROR, "NativeBridge", "Failed to load .so from '%s': %s", pathToSo, dlerror());
+        // Ранний выход с очисткой
+        env->ReleaseStringUTFChars(view_name_j, viewName);
+        env->ReleaseStringUTFChars(path_to_so_j, pathToSo);
+        return;
+    }
+
+    GLInstance instance;
+    instance.so_handle = handle;
+    instance.window = nullptr;
+    instance.view_name = viewName;
+
+    // Загружаем все функции
+    instance.api.initialize = (void (*)(ResolvePathCallback))dlsym(handle, "core_initialize");
+    instance.api.on_surface_created = (void (*)(const char*, ANativeWindow*))dlsym(handle, "core_on_surface_created");
+    instance.api.on_surface_changed = (void (*)(const char*, int, int))dlsym(handle, "core_on_surface_changed");
+    instance.api.on_surface_destroyed = (void (*)(const char*))dlsym(handle, "core_on_surface_destroyed");
+    instance.api.shutdown = (void (*)())dlsym(handle, "core_shutdown");
+    instance.api.on_touch_event = (void (*)(const char*, int, float, float, int))dlsym(handle, "core_on_touch_event");
+
+    if (instance.api.initialize) {
+        try {
+            instance.api.initialize(resolve_project_file_path);
+        } catch (const std::exception& e) {
+            std::ofstream log_file(g_crashLogPath, std::ios::app);
+            log_file << "C++ Exception in initialize: " << e.what() << "\n";
+        } catch (...) {
+            std::ofstream log_file(g_crashLogPath, std::ios::app);
+            log_file << "Unknown C++ Exception in initialize\n";
+        }
+    }
+
+    g_GlInstances[viewName] = instance;
+    __android_log_print(ANDROID_LOG_INFO, "NativeBridge", "Attached .so to view '%s'", viewName);
+
+    // Очистка в конце
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+    env->ReleaseStringUTFChars(path_to_so_j, pathToSo);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(onSurfaceCreated)(JNIEnv *env, jobject thiz, jstring view_name_j, jobject surface) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    if (g_GlInstances.count(viewName)) {
+        GLInstance& instance = g_GlInstances[viewName];
+        instance.window = ANativeWindow_fromSurface(env, surface);
+        if (instance.api.on_surface_created) {
+            try {
+                instance.api.on_surface_created(viewName, instance.window);
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in on_surface_created: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in on_surface_created\n";
+            }
+        }
+    }
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(onSurfaceChanged)(JNIEnv *env, jobject thiz, jstring view_name_j, jint width, jint height) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (g_GlInstances.count(viewName)) {
+        GLInstance& instance = g_GlInstances[viewName];
+        if (instance.api.on_surface_changed) {
+            try {
+                instance.api.on_surface_changed(viewName, width, height);
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in on_surface_changed: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in on_surface_changed\n";
+            }
+        }
+    }
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(onSurfaceDestroyed)(JNIEnv *env, jobject thiz, jstring view_name_j) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (g_GlInstances.count(viewName)) {
+        GLInstance& instance = g_GlInstances[viewName];
+        if (instance.api.on_surface_destroyed) {
+            try {
+                instance.api.on_surface_destroyed(viewName);
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in on_surface_destroyed: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in on_surface_destroyed\n";
+            }
+        }
+        if (instance.window) {
+            ANativeWindow_release(instance.window);
+            instance.window = nullptr;
+        }
+    }
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(cleanupInstance)(JNIEnv *env, jobject thiz, jstring view_name_j) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+
+    auto it = g_GlInstances.find(viewName);
+    if (it != g_GlInstances.end()) {
+        GLInstance& instance = it->second;
+
+        // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+        // Если окно еще существует, нужно его отпустить!
+        if (instance.window) {
+            ANativeWindow_release(instance.window);
+            instance.window = nullptr;
+        }
+        // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+        if (instance.api.shutdown) {
+            try {
+                instance.api.shutdown();
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in shutdown: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in shutdown\n";
+            }
+        }
+        if (instance.so_handle) {
+            dlclose(instance.so_handle);
+        }
+        g_GlInstances.erase(it);
+        __android_log_print(ANDROID_LOG_INFO, "NativeBridge", "Cleaned up instance '%s'", viewName);
+    }
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(cleanupAllInstances)(JNIEnv *env, jobject thiz) {
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    for (auto const& [name, instance] : g_GlInstances) {
+
+        // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
+        // Отпускаем каждое окно перед выгрузкой библиотеки
+        if (instance.window) {
+            ANativeWindow_release(instance.window);
+        }
+        // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
+        if (instance.api.shutdown) {
+            try {
+                instance.api.shutdown();
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in shutdown: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in shutdown\n";
+            }
+        }
+        if (instance.so_handle) {
+            dlclose(instance.so_handle);
+        }
+    }
+    g_GlInstances.clear();
+    __android_log_print(ANDROID_LOG_INFO, "NativeBridge", "Cleaned up ALL instances.");
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(onTouchEvent)(JNIEnv *env, jobject thiz, jstring view_name_j, jint action, jfloat x, jfloat y, jint pointerId) {
+    const char* viewName = env->GetStringUTFChars(view_name_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_Mutex);
+    if (g_GlInstances.count(viewName)) {
+        GLInstance& instance = g_GlInstances[viewName];
+        if (instance.api.on_touch_event) {
+            try {
+                instance.api.on_touch_event(viewName, action, x, y, pointerId);
+            } catch (const std::exception& e) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "C++ Exception in on_touch_event: " << e.what() << "\n";
+            } catch (...) {
+                std::ofstream log_file(g_crashLogPath, std::ios::app);
+                log_file << "Unknown C++ Exception in on_touch_event\n";
+            }
+        }
+    }
+    env->ReleaseStringUTFChars(view_name_j, viewName);
+}
+
+JNIEXPORT void JNICALL
+JNI_GL_FUNCTION(setCrashLogPath)(JNIEnv* env, jobject thiz, jstring path_j) {
+    const char* path_c = env->GetStringUTFChars(path_j, nullptr);
+    if (path_c) {
+        g_crashLogPath = path_c;
+        __android_log_print(ANDROID_LOG_INFO, "NativeBridge", "Crash log path set to: %s", g_crashLogPath.c_str());
+    }
+    env->ReleaseStringUTFChars(path_j, path_c);
+}
+} // extern "C"
+
+#define JNI_VM_FUNCTION(name) Java_org_catrobat_catroid_virtualmachine_VirtualMachineManager_##name
+
+extern "C" {
+
+/**
+ * @brief Создает и запускает новый процесс (например, QEMU).
+ * @param vmName_j Уникальное имя для этой ВМ, для последующего управления.
+ * @param command_j Массив строк, представляющий команду и ее аргументы.
+ *        Например: ["/data/data/.../qemu-system-x86_64", "-m", "512", ...].
+ * @return PID (Process ID) созданного процесса, или -1 в случае ошибки.
+ */
+void log_pipe_thread(int read_fd) {
+    char buffer[256];
+    ssize_t len;
+    while ((len = read(read_fd, buffer, sizeof(buffer) - 1)) > 0) {
+        buffer[len] = '\0';
+        __android_log_print(ANDROID_LOG_INFO, "QEMU_LOG", "%s", buffer);
+    }
+    close(read_fd);
+    __android_log_print(ANDROID_LOG_INFO, "QEMU_LOG", "Log pipe closed. QEMU process terminated.");
+}
+
+
+JNIEXPORT jint JNICALL
+JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, jobjectArray command_j, jstring dataPath_j) {
+    // 1. Получаем пути из Java
+    const char* vmName = env->GetStringUTFChars(vmName_j, nullptr);
+    const char* dataPath_c = env->GetStringUTFChars(dataPath_j, nullptr); // Это путь к /.../qemu_x86_64
+
+    // 2. Формируем все необходимые пути
+    const std::string libPath = std::string(dataPath_c) + "/lib";
+    const std::string romPath = std::string(dataPath_c) + "/share/qemu";
+    const char* linkerPath = "/system/bin/linker64";
+
+    // 3. Собираем финальную команду в векторе для удобства
+    std::vector<std::string> commandVec;
+
+    // --- КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: ПЕРВАЯ КОМАНДА - ЭТО LINKER ---
+    commandVec.push_back(linkerPath);
+
+    int original_argc = env->GetArrayLength(command_j);
+
+    // --- ВТОРАЯ КОМАНДА - ЭТО ПУТЬ К QEMU (КАК АРГУМЕНТ ДЛЯ LINKER) ---
+    jstring exe_j = (jstring) env->GetObjectArrayElement(command_j, 0);
+    const char* exe_c = env->GetStringUTFChars(exe_j, nullptr);
+    commandVec.push_back(exe_c);
+    env->ReleaseStringUTFChars(exe_j, exe_c);
+    env->DeleteLocalRef(exe_j);
+
+    commandVec.push_back("-L");
+    commandVec.push_back(romPath);
+
+    // Добавляем остальные аргументы, которые пришли из Kotlin
+    for (int i = 1; i < original_argc; i++) {
+        jstring string_j = (jstring) env->GetObjectArrayElement(command_j, i);
+        const char* string_c = env->GetStringUTFChars(string_j, nullptr);
+        commandVec.push_back(string_c);
+        env->ReleaseStringUTFChars(string_j, string_c);
+        env->DeleteLocalRef(string_j);
+    }
+
+    // 4. Преобразуем вектор в массив char** для execv
+    char** argv = new char*[commandVec.size() + 1];
+    for (size_t i = 0; i < commandVec.size(); ++i) {
+        argv[i] = strdup(commandVec[i].c_str());
+    }
+    argv[commandVec.size()] = NULL;
+
+    // --- ПРИМЕЧАНИЕ: Мы больше не добавляем -L вручную, т.к. QEMU из Termux
+    // --- скорее всего, сам знает, где искать BIOS относительно своего положения.
+    // --- Если снова будет ошибка про BIOS, мы вернем этот флаг.
+
+    // ... (код для pipe и fork остается без изменений) ...
+    int pipe_fds[2];
+    if (pipe(pipe_fds) == -1) { /* ... */ return -1; }
+    pid_t pid = fork();
+
+    if (pid == -1) {
+        /* ... */ return -1;
+    } else if (pid == 0) {
+        // --- Дочерний процесс ---
+        close(pipe_fds[0]);
+        dup2(pipe_fds[1], STDOUT_FILENO);
+        dup2(pipe_fds[1], STDERR_FILENO);
+        close(pipe_fds[1]);
+
+        setenv("LD_LIBRARY_PATH", libPath.c_str(), 1);
+
+        // --- ЗАПУСКАЕМ LINKER, А НЕ QEMU НАПРЯМУЮ ---
+        execv(linkerPath, argv);
+        _exit(127);
+    } else {
+        // --- Родительский процесс ---
+        close(pipe_fds[1]);
+        __android_log_print(ANDROID_LOG_INFO, "VMManager", "Successfully forked process for VM '%s' with PID %d", vmName, pid);
+        std::lock_guard<std::mutex> lock(g_VmMutex);
+        g_RunningVMs[vmName] = pid;
+        std::thread log_thread(log_pipe_thread, pipe_fds[0]);
+        log_thread.detach();
+
+        // Очистка
+        for (size_t i = 0; i < commandVec.size(); ++i) {
+            free(argv[i]);
+        }
+        delete[] argv;
+        env->ReleaseStringUTFChars(vmName_j, vmName);
+        env->ReleaseStringUTFChars(dataPath_j, dataPath_c);
+
+        return pid;
+    }
+}
+
+/**
+ * @brief Останавливает процесс ВМ по ее имени.
+ * @param vmName_j Имя ВМ, которую нужно остановить.
+ * @return 0 в случае успеха, -1 если ВМ не найдена, или другое значение в случае ошибки kill.
+ */
+JNIEXPORT jint JNICALL
+JNI_VM_FUNCTION(nativeStopVM)(JNIEnv *env, jclass, jstring vmName_j) {
+    const char* vmName = env->GetStringUTFChars(vmName_j, nullptr);
+    std::lock_guard<std::mutex> lock(g_VmMutex);
+
+    auto it = g_RunningVMs.find(vmName);
+    if (it != g_RunningVMs.end()) {
+        pid_t pid = it->second;
+        g_RunningVMs.erase(it); // Удаляем из карты
+        env->ReleaseStringUTFChars(vmName_j, vmName);
+
+        // Отправляем сигнал SIGTERM (15) для "мягкой" остановки
+        int result = kill(pid, SIGTERM);
+        if (result != 0) {
+            __android_log_print(ANDROID_LOG_WARN, "VMManager", "Failed to send SIGTERM to PID %d. Trying SIGKILL.", pid);
+            // Если SIGTERM не сработал, пробуем SIGKILL (9)
+            return kill(pid, SIGKILL);
+        }
+        return result;
+    } else {
+        __android_log_print(ANDROID_LOG_WARN, "VMManager", "VM '%s' not found in running processes map.", vmName);
+        env->ReleaseStringUTFChars(vmName_j, vmName);
+        return -1; // ВМ не найдена
+    }
+}
+
+} // extern "C"

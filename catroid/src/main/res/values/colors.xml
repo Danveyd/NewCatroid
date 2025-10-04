@@ -37,7 +37,7 @@
     <color name="spinner_icon_and_inactive_elements">@color/solid_white</color>
 
     <!-- Backgrounds -->
-    <color name="app_background">#04223F</color>
+    <color name="app_background">#04223F</color> <!--04223F-->
     <color name="button_background">#00476F</color>
     <color name="advertising_button_background">#00ACD2</color>
     <color name="button_bottom_bar">#00476F</color>

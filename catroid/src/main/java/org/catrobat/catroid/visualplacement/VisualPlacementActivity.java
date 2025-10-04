@@ -43,6 +43,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -91,6 +92,8 @@ import static org.catrobat.catroid.utils.ShowTextUtils.calculateAlignmentValuesF
 import static org.catrobat.catroid.utils.ShowTextUtils.calculateColorRGBs;
 import static org.catrobat.catroid.utils.ShowTextUtils.isValidColorString;
 import static org.catrobat.catroid.utils.ShowTextUtils.sanitizeTextSize;
+import android.widget.Button;
+import static org.catrobat.catroid.ui.SpriteActivity.EXTRA_ROTATION;
 
 import com.danvexteam.lunoscript_annotations.LunoClass;
 
@@ -103,11 +106,15 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 	public static final String X_COORDINATE_BUNDLE_ARGUMENT = "xCoordinate";
 	public static final String Y_COORDINATE_BUNDLE_ARGUMENT = "yCoordinate";
 	public static final String CHANGED_COORDINATES = "changedCoordinates";
+	public static final String ROTATION_ANGLE_BUNDLE_ARGUMENT = "rotationAngle";
+
+	public static final String SIZE_PERCENT_BUNDLE_ARGUMENT = "sizePercentage";
 
 	private ProjectManager projectManager;
 	private FrameLayout frameLayout;
 	private BitmapFactory.Options bitmapOptions;
 	private ImageView imageView;
+	private float rotationAngle = 0.0f;
 
 	private float xCoord;
 	private float yCoord;
@@ -129,6 +136,17 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 	private float layoutWidthRatio;
 	private float layoutHeightRatio;
 	private VisualPlacementTouchListener visualPlacementTouchListener;
+
+	private ScaleGestureDetector scaleGestureDetector;
+	private float currentScale = 1.0f; // Текущий общий масштаб
+	private float currentRotation = 0.0f; // Текущий угол поворота
+
+	public static final String WIDTH_BUNDLE_ARGUMENT = "widthPercentage";
+	public static final String HEIGHT_BUNDLE_ARGUMENT = "heightPercentage";
+
+	private float initialRotation = 0f;
+	private float initialScale = 1.0f;
+	private float initialX, initialY;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,6 +185,7 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 		Bundle extras = getIntent().getExtras();
 		translateX = extras.getInt(EXTRA_X_TRANSFORM);
 		translateY = extras.getInt(EXTRA_Y_TRANSFORM);
+		rotationAngle = extras.getFloat(EXTRA_ROTATION);
 		if (extras.containsKey(EXTRA_TEXT)) {
 			isText = true;
 			text = extras.getString(EXTRA_TEXT);
@@ -225,6 +244,11 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 
 		toolbar.bringToFront();
 		frameLayout.setOnTouchListener(this);
+
+		scaleGestureDetector = new ScaleGestureDetector(this, new MyScaleGestureListener());
+		initialRotation = extras.getFloat(EXTRA_ROTATION, 0f);
+		initialX = translateX;
+		initialY = translateY;
 	}
 
 	private void setBackground() {
@@ -316,25 +340,26 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 		imageView.setImageBitmap(scaledBitmap);
 		imageView.setScaleType(ImageView.ScaleType.CENTER);
 
+		float finalX = translateX; // - (scaledBitmap.getWidth() / 2.0f);
+		float finalY = -translateY;// - (scaledBitmap.getHeight() / 2.0f); // -Y т.к. ось Y перевернута
+
 		if (isText) {
-			imageView.setTranslationX(translateX + xOffsetText);
-			imageView.setTranslationY(-translateY + yOffsetText);
+			imageView.setTranslationX(finalX + xOffsetText);
+			imageView.setTranslationY(finalY + yOffsetText);
 		} else {
-			imageView.setTranslationX(translateX);
-			imageView.setTranslationY(-translateY);
+			imageView.setTranslationX(finalX);
+			imageView.setTranslationY(finalY);
 		}
-		xCoord = translateX * layoutWidthRatio;
-		yCoord = translateY * layoutHeightRatio;
 
-		//if (scaleX > 0.01) {
-		//	imageView.setScaleX(scaleX);
-		//}
+		xCoord = translateX; // Сохраняем "чистые" координаты без смещения
+		yCoord = translateY;
+
+		// Устанавливаем начальный масштаб и вращение
 		imageView.setScaleX(scaleX);
-
-		//if (scaleY > 0.01) {
-		//	imageView.setScaleY(scaleY);
-		//}
 		imageView.setScaleY(scaleY);
+		imageView.setRotation(initialRotation);
+		initialScale = scaleX; // Сохраняем начальный масштаб для проверки изменений
+
 		frameLayout.addView(imageView);
 	}
 
@@ -382,7 +407,14 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 
 	@Override
 	public boolean onTouch(View view, MotionEvent event) {
-		return visualPlacementTouchListener.onTouch(imageView, event, this);
+		// Сначала отдаем событие детектору масштабирования/вращения
+		scaleGestureDetector.onTouchEvent(event);
+
+		// Затем нашему старому обработчику для перетаскивания (только если не идет масштабирование)
+		if (!scaleGestureDetector.isInProgress()) {
+			visualPlacementTouchListener.onTouch(imageView, event, this);
+		}
+		return true; // Всегда возвращаем true, чтобы получать все события
 	}
 
 	@Override
@@ -394,7 +426,8 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 
 	@Override
 	public void onBackPressed() {
-		int xCoordinate = Math.round(xCoord / layoutWidthRatio);
+        super.onBackPressed();
+        int xCoordinate = Math.round(xCoord / layoutWidthRatio);
 		int yCoordinate = Math.round(yCoord / layoutHeightRatio);
 
 		if (translateX != xCoordinate || translateY != yCoordinate) {
@@ -424,9 +457,21 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 		int xCoordinate = Math.round(xCoord / layoutWidthRatio);
 		int yCoordinate = Math.round(yCoord / layoutHeightRatio);
 
+		// Вычисляем размер в процентах от исходного.
+		// imageView.getScaleX() вернет ОБЩИЙ масштаб.
+		// Делим его на исходный масштаб спрайта.
+		float sizePercentage = (imageView.getScaleX() / scaleX) * 100f;
+
+		// Проверяем, изменилось ли что-нибудь
+		boolean hasChanges = (initialX != xCoordinate || initialY != yCoordinate
+				|| Math.abs(initialRotation - imageView.getRotation()) > 0.1
+				|| Math.abs(initialScale - imageView.getScaleX()) > 0.01);
+
 		extras.putInt(X_COORDINATE_BUNDLE_ARGUMENT, xCoordinate);
 		extras.putInt(Y_COORDINATE_BUNDLE_ARGUMENT, yCoordinate);
-		extras.putBoolean(CHANGED_COORDINATES, translateX != xCoordinate || translateY != yCoordinate);
+		extras.putFloat(ROTATION_ANGLE_BUNDLE_ARGUMENT, imageView.getRotation());
+		extras.putFloat(SIZE_PERCENT_BUNDLE_ARGUMENT, sizePercentage); // Используем новую константу
+		extras.putBoolean(CHANGED_COORDINATES, hasChanges); // Реализованная проверка
 
 		returnIntent.putExtras(extras);
 		setResult(Activity.RESULT_OK, returnIntent);
@@ -458,6 +503,41 @@ public class VisualPlacementActivity extends BaseCastActivity implements View.On
 			yCoord = yCoordinate + yOffsetText;
 		} else {
 			yCoord = yCoordinate;
+		}
+	}
+
+	private class MyScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+		private float lastAngle;
+
+		@Override
+		public boolean onScaleBegin(ScaleGestureDetector detector) {
+			lastAngle = getAngle(detector.getCurrentSpanX(), detector.getCurrentSpanY());
+			return true;
+		}
+
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			// Масштабирование
+			float scaleFactor = detector.getScaleFactor();
+			imageView.setScaleX(imageView.getScaleX() * scaleFactor);
+			imageView.setScaleY(imageView.getScaleY() * scaleFactor);
+
+			// Вращение (только если есть два пальца)
+			if (detector.getCurrentSpan() > 0) {
+				float angle = getAngle(detector.getCurrentSpanX(), detector.getCurrentSpanY());
+				float deltaAngle = angle - lastAngle;
+
+				// Сглаживание, чтобы избежать резких скачков
+				if (Math.abs(deltaAngle) < 10) {
+					imageView.setRotation(imageView.getRotation() + deltaAngle);
+				}
+				lastAngle = angle;
+			}
+			return true;
+		}
+
+		private float getAngle(float dx, float dy) {
+			return (float) Math.toDegrees(Math.atan2(dy, dx));
 		}
 	}
 }

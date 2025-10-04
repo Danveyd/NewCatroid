@@ -46,6 +46,7 @@ import org.catrobat.catroid.content.bricks.AskGeminiBrick
 import org.catrobat.catroid.content.bricks.AskSpeechBrick
 import org.catrobat.catroid.content.bricks.AssertEqualsBrick
 import org.catrobat.catroid.content.bricks.AssertUserListsBrick
+import org.catrobat.catroid.content.bricks.AttachSOBrick
 import org.catrobat.catroid.content.bricks.BackgroundRequestBrick
 import org.catrobat.catroid.content.bricks.BigAskBrick
 import org.catrobat.catroid.content.bricks.Brick
@@ -82,7 +83,9 @@ import org.catrobat.catroid.content.bricks.CopyTextBrick
 import org.catrobat.catroid.content.bricks.Create3dObjectBrick
 import org.catrobat.catroid.content.bricks.CreateCubeBrick
 import org.catrobat.catroid.content.bricks.CreateDialogBrick
+import org.catrobat.catroid.content.bricks.CreateDiskBrick
 import org.catrobat.catroid.content.bricks.CreateFloatBrick
+import org.catrobat.catroid.content.bricks.CreateGLViewBrick
 import org.catrobat.catroid.content.bricks.CreateSphereBrick
 import org.catrobat.catroid.content.bricks.CreateTableBrick
 import org.catrobat.catroid.content.bricks.CreateTextFieldBrick
@@ -120,6 +123,7 @@ import org.catrobat.catroid.content.bricks.DroneTurnRightBrick
 import org.catrobat.catroid.content.bricks.EditLookBrick
 import org.catrobat.catroid.content.bricks.EvalWebBrick
 import org.catrobat.catroid.content.bricks.ExitStageBrick
+import org.catrobat.catroid.content.bricks.ExportProjectFileBrick
 import org.catrobat.catroid.content.bricks.FadeParticleEffectBrick
 import org.catrobat.catroid.content.bricks.FileUrlBrick
 import org.catrobat.catroid.content.bricks.FilesUrlBrick
@@ -128,6 +132,7 @@ import org.catrobat.catroid.content.bricks.FlashBrick
 import org.catrobat.catroid.content.bricks.ForItemInUserListBrick
 import org.catrobat.catroid.content.bricks.ForVariableFromToBrick
 import org.catrobat.catroid.content.bricks.ForeverBrick
+import org.catrobat.catroid.content.bricks.GetZipFileNamesBrick
 import org.catrobat.catroid.content.bricks.GlideToBrick
 import org.catrobat.catroid.content.bricks.GoNStepsBackBrick
 import org.catrobat.catroid.content.bricks.GoToBrick
@@ -152,6 +157,7 @@ import org.catrobat.catroid.content.bricks.JumpingSumoRotateRightBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoSoundBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoTakingPictureBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoTurnBrick
+import org.catrobat.catroid.content.bricks.KeyEventBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorMoveBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorStopBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorTurnAngleBrick
@@ -171,6 +177,7 @@ import org.catrobat.catroid.content.bricks.LookFromTableBrick
 import org.catrobat.catroid.content.bricks.LookRequestBrick
 import org.catrobat.catroid.content.bricks.LookToTableBrick
 import org.catrobat.catroid.content.bricks.LunoScriptBrick
+import org.catrobat.catroid.content.bricks.MouseEventBrick
 import org.catrobat.catroid.content.bricks.MoveDownloadsBrick
 import org.catrobat.catroid.content.bricks.MoveFilesBrick
 import org.catrobat.catroid.content.bricks.MoveNStepsBrick
@@ -231,6 +238,7 @@ import org.catrobat.catroid.content.bricks.RunJSBrick
 import org.catrobat.catroid.content.bricks.RunLuaBrick
 import org.catrobat.catroid.content.bricks.RunPythonScriptBrick
 import org.catrobat.catroid.content.bricks.RunShellBrick
+import org.catrobat.catroid.content.bricks.RunVMBrick
 import org.catrobat.catroid.content.bricks.RunningStitchBrick
 import org.catrobat.catroid.content.bricks.SaveLookBrick
 import org.catrobat.catroid.content.bricks.SaveLookFilesBrick
@@ -335,6 +343,7 @@ import org.catrobat.catroid.content.bricks.StopRunningStitchBrick
 import org.catrobat.catroid.content.bricks.StopScriptBrick
 import org.catrobat.catroid.content.bricks.StopServerBrick
 import org.catrobat.catroid.content.bricks.StopSoundBrick
+import org.catrobat.catroid.content.bricks.StopVMBrick
 import org.catrobat.catroid.content.bricks.StoreCSVIntoUserListBrick
 import org.catrobat.catroid.content.bricks.StringToTableBrick
 import org.catrobat.catroid.content.bricks.TableToFloatBrick
@@ -343,6 +352,7 @@ import org.catrobat.catroid.content.bricks.TapForBrick
 import org.catrobat.catroid.content.bricks.TestBrick
 import org.catrobat.catroid.content.bricks.ThinkBubbleBrick
 import org.catrobat.catroid.content.bricks.ThinkForBubbleBrick
+import org.catrobat.catroid.content.bricks.ToggleDisplayBrick
 import org.catrobat.catroid.content.bricks.TouchAndSlideBrick
 import org.catrobat.catroid.content.bricks.TripleStitchBrick
 import org.catrobat.catroid.content.bricks.TurnLeftBrick
@@ -780,6 +790,7 @@ void main() {
         dataBrickList.add(FileUrlBrick("http://e95814zx.beget.tech/map.jpg", "fileFromUrl.jpg"))
         dataBrickList.add(FilesUrlBrick("http://e95814zx.beget.tech/map.jpg", "fileFromUrl.jpg"))
         dataBrickList.add(ZipBrick("myZip.zip", "my_actor.png,fileFromUrl.jpg"))
+        dataBrickList.add(GetZipFileNamesBrick("myZip.zip"))
         dataBrickList.add(UnzipBrick("myZip.zip"))
         dataBrickList.add(AddItemToUserListBrick(BrickValues.ADD_ITEM_TO_USERLIST))
         dataBrickList.add(DeleteItemOfUserListBrick(BrickValues.DELETE_ITEM_OF_USERLIST))
@@ -879,7 +890,15 @@ print("Bot has stopped.")""", "myVar"))
         deviceBrickList.add(SeekVideoBrick("myVideoPlayer", 30))
         deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", "Напишите значение...", "#CCCCCC", "left", 0, 5, -1, "text", "если файла не существует - по умолчанию"))
         //deviceBrickList.add(NativeLayerBrick(0))
+        deviceBrickList.add(AttachSOBrick("glView", "mylib.so"))
+        deviceBrickList.add(CreateGLViewBrick("glView", 100, 200, 500, 300))
         deviceBrickList.add(DeleteWebBrick("myWebView"))
+        deviceBrickList.add(RunVMBrick("1024", "2", "myDisk.qcow2", "flash.iso"))
+        deviceBrickList.add(CreateDiskBrick("myDisk.qcow2", "10G"))
+        deviceBrickList.add(ToggleDisplayBrick(1))
+        deviceBrickList.add(MouseEventBrick("0", "100", 1))
+        deviceBrickList.add(KeyEventBrick("a", 1))
+        deviceBrickList.add(StopVMBrick())
         /*deviceBrickList.add(ShaderBrick("""attribute vec4 a_position;
 attribute vec2 a_texCoord0;
 
@@ -919,6 +938,7 @@ void main() {
         deviceBrickList.add(TestBrick())
         deviceBrickList.add(HideStatusBarBrick())
         deviceBrickList.add(ChooseFileBrick())
+        deviceBrickList.add(ExportProjectFileBrick("file.txt"))
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {
@@ -1126,60 +1146,42 @@ void main() {
         threedBrickList.add(SetSkyColorBrick(0.5, 0.6, 1.0))
         threedBrickList.add(SetFogBrick(0.5f, 0.6f, 1f, 0.1f))
         threedBrickList.add(CastRayBrick("ray", 100.0, 100.0, 100.0, -1.0, -1.0, -1.0))
-        threedBrickList.add(SetShaderCodeBrick("""// --- Атрибуты вершины (входные данные) ---
-attribute vec3 a_position;
+        threedBrickList.add(SetShaderCodeBrick("""attribute vec3 a_position;
 attribute vec3 a_normal;
 attribute vec2 a_texCoord0;
 
-// --- Встроенные Uniform'ы LibGDX ---
-uniform mat4 u_projViewTrans; // Матрица проекции * вида
-uniform mat4 u_worldTrans;    // Матрица мира объекта
+uniform mat4 u_worldTrans;
+uniform mat4 u_projViewTrans;
 
-// --- Переменные для передачи во фрагментный шейдер ---
-varying vec2 v_texCoords;
-varying vec3 v_worldNormal;
-varying vec3 v_worldPosition;
+varying vec2 v_texCoord;
 
 void main() {
-    // Передаем текстурные координаты без изменений
-    v_texCoords = a_texCoord0;
-    
-    // Вычисляем позицию вершины в мировых координатах
-    vec4 worldPos = u_worldTrans * vec4(a_position, 1.0);
-    v_worldPosition = worldPos.xyz;
-    
-    // Вычисляем и нормализуем нормаль в мировых координатах
-    v_worldNormal = normalize((u_worldTrans * vec4(a_normal, 0.0)).xyz);
-    
-    // Конечная позиция вершины на экране
-    gl_Position = u_projViewTrans * worldPos;
-}""", """// --- Переменные из вершинного шейдера ---
-varying vec2 v_texCoords;
-varying vec3 v_worldNormal;
-varying vec3 v_worldPosition;
+    v_texCoord = a_texCoord0;
+    gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);
+}""", """#ifdef GL_ES
+    precision mediump float;
+#endif
 
-// --- Встроенные Uniform'ы ---
-uniform sampler2D u_texture;
-uniform vec3 u_cameraPosition;
+varying vec2 v_texCoord;
 
-// --- Пользовательские Uniform'ы ---
+uniform sampler2D u_diffuseTexture;
 uniform float u_time;
-uniform vec3 u_lightColor; // Например, (1.0, 0.5, 0.2) для оранжевого
 
 void main() {
-    // Базовый цвет из текстуры
-    vec4 baseColor = texture2D(u_texture, v_texCoords);
-    
-    // Простое освещение Ламберта
-    vec3 lightDir = normalize(vec3(0.0, 10.0, 5.0) - v_worldPosition);
-    float diffuse = max(dot(v_worldNormal, lightDir), 0.0);
-    
-    // Пульсация света
-    float pulse = (sin(u_time * 2.0) + 1.0) * 0.5; // от 0.0 до 1.0
-    vec3 finalLightColor = u_lightColor * pulse + vec3(0.2); // Добавляем немного базового света
-    
-    vec3 finalColor = baseColor.rgb * diffuse * finalLightColor;
-    
+    // 1. Берем базовый цвет из текстуры объекта
+    vec4 baseColor = texture2D(u_diffuseTexture, v_texCoord);
+
+    // 2. Создаем цвет для пульсации (ярко-фиолетовый)
+    vec3 pulseColor = vec3(1.0, 0.0, 1.0);
+
+    // 3. Вычисляем коэффициент пульсации на основе времени
+    // sin(u_time * 5.0) колеблется от -1 до 1. Мы преобразуем это в диапазон от 0 до 1.
+    float pulse = (sin(u_time * 5.0) + 1.0) * 0.5;
+
+    // 4. Смешиваем базовый цвет с цветом пульсации
+    vec3 finalColor = mix(baseColor.rgb, pulseColor, pulse);
+
+    // 5. Устанавливаем итоговый цвет пикселя, сохраняя исходную прозрачность
     gl_FragColor = vec4(finalColor, baseColor.a);
 }"""))
         threedBrickList.add(SetShaderUniformVec3Brick("lightColor", 0.4, 1.0, 0.4))

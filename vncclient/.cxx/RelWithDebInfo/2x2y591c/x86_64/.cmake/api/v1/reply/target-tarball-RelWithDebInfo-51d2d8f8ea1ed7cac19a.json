@@ -1,0 +1,84 @@
+{
+	"backtrace" : 3,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"include"
+		],
+		"files" : 
+		[
+			"libjpeg-turbo/cmakescripts/BuildPackages.cmake",
+			"libjpeg-turbo/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1554,
+				"parent" : 0
+			},
+			{
+				"file" : 0,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 160,
+				"parent" : 2
+			}
+		]
+	},
+	"id" : "tarball::@4d4a656a4ff6bc0d959c",
+	"name" : "tarball",
+	"paths" : 
+	{
+		"build" : "libjpeg-turbo",
+		"source" : "libjpeg-turbo"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0,
+				1
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 3,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/RelWithDebInfo/2x2y591c/x86_64/libjpeg-turbo/pkgscripts/maketarball",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 3,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/RelWithDebInfo/2x2y591c/x86_64/libjpeg-turbo/CMakeFiles/tarball",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/RelWithDebInfo/2x2y591c/x86_64/libjpeg-turbo/CMakeFiles/tarball.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

@@ -61,4 +61,12 @@
         <item name="android:textColor">@color/accent</item>
     </style>
 
+    <style name="Theme.PaintroidFix" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Здесь можно переопределить цвета, если стандартные не подходят,
+             но не меняйте ничего, что связано с layout'ами -->
+        <item name="colorPrimary">@color/pocketpaint_color_picker_purple1</item>
+        <item name="colorPrimaryVariant">@color/pocketpaint_color_picker_purple2</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
 </resources>

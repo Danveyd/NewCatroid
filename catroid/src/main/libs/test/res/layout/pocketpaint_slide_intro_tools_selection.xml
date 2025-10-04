@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ *  Paintroid: An image manipulation application for Android.
+ *  Copyright (C) 2010-2021 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pocketpaint_slide_intro_tools_selection"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:paddingTop="@dimen/pocketpaint_welcome_margin_top">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:contentDescription="@string/pocketpaint_tool_icon_description"
+        android:id="@+id/pocketpaint_tools_info_icon"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/pocketpaint_textview_intro_tools_header"
+        android:layout_width="wrap_content"
+        app:tint="@color/pocketpaint_color_picker_white"
+        tools:src="@drawable/ic_pocketpaint_dialog_warning" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/PocketPaintWelcomeText"
+        android:id="@+id/pocketpaint_tools_info_description"
+        android:layout_below="@+id/pocketpaint_textview_intro_tools_header"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/pocketpaint_welcome_margin_side"
+        android:layout_marginStart="@dimen/pocketpaint_welcome_margin_side"
+        android:layout_marginTop="@dimen/pocketpaint_welcome_margin_top_possibilities"
+        android:layout_width="match_parent"
+        android:text="@string/intro_bottom_navigation_tools_description"
+        tools:text="tool_description" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/PocketPaintWelcomeHeader"
+        android:id="@+id/pocketpaint_textview_intro_tools_header"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/pocketpaint_welcome_margin_side"
+        android:layout_marginStart="@dimen/pocketpaint_welcome_margin_side"
+        android:layout_width="wrap_content"
+        android:text="@string/dialog_tools_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/PocketPaintWelcomeText"
+        android:id="@+id/pocketpaint_textview_intro_tools_text"
+        android:layout_above="@+id/pocketpaint_intro_bottom_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/intro_tool_more_information" />
+
+    <include
+        layout="@layout/pocketpaint_layout_help_bottom_bar"
+        android:id="@+id/pocketpaint_intro_bottom_bar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp" />
+</RelativeLayout>
+

@@ -1,0 +1,14 @@
+D:\Catroid-develop\vncclient\src\main\cpp\CMakeLists.txt
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\CMakeLists.txt
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\BuildPackages.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\cmake_uninstall.cmake.in
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\GNUInstallDirs.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\PackageInfo.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\md5\CMakeLists.txt
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\release\Config.cmake.in
+D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\simd\CMakeLists.txt
+D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindFFMPEG.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindLZO.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindSDL2.cmake
+D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\LibVNCServerConfig.cmake.in
+D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\CMakeLists.txt

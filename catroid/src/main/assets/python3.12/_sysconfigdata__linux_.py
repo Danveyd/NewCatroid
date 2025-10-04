@@ -677,7 +677,7 @@ build_time_vars = {'ABIFLAGS': '',
  'INSTALL_PROGRAM': '/usr/bin/install -c',
  'INSTALL_SCRIPT': '/usr/bin/install -c',
  'INSTALL_SHARED': '/usr/bin/install -c -m 755',
- 'INSTSONAME': 'libpython3.12.so.1.0',
+ 'INSTSONAME': 'libpython3.12.so',
  'IO_H': 'Modules/_io/_iomodule.h',
  'IO_OBJS': '\\',
  'LDCXXSHARED': 'aarch64-linux-android-clang++ -shared '

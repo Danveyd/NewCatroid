@@ -82,7 +82,7 @@ public class ZipArchiver {
 	}
 
 	public void unzip(File archive, File dstDir) throws IOException {
-		InputStream inputStream = new FileInputStream(archive);
+  		InputStream inputStream = new FileInputStream(archive);
 		unzip(inputStream, dstDir);
 	}
 

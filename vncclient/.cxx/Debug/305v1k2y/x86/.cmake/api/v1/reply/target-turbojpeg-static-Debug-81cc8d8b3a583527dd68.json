@@ -1,0 +1,893 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libjpeg-turbo/libturbojpeg.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"libjpeg-turbo/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 681,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 559,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
+				},
+				{
+					"fragment" : "-DBMP_SUPPORTED -DPPM_SUPPORTED"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 2,
+					"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				96,
+				97,
+				98,
+				99,
+				100,
+				101,
+				102,
+				103
+			],
+			"sysroot" : 
+			{
+				"path" : "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+			}
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "simd::@94917bd5066ac320edfd"
+		}
+	],
+	"id" : "turbojpeg-static::@4d4a656a4ff6bc0d959c",
+	"name" : "turbojpeg-static",
+	"nameOnDisk" : "libturbojpeg.a",
+	"paths" : 
+	{
+		"build" : "libjpeg-turbo",
+		"source" : "libjpeg-turbo"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				96,
+				97,
+				98,
+				99,
+				100,
+				101,
+				102,
+				103
+			]
+		},
+		{
+			"name" : "Object Libraries",
+			"sourceIndexes" : 
+			[
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86,
+				87,
+				88,
+				89,
+				90,
+				91,
+				92,
+				93,
+				94,
+				95
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcapimin.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcapistd.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jccoefct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jccolor.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcdctmgr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jchuff.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcicc.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcinit.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcmainct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcmarker.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcmaster.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcomapi.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcparam.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcphuff.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcprepct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcsample.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jctrans.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdapimin.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdapistd.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdatadst.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdatasrc.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdcoefct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdcolor.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jddctmgr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdhuff.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdicc.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdinput.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdmainct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdmarker.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdmaster.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdmerge.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdphuff.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdpostct.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdsample.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdtrans.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jerror.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jfdctflt.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jfdctfst.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jfdctint.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jidctflt.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jidctfst.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jidctint.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jidctred.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jquant1.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jquant2.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jutils.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jmemmgr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jmemnobs.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jaricom.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jcarith.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdarith.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jsimdcpu.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctflt-3dn.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctflt-3dn.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquant-3dn.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jccolor-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcgray-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcsample-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdcolor-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdmerge-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdsample-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctfst-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctint-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctfst-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctint-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctred-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquant-mmx.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctflt-sse.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctflt-sse.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquant-sse.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jccolor-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcgray-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jchuff-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcphuff-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcsample-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdcolor-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdmerge-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdsample-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctfst-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctint-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctflt-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctfst-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctint-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctred-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquantf-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquanti-sse2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jccolor-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcgray-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jcsample-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdcolor-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdmerge-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jdsample-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jfdctint-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jidctint-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jquanti-avx2.asm.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"isGenerated" : true,
+			"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/CMakeFiles/simd.dir/i386/jsimd.c.o",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/turbojpeg.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/transupp.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdatadst-tj.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/jdatasrc-tj.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/rdbmp.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/rdppm.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/wrbmp.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/wrppm.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

@@ -78,6 +78,39 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string formatted="false" name="dialog_confirm_delete">Вы уверены, что хотите это сделать? Эти изменения будет невозможно отменить.</string>
+    <string name="brick_key_event">Событие клавиатуры</string>
+    <string name="brick_key_char">символ</string>
+    <string name="brick_key_is_down">нажата (1/0)</string>
+    <string name="brick_mouse_event">Событие мыши</string>
+    <string name="brick_mouse_x">Позиция X</string>
+    <string name="brick_mouse_y">Позиция Y</string>
+    <string name="brick_mouse_state">кнопка (0:Отпущена, 1:Нажата)</string>
+    <string name="brick_toggle_display">Показать монитор</string>
+    <string name="brick_stop_vm">Остановить VM</string>
+    <string name="brick_run_vm">Запустить VM</string>
+    <string name="brick_vm_memory">память (МБ)</string>
+    <string name="brick_vm_cpu">ядра CPU</string>
+    <string name="brick_vm_hda">диск (необяз.)</string>
+    <string name="brick_vm_cdrom">cdrom (необяз.)</string>
+    <string name="brick_create_disk">Создать диск</string>
+    <string name="brick_disk_name">имя файла</string>
+    <string name="brick_disk_size">размер (напр. 10G)</string>
+    <string name="gl_create_view">Создать GL Сцену</string>
+    <string name="gl_name">имя</string>
+    <string name="gl_x">x</string>
+    <string name="gl_y">y</string>
+    <string name="gl_width">ширина</string>
+    <string name="gl_height">высота</string>
+    <string name="gl_attach_so">Подключить C++ к GL Сцене</string>
+    <string name="gl_so_name">имя .so файла</string>
+    <string name="brick_get_zip_files_text" formatted="false">Имена файлов из ZIP</string>
+    <string name="brick_get_zip_files_source" formatted="false">Файл проекта</string>
+    <string name="brick_get_zip_files_variable" formatted="false">и сохранить в</string>
+    <string name="error_zip_read_failed" formatted="false">Ошибка чтения ZIP-архива: %s</string>
+    <string name="stage_dialog_debug">Меню отладки</string>
+    <string name="brick_export_file_text" formatted="false">Экспортировать файл</string>
+    <string name="brick_export_file_source" formatted="false">Файл проекта</string>
     <string name="brick_run_shell2" formatted="false">и сохранить вывод в</string>
     <string name="brick_run_shell" formatted="false">Выполнить команду</string>
     <string name="brick_when_back_pressed" formatted="false">При нажатии на "назад"</string>
@@ -166,43 +199,43 @@
     <string name="brick_3d_fog_b">B (0–1)</string>
     <string name="brick_3d_fog_density">плотность</string>
     <string name="brick_create_sphere" formatted="false">Создать шар с ID</string>
-    <string name="formula_3d_touches" formatted="false">объект касается объекта</string>
+    <string name="formula_3d_touches" formatted="false">объект_касается_объекта</string>
     <string name="formula_3d_touches_param" formatted="false">(\'ID объекта 1\', \'ID объекта 2\')</string>
     <string name="brick_set_sky_color" formatted="false">Задать цвет неба на (0-1)</string>
-    <string name="formula_cam_rot_yaw" formatted="false">вращение камеры Y</string>
-    <string name="formula_cam_rot_pitch" formatted="false">вращение камеры X</string>
-    <string name="formula_cam_rot_roll" formatted="false">вращение камеры Z</string>
-    <string name="formula_3d_velo_x" formatted="false">3D скорость X</string>
-    <string name="formula_3d_velo_y" formatted="false">3D скорость Y</string>
-    <string name="formula_3d_velo_z" formatted="false">3D скорость Z</string>
-    <string name="formula_cam_pos_x" formatted="false">позиция камеры X</string>
-    <string name="formula_cam_pos_y" formatted="false">позиция камеры Y</string>
-    <string name="formula_cam_pos_z" formatted="false">позиция камеры Z</string>
-    <string name="formula_cam_dir_x" formatted="false">направление камеры X</string>
-    <string name="formula_cam_dir_y" formatted="false">направление камеры Y</string>
-    <string name="formula_cam_dir_z" formatted="false">направление камеры Z</string>
+    <string name="formula_cam_rot_yaw" formatted="false">вращение_камеры_Y</string>
+    <string name="formula_cam_rot_pitch" formatted="false">вращение_камеры_X</string>
+    <string name="formula_cam_rot_roll" formatted="false">вращение_камеры_Z</string>
+    <string name="formula_3d_velo_x" formatted="false">3D_скорость_X</string>
+    <string name="formula_3d_velo_y" formatted="false">3D_скорость_Y</string>
+    <string name="formula_3d_velo_z" formatted="false">3D_скорость_Z</string>
+    <string name="formula_cam_pos_x" formatted="false">позиция_камеры_X</string>
+    <string name="formula_cam_pos_y" formatted="false">позиция_камеры_Y</string>
+    <string name="formula_cam_pos_z" formatted="false">позиция_камеры_Z</string>
+    <string name="formula_cam_dir_x" formatted="false">направление_камеры_X</string>
+    <string name="formula_cam_dir_y" formatted="false">направление_камеры_Y</string>
+    <string name="formula_cam_dir_z" formatted="false">направление_камеры_Z</string>
     <string name="formula_no_param" formatted="false">()</string>
     <string name="brick_cast_ray_name" formatted="false">Выпустить луч с именем</string>
     <string name="brick_cast_ray_from" formatted="false">из позиции</string>
     <string name="brick_cast_ray_dir" formatted="false">в направлении</string>
-    <string name="formula_ray_distance" formatted="false">длина луча</string>
-    <string name="formula_ray_hit_object" formatted="false">объект луча</string>
+    <string name="formula_ray_distance" formatted="false">длина_луча</string>
+    <string name="formula_ray_hit_object" formatted="false">объект_луча</string>
     <string name="formula_ray_param" formatted="false">(\'луч\')</string>
-    <string name="formula_vector_dir_x" formatted="false">направление X из угла</string>
-    <string name="formula_vector_dir_y" formatted="false">направление Y из угла</string>
-    <string name="formula_vector_angle" formatted="false">угол из направления</string>
+    <string name="formula_vector_dir_x" formatted="false">направление_X_из_угла</string>
+    <string name="formula_vector_dir_y" formatted="false">направление_Y_из_угла</string>
+    <string name="formula_vector_angle" formatted="false">угол_из_направления</string>
     <string name="formula_vector_dir_param" formatted="false">(60)</string>
     <string name="formula_vector_angle_param" formatted="false">(0.6, 1)</string>
-    <string name="formula_3d_pos_x" formatted="false">3D позиция x</string>
-    <string name="formula_3d_pos_y" formatted="false">3D позиция y</string>
-    <string name="formula_3d_pos_z" formatted="false">3D позиция z</string>
-    <string name="formula_3d_rot_yaw" formatted="false">3D вращение y</string>
-    <string name="formula_3d_rot_pitch" formatted="false">3D вращение x</string>
-    <string name="formula_3d_rot_roll" formatted="false">3D вращение z</string>
-    <string name="formula_3d_scale_x" formatted="false">3D размер x</string>
-    <string name="formula_3d_scale_y" formatted="false">3D размер y</string>
-    <string name="formula_3d_scale_z" formatted="false">3D размер z</string>
-    <string name="formula_3d_distance" formatted="false">3D расстояние между</string>
+    <string name="formula_3d_pos_x" formatted="false">3D_позиция_x</string>
+    <string name="formula_3d_pos_y" formatted="false">3D_позиция_y</string>
+    <string name="formula_3d_pos_z" formatted="false">3D_позиция_z</string>
+    <string name="formula_3d_rot_yaw" formatted="false">3D_вращение_y</string>
+    <string name="formula_3d_rot_pitch" formatted="false">3D_вращение_x</string>
+    <string name="formula_3d_rot_roll" formatted="false">3D_вращение_z</string>
+    <string name="formula_3d_scale_x" formatted="false">3D_размер_x</string>
+    <string name="formula_3d_scale_y" formatted="false">3D_размер_y</string>
+    <string name="formula_3d_scale_z" formatted="false">3D_размер_z</string>
+    <string name="formula_3d_distance" formatted="false">3D_расстояние_между</string>
     <string name="formula_3d_single_param" formatted="false">(\'ID объекта\')</string>
     <string name="formula_3d_double_param" formatted="false">(\'ID объекта 1\', \'ID объекта 2\')</string>
     <string name="brick_set_restitution_of" formatted="false">Задать упругость для</string>
@@ -338,8 +371,8 @@
     <string formatted="false" name="brick_set_save_scenes">Задать сохранение сцен</string>
     <string formatted="false" name="brick_test">Показать интерфейс системы</string>
     <string formatted="false" name="hide_status_bar">Спрятать интерфейс системы</string>
-    <string formatted="false" name="formula_editor_object_look_height">высота образа</string>
-    <string formatted="false" name="formula_editor_object_look_width">ширина образа</string>
+    <string formatted="false" name="formula_editor_object_look_height">высота_образа</string>
+    <string formatted="false" name="formula_editor_object_look_width">ширина_образа</string>
     <string formatted="false" name="brick_string_to_table">Разделить</string>
     <string formatted="false" name="brick_string_to_table_x">разделитель x</string>
     <string formatted="false" name="brick_string_to_table_y">разделитель y</string>
@@ -357,26 +390,26 @@
     <string formatted="false" name="brick_zip">Запаковать в ZIP архив</string>
     <string formatted="false" name="brick_unzip">Распаковать ZIP архив</string>
     <string formatted="false" name="brick_hide_text">Скрыть текст с названием</string>
-    <string formatted="false" name="formula_editor_function_random_str">случайная строка</string>
+    <string formatted="false" name="formula_editor_function_random_str">случайная_строка</string>
     <string formatted="false" name="formula_editor_function_random_str_parameter">(15)</string>
-    <string formatted="false" name="formula_editor_function_repeat">повторить текст</string>
+    <string formatted="false" name="formula_editor_function_repeat">повторить_текст</string>
     <string formatted="false" name="formula_editor_function_repeat_parameter">(\'повторение - признак безумия \', 10)</string>
     <string formatted="false" name="formula_editor_function_replace">заменить</string>
     <string formatted="false" name="formula_editor_function_replace_parameter">(\'pandas love bamboo\',\'love\',\'eat\')</string>
-    <string formatted="false" name="formula_editor_function_contains_str">строка содержит</string>
+    <string formatted="false" name="formula_editor_function_contains_str">строка_содержит</string>
     <string formatted="false" name="formula_editor_function_contains_str_parameter">(\'bats are cutest!\',\'cute\')</string>
     <string formatted="false" name="brick_split3">и сохранить в</string>
     <string formatted="false" name="brick_split2">через</string>
     <string formatted="false" name="brick_split">Разделить</string>
-    <string formatted="false" name="formula_editor_function_table_x">размер x таблицы</string>
+    <string formatted="false" name="formula_editor_function_table_x">размер_x_таблицы</string>
     <string formatted="false" name="formula_editor_function_table_x_parameter">(\'myTable\')</string>
-    <string formatted="false" name="formula_editor_function_floatarray">размер FloatArray</string>
+    <string formatted="false" name="formula_editor_function_floatarray">размер_FloatArray</string>
     <string formatted="false" name="formula_editor_function_floatarray_parameter">(\'FloatArray\')</string>
-    <string formatted="false" name="formula_editor_function_table_y">размер y таблицы</string>
+    <string formatted="false" name="formula_editor_function_table_y">размер_Y_таблицы</string>
     <string formatted="false" name="formula_editor_function_table_y_parameter">(\'myTable\')</string>
-    <string formatted="false" name="formula_editor_function_table_element">элемент таблицы</string>
+    <string formatted="false" name="formula_editor_function_table_element">элемент_таблицы</string>
     <string formatted="false" name="formula_editor_function_table_element_parameter">(\'myTable\', 3, 2)</string>
-    <string formatted="false" name="formula_editor_function_table_join">соеденить таблицу через</string>
+    <string formatted="false" name="formula_editor_function_table_join">соеденить_таблицу_через</string>
     <string formatted="false" name="formula_editor_function_table_join_parameter">(\'myTable\', \',\', \'\n\')</string>
     <string formatted="false" name="brick_delete_all_tables">Удалить все таблицы</string>
     <string formatted="false" name="brick_delete_table">Удалить таблицу с именем</string>
@@ -422,16 +455,16 @@
     <string formatted="false" name="files_delete">Удалить</string>
     <string name="add_look_empty_object">Пустой обьект</string>
     <string name="add_look_actors_and_object">Из библиотеки</string>
-    <string formatted="false" name="formula_editor_function_var_name">название локальной переменной</string>
+    <string formatted="false" name="formula_editor_function_var_name">название_локальной_переменной</string>
     <string formatted="false" name="formula_editor_function_var_name_parameter">(0)</string>
-    <string formatted="false" name="formula_editor_function_var_value">значение локальной переменной</string>
+    <string formatted="false" name="formula_editor_function_var_value">значение_локальной_переменной</string>
     <string formatted="false" name="formula_editor_function_var_value_parameter">(0)</string>
     <string formatted="false" name="brick_gemini_request">Спросить у Gemini</string>
     <string formatted="false" name="category_libraries">Библиотеки</string>
     <string formatted="false" name="gemini_model">модель</string>
     <string formatted="false" name="brick_gemini_request2">и сохранить ответ в</string>
     <string formatted="false" name="brick_set_gemini_key">Задать API ключ (Gemini)</string>
-    <string formatted="false" name="formula_editor_function_var">локальная переменная</string>
+    <string formatted="false" name="formula_editor_function_var">локальная_переменная</string>
     <string formatted="false" name="formula_editor_function_var_parameter">(\'variable1\')</string>
     <string formatted="false" name="brick_delete_var">Удалить локальную переменную</string>
     <string formatted="false" name="brick_delete_var2">с именем</string>
@@ -439,20 +472,20 @@
     <string formatted="false" name="brick_create_var">Создать/Задать локальную переменную</string>
     <string formatted="false" name="brick_create_var2">значение</string>
     <string formatted="false" name="brick_divide_poland">Разделить Польшу</string>
-    <string formatted="false" name="formula_editor_sensor_frequency">частота звука</string>
-    <string formatted="false" name="formula_editor_sensor_internet">подключен к интернету</string>
-    <string formatted="false" name="formula_editor_sensor_architecture">архитектура процессора</string>
+    <string formatted="false" name="formula_editor_sensor_frequency">частота_звука</string>
+    <string formatted="false" name="formula_editor_sensor_internet">подключен_к_интернету</string>
+    <string formatted="false" name="formula_editor_sensor_architecture">архитектура_процессора</string>
     <string formatted="false" name="brick_listen_micro">Начать слушать микрофон в отрезках
         по</string>
     <string formatted="false" name="brick_listen_micro2">милисекунд</string>
     <string formatted="false" name="formula_editor_function_reverse">отразить</string>
     <string formatted="false" name="formula_editor_function_reverse_parametr">(\'olleH\')</string>
-    <string formatted="false" name="formula_editor_sensor_stage_width">ширина экрана</string>
-    <string formatted="false" name="formula_editor_sensor_stage_height">высота экрана</string>
-    <string formatted="false" name="formula_editor_sensor_battary">заряд батареи</string>
-    <string formatted="false" name="formula_editor_sensor_micro">громкость микрофона</string>
-    <string formatted="false" name="formula_editor_sensor_ip">айпи локального сервера</string>
-    <string formatted="false" name="formula_editor_sensor_port">порт локального сервера</string>
+    <string formatted="false" name="formula_editor_sensor_stage_width">ширина_экрана</string>
+    <string formatted="false" name="formula_editor_sensor_stage_height">высота_экрана</string>
+    <string formatted="false" name="formula_editor_sensor_battary">заряд_батареи</string>
+    <string formatted="false" name="formula_editor_sensor_micro">громкость_микрофона</string>
+    <string formatted="false" name="formula_editor_sensor_ip">айпи_локального_сервера</string>
+    <string formatted="false" name="formula_editor_sensor_port">порт_локального_сервера</string>
     <string formatted="false" name="brick_change_width">Изменить ширину на</string>
     <string formatted="false" name="brick_change_height">Изменить высоту на</string>
     <string formatted="false" name="brick_set_width">Задать ширину</string>
@@ -482,28 +515,28 @@
     <string formatted="false" name="preference_description_threed">Позволяет создавать 3D сцены и проекты</string>
     <string formatted="false" name="preference_description_internet_bricks">Расширяет возможности взаимодействия с интернетом и позволяет создавать локальные сервера</string>
     <string formatted="false" name="formula_editor_function_subtext">обрезать</string>
-    <string formatted="false" name="formula_editor_function_file">файл проекта</string>
+    <string formatted="false" name="formula_editor_function_file">файл_проекта</string>
     <string formatted="false" name="formula_editor_function_file_parameter">(\'variable.txt\')</string>
     <string formatted="false" name="formula_editor_function_lua">lua</string>
     <string formatted="false" name="formula_editor_function_lua_parameter">(\'return math.sqrt(25)\')</string>
-    <string formatted="false" name="formula_editor_function_to_hex">в hex</string>
+    <string formatted="false" name="formula_editor_function_to_hex">в_HEX</string>
     <string formatted="false" name="formula_editor_function_to_hex_parameter">(175)</string>
-    <string formatted="false" name="formula_editor_function_to_dec">из hex</string>
+    <string formatted="false" name="formula_editor_function_to_dec">из_HEX</string>
     <string formatted="false" name="formula_editor_function_to_dec_parameter">(\'AF\')</string>
     <string formatted="false" name="formula_editor_function_distan">расстояние</string>
     <string formatted="false" name="formula_editor_function_distan_parameter">(100, 200, -100, 200)</string>
-    <string formatted="false" name="formula_editor_function_distance">расстояние левенштейна</string>
+    <string formatted="false" name="formula_editor_function_distance">расстояние_левенштейна</string>
     <string formatted="false" name="formula_editor_function_distance_parameter">(\'panda\', \'lavanda\')</string>
     <string formatted="false" name="ai_assist">AI ассистент</string>
     <string formatted="false" name="formula_editor_function_subtext_parameter">(3,5,\'hello
         world\')</string>
     <string formatted="false" name="formula_editor_function_clamp">ограничить</string>
     <string formatted="false" name="formula_editor_function_clamp_parameter">(-2,2,10)</string>
-    <string formatted="false" name="formula_editor_function_joinnumber">соеденить цифры</string>
+    <string formatted="false" name="formula_editor_function_joinnumber">соеденить_цифры</string>
     <string formatted="false" name="formula_editor_function_joinnumber_parameter">(1,1)</string>
-    <string formatted="false" name="formula_editor_function_upper">верхний регистр</string>
+    <string formatted="false" name="formula_editor_function_upper">верхний_регистр</string>
     <string formatted="false" name="formula_editor_function_upper_parameter">(\'aboudna\')</string>
-    <string formatted="false" name="formula_editor_function_lower">нижний регистр</string>
+    <string formatted="false" name="formula_editor_function_lower">нижний_регистр</string>
     <string formatted="false" name="formula_editor_function_lower_parameter">(\'SIGMA\')</string>
     <string formatted="false" name="brick_save_plot">Сохранить чертеж как SVG</string>
     <string formatted="false" name="brick_stop_plot">Остановить черчение</string>
@@ -849,7 +882,6 @@
     <string formatted="false" name="am_rename">Переименовать</string>
     <string formatted="false" name="am_convert">Конвертировать</string>
     <string formatted="false" name="am_merge">Объединить</string>
-    <string formatted="false" name="dialog_confirm_delete">Вы не сможете это отменить!</string>
     <string formatted="false" name="list_headline_sprites">Актеры и объекты</string>
     <!-- Options Menu Options -->
     <string formatted="false" name="backpack">Портфель</string>
@@ -2170,22 +2202,22 @@
     <string formatted="false" name="formula_editor_function_cos_parameter">(360)</string>
     <string formatted="false" name="formula_editor_function_tan">тангенс</string>
     <string formatted="false" name="formula_editor_function_tan_parameter">(45)</string>
-    <string formatted="false" name="formula_editor_function_ln">натуральный логарифм</string>
+    <string formatted="false" name="formula_editor_function_ln">натуральный_логарифм</string>
     <string formatted="false" name="formula_editor_function_ln_parameter">(2.718281828459)</string>
-    <string formatted="false" name="formula_editor_function_log">десятичный логарифм</string>
+    <string formatted="false" name="formula_editor_function_log">десятичный_логарифм</string>
     <string formatted="false" name="formula_editor_function_log_parameter">(10)</string>
     <string formatted="false" name="formula_editor_function_pi">Пи</string>
     <string formatted="false" name="formula_editor_function_pi_parameter"></string>
     <string formatted="false" name="formula_editor_object_color">цвет</string>
     <string formatted="false" name="formula_editor_function_sqrt">корень</string>
     <string formatted="false" name="formula_editor_function_sqrt_parameter">(4)</string>
-    <string formatted="false" name="formula_editor_function_rand">случайное значение от до</string>
+    <string formatted="false" name="formula_editor_function_rand">случайное_значение_от_до</string>
     <string formatted="false" name="formula_editor_function_rand_parameter">(1,6)</string>
-    <string formatted="false" name="formula_editor_function_abs">абсолютное значение</string>
+    <string formatted="false" name="formula_editor_function_abs">абсолютное_значение</string>
     <string formatted="false" name="formula_editor_function_abs_parameter">(1)</string>
     <string formatted="false" name="formula_editor_function_round">округлить</string>
     <string formatted="false" name="formula_editor_function_round_parameter">(1.6)</string>
-    <string formatted="false" name="formula_editor_function_roundto">округлить до</string>
+    <string formatted="false" name="formula_editor_function_roundto">округлить_до</string>
     <string formatted="false" name="formula_editor_function_roundto_parameter">(123.456, 1)</string>
     <string formatted="false" name="formula_editor_function_mod">модуль</string>
     <string formatted="false" name="formula_editor_function_mod_parameter">(3,2)</string>
@@ -2201,15 +2233,15 @@
     <string formatted="false" name="formula_editor_function_exp_parameter">(1)</string>
     <string formatted="false" name="formula_editor_function_power">степень</string>
     <string formatted="false" name="formula_editor_function_power_parameter">(2,3)</string>
-    <string formatted="false" name="formula_editor_function_floor">округлить к меньшему</string>
+    <string formatted="false" name="formula_editor_function_floor">округлить_к_меньшему</string>
     <string formatted="false" name="formula_editor_function_floor_parameter">(0.7)</string>
-    <string formatted="false" name="formula_editor_function_ceil">округлить к большему</string>
+    <string formatted="false" name="formula_editor_function_ceil">округлить_к_большему</string>
     <string formatted="false" name="formula_editor_function_ceil_parameter">(0.3)</string>
     <string formatted="false" name="formula_editor_function_max">максимум</string>
     <string formatted="false" name="formula_editor_function_max_parameter">(5,4)</string>
     <string formatted="false" name="formula_editor_function_min">минимум</string>
     <string formatted="false" name="formula_editor_function_min_parameter">(7,2)</string>
-    <string formatted="false" name="formula_editor_function_if_then_else">если то иначе</string>
+    <string formatted="false" name="formula_editor_function_if_then_else">если_то_иначе</string>
     <string formatted="false" name="formula_editor_function_if_then_else_parameter">(ложь, 2, 3)</string>
     <string formatted="false" name="formula_editor_function_true">истина</string>
     <string formatted="false" name="formula_editor_function_false">ложь</string>
@@ -2221,7 +2253,7 @@
     <string formatted="false" name="formula_editor_function_join_parameter">(\'hello\',\' world\')</string>
     <string formatted="false" name="formula_editor_function_join3">соединить</string>
     <string formatted="false" name="formula_editor_function_join3_parameter">(\'hello\',\' world\',\'!\')</string>
-    <string formatted="false" name="formula_editor_function_regex">регулярное выражение</string>
+    <string formatted="false" name="formula_editor_function_regex">регулярное_выражение</string>
     <string formatted="false" name="formula_editor_function_regex_parameter">(\' an? ([^ .]+)\',\'I am a panda.\')</string>
     <string formatted="false" name="formula_editor_function_regex_assistant">Помощник по
          регулярным выражениям</string>
@@ -2230,72 +2262,70 @@
     <string formatted="false" name="formula_editor_function_regex_html_extractor_not_found">Ключевое слово не найдено.</string>
     <string formatted="false" name="formula_editor_function_regex_json_extractor_title">Экстрактор JSON</string>
     <string formatted="false"
-        name="formula_editor_function_arduino_read_pin_value_digital">цифровой пин arduino</string>
+        name="formula_editor_function_arduino_read_pin_value_digital">цифровой_пин_arduino</string>
     <string formatted="false"
-        name="formula_editor_function_arduino_read_pin_value_analog">аналоговый пин arduino</string>
+        name="formula_editor_function_arduino_read_pin_value_analog">аналоговый_пин_arduino</string>
     <string formatted="false" name="formula_editor_function_raspi_read_pin_value_digital">пин
         raspberry pi</string>
     <string formatted="false" name="formula_editor_function_pin_default_parameter">(0)</string>
-    <string formatted="false" name="formula_editor_function_finger_x">касание к экрану по оси X</string>
-    <string formatted="false" name="formula_editor_function_finger_y">касание к экрану по оси Y</string>
-    <string formatted="false" name="formula_editor_function_is_finger_touching">касается экрана</string>
-    <string formatted="false" name="formula_editor_function_multi_finger_x">касание к экрану по оси X</string>
-    <string formatted="false" name="formula_editor_function_multi_finger_y">касание к экрану по оси Y</string>
-    <string formatted="false" name="formula_editor_function_is_multi_finger_touching">касается экрана</string>
-    <string formatted="false" name="formula_editor_function_index_of_last_finger">количество касаний к экрану</string>
-    <string formatted="false" name="formula_editor_function_number_of_current_touches">количество одновременных касаний</string>
-    <string formatted="false" name="formula_editor_function_index_of_current_touch">индекс текущего касания</string>
+    <string formatted="false" name="formula_editor_function_finger_x">касание_к_экрану_по_X</string>
+    <string formatted="false" name="formula_editor_function_finger_y">касание_к_экрану_по_Y</string>
+    <string formatted="false" name="formula_editor_function_is_finger_touching">касается_экрана</string>
+    <string formatted="false" name="formula_editor_function_multi_finger_x">касание_к_экрану_по_X</string>
+    <string formatted="false" name="formula_editor_function_multi_finger_y">касание_к_экрану_по_Y</string>
+    <string formatted="false" name="formula_editor_function_is_multi_finger_touching">касается_экрана</string>
+    <string formatted="false" name="formula_editor_function_index_of_last_finger">количество_касаний_к_экрану</string>
+    <string formatted="false" name="formula_editor_function_number_of_current_touches">количество_одновременных_касаний</string>
+    <string formatted="false" name="formula_editor_function_index_of_current_touch">индекс_текущего_касания</string>
     <string formatted="false" name="formula_editor_function_no_parameter"></string>
     <string formatted="false" name="formula_editor_function_touch_parameter">(1)</string>
     <string formatted="false" name="formula_editor_function_list_item">элемент</string>
     <string formatted="false" name="formula_editor_function_list_item_parameter">(1,*название списка*)</string>
     <string formatted="false" name="formula_editor_function_contains">содержит</string>
     <string formatted="false" name="formula_editor_function_contains_parameter">(*название списка*,1)</string>
-    <string formatted="false" name="formula_editor_function_index_of_item">индекс элемента</string>
+    <string formatted="false" name="formula_editor_function_index_of_item">индекс_элемента</string>
     <string formatted="false" name="formula_editor_function_index_of_item_parameter">(1,*название списка*)</string>
-    <string formatted="false" name="formula_editor_function_number_of_items">количество элементов</string>
+    <string formatted="false" name="formula_editor_function_number_of_items">количество_элементов</string>
     <string formatted="false" name="formula_editor_function_number_of_items_parameter">(*название списка*)</string>
     <string formatted="false" name="formula_editor_function_flatten">выравнивание</string>
     <string formatted="false" name="formula_editor_function_flatten_parameter">(*название списка*)</string>
-    <string formatted="false" name="formula_editor_function_connect">соеденить элементы</string>
+    <string formatted="false" name="formula_editor_function_connect">соеденить_элементы</string>
     <string formatted="false" name="formula_editor_function_connect_parameter">(*название списка*, \',\')</string>
     <string formatted="false" name="formula_editor_function_find">найти</string>
     <string formatted="false" name="formula_editor_function_find_parameter">(*название списка*, \'256\')</string>
-    <string formatted="false" name="formula_editor_function_collision">касается актера или объекта</string>
-    <string formatted="false" name="formula_editor_function_collides_with_edge">касается края</string>
-    <string formatted="false" name="formula_editor_function_touched">касается пальца</string>
-    <string formatted="false" name="formula_editor_function_collides_with_color">касается цвета</string>
-    <string formatted="false" name="formula_editor_function_color_touches_color">цвет касается цвета</string>
-    <string formatted="false" name="formula_editor_sensor_color_at_x_y">цвет на X и Y</string>
-    <string formatted="false" name="formula_editor_sensor_color_equals_color">цвет равен цвету с допустимостью в %</string>
-    <string formatted="false" name="formula_editor_sensor_x_acceleration">ускорение по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_y_acceleration">ускорение по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_z_acceleration">ускорение по оси Z</string>
-    <string formatted="false" name="formula_editor_sensor_compass_direction">направление компаса</string>
+    <string formatted="false" name="formula_editor_function_collision">касается_объекта</string>
+    <string formatted="false" name="formula_editor_function_collides_with_edge">касается_края_экрана</string>
+    <string formatted="false" name="formula_editor_function_touched">касается_пальца</string>
+    <string formatted="false" name="formula_editor_function_collides_with_color">касается_цвета</string>
+    <string formatted="false" name="formula_editor_function_color_touches_color">цвет_касается_цвета</string>
+    <string formatted="false" name="formula_editor_sensor_color_at_x_y">цвет_на_X_и_Y</string>
+    <string formatted="false" name="formula_editor_sensor_color_equals_color">цвет_равен_цвету_с_допустимостью_в_%</string>
+    <string formatted="false" name="formula_editor_sensor_x_acceleration">ускорение_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_y_acceleration">ускорение_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_z_acceleration">ускорение_по_оси_Z</string>
+    <string formatted="false" name="formula_editor_sensor_compass_direction">направление_компаса</string>
     <string formatted="false" name="formula_editor_sensor_latitude">широта</string>
     <string formatted="false" name="formula_editor_sensor_longitude">долгота</string>
-    <string formatted="false" name="formula_editor_sensor_location_accuracy">точность расстояния</string>
+    <string formatted="false" name="formula_editor_sensor_location_accuracy">точность_расстояния</string>
     <string formatted="false" name="formula_editor_sensor_altitude">высота</string>
-    <string formatted="false" name="formula_editor_sensor_user_language">язык пользователя</string>
-    <string formatted="false" name="formula_editor_sensor_x_inclination">наклон по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_y_inclination">наклон по оси Y</string>
+    <string formatted="false" name="formula_editor_sensor_user_language">язык_пользователя</string>
+    <string formatted="false" name="formula_editor_sensor_x_inclination">наклон_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_y_inclination">наклон_по_оси_Y</string>
     <string formatted="false" name="formula_editor_sensor_loudness">громкость</string>
     <string formatted="false" name="formula_editor_sensor_timer">таймер</string>
     <string formatted="false" name="formula_editor_sensor_date_year">год</string>
     <string formatted="false" name="formula_editor_sensor_date_month">месяц</string>
     <string formatted="false" name="formula_editor_sensor_date_day">день</string>
-    <string formatted="false" name="formula_editor_sensor_date_weekday">день недели</string>
+    <string formatted="false" name="formula_editor_sensor_date_weekday">день_недели</string>
     <string formatted="false" name="formula_editor_sensor_time_hour">час</string>
     <string formatted="false" name="formula_editor_sensor_time_minute">минута</string>
     <string formatted="false" name="formula_editor_sensor_time_second">секунда</string>
-    <string formatted="false" name="formula_editor_sensor_drone_battery_status">состояние батареи дрона</string>
-    <string formatted="false" name="formula_editor_sensor_drone_emergency_state">аварийное состояние дрона</string>
-    <string formatted="false" name="formula_editor_sensor_drone_flying">дрон летает</string>
-    <string formatted="false" name="formula_editor_sensor_drone_initialized">дрон инициализирован</string>
-    <string formatted="false" name="formula_editor_sensor_drone_usb_active">USB дрона
-        активно</string>
-    <string formatted="false" name="formula_editor_sensor_drone_usb_remaining_time">оставшееся
-        время USB дрона</string>
+    <string formatted="false" name="formula_editor_sensor_drone_battery_status">состояние_батареи_дрона</string>
+    <string formatted="false" name="formula_editor_sensor_drone_emergency_state">аварийное_состояние_дрона</string>
+    <string formatted="false" name="formula_editor_sensor_drone_flying">дрон_летает</string>
+    <string formatted="false" name="formula_editor_sensor_drone_initialized">дрон_инициализирован</string>
+    <string formatted="false" name="formula_editor_sensor_drone_usb_active">USB_дрона_активно</string>
+    <string formatted="false" name="formula_editor_sensor_drone_usb_remaining_time">оставшееся_время_USB_дрона</string>
     <string formatted="false" name="formula_editor_sensor_drone_camera_ready">камера дрона готова</string>
     <string formatted="false" name="formula_editor_sensor_drone_record_ready">дрон готов записывать</string>
     <string formatted="false" name="formula_editor_sensor_drone_recording">запись на камеру дрона</string>
@@ -2325,8 +2355,8 @@
     <string formatted="false" name="formula_editor_sensor_lego_ev3_sensor_nxt_light_active">EV3 NXT датчик света активен</string>
     <string formatted="false" name="formula_editor_sensor_lego_ev3_sensor_nxt_sound">EV3 NXT звук</string>
     <string formatted="false" name="formula_editor_sensor_lego_ev3_sensor_nxt_ultrasonic">EV3 NXT ультразвук</string>
-    <string formatted="false" name="formula_editor_sensor_gamepad_a_pressed">на джойстике нажато A</string>
-    <string formatted="false" name="formula_editor_sensor_gamepad_b_pressed">на джойстике нажато B</string>
+    <string formatted="false" name="formula_editor_sensor_gamepad_a_pressed">на_джойстике_нажато_A</string>
+    <string formatted="false" name="formula_editor_sensor_gamepad_b_pressed">на_джойстике_нажато_B</string>
     <string formatted="false" name="formula_editor_sensor_gamepad_up_pressed">на джойстике нажато \"вверх\"</string>
     <string formatted="false" name="formula_editor_sensor_gamepad_down_pressed">на джойстике нажато \"вниз\"</string>
     <string formatted="false" name="formula_editor_sensor_gamepad_left_pressed">на джойстике нажато \"влево\"</string>
@@ -2337,26 +2367,26 @@
     <string formatted="false" name="formula_editor_phiro_sensor_side_right">правый боковой датчик phiro</string>
     <string formatted="false" name="formula_editor_phiro_sensor_bottom_left">левый нижний датчик phiro</string>
     <string formatted="false" name="formula_editor_phiro_sensor_bottom_right">правый нижний датчик phiro</string>
-    <string formatted="false" name="formula_editor_nfc_tag_id">id NFC тега</string>
-    <string formatted="false" name="formula_editor_nfc_tag_message">сообщение NFC тега</string>
-    <string formatted="false" name="formula_editor_object_x">координата X</string>
-    <string formatted="false" name="formula_editor_object_y">координата Y</string>
+    <string formatted="false" name="formula_editor_nfc_tag_id">id_NFC_тега</string>
+    <string formatted="false" name="formula_editor_nfc_tag_message">сообщение_NFC_тега</string>
+    <string formatted="false" name="formula_editor_object_x">координата_X</string>
+    <string formatted="false" name="formula_editor_object_y">координата_Y</string>
     <string formatted="false" name="formula_editor_object_transparency">прозрачность</string>
     <string formatted="false" name="formula_editor_object_brightness">яркость</string>
     <string formatted="false" name="formula_editor_object_size">размер</string>
-    <string formatted="false" name="formula_editor_object_rotation">направление движения</string>
-    <string formatted="false" name="formula_editor_object_rotation_look">направление взгляда</string>
+    <string formatted="false" name="formula_editor_object_rotation">направление_движения</string>
+    <string formatted="false" name="formula_editor_object_rotation_look">направление_взгляда</string>
     <string formatted="false" name="formula_editor_object_layer">слой</string>
-    <string formatted="false" name="formula_editor_object_x_velocity">скорость по оси X</string>
-    <string formatted="false" name="formula_editor_object_y_velocity">скорость по оси Y</string>
-    <string formatted="false" name="formula_editor_object_angular_velocity">угловое ускорение</string>
-    <string formatted="false" name="formula_editor_object_look_number">номер образа</string>
-    <string formatted="false" name="formula_editor_object_look_name">название образа</string>
-    <string formatted="false" name="formula_editor_object_number_of_looks">количество образов</string>
-    <string formatted="false" name="formula_editor_object_background_number">номер фона</string>
-    <string formatted="false" name="formula_editor_object_background_name">название фона</string>
-    <string formatted="false" name="formula_editor_object_number_of_backgrounds">количество фонов</string>
-    <string formatted="false" name="formula_editor_object_distance_to">расстояние до точки касания</string>
+    <string formatted="false" name="formula_editor_object_x_velocity">скорость_по_оси_X</string>
+    <string formatted="false" name="formula_editor_object_y_velocity">скорость_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_object_angular_velocity">угловое_ускорение</string>
+    <string formatted="false" name="formula_editor_object_look_number">номер_образа</string>
+    <string formatted="false" name="formula_editor_object_look_name">название_образа</string>
+    <string formatted="false" name="formula_editor_object_number_of_looks">количество_образов</string>
+    <string formatted="false" name="formula_editor_object_background_number">номер_фона</string>
+    <string formatted="false" name="formula_editor_object_background_name">название_фона</string>
+    <string formatted="false" name="formula_editor_object_number_of_backgrounds">количество_фонов</string>
+    <string formatted="false" name="formula_editor_object_distance_to">расстояние_до_точки_касания</string>
     <string formatted="false" name="formula_editor_confirm">Вычислить</string>
     <string formatted="false" name="formula_editor_object">Свойства</string>
     <string formatted="false" name="formula_editor_functions">Функции</string>
@@ -2413,30 +2443,30 @@
         выражение</string>
     <string formatted="false" name="formula_editor_fragment_data_current_items">текущие предметы</string>
     <string formatted="false" name="formula_editor_data_dialog_is_list">Сделать списком</string>
-    <string formatted="false" name="formula_editor_sensor_face_detected">видно первое лицо</string>
-    <string formatted="false" name="formula_editor_sensor_face_size">размер первого лица</string>
-    <string formatted="false" name="formula_editor_sensor_face_x_position">первое лицо по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_face_y_position">первое лицо по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_second_face_detected">видно второе лицо</string>
-    <string formatted="false" name="formula_editor_sensor_second_face_size">размер второго лица</string>
-    <string formatted="false" name="formula_editor_sensor_second_face_x_position">второе лицо по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_second_face_y_position">второе лицо по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_head_top_x">верхняя часть головы по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_head_top_y">верх головы по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_neck_x">шея по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_neck_y">шея по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_nose_x">нос по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_nose_y">нос по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_inner_x">внутренний угол левого глаза по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_inner_y">внутренний угол левого глаза по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_center_x">центр левого глаза по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_center_y">центр левого глаза по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_outer_x">внешний угол левого глаза по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_left_eye_outer_y">внешний угол левого глаза по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_right_eye_inner_x">внутренний угол правого глаза по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_right_eye_inner_y">внутренний угол правого глаза по оси Y</string>
-    <string formatted="false" name="formula_editor_sensor_right_eye_center_x">центр правого глаза по оси X</string>
-    <string formatted="false" name="formula_editor_sensor_right_eye_center_y">центр правого глаза по оси Y</string>
+    <string formatted="false" name="formula_editor_sensor_face_detected">видно_первое_лицо</string>
+    <string formatted="false" name="formula_editor_sensor_face_size">размер_первого_лица</string>
+    <string formatted="false" name="formula_editor_sensor_face_x_position">первое_лицо_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_face_y_position">первое_лицо_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_second_face_detected">видно_второе_лицо</string>
+    <string formatted="false" name="formula_editor_sensor_second_face_size">размер_второго_лица</string>
+    <string formatted="false" name="formula_editor_sensor_second_face_x_position">второе_лицо_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_second_face_y_position">второе_лицо_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_head_top_x">верхняя_часть_головы_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_head_top_y">верх_головы_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_neck_x">шея_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_neck_y">шея_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_nose_x">нос_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_nose_y">нос_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_inner_x">внутренний_угол_левого_глаза_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_inner_y">внутренний_угол_левого_глаза_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_center_x">центр_левого_глаза_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_center_y">центр_левого_глаза_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_outer_x">внешний_угол_левого_глаза_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_left_eye_outer_y">внешний_угол_левого_глаза_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_right_eye_inner_x">внутренний_угол_правого_глаза_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_right_eye_inner_y">внутренний_угол_правого_глаза_по_оси_Y</string>
+    <string formatted="false" name="formula_editor_sensor_right_eye_center_x">центр_правого_глаза_по_оси_X</string>
+    <string formatted="false" name="formula_editor_sensor_right_eye_center_y">центр_правого_глаза_по_оси_Y</string>
     <string formatted="false" name="formula_editor_sensor_right_eye_outer_x">наружный угол правого глаза по оси X</string>
     <string formatted="false" name="formula_editor_sensor_right_eye_outer_y">наружный угол правого глаза по оси Y</string>
     <string formatted="false" name="formula_editor_sensor_left_ear_x">левое ухо по оси X</string>

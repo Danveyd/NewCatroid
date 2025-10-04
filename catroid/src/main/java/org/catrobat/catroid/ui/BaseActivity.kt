@@ -27,6 +27,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.ActivityManager.RunningAppProcessInfo
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -91,6 +92,16 @@ abstract class BaseActivity : AppCompatActivity(), PermissionHandlingActivity {
             )
             finish()
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Этот метод теперь будет вызываться каждый раз при повороте экрана.
+        // Activity при этом НЕ будет пересоздаваться.
+        // Здесь можно добавить логику, если какой-то экран нужно
+        // принудительно перерисовать. Но для начала оставим его пустым.
+        Log.d("BaseActivity", "Configuration changed! New orientation: ${newConfig.orientation}")
     }
 
     private fun applyAccessibilityStyles() {

@@ -51,6 +51,7 @@ import org.catrobat.catroid.content.Scene
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.io.StorageOperations
 import org.catrobat.catroid.merge.ImportProjectHelper
+import org.catrobat.catroid.ui.SpriteActivity.EXTRA_ROTATION
 import org.catrobat.catroid.ui.SpriteActivity.EXTRA_X_TRANSFORM
 import org.catrobat.catroid.ui.SpriteActivity.EXTRA_Y_TRANSFORM
 import org.catrobat.catroid.ui.SpriteActivity.REQUEST_CODE_VISUAL_PLACEMENT
@@ -214,6 +215,7 @@ class NewSpriteDialogFragment(
         val intent = Intent(requireContext(), VisualPlacementActivity()::class.java)
         intent.putExtra(EXTRA_X_TRANSFORM, BrickValues.X_POSITION)
         intent.putExtra(EXTRA_Y_TRANSFORM, BrickValues.Y_POSITION)
+        intent.putExtra(EXTRA_ROTATION, BrickValues.ROTATION)
         activity?.startActivityForResult(intent, REQUEST_CODE_VISUAL_PLACEMENT)
     }
 

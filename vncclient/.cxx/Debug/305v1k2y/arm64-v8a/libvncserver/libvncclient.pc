@@ -1,0 +1,14 @@
+prefix=/opt/VncClientBridge
+exec_prefix=/opt/VncClientBridge
+libdir=/opt/VncClientBridge/lib
+includedir=/opt/VncClientBridge/include
+
+Name: LibVNCClient
+Description: A library for easy implementation of a VNC client.
+Version: 0.9.15
+Requires:
+Requires.private:
+Libs: -L${libdir} -lvncclient
+Libs.private:  -l-pthread -lz
+Cflags: -I${includedir}
+

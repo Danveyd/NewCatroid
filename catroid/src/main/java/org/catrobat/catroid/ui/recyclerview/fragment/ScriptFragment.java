@@ -293,8 +293,8 @@ public class ScriptFragment extends ListFragment implements
 
 		scriptFinder = view.findViewById(R.id.findview);
 		scriptFinder.setOnResultFoundListener((sceneIndex, spriteIndex, brickIndex, totalResults,
-				textView
-				) -> {
+											   textView
+		) -> {
 			Project currentProject = ProjectManager.getInstance().getCurrentProject();
 			Scene currentScene = currentProject.getSceneList().get(sceneIndex);
 			Sprite currentSprite = currentScene.getSpriteList().get(spriteIndex);
@@ -690,13 +690,13 @@ public class ScriptFragment extends ListFragment implements
 		brick.disableSpinners();
 
 		new AlertDialog.Builder(getContext())
-			.setCustomTitle(brickView)
-			.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					handleContextMenuItemClick(options.get(which), brick, position);
-				}
-			}).show();
+				.setCustomTitle(brickView)
+				.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						handleContextMenuItemClick(options.get(which), brick, position);
+					}
+				}).show();
 	}
 
 	@VisibleForTesting

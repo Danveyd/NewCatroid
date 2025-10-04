@@ -1,0 +1,10 @@
+prefix=/opt/VncClientBridge
+exec_prefix=/opt/VncClientBridge
+libdir=/opt/VncClientBridge/lib32
+includedir=/opt/VncClientBridge/include
+
+Name: libturbojpeg
+Description: A SIMD-accelerated JPEG codec that provides the TurboJPEG API
+Version: 2.1.5
+Libs: -L${libdir} -lturbojpeg
+Cflags: -I${includedir}

@@ -1,6 +1,8 @@
 # ninja log v5
-2	4080	7763888155894961	CMakeFiles/catroid.dir/catroid.cpp.o	6f23d29c8820ce01
-4081	4366	7763888158804949	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libcatroid.so	33696fcbe179d8dc
+20	2929	7773016354721502	CMakeFiles/catroid.dir/catroid.cpp.o	6f23d29c8820ce01
+2929	3313	7773016358459655	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libcatroid.so	33696fcbe179d8dc
 0	7	0	clean	d60c0ea4c7f1e19
-4	2299	7770841286192347	CMakeFiles/catroid.dir/catroid.cpp.o	6f23d29c8820ce01
-2299	2711	7770841289425536	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libcatroid.so	33696fcbe179d8dc
+2	5377	7799241275387177	CMakeFiles/catroid.dir/catroid.cpp.o	6f23d29c8820ce01
+10	5990	7799241281379081	CMakeFiles/example_core.dir/example_core.cpp.o	50d61d2c959cd532
+5991	9131	7799241313571881	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libexample_core.so	b677f4b899fe4940
+5378	9164	7799241313982797	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libcatroid.so	755a425b80e5f8a4

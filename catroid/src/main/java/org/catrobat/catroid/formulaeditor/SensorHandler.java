@@ -68,6 +68,8 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import com.badlogic.gdx.Gdx;
+
 public final class SensorHandler implements SensorEventListener, SensorCustomEventListener,
 		LocationListener {
 	private static final float RADIAN_TO_DEGREE_CONST = 180f / (float) Math.PI;
@@ -383,9 +385,9 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 			case USER_LANGUAGE:
 				return userLocaleTag;
 			case STAGE_WIDTH:
-				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth();
+				return (double) Gdx.graphics.getWidth();
 			case STAGE_HEIGHT:
-				return (double) ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight();
+				return (double) Gdx.graphics.getHeight();
 			case BATTARY:
 				IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 				Intent batteryStatus = CatroidApplication.getAppContext().registerReceiver(null, intentFilter);

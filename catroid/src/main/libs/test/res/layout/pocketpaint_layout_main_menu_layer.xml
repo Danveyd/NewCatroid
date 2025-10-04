@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ *  Paintroid: An image manipulation application for Android.
+ *  Copyright (C) 2010-2022 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pocketpaint_layer_side_nav_menu"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/pocketpaint_layer_actions_container"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            style="?borderlessButtonStyle"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.3"
+            android:contentDescription="@string/layer_new"
+            android:id="@+id/pocketpaint_layer_side_nav_button_visibility"
+            android:padding="5dp"
+            android:background="@drawable/rounded_corner_top_ltr"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pocketpaint_layers_visibility"
+            android:theme="@style/PocketPaintHighlightColorTheme"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/pocketpaint_layer_side_nav_button_opacity"
+            style="?borderlessButtonStyle"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:alpha="0.3"
+            android:contentDescription="@string/layer_new"
+            android:padding="5dp"
+            android:background="@color/pocketpaint_colorPrimary"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pocketpaint_layer_opacity"
+            android:theme="@style/PocketPaintHighlightColorTheme"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            style="?borderlessButtonStyle"
+            android:contentDescription="@string/layer_new"
+            android:id="@+id/pocketpaint_layer_side_nav_button_add"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/pocketpaint_layer_side_nav_button_visibility"
+            android:layout_width="50dp"
+            android:padding="5dp"
+            android:background="@color/pocketpaint_colorPrimary"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pocketpaint_layers_add_selector"
+            android:theme="@style/PocketPaintHighlightColorTheme"
+            android:tint="@android:color/white" />
+
+        <ImageButton
+            style="?borderlessButtonStyle"
+            android:contentDescription="@string/layer_delete"
+            android:id="@+id/pocketpaint_layer_side_nav_button_delete"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/pocketpaint_layer_side_nav_button_add"
+            android:layout_width="50dp"
+            android:padding="5dp"
+            android:background="@color/pocketpaint_colorPrimary"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_pocketpaint_layers_delete_selector"
+            android:theme="@style/PocketPaintHighlightColorTheme"
+            android:tint="@android:color/white" />
+
+        <org.catrobat.paintroid.ui.dragndrop.DragAndDropListView
+            android:id="@+id/pocketpaint_layer_side_nav_list"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:scrollbars="vertical"
+            android:splitMotionEvents="true"
+            android:layout_marginTop="55dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="-197dp"
+            tools:listitem="@layout/pocketpaint_item_layer"
+            />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -86,6 +86,7 @@ public class StageDialog extends Dialog implements View.OnClickListener {
 		((Button) findViewById(R.id.stage_dialog_button_restart)).setOnClickListener(this);
 		((Button) findViewById(R.id.stage_dialog_button_toggle_axes)).setOnClickListener(this);
 		((Button) findViewById(R.id.stage_dialog_button_screenshot)).setOnClickListener(this);
+		((Button) findViewById(R.id.stage_dialog_button_debug)).setOnClickListener(this);
 		if (stageActivity.isResizePossible()) {
 			((ImageButton) findViewById(R.id.stage_dialog_button_maximize)).setOnClickListener(this);
 		} else {
@@ -128,10 +129,20 @@ public class StageDialog extends Dialog implements View.OnClickListener {
 			case R.id.stage_dialog_button_share:
 				shareEmbroideryFile();
 				break;
+			case R.id.stage_dialog_button_debug:
+				showDebugMenu();
+				dismiss(); // Закрываем основное меню
+				StageLifeCycleController.stageResume(stageActivity);
+				break;
 			default:
 				Log.w(TAG, "Unimplemented button clicked! This shouldn't happen!");
 				break;
 		}
+	}
+
+	private void showDebugMenu() {
+		// Просто просим менеджер показать окно, передавая ему контекст
+		DebugMenuManager.getInstance().show(stageActivity);
 	}
 
 	@Override

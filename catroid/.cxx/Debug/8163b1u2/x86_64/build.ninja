@@ -65,10 +65,10 @@ build CMakeFiles/catroid.dir/catroid.cpp.o: CXX_COMPILER__catroid_Debug D$:/Catr
 #############################################
 # Link the shared library D:\Catroid-develop\catroid\build\intermediates\cxx\Debug\8163b1u2\obj\x86_64\libcatroid.so
 
-build D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so: CXX_SHARED_LIBRARY_LINKER__catroid_Debug CMakeFiles/catroid.dir/catroid.cpp.o | D$:/Catroid-develop/catroid/src/main/cpp/../jniLibs/x86_64/libonnxruntime.so D$:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/liblog.so
+build D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so: CXX_SHARED_LIBRARY_LINKER__catroid_Debug CMakeFiles/catroid.dir/catroid.cpp.o | D$:/Catroid-develop/catroid/src/main/cpp/../jniLibs/x86_64/libonnxruntime.so D$:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/liblog.so D$:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/libandroid.so D$:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/libdl.so
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info
   LINK_FLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = D:/Catroid-develop/catroid/src/main/cpp/../jniLibs/x86_64/libonnxruntime.so  D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/liblog.so  -latomic -lm
+  LINK_LIBRARIES = D:/Catroid-develop/catroid/src/main/cpp/../jniLibs/x86_64/libonnxruntime.so  D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/liblog.so  D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/libandroid.so  D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/x86_64-linux-android/24/libdl.so  -lunwind  -latomic -lm
   OBJECT_DIR = CMakeFiles\catroid.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -76,6 +76,43 @@ build D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86
   SONAME_FLAG = -Wl,-soname,
   TARGET_FILE = D:\Catroid-develop\catroid\build\intermediates\cxx\Debug\8163b1u2\obj\x86_64\libcatroid.so
   TARGET_PDB = catroid.so.dbg
+
+# =============================================================================
+# Object build statements for SHARED_LIBRARY target example_core
+
+
+#############################################
+# Order-only phony target for example_core
+
+build cmake_object_order_depends_target_example_core: phony || CMakeFiles/example_core.dir
+
+build CMakeFiles/example_core.dir/example_core.cpp.o: CXX_COMPILER__example_core_Debug D$:/Catroid-develop/catroid/src/main/cpp/example_core.cpp || cmake_object_order_depends_target_example_core
+  DEFINES = -Dexample_core_EXPORTS
+  DEP_FILE = CMakeFiles\example_core.dir\example_core.cpp.o.d
+  FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC
+  INCLUDES = -ID:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/onnx
+  OBJECT_DIR = CMakeFiles\example_core.dir
+  OBJECT_FILE_DIR = CMakeFiles\example_core.dir
+
+
+# =============================================================================
+# Link build statements for SHARED_LIBRARY target example_core
+
+
+#############################################
+# Link the shared library D:\Catroid-develop\catroid\build\intermediates\cxx\Debug\8163b1u2\obj\x86_64\libexample_core.so
+
+build D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libexample_core.so: CXX_SHARED_LIBRARY_LINKER__example_core_Debug CMakeFiles/example_core.dir/example_core.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info
+  LINK_FLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments
+  LINK_LIBRARIES = -llog  -landroid  -lEGL  -lGLESv2  -latomic -lm
+  OBJECT_DIR = CMakeFiles\example_core.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  SONAME = libexample_core.so
+  SONAME_FLAG = -Wl,-soname,
+  TARGET_FILE = D:\Catroid-develop\catroid\build\intermediates\cxx\Debug\8163b1u2\obj\x86_64\libexample_core.so
+  TARGET_PDB = example_core.so.dbg
 
 
 #############################################
@@ -105,7 +142,11 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build catroid: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so
 
+build example_core: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libexample_core.so
+
 build libcatroid.so: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so
+
+build libexample_core.so: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libexample_core.so
 
 # =============================================================================
 # Folder targets.
@@ -115,7 +156,7 @@ build libcatroid.so: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/D
 #############################################
 # Folder: D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/x86_64
 
-build all: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so
+build all: phony D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libcatroid.so D$:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86_64/libexample_core.so
 
 # =============================================================================
 # Built-in targets

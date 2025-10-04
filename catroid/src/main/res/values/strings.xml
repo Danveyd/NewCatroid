@@ -78,6 +78,38 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string name="brick_key_event">Key event</string>
+    <string name="brick_key_char">character</string>
+    <string name="brick_key_is_down">is down (1/0)</string>
+    <string name="brick_mouse_event">Mouse event</string>
+    <string name="brick_mouse_x">X position</string>
+    <string name="brick_mouse_y">Y position</string>
+    <string name="brick_mouse_state">button (0:Up, 1:Down)</string>
+    <string name="brick_toggle_display">Set display visible</string>
+    <string name="brick_stop_vm">Stop VM</string>
+    <string name="brick_run_vm">Run VM</string>
+    <string name="brick_vm_memory">memory (MB)</string>
+    <string name="brick_vm_cpu">CPU cores</string>
+    <string name="brick_vm_hda">hda (optional)</string>
+    <string name="brick_vm_cdrom">cdrom (optional)</string>
+    <string name="brick_create_disk">Create disk</string>
+    <string name="brick_disk_name">file name</string>
+    <string name="brick_disk_size">size (e.g. 10G)</string>
+    <string name="gl_create_view">Create GL View</string>
+    <string name="gl_name">name</string>
+    <string name="gl_x">x</string>
+    <string name="gl_y">y</string>
+    <string name="gl_width">width</string>
+    <string name="gl_height">height</string>
+    <string name="gl_attach_so">Attach C++ to GL View</string>
+    <string name="gl_so_name">.so file name</string>
+    <string name="brick_get_zip_files_text" formatted="false">Get file names from ZIP</string>
+    <string name="brick_get_zip_files_source" formatted="false">Project file</string>
+    <string name="brick_get_zip_files_variable" formatted="false">and store in</string>
+    <string name="error_zip_read_failed" formatted="false">Failed to read ZIP archive: %s</string>
+    <string name="stage_dialog_debug">Debug menu</string>
+    <string name="brick_export_file_text" formatted="false">Export file to device</string>
+    <string name="brick_export_file_source" formatted="false">Project file</string>
     <string name="brick_run_shell2" formatted="false">and save output to</string>
     <string name="brick_run_shell" formatted="false">Execute command</string>
     <string formatted="false" name="preference_title_old_drag">Old drag and drop mode</string>
@@ -853,7 +885,8 @@
     <string formatted="false" name="am_rename">Rename</string>
     <string formatted="false" name="am_convert">Convert</string>
     <string formatted="false" name="am_merge">Merge</string>
-    <string formatted="false" name="dialog_confirm_delete">You can\'t undo this!</string>
+    <string formatted="false" name="dialog_confirm_delete">Are you sure that you want to
+        delete this object? These changes can not be undone.</string>
 
     <string formatted="false" name="list_headline_sprites">Actors and objects</string>
 

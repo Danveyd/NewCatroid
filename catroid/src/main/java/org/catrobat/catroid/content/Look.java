@@ -420,7 +420,7 @@ public class Look extends Image {
 	@Override
 	public synchronized void draw(Batch batch, float parentAlpha) {
 		// !!! ВАЖНО: ЗАМЕНИТЕ "Sprite1" НА ИМЯ ВАШЕГО РЕАЛЬНОГО СПРАЙТА !!!
-		boolean shouldLog = true;
+		boolean shouldLog = false;
 
 		if (shouldLog) {
 			Log.d("ShaderDebug", "    [Draw] >>> Drawing Look for: " + sprite.getName());
@@ -478,11 +478,15 @@ public class Look extends Image {
 
 		Drawable drawable = getDrawable();
 		if (drawable != null) {
-			Log.d("ShaderDebug", "    [Draw] Drawable class: " + drawable.getClass().getSimpleName());
+			if (shouldLog) {
+				Log.d("ShaderDebug", "    [Draw] Drawable class: " + drawable.getClass().getSimpleName());
+			}
 			if (drawable instanceof TextureRegionDrawable) {
 				TextureRegion region = ((TextureRegionDrawable) drawable).getRegion();
-				Log.d("ShaderDebug", "    [Draw] TextureRegion: " + region);
-				Log.d("ShaderDebug", "    [Draw] Texture is null: " + (region.getTexture() == null));
+				if (shouldLog) {
+					Log.d("ShaderDebug", "    [Draw] TextureRegion: " + region);
+					Log.d("ShaderDebug", "    [Draw] Texture is null: " + (region.getTexture() == null));
+				}
 			}
 		}
 

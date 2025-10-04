@@ -43,6 +43,8 @@ public final class BrickValues {
 	public static final int GO_BACK = 1;
 	public static final int DURATION = 1;
 
+	public static final float ROTATION = 0.0f;
+
 	//constants Physics
 	public static final PhysicsObject.Type PHYSIC_TYPE = Type.DYNAMIC;
 	public static final double PHYSIC_MASS = 1.0;

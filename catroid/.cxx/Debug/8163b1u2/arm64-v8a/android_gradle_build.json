@@ -26,6 +26,13 @@
         "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\arm64-v8a\\libonnxruntime.so",
         "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\arm64-v8a\\libpython3.12.so"
       ]
+    },
+    "example_core::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "example_core",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\Debug\\8163b1u2\\obj\\arm64-v8a\\libexample_core.so",
+      "runtimeFiles": []
     }
   },
   "toolchains": {

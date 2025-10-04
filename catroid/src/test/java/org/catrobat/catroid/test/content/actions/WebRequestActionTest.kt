@@ -93,7 +93,7 @@ class WebRequestActionTest {
 
         whenNew(WebConnection::class.java).withAnyArguments().thenReturn(webConnection)
         val responseBody = mock(ResponseBody::class.java)
-        doReturn(responseBody).`when`(response).body()
+        doReturn(responseBody).`when`(response)
         doReturn(RESPONSE_STRING).`when`(responseBody).string()
 
         val project = Project(MockUtil.mockContextForProject(), "Project")

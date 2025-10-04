@@ -274,6 +274,7 @@ android {
         signedRelease {
             initWith buildTypes.release
             signingConfig signingConfigs.signedRelease
+            matchingFallbacks = ["release"]
         }
     }
 
@@ -589,6 +590,8 @@ dependencies {
     testImplementation 'org.reflections:reflections:0.9.11'
     testImplementation 'org.json:json:20190722'
 
+    implementation project(':vncclient')
+
     // Retrofit testing
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.14.9'
     //testImplementation 'com.squareup.okhttp3:logging-interceptor:3.14.9'
@@ -661,3 +664,12 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
+
+configurations.all {
+    resolutionStrategy {
+        // Эта команда принудительно заставит ВСЕ зависимости в проекте
+        // использовать ТОЛЬКО эту версию библиотеки Material.
+        // Это решит конфликт версий.
+        force 'com.google.android.material:material:1.2.1'
+    }
+}

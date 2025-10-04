@@ -22,6 +22,521 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- New Objects -->
+    <string name="brick_square" formatted="false">Criar quadrado</string>
+    <string name="brick_square_name" formatted="false">Nome</string>
+    <string name="brick_square_pos" formatted="false">Posição (X, Y)</string>
+    <string name="brick_square_size" formatted="false">Largura, Altura</string>
+    <string name="brick_square_color" formatted="false">Cor</string>
+    <string name="brick_square_trans" formatted="false">Transparência</string>
+    <string name="brick_square_rot" formatted="false">Direção</string>
+    <string name="brick_square_borders" formatted="false">Cantos arredondados</string>
+    <string name="brick_del_square" formatted="false">Excluir quadrado</string>
+    <!-- Files -->
+    <string name="brick_delete_files" formatted="false">Excluir arquivo do projeto</string>
+    <string name="brick_read_files" formatted="false">Ler variável</string>
+    <string name="brick_read_files2" formatted="false">do arquivo do projeto</string>
+    <string name="brick_write_files" formatted="false">Escrever variável</string>
+    <string name="brick_write_files2" formatted="false">no arquivo do projeto</string>
+    <string name="brick_open_files" formatted="false">Abrir arquivo do projeto</string>
+    <string name="brick_move_files" formatted="false">Copiar arquivo para Downloads</string>
+    <string name="brick_move_downloads" formatted="false">Copiar arquivo para o projeto</string>
+    <string name="brick_save_look_files" formatted="false">Aparência para arquivo do projeto</string>
+    <string name="brick_set_look_files" formatted="false">Aparência do arquivo do projeto</string>
+    <string name="brick_files_url" formatted="false">Salvar arquivo no projeto</string>
+    <string name="brick_sound_files" formatted="false">Tocar som do projeto</string>
+    <!-- Dialog Bricks -->
+    <string name="dialog_create" formatted="false">Criar diálogo</string>
+    <string name="dialog_name" formatted="false">Nome do diálogo</string>
+    <string name="dialog_title" formatted="false">Título</string>
+    <string name="dialog_message" formatted="false">Mensagem</string>
+    <string name="dialog_text" formatted="false">Texto</string>
+    <string name="dialog_default" formatted="false">Texto padrão</string>
+    <string name="dialog_positive" formatted="false">Adicionar botão "Sim"</string>
+    <string name="dialog_negative" formatted="false">Adicionar botão "Não"</string>
+    <string name="dialog_neutral" formatted="false">Adicionar botão "Mais tarde"</string>
+    <string name="dialog_edit" formatted="false">Adicionar campo de entrada</string>
+    <string name="dialog_radio" formatted="false">Adicionar seleção</string>
+    <string name="dialog_callback" formatted="false">Salvar resposta</string>
+    <string name="dialog_button" formatted="false">Botão pressionado</string>
+    <string name="dialog_value" formatted="false">Valor</string>
+    <string name="dialog_show" formatted="false">Mostrar diálogo</string>
+    <!-- Look Tables -->
+    <string name="look_from_table" formatted="false">Aparência de tabelas</string>
+    <string name="look_to_table" formatted="false">Aparência para tabelas</string>
+    <string name="table_r" formatted="false">Tabela (vermelho)</string>
+    <string name="table_g" formatted="false">Tabela (verde)</string>
+    <string name="table_b" formatted="false">Tabela (azul)</string>
+    <string name="table_a" formatted="false">Tabela (transparência)</string>
+    <!-- FireBase -->
+    <string name="firebase_delete" formatted="false">Excluir do FireBase</string>
+    <string name="firebase_write" formatted="false">Escrever no FireBase</string>
+    <string name="firebase_read" formatted="false">Ler do FireBase</string>
+    <string name="firebase_base" formatted="false">ID da base</string>
+    <string name="firebase_key" formatted="false">Chave</string>
+    <string name="firebase_value" formatted="false">Valor</string>
+    <string name="firebase_store" formatted="false">e salvar em</string>
+    <!-- General terms -->
+    <string name="brick_key_event">Evento de teclado</string>
+    <string name="brick_key_char">caractere</string>
+    <string name="brick_key_is_down">pressionada (1/0)</string>
+    <string name="brick_mouse_event">Evento de mouse</string>
+    <string name="brick_mouse_x">Posição X</string>
+    <string name="brick_mouse_y">Posição Y</string>
+    <string name="brick_mouse_state">botão (0:Solto, 1:Pressionado)</string>
+    <string name="brick_toggle_display">Mostrar monitor</string>
+    <string name="brick_stop_vm">Parar VM</string>
+    <string name="brick_run_vm">Iniciar VM</string>
+    <string name="brick_vm_memory">memória (MB)</string>
+    <string name="brick_vm_cpu">núcleos de CPU</string>
+    <string name="brick_vm_hda">disco (opcional)</string>
+    <string name="brick_vm_cdrom">cdrom (opcional)</string>
+    <string name="brick_create_disk">Criar disco</string>
+    <string name="brick_disk_name">nome do arquivo</string>
+    <string name="brick_disk_size">tamanho (ex: 10G)</string>
+    <string name="gl_create_view">Criar Cena GL</string>
+    <string name="gl_name">nome</string>
+    <string name="gl_x">x</string>
+    <string name="gl_y">y</string>
+    <string name="gl_width">largura</string>
+    <string name="gl_height">altura</string>
+    <string name="gl_attach_so">Anexar C++ à Cena GL</string>
+    <string name="gl_so_name">nome do arquivo .so</string>
+    <string name="brick_get_zip_files_text" formatted="false">Nomes de arquivos de ZIP</string>
+    <string name="brick_get_zip_files_source" formatted="false">Arquivo do projeto</string>
+    <string name="brick_get_zip_files_variable" formatted="false">e salvar em</string>
+    <string name="error_zip_read_failed" formatted="false">Erro ao ler arquivo ZIP: %s</string>
+    <string name="stage_dialog_debug">Menu de depuração</string>
+    <string name="brick_export_file_text" formatted="false">Exportar arquivo</string>
+    <string name="brick_export_file_source" formatted="false">Arquivo do projeto</string>
+    <string name="brick_run_shell2" formatted="false">e salvar saída em</string>
+    <string name="brick_run_shell" formatted="false">Executar comando</string>
+    <string name="brick_when_back_pressed" formatted="false">Quando "voltar" for pressionado</string>
+    <string name="brick_when_project_exits" formatted="false">Ao sair do projeto</string>
+    <string name="brick_set_sound_volume_text" formatted="false">Volume para o som</string>
+    <string name="brick_set_sound_volume_volume" formatted="false">Volume (%)</string>
+    <string name="brick_copy_file_text" formatted="false">Copiar arquivo do projeto</string>
+    <string name="brick_copy_file_source" formatted="false">Arquivo de origem</string>
+    <string name="brick_copy_file_destination" formatted="false">Novo nome</string>
+    <string name="libs_createlib" formatted="false">Criar biblioteca</string>
+    <string name="libs_exported" formatted="false">Biblioteca exportada</string>
+    <string name="libs_exportede" formatted="false">Erro na exportação</string>
+    <string name="libs_importede" formatted="false">Erro ao importar arquivo</string>
+    <string name="libs_imported" formatted="false">Biblioteca importada com sucesso</string>
+    <string name="libs_cleaned" formatted="false">Projeto limpo</string>
+    <string name="libs_clearpd" formatted="false">Todas as alterações não salvas serão perdidas. Esta ação não pode ser desfeita.</string>
+    <string name="libs_clearp" formatted="false">Limpar projeto?</string>
+    <string name="libs_clear" formatted="false">Limpar</string>
+    <string name="libs_formulas" formatted="false">Fórmulas</string>
+    <string name="libs_bricks" formatted="false">Blocos</string>
+    <string name="libs_code" formatted="false">Código</string>
+    <string name="libs_newlib" formatted="false">Nova biblioteca</string>
+    <string name="libs_def" formatted="false">Valor padrão</string>
+    <string name="libs_edit_form" formatted="false">Editar fórmula</string>
+    <string name="libs_new_form" formatted="false">Nova fórmula</string>
+    <string name="libs_delete" formatted="false">Excluir</string>
+    <string name="libs_delete_w2" formatted="false">Tem certeza que deseja excluir</string>
+    <string name="libs_delete_wf" formatted="false">Excluir fórmula?</string>
+    <string name="libs_delete_w" formatted="false">Excluir bloco?</string>
+    <string name="libs_error_f" formatted="false">Função não encontrada no código!</string>
+    <string name="libs_error_n" formatted="false">Todos os campos devem ser preenchidos</string>
+    <string name="libs_cname" formatted="false">Nome interno</string>
+    <string name="libs_type2" formatted="false">Tipo (NUMBER/STRING)</string>
+    <string name="libs_type1" formatted="false">Tipo (TEXT_FIELD)</string>
+    <string name="libs_cancel" formatted="false">Cancelar</string>
+    <string name="libs_save" formatted="false">Salvar</string>
+    <string name="libs_edit_brick" formatted="false">Editar bloco</string>
+    <string name="libs_new_brick" formatted="false">Novo bloco</string>
+    <string name="libs_htext" formatted="false">Texto do cabeçalho (ex: \'Mostrar {0}\')</string>
+    <string name="libs_add_brick" formatted="false">Adicionar bloco</string>
+    <string name="libs_add_form" formatted="false">Adicionar fórmula</string>
+    <string name="libs_del_param" formatted="false">Excluir parâmetro</string>
+    <string name="libs_value" formatted="false">Valor</string>
+    <string name="libs_nametype" formatted="false">Nome/Tipo</string>
+    <string name="libs_add_param" formatted="false">Adicionar parâmetro</string>
+    <string name="libs_params" formatted="false">Parâmetros</string>
+    <string name="libs_func" formatted="false">Nome da função no código</string>
+    <string name="libs_name" formatted="false">Nome de exibição</string>
+    <string name="libs_id" formatted="false">ID (único)</string>
+    <string name="python_save_log_to">saída para variável local</string>
+    <string name="python_run_script">Executar Python</string>
+    <string name="python_script_content">Script</string>
+    <string name="python_load_library">Carregar biblioteca (Python)</string>
+    <string name="python_library_file_name">Arquivo (.whl, .zip)</string>
+    <string name="python_load_native_module">Carregar módulo (Python)</string>
+    <string name="python_module_file_name">Arquivo (.so)</string>
+    <string name="python_clear_environment">Limpar ambiente (Python)</string>
+    <string name="brick_set_shader_uniform_vec3" formatted="false">Definir uniform (vetor)</string>
+    <string name="brick_set_shader_uniform_float" formatted="false">Definir uniform (número)</string>
+    <string name="brick_shader_uniform_name" formatted="false">Nome</string>
+    <string name="brick_shader_uniform_value" formatted="false">Valor</string>
+    <string name="brick_set_shader_code" formatted="false">Definir shader 3D GLSL</string>
+    <string name="brick_shader_vertex" formatted="false">Vértice</string>
+    <string name="brick_shader_fragment" formatted="false">Fragmento</string>
+    <string name="brick_set_ccd" formatted="false">Colisão precisa</string>
+    <string name="brick_set_ccd_for_object">para o objeto</string>
+    <string name="brick_upload_file">Enviar arquivo para o servidor</string>
+    <string name="brick_upload_url">Link</string>
+    <string name="brick_upload_project_file">Caminho do arquivo do projeto</string>
+    <string name="brick_upload_file_type">Tipo de arquivo</string>
+    <string name="brick_upload_mime_type">Tipo MIME</string>
+    <string name="brick_upload_storage_type">Tipo de armazenamento</string>
+
+    <string-array name="upload_file_types">
+        <item>Padrão (Texto)</item>
+        <item>Binário</item>
+    </string-array>
+
+    <string-array name="upload_storage_types">
+        <item>Permanente</item>
+        <item>Temporário</item>
+    </string-array>
+
+    <string name="brick_set_3d_fog">Definir névoa</string>
+    <string name="brick_3d_fog_r">R (0–1)</string>
+    <string name="brick_3d_fog_g">G (0–1)</string>
+    <string name="brick_3d_fog_b">B (0–1)</string>
+    <string name="brick_3d_fog_density">densidade</string>
+    <string name="brick_create_sphere" formatted="false">Criar esfera com ID</string>
+    <string name="formula_3d_touches" formatted="false">objeto toca objeto</string>
+    <string name="formula_3d_touches_param" formatted="false">(\'ID do objeto 1\', \'ID do objeto 2\')</string>
+    <string name="brick_set_sky_color" formatted="false">Definir cor do céu para (0-1)</string>
+    <string name="formula_cam_rot_yaw" formatted="false">rotação da câmera Y</string>
+    <string name="formula_cam_rot_pitch" formatted="false">rotação da câmera X</string>
+    <string name="formula_cam_rot_roll" formatted="false">rotação da câmera Z</string>
+    <string name="formula_3d_velo_x" formatted="false">velocidade 3D X</string>
+    <string name="formula_3d_velo_y" formatted="false">velocidade 3D Y</string>
+    <string name="formula_3d_velo_z" formatted="false">velocidade 3D Z</string>
+    <string name="formula_cam_pos_x" formatted="false">posição da câmera X</string>
+    <string name="formula_cam_pos_y" formatted="false">posição da câmera Y</string>
+    <string name="formula_cam_pos_z" formatted="false">posição da câmera Z</string>
+    <string name="formula_cam_dir_x" formatted="false">direção da câmera X</string>
+    <string name="formula_cam_dir_y" formatted="false">direção da câmera Y</string>
+    <string name="formula_cam_dir_z" formatted="false">direção da câmera Z</string>
+    <string name="formula_no_param" formatted="false">()</string>
+    <string name="brick_cast_ray_name" formatted="false">Lançar raio com nome</string>
+    <string name="brick_cast_ray_from" formatted="false">da posição</string>
+    <string name="brick_cast_ray_dir" formatted="false">na direção</string>
+    <string name="formula_ray_distance" formatted="false">distância do raio</string>
+    <string name="formula_ray_hit_object" formatted="false">objeto do raio</string>
+    <string name="formula_ray_param" formatted="false">(\'raio\')</string>
+    <string name="formula_vector_dir_x" formatted="false">direção X do ângulo</string>
+    <string name="formula_vector_dir_y" formatted="false">direção Y do ângulo</string>
+    <string name="formula_vector_angle" formatted="false">ângulo da direção</string>
+    <string name="formula_vector_dir_param" formatted="false">(60)</string>
+    <string name="formula_vector_angle_param" formatted="false">(0.6, 1)</string>
+    <string name="formula_3d_pos_x" formatted="false">posição 3D x</string>
+    <string name="formula_3d_pos_y" formatted="false">posição 3D y</string>
+    <string name="formula_3d_pos_z" formatted="false">posição 3D z</string>
+    <string name="formula_3d_rot_yaw" formatted="false">rotação 3D y</string>
+    <string name="formula_3d_rot_pitch" formatted="false">rotação 3D x</string>
+    <string name="formula_3d_rot_roll" formatted="false">rotação 3D z</string>
+    <string name="formula_3d_scale_x" formatted="false">escala 3D x</string>
+    <string name="formula_3d_scale_y" formatted="false">escala 3D y</string>
+    <string name="formula_3d_scale_z" formatted="false">escala 3D z</string>
+    <string name="formula_3d_distance" formatted="false">distância 3D entre</string>
+    <string name="formula_3d_single_param" formatted="false">(\'ID do objeto\')</string>
+    <string name="formula_3d_double_param" formatted="false">(\'ID do objeto 1\', \'ID do objeto 2\')</string>
+    <string name="brick_set_restitution_of" formatted="false">Definir elasticidade para</string>
+    <string name="brick_set_restitution_to" formatted="false">para</string>
+    <string name="brick_set_friction_to" formatted="false">para</string>
+    <string name="brick_set_friction_of" formatted="false">Definir atrito para</string>
+    <string name="brick_create_cube" formatted="false">Criar cubo com ID</string>
+    <string name="brick_set_camera_rotation" formatted="false">Definir rotação da câmera para</string>
+    <string name="brick_set_object_texture_of" formatted="false">Definir textura do objeto</string>
+    <string name="brick_set_object_texture_to" formatted="false">do arquivo do projeto</string>
+    <string name="brick_set_object_color_of" formatted="false">Definir cor do objeto</string>
+    <string name="brick_set_object_color_to" formatted="false">para (0-1)</string>
+    <string name="brick_apply_3d_force2" formatted="false">com vetor</string>
+    <string name="brick_apply_3d_force" formatted="false">Aplicar força ao objeto</string>
+    <string name="brick_set_3d_velocity2" formatted="false">vetor</string>
+    <string name="brick_set_3d_velocity" formatted="false">Definir velocidade do objeto</string>
+    <string name="brick_set_3d_gravity" formatted="false">Definir gravidade do mundo 3D</string>
+    <string name="brick_set_physics_state_of" formatted="false">Definir estado físico</string>
+    <string name="brick_set_physics_state_to" formatted="false">para</string>
+    <string name="brick_set_physics_state_mass" formatted="false">com massa</string>
+    <string-array name="brick_physics_states">
+        <item>Sem física</item>
+        <item>Estático (Primitivo)</item>
+        <item>Dinâmico (Primitivo)</item>
+        <item>Estático complexo</item>
+    </string-array>
+    <string name="brick_set_directional_light_id" formatted="false">Luz direcional com ID</string>
+    <string name="brick_set_directional_light_color" formatted="false">cor (0-1)</string>
+    <string name="brick_set_directional_light_dir" formatted="false">direção</string>
+    <string name="brick_set_ambient_light" formatted="false">Definir luz ambiente (cor 0-1)</string>
+    <string name="brick_set_3d_position_of" formatted="false">Definir posição 3D do objeto</string>
+    <string name="brick_set_3d_position_to" formatted="false">para coordenadas</string>
+    <string name="brick_object_look_at_object" formatted="false">Virar objeto</string>
+    <string name="brick_object_look_at_to" formatted="false">para o ponto</string>
+    <string name="brick_set_3d_scale_of" formatted="false">Definir escala 3D do objeto</string>
+    <string name="brick_set_3d_scale_to" formatted="false">para</string>
+    <string name="brick_set_3d_rotation_of" formatted="false">Definir rotação do objeto</string>
+    <string name="brick_set_3d_rotation_to" formatted="false">para ângulos</string>
+    <string name="brick_set_3d_rotation_yaw" formatted="false">Yaw(Y)</string>
+    <string name="brick_set_3d_rotation_pitch" formatted="false">Pitch(X)</string>
+    <string name="brick_set_3d_rotation_roll" formatted="false">Roll(Z)</string>
+    <string name="brick_camera_look_at" formatted="false">Apontar câmera para o ponto</string>
+    <string name="brick_set_camera_position" formatted="false">Definir posição da câmera para</string>
+    <string name="brick_remove_3d_object_text" formatted="false">Excluir objeto 3D</string>
+    <string name="brick_create_3d_object_text_1" formatted="false">Criar objeto 3D com ID</string>
+    <string name="brick_create_3d_object_text_2" formatted="false">do arquivo de modelo</string>
+    <string name="is_password" formatted="false">é senha</string>
+    <string name="corner_radius" formatted="false">raio dos cantos</string>
+    <string name="max_length" formatted="false">comprimento máx.</string>
+    <string name="type" formatted="false">tipo (text, number)</string>
+    <string name="font" formatted="false">fonte (arquivos do projeto)</string>
+    <string name="brick_set_callback2" formatted="false">manipulador de mensagens</string>
+    <string name="brick_set_callback" formatted="false">Adicionar ao WebView</string>
+    <string name="brick_eval_web2" formatted="false">dentro do WebView</string>
+    <string name="brick_eval_web" formatted="false">Executar JS</string>
+    <string name="set_native_layer" formatted="false">Definir camada para View nativa</string>
+    <string name="videoplayer_params" formatted="false">(\'meuVideoPlayer\')</string>
+    <string name="view_params" formatted="false">(\'minhaView\')</string>
+    <string name="video_time" formatted="false">tempo do videoplayer</string>
+    <string name="is_video_playing" formatted="false">videoplayer em execução</string>
+    <string name="view_height" formatted="false">altura da view</string>
+    <string name="view_width" formatted="false">largura da view</string>
+    <string name="view_y" formatted="false">posição y da view</string>
+    <string name="view_x" formatted="false">posição x da view</string>
+    <string name="seek_video2" formatted="false">para (segundos)</string>
+    <string name="seek_video" formatted="false">Avançar/Retroceder VideoPlayer</string>
+    <string name="play_video" formatted="false">Iniciar VideoPlayer</string>
+    <string name="pause_video" formatted="false">Pausar VideoPlayer</string>
+    <string name="alignment" formatted="false">alinhamento (left, center, right)</string>
+    <string name="hint_color" formatted="false">cor da dica</string>
+    <string name="hint_text" formatted="false">dica</string>
+    <string name="bg_color" formatted="false">cor de fundo</string>
+    <string name="text_color" formatted="false">cor do texto</string>
+    <string name="text_size" formatted="false">tamanho do texto</string>
+    <string name="styles" formatted="false">Estilos</string>
+    <string name="default_text" formatted="false">texto padrão</string>
+    <string name="save_to_variable" formatted="false">salvar em variável</string>
+    <string name="brick_create_textfield" formatted="false">Criar TextField</string>
+    <string name="project_file" formatted="false">arquivo do projeto</string>
+    <string name="control_enabled" formatted="false">mostrar controles</string>
+    <string name="loop_enabled" formatted="false">repetir</string>
+    <string name="position" formatted="false">posição (x, y)</string>
+    <string name="size_wh" formatted="false">tamanho (largura, altura)</string>
+    <string name="brick_video_player" formatted="false">Criar VideoPlayer</string>
+    <string name="brick_photo" formatted="false">Tirar foto e usar como aparência</string>
+    <string name="brick_cut_look2" formatted="false">fim (x, y)</string>
+    <string name="brick_cut_look1" formatted="false">início (x, y)</string>
+    <string name="brick_cut_look" formatted="false">Recortar aparência</string>
+    <string name="bt_permissions_denied" formatted="false">Por favor, conceda a permissão. Sem ela, isso não funcionará :/</string>
+    <string name="brick_shader2" formatted="false">shader de fragmento</string>
+    <string name="brick_shader1" formatted="false">shader de vértice</string>
+    <string name="brick_shader" formatted="false">Definir shader GLSL</string>
+    <string name="open" formatted="false">abrir</string>
+    <string name="brick_delete_float2" formatted="false">de FloatArray</string>
+    <string name="brick_delete_float" formatted="false">Excluir elemento com índice</string>
+    <string name="brick_put_float3" formatted="false">no índice</string>
+    <string name="brick_put_float2" formatted="false">em FloatArray</string>
+    <string name="brick_put_float" formatted="false">Inserir</string>
+    <string name="brick_table_to_float2" formatted="false">em FloatArray</string>
+    <string name="brick_table_to_float" formatted="false">Adicionar tabela</string>
+    <string name="brick_create_float" formatted="false">Definir FloatArray com nome</string>
+    <string name="brick_normalize_img5" formatted="false">B:</string>
+    <string name="brick_normalize_img4" formatted="false">G:</string>
+    <string name="brick_normalize_img3" formatted="false">R:</string>
+    <string name="brick_normalize_img2" formatted="false">E salvar em tabelas</string>
+    <string name="brick_normalize_img" formatted="false">Normalizar IMG (0-1)</string>
+    <string name="brick_grayscale_img" formatted="false">Tornar IMG preto e branco</string>
+    <string name="brick_resize_img3" formatted="false">novo tamanho (x, y)</string>
+    <string name="brick_resize_img2" formatted="false">arquivo do projeto</string>
+    <string name="brick_resize_img" formatted="false">Redimensionar imagem</string>
+    <string name="brick_predict_nn3" formatted="false">e salvar resultado em</string>
+    <string name="brick_predict_nn2" formatted="false">entrada (FloatArray)</string>
+    <string name="brick_predict_nn" formatted="false">Prever .onnx</string>
+    <string name="brick_unload_nn" formatted="false">Descarregar modelo .onnx</string>
+    <string name="brick_load_nn" formatted="false">Carregar modelo .onnx do arquivo do projeto</string>
+    <string name="brick_lunoscript" formatted="false">Executar LunoScript</string>
+    <string name="brick_ask_gpt" formatted="false">Perguntar ao ChatGPT</string>
+    <string name="brick_ask_gpt2" formatted="false">Prompt do sistema</string>
+    <string name="formula_editor_object_width" formatted="false">largura</string>
+    <string name="formula_editor_object_height" formatted="false">altura</string>
+    <string name="brick_unkown" formatted="false">Bloco desconhecido</string>
+    <string name="brick_choose_file" formatted="false">Escolher arquivo</string>
+    <string name="brick_choose_file2" formatted="false">salvar nome em variável</string>
+    <string name="brick_choose_file3" formatted="false">e copiar para arquivos do projeto</string>
+    <string name="brick_set_hitbox" formatted="false">Definir aparência, mantendo o hitbox</string>
+    <string name="only_numbers" formatted="false">Apenas números decimais e inteiros são permitidos aqui</string>
+    <string name="project_physics_height" formatted="false">Área de largura da física</string>
+    <string name="project_physics_width" formatted="false">Área de altura da física</string>
+    <string name="brick_play_files_wait" formatted="false">Tocar som do projeto</string>
+    <string name="brick_play_files_wait2" formatted="false">e esperar</string>
+    <string name="brick_clear_scene" formatted="false">Limpar cache da cena</string>
+    <string name="brick_set_stop_sounds" formatted="false">Definir parada de sons</string>
+    <string name="brick_set_save_scenes" formatted="false">Definir salvamento de cenas</string>
+    <string name="brick_test" formatted="false">Mostrar interface do sistema</string>
+    <string name="hide_status_bar" formatted="false">Ocultar interface do sistema</string>
+    <string name="formula_editor_object_look_height" formatted="false">altura da aparência</string>
+    <string name="formula_editor_object_look_width" formatted="false">largura da aparência</string>
+    <string name="brick_string_to_table" formatted="false">Dividir</string>
+    <string name="brick_string_to_table_x" formatted="false">separador x</string>
+    <string name="brick_string_to_table_y" formatted="false">separador y</string>
+    <string name="brick_string_to_table_name" formatted="false">e salvar em tabela</string>
+    <string name="brick_set_dns" formatted="false">Definir servidor DNS</string>
+    <string name="brick_orientation" formatted="false">Mudar orientação</string>
+    <string name="brick_run_lua" formatted="false">Executar código Lua</string>
+    <string name="brick_run_lua2" formatted="false">e salvar resultado em</string>
+    <string name="brick_regex4" formatted="false">e salvar resultado em</string>
+    <string name="brick_regex3" formatted="false">expressão</string>
+    <string name="brick_regex2" formatted="false">texto</string>
+    <string name="brick_regex" formatted="false">Executar expressão regular</string>
+    <string name="brick_open_file" formatted="false">Abrir arquivo de Downloads</string>
+    <string name="brick_zip2" formatted="false">de arquivos</string>
+    <string name="brick_zip" formatted="false">Compactar em arquivo ZIP</string>
+    <string name="brick_unzip" formatted="false">Descompactar arquivo ZIP</string>
+    <string name="brick_hide_text" formatted="false">Ocultar texto com nome</string>
+    <string name="formula_editor_function_random_str" formatted="false">string aleatória</string>
+    <string name="formula_editor_function_random_str_parameter" formatted="false">(15)</string>
+    <string name="formula_editor_function_repeat" formatted="false">repetir texto</string>
+    <string name="formula_editor_function_repeat_parameter" formatted="false">(\'repetição é sinal de loucura \', 10)</string>
+    <string name="formula_editor_function_replace" formatted="false">substituir</string>
+    <string name="formula_editor_function_replace_parameter" formatted="false">(\'pandas amam bambu\',\'amam\',\'comem\')</string>
+    <string name="formula_editor_function_contains_str" formatted="false">string contém</string>
+    <string name="formula_editor_function_contains_str_parameter" formatted="false">(\'morcegos são fofos!\',\'fofos\')</string>
+    <string name="brick_split3" formatted="false">e salvar em</string>
+    <string name="brick_split2" formatted="false">por</string>
+    <string name="brick_split" formatted="false">Dividir</string>
+    <string name="formula_editor_function_table_x" formatted="false">tamanho x da tabela</string>
+    <string name="formula_editor_function_table_x_parameter" formatted="false">(\'minhaTabela\')</string>
+    <string name="formula_editor_function_floatarray" formatted="false">tamanho do FloatArray</string>
+    <string name="formula_editor_function_floatarray_parameter" formatted="false">(\'FloatArray\')</string>
+    <string name="formula_editor_function_table_y" formatted="false">tamanho y da tabela</string>
+    <string name="formula_editor_function_table_y_parameter" formatted="false">(\'minhaTabela\')</string>
+    <string name="formula_editor_function_table_element" formatted="false">elemento da tabela</string>
+    <string name="formula_editor_function_table_element_parameter" formatted="false">(\'minhaTabela\', 3, 2)</string>
+    <string name="formula_editor_function_table_join" formatted="false">juntar tabela por</string>
+    <string name="formula_editor_function_table_join_parameter" formatted="false">(\'minhaTabela\', \',\', \'\n\')</string>
+    <string name="brick_delete_all_tables" formatted="false">Excluir todas as tabelas</string>
+    <string name="brick_delete_table" formatted="false">Excluir tabela com nome</string>
+    <string name="brick_insert_table3" formatted="false">na posição (X, Y)</string>
+    <string name="brick_insert_table2" formatted="false">na tabela</string>
+    <string name="brick_insert_table" formatted="false">Inserir</string>
+    <string name="brick_create_table2" formatted="false">tamanho (X, Y)</string>
+    <string name="brick_create_table" formatted="false">Criar tabela com nome</string>
+    <string name="brick_sound_file" formatted="false">Tocar som do arquivo</string>
+    <string name="brick_look_file" formatted="false">Usar aparência do arquivo</string>
+    <string name="brick_file_url2" formatted="false">com nome</string>
+    <string name="brick_save_look" formatted="false">Salvar aparência em arquivo</string>
+    <string name="brick_scene_id" formatted="false">Iniciar cena número</string>
+    <string name="brick_file_url" formatted="false">Salvar arquivo por link</string>
+    <string name="build_apk" formatted="false">Salvar APK</string>
+    <string name="save_apk_button" formatted="false">Compilar APK</string>
+    <string name="change_icon_button" formatted="false">Mudar ícone</string>
+    <string name="change_orientation_button" formatted="false">Mudar orientação</string>
+    <string name="clear_vars_button" formatted="false">Limpar variáveis salvas</string>
+    <string name="brick_send_server" formatted="false">Enviar para servidor local</string>
+    <string name="brick_listen_server" formatted="false">Ouvir servidor e armazenar valores em</string>
+    <string name="brick_connect_server2" formatted="false">com IP</string>
+    <string name="brick_connect_server3" formatted="false">e porta</string>
+    <string name="brick_connect_server" formatted="false">Conectar ao servidor local</string>
+    <string name="brick_stop_server" formatted="false">Parar servidor local</string>
+    <string name="brick_start_server" formatted="false">Iniciar servidor local na porta</string>
+    <string name="brick_screenshot" formatted="false">Tirar print e usar como aparência</string>
+    <string name="create_web_url" formatted="false">Criar WebView com nome</string>
+    <string name="create_web_url2" formatted="false">URL</string>
+    <string name="create_web_url3" formatted="false">posição (x, y)</string>
+    <string name="create_web_url4" formatted="false">tamanho (largura, altura)</string>
+    <string name="create_web_file" formatted="false">Criar WebView com nome</string>
+    <string name="create_web_file2" formatted="false">Código HTML</string>
+    <string name="create_web_file3" formatted="false">posição (x, y)</string>
+    <string name="create_web_file4" formatted="false">tamanho (largura, altura)</string>
+    <string name="delete_web" formatted="false">Excluir View nativa</string>
+    <string name="brick_run_js" formatted="false">Executar código Micro-JavaScript</string>
+    <string name="brick_run_js2" formatted="false">e salvar resultado em</string>
+    <string name="project_files" formatted="false">Arquivos do projeto</string>
+    <string name="project_libs" formatted="false">Bibliotecas do projeto</string>
+    <string name="formula_editor_custom_functions_header">Bibliotecas</string>
+    <string name="files_add" formatted="false">Adicionar arquivo</string>
+    <string name="files_delete" formatted="false">Excluir</string>
+    <string name="add_look_empty_object">Objeto vazio</string>
+    <string name="add_look_actors_and_object">Da biblioteca</string>
+    <string name="formula_editor_function_var_name" formatted="false">nome da variável local</string>
+    <string name="formula_editor_function_var_name_parameter" formatted="false">(0)</string>
+    <string name="formula_editor_function_var_value" formatted="false">valor da variável local</string>
+    <string name="formula_editor_function_var_value_parameter" formatted="false">(0)</string>
+    <string name="brick_gemini_request" formatted="false">Perguntar ao Gemini</string>
+    <string name="category_libraries" formatted="false">Bibliotecas</string>
+    <string name="gemini_model" formatted="false">modelo</string>
+    <string name="brick_gemini_request2" formatted="false">e salvar resposta em</string>
+    <string name="brick_set_gemini_key" formatted="false">Definir chave de API (Gemini)</string>
+    <string name="formula_editor_function_var" formatted="false">variável local</string>
+    <string name="formula_editor_function_var_parameter" formatted="false">(\'variavel1\')</string>
+    <string name="brick_delete_var" formatted="false">Excluir variável local</string>
+    <string name="brick_delete_var2" formatted="false">com nome</string>
+    <string name="brick_delete_vars" formatted="false">Excluir todas as variáveis locais</string>
+    <string name="brick_create_var" formatted="false">Criar/Definir variável local</string>
+    <string name="brick_create_var2" formatted="false">valor</string>
+    <string name="brick_divide_poland" formatted="false">Particionar a Polônia</string>
+    <string name="formula_editor_sensor_frequency" formatted="false">frequência do som</string>
+    <string name="formula_editor_sensor_internet" formatted="false">conectado à internet</string>
+    <string name="formula_editor_sensor_architecture" formatted="false">arquitetura do processador</string>
+    <string name="brick_listen_micro" formatted="false">Começar a ouvir o microfone em segmentos de</string>
+    <string name="brick_listen_micro2" formatted="false">milissegundos</string>
+    <string name="formula_editor_function_reverse" formatted="false">inverter</string>
+    <string name="formula_editor_function_reverse_parametr" formatted="false">(\'oláH\')</string>
+    <string name="formula_editor_sensor_stage_width" formatted="false">largura da tela</string>
+    <string name="formula_editor_sensor_stage_height" formatted="false">altura da tela</string>
+    <string name="formula_editor_sensor_battary" formatted="false">carga da bateria</string>
+    <string name="formula_editor_sensor_micro" formatted="false">volume do microfone</string>
+    <string name="formula_editor_sensor_ip" formatted="false">IP do servidor local</string>
+    <string name="formula_editor_sensor_port" formatted="false">porta do servidor local</string>
+    <string name="brick_change_width" formatted="false">Alterar largura em</string>
+    <string name="brick_change_height" formatted="false">Alterar altura em</string>
+    <string name="brick_set_width" formatted="false">Definir largura</string>
+    <string name="brick_set_height" formatted="false">Definir altura</string>
+    <string name="brick_copy_text" formatted="false">Copiar</string>
+    <string name="brick_copy_text2" formatted="false">para a área de transferência</string>
+    <string name="post_web_request" formatted="false">Enviar requisição web POST para</string>
+    <string name="post_web_request_header" formatted="false">com cabeçalho (header)</string>
+    <string name="post_web_request_body" formatted="false">e conteúdo (body)</string>
+    <string name="post_web_request_var" formatted="false">e salvar resposta em</string>
+    <string name="brick_show_toast2" formatted="false"></string>
+    <string name="brick_show_toast" formatted="false">Mostrar toast</string>
+    <string name="category_plot" formatted="false">Desenhos</string>
+    <string name="category_neural" formatted="false">Redes Neurais</string>
+    <string name="category_threed" formatted="false">3D</string>
+    <string name="category_internet" formatted="false">Rede</string>
+    <string name="preference_title_enable_plot_bricks" formatted="false">Extensão de desenhos</string>
+    <string name="preference_title_old_drag" formatted="false">Modo antigo de arrastar</string>
+    <string name="preference_title_old_dragd" formatted="false">Ativa o modo de arrastar blocos do Pocket Code 1.2.4</string>
+    <string name="preference_title_enable_neural_bricks" formatted="false">Extensão de redes neurais</string>
+    <string name="preference_title_enable_internet_bricks" formatted="false">Extensão de rede</string>
+    <string name="preference_description_plot_bricks" formatted="false">Ativa blocos para trabalhar com .svg</string>
+    <string name="preference_title_enable_threed_bricks" formatted="false">Extensão 3D</string>
+    <string name="preference_description_neural_bricks" formatted="false">Permite usar modelos Gemini e criar suas próprias redes neurais</string>
+    <string name="preference_description_threed" formatted="false">Permite criar cenas e projetos 3D</string>
+    <string name="preference_description_internet_bricks" formatted="false">Expande as possibilidades de interação com a internet e permite criar servidores locais</string>
+    <string name="formula_editor_function_subtext" formatted="false">recortar</string>
+    <string name="formula_editor_function_file" formatted="false">arquivo do projeto</string>
+    <string name="formula_editor_function_file_parameter" formatted="false">(\'variavel.txt\')</string>
+    <string name="formula_editor_function_lua" formatted="false">lua</string>
+    <string name="formula_editor_function_lua_parameter" formatted="false">(\'return math.sqrt(25)\')</string>
+    <string name="formula_editor_function_to_hex" formatted="false">para hex</string>
+    <string name="formula_editor_function_to_hex_parameter" formatted="false">(175)</string>
+    <string name="formula_editor_function_to_dec" formatted="false">de hex</string>
+    <string name="formula_editor_function_to_dec_parameter" formatted="false">(\'AF\')</string>
+    <string name="formula_editor_function_distan" formatted="false">distância</string>
+    <string name="formula_editor_function_distan_parameter" formatted="false">(100, 200, -100, 200)</string>
+    <string name="formula_editor_function_distance" formatted="false">distância de levenshtein</string>
+    <string name="formula_editor_function_distance_parameter" formatted="false">(\'panda\', \'lavanda\')</string>
+    <string name="ai_assist" formatted="false">Assistente de IA</string>
+    <string name="formula_editor_function_subtext_parameter" formatted="false">(3,5,\'olá mundo\')</string>
+    <string name="formula_editor_function_clamp" formatted="false">limitar</string>
+    <string name="formula_editor_function_clamp_parameter" formatted="false">(-2,2,10)</string>
+    <string name="formula_editor_function_joinnumber" formatted="false">juntar números</string>
+    <string name="formula_editor_function_joinnumber_parameter" formatted="false">(1,1)</string>
+    <string name="formula_editor_function_upper" formatted="false">maiúsculas</string>
+    <string name="formula_editor_function_upper_parameter" formatted="false">(\'aboudna\')</string>
+    <string name="formula_editor_function_lower" formatted="false">minúsculas</string>
+    <string name="formula_editor_function_lower_parameter" formatted="false">(\'SIGMA\')</string>
+    <string name="brick_save_plot" formatted="false">Salvar desenho como SVG</string>
+    <string name="brick_stop_plot" formatted="false">Parar de desenhar</string>
+    <string name="brick_start_plot" formatted="false">Começar a desenhar</string>
+    <string name="brick_default_plot_file" formatted="false">plot.svg</string>
     <!-- General terms -->
     <string formatted="false" name="stage">Etapa</string>
     <string formatted="false" name="play">Reproduzir</string>

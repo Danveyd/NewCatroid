@@ -36,7 +36,7 @@ class PythonCommandManager(
     private val project: Project
 ) {
 
-    private val defaultLibsPath: String = File(CatroidApplication.getAppContext().filesDir, "default_pylibs").absolutePath
+    private val defaultLibsPath: String = project.filesDir.absolutePath
     // "Слушатель" из мира UI.
     var outputListener: CommandOutputListener? = null
 
@@ -106,13 +106,16 @@ class PythonCommandManager(
      */
     private fun executePythonScriptForResult(script: String, onResult: (String) -> Unit) {
         val wrappedScript = """
-    import os
-    try:
-        os.chdir('${currentWorkingDirectory.absolutePath}')
-    ${script.prependIndent("    ")}
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
+import os
+try:
+    os.chdir('${currentWorkingDirectory.absolutePath}')
+    # ---> ИСПРАВЛЕНИЕ ЗДЕСЬ <---
+    # Добавляем отступ в 4 пробела к каждой строке вставляемого скрипта,
+    # чтобы он корректно вписался в блок 'try'.
+${script.prependIndent("    ")}
+except Exception as e:
+    import traceback
+    traceback.print_exc()
     """.trimIndent()
 
         pythonEngine.runScriptAsync(wrappedScript) { output ->
@@ -252,52 +255,61 @@ class PythonCommandManager(
 
         """.trimIndent()
         } else {
-            // СТАНДАРТНЫЙ РЕЖИМ: КРАТКИЙ ЛОГ БЕЗ WARNING'ов
+            // --- НАЧАЛО ИЗМЕНЕНИЙ В СТАНДАРТНОМ РЕЖИМЕ ---
             """
         import os, sys, io
-        package_name_in_python = '$packageName'
+        from pip._internal.cli.main import main as pip_main
+
+        # 1. Создаем буферы для stdout и stderr, чтобы перехватить ВЕСЬ вывод
+        stdout_capture = io.StringIO()
+        stderr_capture = io.StringIO()
         
-        print(f"--- Downloading WHL files for {package_name_in_python} ---")
-        
-        # 1. Перенаправляем ТОЛЬКО stderr, где появляются WARNING'и
+        original_stdout = sys.stdout
         original_stderr = sys.stderr
-        sys.stderr = io.StringIO()
         
+        sys.stdout = stdout_capture
+        sys.stderr = stderr_capture
+        
+        result = -1 # Инициализируем кодом ошибки
         try:
-            from pip._internal.cli.main import main as pip_main
+            # 2. Формируем аргументы для pip
             cli_args = [
                 'download', '--only-binary=:all:', '-d', '$targetDir',
                 '--find-links', '$defaultLibsPath', '--index-url', '$chaquopyIndex',
                 '--extra-index-url', '$pypiIndex', '$packageName'
             ]
+            
+            # 3. Выполняем pip. Весь его вывод теперь попадает в наши буферы
             result = pip_main(cli_args)
+            
         finally:
-            # 2. Гарантированно возвращаем stderr
+            # 4. ОБЯЗАТЕЛЬНО возвращаем стандартные потоки вывода
+            sys.stdout = original_stdout
             sys.stderr = original_stderr
-        
+
+        # 5. Получаем перехваченный вывод из буферов
+        pip_stdout = stdout_capture.getvalue()
+        pip_stderr = stderr_capture.getvalue()
+
+        # 6. Выводим результат пользователю, как в настоящем терминале
+        # Сначала выводим стандартный вывод pip...
+        if pip_stdout:
+            print(pip_stdout, end='')
+            
+        # ...а затем ошибки, если они были.
+        if pip_stderr:
+            print(pip_stderr, file=sys.stderr, end='')
+
+        # 7. Добавляем финальное сообщение о статусе
         if result == 0:
-            # 3. Выводим наш собственный, чистый лог в stdout.
-            print(f"--- Successfully downloaded files. ---")
-            print("\nNew files in current directory:")
-            files_after = set(os.listdir('$targetDir'))
-            # Здесь можно добавить логику вывода только новых файлов, если нужно
-            print('\\n'.join(sorted(list(files_after))))
+            print(f"\n--- Pip finished successfully (Code: {result}) ---")
         else:
-            print(f"--- Pip finished with error code: {result} ---")
-            print("--- Run without --files flag for more details. ---")
+            print(f"\n--- Pip finished with an error (Code: {result}) ---")
+            
         """.trimIndent()
+            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
         }
 
-        scriptTemplate = """
-    try:
-${scriptTemplate.prependIndent("        ")}
-    except Exception as e:
-        import traceback
-        print("--- A critical error occurred during pip execution ---")
-        traceback.print_exc()
-    """.trimIndent()
-
-        // ВАЖНО: нужно подставить переменные в шаблон
         return scriptTemplate
             .replace("\$targetDir", targetDir)
             .replace("\$defaultLibsPath", defaultLibsPath)

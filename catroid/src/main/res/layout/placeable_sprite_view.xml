@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Сам спрайт будет здесь -->
+    <ImageView
+        android:id="@+id/sprite_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <!-- Рамка для визуального выделения -->
+    <View
+        android:id="@+id/sprite_border"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/interactive_border" /> <!-- Создадим этот drawable ниже -->
+
+    <!-- "Ручка" для масштабирования и вращения в правом нижнем углу -->
+    <!-- Мы будем использовать одну ручку для простоты и удобства -->
+    <ImageView
+        android:id="@+id/handle_scale_rotate"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/testtovp" /> <!-- Эту иконку тоже создадим -->
+
+</FrameLayout>

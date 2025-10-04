@@ -1,0 +1,362 @@
+{
+  "buildFiles": [
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\BuildPackages.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\cmake_uninstall.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\GNUInstallDirs.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\PackageInfo.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\md5\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\release\\Config.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\simd\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindFFMPEG.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindLZO.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindSDL2.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\LibVNCServerConfig.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "tjtest::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "tjtest",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "examples_colourmaptest::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_colourmaptest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\colourmaptest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "djpeg-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "djpeg-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\djpeg-static",
+      "runtimeFiles": []
+    },
+    "examples_simple::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_simple",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\simple",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "test_cargstest::@0fec0a8495017b2d3a39": {
+      "artifactName": "test_cargstest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\test\\cargstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "examples_backchannel::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_backchannel",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\backchannel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "examples_androidvncserver::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_androidvncserver",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\androidvncserver",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "wrjpgcom::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "wrjpgcom",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\wrjpgcom",
+      "runtimeFiles": []
+    },
+    "client_examples_ppmtest::@0fec0a8495017b2d3a39": {
+      "artifactName": "client_examples_ppmtest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\client\\ppmtest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "turbojpeg-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "turbojpeg-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libjpeg-turbo\\libturbojpeg.a",
+      "runtimeFiles": []
+    },
+    "examples_pnmshow::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_pnmshow",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\pnmshow",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "test_wstest::@0fec0a8495017b2d3a39": {
+      "artifactName": "test_wstest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\test\\wstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "dist::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "dist",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "examples_fontsel::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_fontsel",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\fontsel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "rdjpgcom::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "rdjpgcom",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\rdjpgcom",
+      "runtimeFiles": []
+    },
+    "tjbench-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "tjbench-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\tjbench-static",
+      "runtimeFiles": []
+    },
+    "jpeg-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "jpeg-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libjpeg-turbo\\libjpeg.a",
+      "runtimeFiles": []
+    },
+    "examples_cursors::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_cursors",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\cursors",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "tjunittest-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "tjunittest-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\tjunittest-static",
+      "runtimeFiles": []
+    },
+    "native-vnc::@6890427a1f51a3e7e1df": {
+      "artifactName": "native-vnc",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libnative-vnc.so",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "examples_regiontest::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_regiontest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\regiontest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "croptest::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "croptest",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "vncserver::@0fec0a8495017b2d3a39": {
+      "artifactName": "vncserver",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so",
+      "runtimeFiles": []
+    },
+    "client_examples_backchannel::@0fec0a8495017b2d3a39": {
+      "artifactName": "client_examples_backchannel",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\client\\backchannel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "examples_repeater::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_repeater",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\repeater",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "test_copyrecttest::@0fec0a8495017b2d3a39": {
+      "artifactName": "test_copyrecttest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\test\\copyrecttest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "examples_blooptest::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_blooptest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\blooptest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "examples_rotate::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_rotate",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\rotate",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "examples_simple15::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_simple15",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\simple15",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "jpegtran-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "jpegtran-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\jpegtran-static",
+      "runtimeFiles": []
+    },
+    "cjpeg-static::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "cjpeg-static",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\cjpeg-static",
+      "runtimeFiles": []
+    },
+    "md5cmp::@59abb547d11294bb0ea1": {
+      "artifactName": "md5cmp",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\md5cmp",
+      "runtimeFiles": []
+    },
+    "examples_example::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_example",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\example",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "copy-compile-commands::@0fec0a8495017b2d3a39": {
+      "artifactName": "copy-compile-commands",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "examples_storepasswd::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_storepasswd",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\storepasswd",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "simd::@94917bd5066ac320edfd": {
+      "artifactName": "simd",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "strtest::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "strtest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\strtest",
+      "runtimeFiles": []
+    },
+    "examples_camera::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_camera",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\camera",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "uninstall::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "uninstall",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "examples_vncev::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_vncev",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\vncev",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "examples_filetransfer::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_filetransfer",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\filetransfer",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "vncclient::@0fec0a8495017b2d3a39": {
+      "artifactName": "vncclient",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so",
+      "runtimeFiles": []
+    },
+    "wolfssl::@6890427a1f51a3e7e1df": {
+      "artifactName": "wolfssl",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libwolfssl.a",
+      "runtimeFiles": []
+    },
+    "tarball::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "tarball",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "examples_pnmshow24::@0fec0a8495017b2d3a39": {
+      "artifactName": "examples_pnmshow24",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\examples\\server\\pnmshow24",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so"
+      ]
+    },
+    "test_encodingstest::@0fec0a8495017b2d3a39": {
+      "artifactName": "test_encodingstest",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\RelWithDebInfo\\2x2y591c\\armeabi-v7a\\libvncserver\\test\\encodingstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\RelWithDebInfo\\2x2y591c\\obj\\armeabi-v7a\\libvncclient.so"
+      ]
+    },
+    "testclean::@4d4a656a4ff6bc0d959c": {
+      "artifactName": "testclean",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    }
+  }
+}

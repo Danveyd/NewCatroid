@@ -25,6 +25,13 @@
       "runtimeFiles": [
         "D:\\Catroid-develop\\catroid\\src\\main\\jniLibs\\x86\\libonnxruntime.so"
       ]
+    },
+    "example_core::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "example_core",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\RelWithDebInfo\\541y5s6l\\obj\\x86\\libexample_core.so",
+      "runtimeFiles": []
     }
   },
   "toolchains": {

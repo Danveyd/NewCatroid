@@ -90,8 +90,7 @@ sealed class LunoValue {
                     if (value.obj is File) {
                         Gdx.files.absolute(value.obj.absolutePath)
                     } else {
-                        // Не смогли конвертировать NativeObject в FileHandle
-                        null
+                        null // Не смогли конвертировать NativeObject в FileHandle
                     }
                 }
                 else -> null // Другие типы LunoValue не можем превратить в FileHandle

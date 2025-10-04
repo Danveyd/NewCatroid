@@ -3,5 +3,10 @@
   "directory": "D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/x86",
   "command": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android24 --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dcatroid_EXPORTS -ID:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/onnx -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC -o CMakeFiles\\catroid.dir\\catroid.cpp.o -c D:\\Catroid-develop\\catroid\\src\\main\\cpp\\catroid.cpp",
   "file": "D:\\Catroid-develop\\catroid\\src\\main\\cpp\\catroid.cpp"
+},
+{
+  "directory": "D:/Catroid-develop/catroid/.cxx/Debug/8163b1u2/x86",
+  "command": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android24 --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dexample_core_EXPORTS -ID:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/onnx -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -fPIC -o CMakeFiles\\example_core.dir\\example_core.cpp.o -c D:\\Catroid-develop\\catroid\\src\\main\\cpp\\example_core.cpp",
+  "file": "D:\\Catroid-develop\\catroid\\src\\main\\cpp\\example_core.cpp"
 }
 ]

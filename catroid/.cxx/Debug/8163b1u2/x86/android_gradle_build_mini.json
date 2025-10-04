@@ -17,6 +17,12 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "example_core::@6890427a1f51a3e7e1df": {
+      "artifactName": "example_core",
+      "abi": "x86",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\Debug\\8163b1u2\\obj\\x86\\libexample_core.so",
+      "runtimeFiles": []
+    },
     "catroid::@6890427a1f51a3e7e1df": {
       "artifactName": "catroid",
       "abi": "x86",

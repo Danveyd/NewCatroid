@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="pocketpaint_chip_selected_background_color">#33B5E5</color>
+    <color name="pocketpaint_colorAccent">#157DA2</color>
+    <color name="pocketpaint_colorAccentAlpha60">#99157DA2</color>
+    <color name="pocketpaint_colorPrimary">#138293</color>
+    <color name="pocketpaint_colorPrimaryDark">#0D6775</color>
+    <color name="pocketpaint_color_merge_layer">#33ac86</color>
+    <color name="pocketpaint_lighter_gray">#DFDADA</color>
+    <color name="pocketpaint_main_bottom_bar_selected">#007A99</color>
+    <color name="pocketpaint_main_cursor_tool_inactive_primary_color">#555555</color>
+    <color name="pocketpaint_main_drawing_surface_active">#00000000</color>
+    <color name="pocketpaint_main_drawing_surface_background">#D3D3D3</color>
+    <color name="pocketpaint_main_drawing_surface_inactive">#80000000</color>
+    <color name="pocketpaint_main_rectangle_tool_accent_color">#9933B5E5</color>
+    <color name="pocketpaint_main_rectangle_tool_highlight_color">#99E56B33</color>
+    <color name="pocketpaint_main_rectangle_tool_primary_color">#99555555</color>
+    <color name="pocketpaint_main_separator_color">#c8e8ff</color>
+    <color name="pocketpaint_text_color_link">#BD5800</color>
+    <color name="pocketpaint_welcome_dot_active">#ffffffff</color>
+    <color name="pocketpaint_welcome_dot_inactive">#64ffffff</color>
+    <dimen name="pocketpaint_bottom_navigation_icon_size">24dp</dimen>
+    <dimen name="pocketpaint_main_bottom_bar_height">50dp</dimen>
+    <dimen name="pocketpaint_main_top_bar_height">50dp</dimen>
+    <dimen name="pocketpaint_welcome_dots_height">35dp</dimen>
+    <dimen name="pocketpaint_welcome_margin_side">50dp</dimen>
+    <dimen name="pocketpaint_welcome_margin_top">100dp</dimen>
+    <dimen name="pocketpaint_welcome_margin_top_possibilities">50dp</dimen>
+    <dimen name="pocketpaint_welcome_margin_top_text">25dp</dimen>
+    <dimen name="pocketpaint_welcome_navigation_height">40dp</dimen>
+    <dimen name="pocketpaint_zoom_window_diameter">80dp</dimen>
+    <string name="bottom_navigation_color">Color</string>
+    <string name="bottom_navigation_current">Current</string>
+    <string name="bottom_navigation_item">Item for bottom navigation</string>
+    <string name="bottom_navigation_layers">Layers</string>
+    <string name="bottom_navigation_tools">Tools</string>
+    <string name="button_apply">Apply</string>
+    <string name="button_brush">Brush</string>
+    <string name="button_checkmark">Checkmark</string>
+    <string name="button_clip">Clip area</string>
+    <string name="button_clipboard">Clipboard</string>
+    <string name="button_cursor">Cursor</string>
+    <string name="button_eraser">Eraser</string>
+    <string name="button_fill">Fill</string>
+    <string name="button_hand">Hand</string>
+    <string name="button_import_image">Import image</string>
+    <string name="button_info">Information</string>
+    <string name="button_line">Line</string>
+    <string name="button_pipette">Pipette</string>
+    <string name="button_redo">Redo</string>
+    <string name="button_shape">Shapes</string>
+    <string name="button_smudge">Smudge</string>
+    <string name="button_spray_can">Spray can</string>
+    <string name="button_text">Text</string>
+    <string name="button_transform">Transform</string>
+    <string name="button_undo">Undo</string>
+    <string name="button_watercolor">Watercolor</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="clipboard_tool_copy">Copy</string>
+    <string name="clipboard_tool_copy_hint">Tap on copy to copy content</string>
+    <string name="clipboard_tool_cut">Cut</string>
+    <string name="clipboard_tool_paste">Paste</string>
+    <string name="closing_security_question">Save changes?</string>
+    <string name="closing_security_question_title">Quit</string>
+    <string name="copy">Copy saved</string>
+    <string name="copy_to">Copy saved to\n</string>
+    <string name="cursor_draw_active">Pan to draw, then tap again to stop painting.</string>
+    <string name="cursor_draw_inactive">Pan to position, then tap to start painting.</string>
+    <string name="dialog_antialiasing">Antialiasing</string>
+    <string name="dialog_brush_width_text">Stroke width</string>
+    <string name="dialog_error_save_title">Error load/save file</string>
+    <string name="dialog_error_sdcard_text">Check image or SD-card!</string>
+    <string name="dialog_import_image_title" translatable="false">@string/button_import_image</string>
+    <string name="dialog_loading_image_failed_text">Not a valid image</string>
+    <string name="dialog_loading_image_failed_title">Error on loading image</string>
+    <string name="dialog_save_image_format">Image format</string>
+    <string name="dialog_save_image_name">Image name</string>
+    <string name="dialog_save_image_title" translatable="false">@string/menu_save_image</string>
+    <string name="dialog_save_jpg_option_quality">Quality:</string>
+    <string name="dialog_scale_message">The image is too big to load. Tap OK to scale down the image automatically.</string>
+    <string name="dialog_scale_title">Image is too big to load</string>
+    <string name="dialog_settings">Settings</string>
+    <string name="dialog_smoothing">Smoothing</string>
+    <string name="dialog_tools_title">Tools</string>
+    <string name="dialog_warning_new_image">Save changes?</string>
+    <string name="dialog_zoom_window_enabled">Enabled</string>
+    <string name="dialog_zoom_window_from_size" translatable="false">100</string>
+    <string name="dialog_zoom_window_initial_value" translatable="false">100</string>
+    <string name="dialog_zoom_window_to_size" translatable="false">300</string>
+    <string name="discard_button_text">Discard</string>
+    <string name="done">Done</string>
+    <string name="enjoy_pocket_paint">You are all set. Enjoy Pocket Paint.</string>
+    <string name="fill_tool_dialog_color_tolerance_title">Color tolerance</string>
+    <string name="gallery">Gallery</string>
+    <string name="help_content_brush">Tap on the symbols on the bottom bar to change the color or the brush size.</string>
+    <string name="help_content_clip">Mark area which should not be erased.</string>
+    <string name="help_content_clipboard">Move and resize the rectangle to cover the area you want to stamp. Tap on copy or cut to select the area. Move it, then tap on paste to stamp.</string>
+    <string name="help_content_color_chooser">Select or adjust a color.</string>
+    <string name="help_content_cursor">Position the cursor where you want to draw. Tap to activate the cursor. Move your finger to draw. Tap again to deactivate.</string>
+    <string name="help_content_eraser">Remove parts of the image like with an eraser.</string>
+    <string name="help_content_eyedropper">Tap on the image to select a color.</string>
+    <string name="help_content_fill">Tap on the image to fill an area with the selected color.</string>
+    <string name="help_content_hand">Move your finger to move the canvas.</string>
+    <string name="help_content_import_png">Import an image from the gallery to the clipboard.</string>
+    <string name="help_content_layer">Create new layers or modify existing ones.</string>
+    <string name="help_content_line">Draw a straight line.</string>
+    <string name="help_content_redo">Tap to redo an undone action.</string>
+    <string name="help_content_shape">Choose a shape and tap on the checkmark to insert the selected shape.</string>
+    <string name="help_content_smudge">Move your finger on the image on different drawings to smudge them.</string>
+    <string name="help_content_spray_can">Move your finger on the image to create a spray can pattern.</string>
+    <string name="help_content_text">Write text and format it. Resize the text box afterwards. Tap on the checkmark to insert the text on the image.</string>
+    <string name="help_content_transform">Use to transform the image.</string>
+    <string name="help_content_undo">Tap to undo your previous action.</string>
+    <string name="help_content_watercolor">Similar to the brush tool with a watercolor effect. However you can also change the strength of the brush with the slider in the color menu.</string>
+    <string name="help_title">Help</string>
+    <string name="intro_bottom_navigation_color_description">Shows the currently used color and opens the color picker.</string>
+    <string name="intro_bottom_navigation_current_description">Shows the currently used tool and opens its options.</string>
+    <string name="intro_bottom_navigation_layers_description">Opens the layer menu and lets you manage your layers.</string>
+    <string name="intro_bottom_navigation_tools_description">Switch to the tool you want to use.</string>
+    <string name="intro_get_started">Get started and create a new masterpiece.</string>
+    <string name="intro_landscape_text">Pocket Paint also supports drawing in landscape mode to give you the best painting experience.</string>
+    <string name="intro_possibilities_text">Use the top bar to open the overflow menu and to undo or redo changes</string>
+    <string name="intro_tool_more_information">Tap on a tool to get more information</string>
+    <string name="intro_welcome_text">With Pocket Paint there are no limits to your creativity. If you are new, start the intro, or skip it if you are already familiar with Pocket Paint.</string>
+    <string name="landscape">Landscape</string>
+    <string name="layer_background">Layer background</string>
+    <string name="layer_delete">Delete layer</string>
+    <string name="layer_merged">Layers merged</string>
+    <string name="layer_new">New layer</string>
+    <string name="layer_preview">Layer preview</string>
+    <string name="layer_too_many_layers">Too many layers</string>
+    <string name="layers_title">Layers</string>
+    <string name="lets_go">Let\'s go</string>
+    <string name="menu_add_to_current_layer">Add to current layer</string>
+    <string name="menu_advanced">Advanced settings</string>
+    <string name="menu_discard_image">Discard image</string>
+    <string name="menu_export">Export</string>
+    <string name="menu_feedback">Feedback</string>
+    <string name="menu_hide_menu">Hide buttons</string>
+    <string name="menu_load_image">Load image</string>
+    <string name="menu_new_image">New image</string>
+    <string name="menu_quit">Quit</string>
+    <string name="menu_rate_us">Rate us!</string>
+    <string name="menu_replace_image">Replace image</string>
+    <string name="menu_save_copy">Save copy</string>
+    <string name="menu_save_image">Save image</string>
+    <string name="menu_zoom_settings">Zoom window settings</string>
+    <string name="more_possibilities">More possibilities</string>
+    <string name="next">Next</string>
+    <string name="no_connection_sticker">Stickers not available, check your internet connection.</string>
+    <string name="no_longclick_on_hidden_layer">You are only able to merge or reorder if all layers are visible</string>
+    <string name="no_tools_on_hidden_layer">No tools are available on hidden layer</string>
+    <string name="overwrite_button_text">Overwrite</string>
+    <string name="permission_info_external_storage_text">This app needs the requested permission to function properly. In order to save images to the local memory, the app needs read and write access to it.</string>
+    <string name="permission_info_permanent_denial_text">This app needs the requested permission to function properly. In order to save images to the local memory, the app needs read and write access to it.
+        As you have denied permission with do not ask again, please go to your phone settings and grant the required permissions if you wish to use the associated functions.</string>
+    <string name="pixel">px</string>
+    <string name="pocketpaint_about_content">Pocket Paint is a picture editing library that is part of the Catrobat project.\n\nCatrobat is a visual programming language and set of creativity tools for smartphones.\n\nThe source code of Pocket Paint is mainly licensed under the %s.\nFor precise details of the license see the link below.</string>
+    <string name="pocketpaint_about_license" translatable="false">GNU Affero General Public License, v3</string>
+    <string name="pocketpaint_about_title">About</string>
+    <string name="pocketpaint_about_url_catrobat" translatable="false">&lt;a href=\"https://catrobat.org/\">%s&lt;/a></string>
+    <string name="pocketpaint_about_url_catrobat_description">About Catrobat</string>
+    <string name="pocketpaint_about_url_license" translatable="false">&lt;a href=\"https://catrob.at/licenses\">%s&lt;/a></string>
+    <string name="pocketpaint_about_url_license_description">Pocket Paint source code license</string>
+    <string name="pocketpaint_about_version" translatable="false">Version %s</string>
+    <string name="pocketpaint_app_name">Pocket Paint</string>
+    <string name="pocketpaint_cancel">Cancel</string>
+    <string name="pocketpaint_catrobat_message_dialog">Pocket Paint\'s native image format. This format remembers commands and layers.</string>
+    <string name="pocketpaint_catrobat_title_dialog" translatable="false">catrobat-image</string>
+    <string name="pocketpaint_feedback">We are sorry to hear that. If you want to share your experience with us, please write to contact@catrobat.org</string>
+    <string name="pocketpaint_intro">Intro</string>
+    <string name="pocketpaint_intro_split_screen_not_supported">Intro does not support split screen.</string>
+    <string name="pocketpaint_jpg_message_dialog">Takes up <b>minimal storage space</b>. <b>No transparency</b> is remembered.</string>
+    <string name="pocketpaint_jpg_title_dialog" translatable="false">jpg</string>
+    <string name="pocketpaint_like_us">Do you like Pocket Paint?</string>
+    <string name="pocketpaint_menu_about" translatable="false">@string/pocketpaint_about_title</string>
+    <string name="pocketpaint_no">No</string>
+    <string name="pocketpaint_not_now">Not now</string>
+    <string name="pocketpaint_ok" translatable="false">@android:string/ok</string>
+    <string name="pocketpaint_ora_message_dialog">This format remembers <b>layers</b>. <b>It can be opened by apps that support the Openraster format.</b></string>
+    <string name="pocketpaint_ora_title_dialog" translatable="false">Ora</string>
+    <string name="pocketpaint_overwrite">You are about to overwrite an existing image (hint: To save it as a new image, use the \"%s\" option). Save anyway?</string>
+    <string name="pocketpaint_overwrite_title">Overwrite File?</string>
+    <string name="pocketpaint_png_message_dialog">Lossless compression. Transparency is preserved.</string>
+    <string name="pocketpaint_png_title_dialog" translatable="false">png</string>
+    <string name="pocketpaint_rate_us">Would you like to rate Pocket Paint?</string>
+    <string name="pocketpaint_rate_us_title">Rate Pocket Paint</string>
+    <string name="pocketpaint_tool_icon_description">Current tool icon</string>
+    <string name="pocketpaint_yes">Yes</string>
+    <string name="resize_cannot_resize_to_this_size">cannot resize to this size</string>
+    <string name="resize_max_image_resolution_reached">max image resolution reached</string>
+    <string name="resize_nothing_to_resize">nothing to resize</string>
+    <string name="save_button_text">Save</string>
+    <string name="saved">Image saved</string>
+    <string name="saved_to">Image saved to\n</string>
+    <string name="set_center_info_text">Tap the screen to define the new center position.</string>
+    <string name="shape_tool_dialog_ellipse_title">Ellipse</string>
+    <string name="shape_tool_dialog_fill_title">Fill</string>
+    <string name="shape_tool_dialog_heart_title">Heart</string>
+    <string name="shape_tool_dialog_outline_title">Outline</string>
+    <string name="shape_tool_dialog_rect_title">Rectangle</string>
+    <string name="shape_tool_dialog_star_title">Star</string>
+    <string name="share_image_menu">Share image</string>
+    <string name="share_image_via_text">Send image via</string>
+    <string name="skip">Skip</string>
+    <string name="smudge_tool_dialog_drag_title">Drag</string>
+    <string name="smudge_tool_dialog_pressure_title">Pressure</string>
+    <string name="stickers">Stickers</string>
+    <string name="text_tool_dialog_bold_shortcut">B</string>
+    <string name="text_tool_dialog_font_arabic_stc">STC</string>
+    <string name="text_tool_dialog_font_dubai">Dubai</string>
+    <string name="text_tool_dialog_font_monospace">Monospace</string>
+    <string name="text_tool_dialog_font_sans_serif">Sans Serif</string>
+    <string name="text_tool_dialog_font_serif">Serif</string>
+    <string name="text_tool_dialog_input_hint">Tap here to write</string>
+    <string name="text_tool_dialog_italic_shortcut">I</string>
+    <string name="text_tool_dialog_underline_shortcut">U</string>
+    <string name="transform_auto_crop_text">Auto</string>
+    <string name="transform_height_text">Height</string>
+    <string name="transform_info_text">Drag edges to their new position, tap on the checkmark to enlarge or crop the image area.</string>
+    <string name="transform_set_center_text">Set center</string>
+    <string name="transform_tool_auto_crop_text">crop/enlarge</string>
+    <string name="transform_tool_flip_horizontal">flip horizontal</string>
+    <string name="transform_tool_flip_vertical">flip vertical</string>
+    <string name="transform_tool_resize_text">resize</string>
+    <string name="transform_tool_rotate_left">rotate left</string>
+    <string name="transform_tool_rotate_right">rotate right</string>
+    <string name="transform_width_text">Width</string>
+    <string name="welcome_to_pocket_paint">Welcome To Pocket Paint</string>
+    <string name="zoom_window_description">Used to display a zoomed in part of the drawing surface</string>
+    <style name="AppBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored"/>
+    <style name="BottomNavigationViewLabel" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="ChipTheme" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipStrokeColor">@color/pocketpaint_color_picker_gray</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipIconVisible">true</item>
+        <item name="textStartPadding">0dp</item>
+        <item name="textEndPadding">0dp</item>
+        <item name="chipStartPadding">16dp</item>
+        <item name="chipEndPadding">16dp</item>
+        <item name="chipBackgroundColor">@color/background_color_chip_state_list</item>
+        <item name="android:textColor">@color/textcolor_togglebutton</item>
+    </style>
+    <style name="CircularToggleButtonStyle" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textColor">@color/textcolor_togglebutton</item>
+        <item name="android:backgroundTint">@color/background_togglebutton</item>
+        <item name="android:padding">0dp</item>
+        <item name="iconPadding">0dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.Button.Circle</item>
+        <item name="strokeColor">@color/pocketpaint_colorPrimary</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    <style name="CustomBottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">@color/pocketpaint_colorPrimary</item>
+    </style>
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="backgroundTint">@color/pocketpaint_lighter_gray</item>
+    </style>
+    <style name="CustomEditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="backgroundTint">?colorAccent</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorHint">@android:color/darker_gray</item>
+    </style>
+    <style name="CustomSeekBarStyle" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">@color/pocketpaint_color_picker_gray</item>
+        <item name="android:progressTint">?attr/colorAccent</item>
+        <item name="android:colorControlActivated">?attr/colorAccent</item>
+    </style>
+    <style name="CustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="backgroundTint">@android:color/darker_gray</item>
+        <item name="android:popupBackground">@android:color/white</item>
+    </style>
+    <style name="CustomSwitchTheme" parent="@style/ThemeOverlay.MaterialComponents">
+        <item name="colorSwitchThumbNormal">@color/pocketpaint_lighter_gray</item>
+        <item name="android:colorForeground">@android:color/darker_gray</item>
+    </style>
+    <style name="CustomTextViewStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="CustomToggleButtonStyle" parent="android:Widget.Material.Light.Button.Toggle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="background">@drawable/btn_toggle_material_background</item>
+    </style>
+    <style name="DropdownMenu" parent="Theme.MaterialComponents.Light">
+        <item name="colorSecondary">@android:color/white</item>
+    </style>
+    <style name="OptionsViewTextFieldTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintEnabled">false</item>
+    </style>
+    <style name="PocketPaintAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowTitleStyle">@style/PocketPaintTitleTextStyle</item>
+        <item name="android:textColor">@color/pocketpaint_colorAccent</item>
+        <item name="android:textColorLink">@color/pocketpaint_text_color_link</item>
+        <item name="colorAccent">@color/pocketpaint_colorAccent</item>
+    </style>
+    <style name="PocketPaintDividerBase">
+        <item name="android:background">@color/pocketpaint_main_separator_color</item>
+    </style>
+    <style name="PocketPaintHighlightColorTheme" parent="PocketPaintTheme">
+        <item name="colorControlHighlight">@color/pocketpaint_main_bottom_bar_selected</item>
+    </style>
+    <style name="PocketPaintProgressDialog" parent="PocketPaintAlertDialog">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
+    </style>
+    <style name="PocketPaintSelectableButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/pocketpaint_selectable_button_bg</item>
+    </style>
+    <style name="PocketPaintSplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/pocketpaint_splash</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    <style name="PocketPaintTheme" parent="PocketPaintTheme.Base">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="bottomNavigationStyle">@style/AppBottomNavigation</item>
+        <item name="appBarLayoutStyle">@style/appBarLayout</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColorHint">@android:color/tab_indicator_text</item>
+    </style>
+    <style name="PocketPaintTheme.Base" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="android:windowBackground">@color/pocketpaint_colorPrimary</item>
+        <item name="dialogTheme">@style/PocketPaintAlertDialog</item>
+        <item name="colorPrimary">@color/pocketpaint_colorPrimary</item>
+        <item name="colorPrimaryDark">@color/pocketpaint_colorPrimaryDark</item>
+        <item name="colorAccent">@color/pocketpaint_colorAccent</item>
+        <item name="actionBarStyle">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="colorSurface">@color/design_default_color_surface</item>
+        <item name="seekBarStyle">@style/CustomSeekBarStyle</item>
+        <item name="editTextStyle">@style/CustomEditTextStyle</item>
+        <item name="spinnerStyle">@style/CustomSpinnerStyle</item>
+        <item name="android:textViewStyle">@style/CustomTextViewStyle</item>
+        <item name="android:buttonStyleToggle">@style/CustomToggleButtonStyle</item>
+        <item name="android:buttonStyle">@style/CustomButtonStyle</item>
+        <item name="colorControlActivated">?colorAccent</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationViewStyle</item>
+        <item name="colorButtonNormal">@color/pocketpaint_lighter_gray</item>
+        <item name="android:forceDarkAllowed" ns1:targetApi="q">false</item>
+    </style>
+    <style name="PocketPaintTitleTextStyle">
+    <item name="android:textColor">@color/pocketpaint_colorAccent</item>
+    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
+    <style name="PocketPaintToolHorizontalSpace">
+        <item name="android:layout_width">8dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="PocketPaintToolSection">
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="PocketPaintToolSectionDivider" parent="PocketPaintDividerBase">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+    <style name="PocketPaintToolSelectionButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="PocketPaintToolSelectionButtonImageView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:tint">@android:color/black</item>
+    </style>
+    <style name="PocketPaintToolSelectionButtonTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="PocketPaintToolSubtitle">
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/pocketpaint_colorAccent</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="PocketPaintWelcomeActivityTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="colorPrimary">@color/pocketpaint_colorPrimary</item>
+        <item name="android:colorBackground">@color/pocketpaint_colorPrimary</item>
+        <item name="android:windowBackground">@color/pocketpaint_colorPrimary</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="actionBarStyle">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+    <style name="PocketPaintWelcomeHeader" parent="@android:style/TextAppearance.Large">
+        <item name="android:textColor">@color/pocketpaint_color_picker_white</item>
+        <item name="android:fontFamily">sans-serif</item> 
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="PocketPaintWelcomeText" parent="@android:style/TextAppearance.DeviceDefault.Medium">
+        <item name="android:textColor">@color/pocketpaint_color_picker_white</item>
+        <item name="android:fontFamily">sans-serif</item> 
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="PocketpaintSpinnerTheme" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+        <item name="android:background">@drawable/ic_pocketpaint_dropdown_arrow_modified</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="TextFieldTheme" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="hintEnabled">false</item>
+    </style>
+    <style name="WebViewLoadingCircle" parent="android:Theme.Holo.Dialog">
+        <item name="android:alertDialogStyle">@style/WebViewLoadingCircleStyle</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:textColor">@android:color/transparent</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="WebViewLoadingCircleStyle">
+        <item name="android:bottomBright">@android:color/transparent</item>
+        <item name="android:bottomDark">@android:color/transparent</item>
+        <item name="android:bottomMedium">@android:color/transparent</item>
+        <item name="android:centerBright">@android:color/transparent</item>
+        <item name="android:centerDark">@android:color/transparent</item>
+        <item name="android:centerMedium">@android:color/transparent</item>
+        <item name="android:fullBright">@android:color/transparent</item>
+        <item name="android:fullDark">@android:color/transparent</item>
+        <item name="android:topBright">@android:color/transparent</item>
+        <item name="android:topDark">@android:color/transparent</item>
+    </style>
+    <style name="appBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Primary"/>
+    <declare-styleable name="PocketPaintWelcomeAttributes">
+        <attr name="android:textColor"/>
+        <attr name="android:fontFamily"/>
+        <attr name="android:textSize"/>
+        <attr name="android:textStyle"/>
+    </declare-styleable>
+</resources>

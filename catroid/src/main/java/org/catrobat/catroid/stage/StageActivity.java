@@ -40,8 +40,10 @@ import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -55,6 +57,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -70,8 +74,12 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidGraphics;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.danvexteam.lunoscript_annotations.LunoClass;
+import com.gaurav.avnc.vnc.UserCredential;
+import com.gaurav.avnc.vnc.VncClient;
 import com.google.common.collect.Multimap;
 import com.google.firebase.FirebaseApp;
 
@@ -110,13 +118,21 @@ import org.catrobat.catroid.ui.runtimepermissions.PermissionAdaptingActivity;
 import org.catrobat.catroid.ui.runtimepermissions.PermissionHandlingActivity;
 import org.catrobat.catroid.ui.runtimepermissions.PermissionRequestActivityExtension;
 import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask;
+import org.catrobat.catroid.utils.NativeBridge;
 import org.catrobat.catroid.utils.ProjectSecurityChecker;
 import org.catrobat.catroid.utils.Resolution;
 import org.catrobat.catroid.utils.ScreenValueHandler;
 import org.catrobat.catroid.utils.ToastUtil;
 import org.catrobat.catroid.utils.VibrationManager;
+import org.catrobat.catroid.virtualmachine.VirtualMachineManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,6 +212,12 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	private Map<String, WebViewCallback> webViewCallbacks = new HashMap<>();
 
+	private static final int EXPORT_FILE_REQUEST_CODE = 42; // Уникальный код для нашего запроса
+	private String sourceFileToExportPath; // Здесь будем временно хранить путь к исходному файлу
+
+	public Map<String, VncClient> vncClients = new HashMap<>();
+	public volatile boolean frameReadyToRender = false;
+
 	/**
 	 * Публичный интерфейс, который нужно реализовать для получения сообщений из WebView.
 	 */
@@ -232,6 +254,10 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 			}
 		}
 	}
+
+	private Pixmap vmPixmap; // "Холст" для рисования кадра от ВМ
+	private Texture vmTexture; // Текстура LibGDX, которую мы будем рисовать
+	private boolean newFrameAvailable = false; // Флаг, что есть новый кадр
 
 	// ИЗМЕНИТЬ: Полностью заменяем onCreate
 	// ИЗМЕНИТЬ: в StageActivity.java
@@ -287,7 +313,285 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		GlobalManager.Companion.setSaveScenes(true);
 		GlobalManager.Companion.setStopSounds(true);
 		mainThreadHandler = new Handler(Looper.getMainLooper());
+
+		File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		if (downloadsDir.canWrite()) {
+			File logFile = new File(downloadsDir, "NewCatroid_CPP_CrashLog.txt");
+			NativeBridge.INSTANCE.setCrashLogPath(logFile.getAbsolutePath());
+		}
 		checkAndRequestPermissions();
+
+		/*android.util.Log.d("QEMU_TEST", "Запускаем тестовый запуск ВМ...");
+
+		// Аргументы для запуска Tiny Core Linux
+		// -m 512              -> 512 МБ ОЗУ
+		// -cdrom "..."        -> Указываем наш ISO как CD-ROM
+		// -display vnc=:0     -> Запускаем QEMU как VNC сервер на порту 5900
+		// -vga std            -> Стандартный видеоадаптер для лучшей совместимости
+		/*String vmArguments = "-m 512 -cdrom \"%PROJECT_FILES%/TinyCore-current.iso\" -display vnc=0.0.0.0:0 -vga std";
+
+		// Запускаем ВМ с именем "test-linux"
+		// Используем `getApplicationContext()` чтобы передать контекст
+		VirtualMachineManager.INSTANCE.createVM(getApplicationContext(), "test-linux", vmArguments);*//*
+
+		String vmArguments = "-m 512 -boot c -hda \"%DISK_PATH%\" -display vnc=0.0.0.0:0 -vga std";
+
+		String diskFileName = "windows.qcow2"; // Например, для Windows
+		String diskSize = "10G"; // 10 Гигабайт
+
+		// 3. Запускаем ВМ с новыми параметрами
+		VirtualMachineManager.INSTANCE.createVM(getApplicationContext(), "VM1", vmArguments, diskFileName, diskSize);
+
+		if (stageListener != null) {
+			// Пример: экран ВМ занимает всю ширину сцены и половину высоты
+			float sceneWidth = 700; // Ширина сцены Catroid по умолчанию
+			float sceneHeight = 500; // Высота сцены Catroid по умолчанию
+			stageListener.setVmScreenGeometry(0, 0, sceneWidth, sceneHeight);
+		}
+
+
+	// --- ШАГ 3: ПОДКЛЮЧЕНИЕ VNC К VIEW ---
+	// Этот метод найдет View с ID "vm_screen", переместит его на ЗАДНИЙ фон
+	// и превратит в полноценный монитор ВМ.
+		attachVMScreen("VM1");
+
+		android.util.Log.d("QEMU_TEST", "Команда на запуск ВМ отправлена.");*/
+	}
+
+	public static final String DEFAULT_VM_NAME = "default_vm";
+
+	public void createAndRunVM(String memory, String cpuCores, String hdaPath, String cdromPath) {
+		// Собираем базовую строку аргументов
+		StringBuilder args = new StringBuilder();
+		args.append("-m ").append(memory); // Память
+		args.append(" -smp ").append(cpuCores); // Ядра CPU
+		args.append(" -display vnc=0.0.0.0:0 -vga std"); // VNC дисплей
+
+		// Подключаем жесткий диск, если указан
+		if (hdaPath != null && !hdaPath.isEmpty()) {
+			File hdaFile = ProjectManager.getInstance().getCurrentProject().getFile(hdaPath); // scope нужно получить из Action
+			if (hdaFile != null && hdaFile.exists()) {
+				args.append(" -hda \"").append(hdaFile.getAbsolutePath()).append("\"");
+			}
+		}
+
+		// Подключаем CD-ROM, если указан
+		if (cdromPath != null && !cdromPath.isEmpty() && !cdromPath.equals("0")) {
+			File cdromFile = ProjectManager.getInstance().getCurrentProject().getFile(cdromPath); // scope нужно получить из Action
+			if (cdromFile != null && cdromFile.exists()) {
+				args.append(" -cdrom \"").append(cdromFile.getAbsolutePath()).append("\"");
+			}
+		}
+
+		// Запускаем ВМ
+		VirtualMachineManager.INSTANCE.createVM(getApplicationContext(), DEFAULT_VM_NAME, args.toString(), "", ""); // Имя и размер диска не нужны, так как мы указываем путь
+	}
+
+	public void stopVM() {
+		VirtualMachineManager.INSTANCE.stopVM(DEFAULT_VM_NAME);
+	}
+
+	public void createHardDisk(String diskName, String diskSize) {
+		if (diskName == null || diskName.isEmpty() || diskSize == null || diskSize.isEmpty()) return;
+
+		// qemu-img находится в той же папке, что и qemu-system
+		String qemuBaseDir = new File(getFilesDir(), "qemu_x86_64").getAbsolutePath();
+		File disksDir = ProjectManager.getInstance().getCurrentProject().getFilesDir();
+		if (!disksDir.exists()) disksDir.mkdirs();
+		String diskPath = new File(disksDir, diskName).getAbsolutePath();
+
+		VirtualMachineManager.INSTANCE.createDiskIfNotExists(qemuBaseDir, diskPath, diskSize);
+	}
+
+	// --- Управление вводом ---
+	public void sendVmMouseEvent(float catroidX, float catroidY, int buttonState) {
+		VncClient client = vncClients.get(DEFAULT_VM_NAME);
+		if (client == null) return;
+		if (stageListener == null) return;
+
+		// --- НАЧАЛО: Исправление координат ---
+
+		// 1. Получаем размеры виртуальной сцены Catroid
+		float virtualWidth = stageListener.getVirtualWidth();   // например, 480
+		float virtualHeight = stageListener.getVirtualHeight(); // например, 360
+
+		// 2. Преобразуем координаты из системы "центр в (0,0)" в систему "левый верхний угол в (0,0)"
+		float screenX = catroidX + (virtualWidth / 2f);   // -240 -> 0,   240 -> 480
+		float screenY = -catroidY + (virtualHeight / 2f); // 180 -> 0,  -180 -> 360 (Y инвертируется)
+
+		// 3. Получаем размеры "карты" VNC
+		int vmWidth = stageListener.getVmWidth();   // например, 720
+		int vmHeight = stageListener.getVmHeight(); // например, 400
+
+		// 4. Масштабируем координаты из одной "карты" в другую
+		int vmX = (int) ((screenX / virtualWidth) * vmWidth);
+		int vmY = (int) ((screenY / virtualHeight) * vmHeight);
+
+		// 5. Ограничиваем на всякий случай
+		vmX = Math.max(0, Math.min(vmWidth - 1, vmX));
+		vmY = Math.max(0, Math.min(vmHeight - 1, vmY));
+
+		// 6. Отправляем АБСОЛЮТНУЮ позицию, но уже в ПРАВИЛЬНОЙ системе координат
+		client.sendPointerEvent(vmX, vmY, buttonState);
+
+		// --- КОНЕЦ: Исправление координат ---
+	}
+
+	public void sendVmKeyEvent(int keysym, boolean isDown) {
+		VncClient client = vncClients.get(DEFAULT_VM_NAME);
+		if (client != null) {
+			client.sendKeyEvent(keysym, 0, isDown);
+		}
+	}
+
+	// --- Управление отображением ---
+	public void setVmDisplayVisible(boolean visible) {
+		if (stageListener != null) {
+			attachVMScreen(DEFAULT_VM_NAME);
+			stageListener.setVmDisplayVisible(visible);
+		}
+	}
+
+	/**
+	 * Запускает системный файловый менеджер для выбора места сохранения файла.
+	 * @param sourcePath Полный путь к исходному файлу проекта, который нужно скопировать.
+	 * @param defaultName Имя файла, которое будет предложено пользователю по умолчанию.
+	 */
+	public void launchExportFilePicker(String sourcePath, String defaultName) {
+		// Сохраняем путь к исходнику, он понадобится нам позже, в onActivityResult
+		this.sourceFileToExportPath = sourcePath;
+
+		Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		// Тип файла "*/*" означает "любой файл"
+		intent.setType("*/*");
+		intent.putExtra(Intent.EXTRA_TITLE, defaultName);
+
+		// Запускаем активность и ждем результат
+		startActivityForResult(intent, EXPORT_FILE_REQUEST_CODE);
+	}
+
+	private boolean captureScheduled = false;
+
+	/**
+	 * Превращает существующий SurfaceView в монитор для ВМ.
+	 * View перемещается на задний фон, и к нему подключается VncClient.
+	 * @param viewId ID SurfaceView, который вы ранее создали.
+	 */
+	public void attachVMScreen(String viewId) {
+		runOnUiThread(() -> {
+			// --- НАЧАЛО: Логика VncClient ---
+
+			// 1. Создаем Observer, который будет обрабатывать события от ВМ
+			VncClient.Observer vncObserver = new VncClient.Observer() {
+
+				@Override
+				public String onPasswordRequired() { return ""; } // Пароль не используем
+
+				@Override
+				public UserCredential onCredentialRequired() { return new UserCredential("",""); } // Логин/пароль не используем
+
+				@Override
+				public boolean onVerifyCertificate(X509Certificate certificate) { return true; } // Доверяем сертификату localhost
+
+				@Override
+				public void onGotXCutText(String text) { /* Можно реализовать общий буфер обмена */ }
+
+				@Override
+				public void onFramebufferUpdated() {
+					// ВМ прислала новый кадр. Нам нужно перерисовать наш SurfaceView.
+					// Вместо прямого рисования, мы просто выставляем флаг
+					// и "будим" рендер-поток LibGDX.
+					frameReadyToRender = true;
+
+					if (!captureScheduled && stageListener != null) {
+						captureScheduled = true;
+						new Handler(Looper.getMainLooper()).postDelayed(() -> {
+							Log.i("VNC_CAPTURE", "Requesting VM Texture capture now...");
+							stageListener.captureAndSaveVmTexture();
+						}, 3000); // Задержка 3 секунды
+					}
+				}
+
+				@Override
+				public void onFramebufferSizeChanged(int width, int height) {
+					Log.i(TAG, "VM screen size changed: " + width + "x" + height);
+
+					if (stageListener != null) {
+						stageListener.setVmScreenSize(width, height);
+					}
+				}
+
+				@Override
+				public void onPointerMoved(int x, int y) { /* Обрабатывается клиентом */ }
+			};
+
+			// 2. Создаем и запускаем клиент в отдельном потоке
+			new Thread(() -> {
+				try {
+					// Даем QEMU 1.5 секунды на полную инициализацию.
+					// Этого должно быть достаточно в большинстве случаев.
+					Log.i(TAG, "Waiting for QEMU VNC server to start...");
+					Thread.sleep(1500);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return; // Если поток прервали, выходим
+				}
+
+				VncClient vncClient = new VncClient(vncObserver);
+				try {
+					// Сохраняем клиент ДО подключения, чтобы иметь к нему доступ
+					vncClients.put(viewId, vncClient);
+
+					vncClient.configure(0, true, 5, false); // security, local cursor, quality, raw
+					vncClient.connect("127.0.0.1", 5900);
+
+					// Главный цикл клиента: слушаем сообщения от сервера, пока он подключен
+					while (vncClient.getConnected()) {
+						vncClient.processServerMessage();
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "VNC Client thread failed", e);
+				} finally {
+					// Очистка после отключения или ошибки
+					VncClient client = vncClients.remove(viewId);
+					if (client != null) {
+						client.cleanup();
+					}
+					Log.i(TAG, "VNC Client thread finished for viewId: " + viewId);
+				}
+			}).start();
+
+			// --- КОНЕЦ: Логика VncClient ---
+		});
+	}
+
+	/**
+	 * Отправляет событие мыши (нажатие, отпускание, перемещение) в ВМ.
+	 * @param viewId ID экрана ВМ
+	 * @param x координата X внутри SurfaceView
+	 * @param y координата Y внутри SurfaceView
+	 * @param buttonMask 1 для левой кнопки, 2 для средней, 4 для правой. 0 - нет нажатых кнопок.
+	 */
+	public void sendVMMouseEvent(String viewId, int x, int y, int buttonMask) {
+		VncClient vncClient = vncClients.get(viewId);
+		if (vncClient != null) {
+			vncClient.sendPointerEvent(x, y, buttonMask);
+		}
+	}
+
+	/**
+	 * Отправляет событие нажатия/отпускания клавиши в ВМ.
+	 * @param viewId ID экрана ВМ
+	 * @param keysym Код клавиши из стандарта X11/keysymdef.h (например, 0xff51 для стрелки влево)
+	 * @param isDown true - клавиша нажата, false - отпущена
+	 */
+	public void sendVMKeyEvent(String viewId, int keysym, boolean isDown) {
+		VncClient vncClient = vncClients.get(viewId);
+		if (vncClient != null) {
+			// У VncClient нет xtCode, передаем 0
+			vncClient.sendKeyEvent(keysym, 0, isDown);
+		}
 	}
 
 	/**
@@ -769,6 +1073,77 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	}
 
 	/**
+	 * Создает GLSurfaceView и настраивает колбэки для C++.
+	 */
+	public void createGLSurfaceView(String viewId, int x, int y, int width, int height) {
+		if (dynamicViews.containsKey(viewId)) {
+			Log.w(TAG, "View with id '" + viewId + "' already exists. Removing old one.");
+			removeView(viewId);
+		}
+
+		// GLSurfaceView glView = new GLSurfaceView(this);
+
+		// СТАЛО:
+		SurfaceView glView = new SurfaceView(this);
+
+		glView.setOnTouchListener((v, event) -> {
+			// Пробрасываем событие в C++
+			NativeBridge.INSTANCE.onTouchEvent(
+					viewId,
+					event.getActionMasked(),
+					event.getX(),
+					event.getY(),
+					event.getPointerId(0)
+			);
+			return true; // Говорим, что мы обработали событие
+		});
+
+		glView.getHolder().addCallback(new SurfaceHolder.Callback() {
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				NativeBridge.INSTANCE.onSurfaceCreated(viewId, holder.getSurface());
+			}
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+				NativeBridge.INSTANCE.onSurfaceChanged(viewId, width, height);
+			}
+
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				NativeBridge.INSTANCE.onSurfaceDestroyed(viewId);
+			}
+		});
+
+		// Размещаем на экране
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
+		params.gravity = Gravity.TOP | Gravity.START;
+		params.leftMargin = x;
+		params.topMargin = y;
+
+		addViewToStage(viewId, glView, params);
+	}
+
+	/**
+	 * Связывает .so файл с уже существующим GLSurfaceView.
+	 */
+	public void attachSoToView(String viewId, String soPath) {
+		if (!dynamicViews.containsKey(viewId)) {
+			Log.e(TAG, "Cannot attach .so: View with id '" + viewId + "' not found.");
+			return;
+		}
+		NativeBridge.INSTANCE.attachSoToView(viewId, soPath);
+	}
+
+	/**
+	 * Полностью удаляет View и его C++ часть.
+	 */
+	public void destroyGLView(String viewId) {
+		removeViewFromStage(viewId); // Это удалит View и вызовет surfaceDestroyed
+		NativeBridge.INSTANCE.cleanupInstance(viewId); // Это выгрузит .so и очистит память
+	}
+
+	/**
 	 * --- НОВОЕ ---
 	 * Удаляет ВСЕ динамически добавленные View со сцены.
 	 * Вызывается при перезапуске проекта, чтобы очистить интерфейс.
@@ -776,6 +1151,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	public void removeAllNativeViews() {
 		// Обязательно выполняем в UI-потоке
 		runOnUiThread(() -> {
+			NativeBridge.INSTANCE.cleanupAllInstances();
 			// Проходим по всем значениям (View) в нашей карте
 			for (View viewToRemove : dynamicViews.values()) {
 				rootLayout.removeView(viewToRemove);
@@ -1128,6 +1504,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		// Он корректно очистит слушатели и ресурсы LibGDX, пока View еще существуют.
 		super.onDestroy();
 
+		NativeBridge.INSTANCE.cleanupAllInstances();
+
 		// 2. ТЕПЕРЬ выполняем свою собственную очистку.
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			StageLifeCycleController.stageDestroy(this);
@@ -1426,6 +1804,32 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == EXPORT_FILE_REQUEST_CODE) {
+			// Проверяем, что пользователь действительно выбрал файл и нажал "Сохранить"
+			if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+				Uri destinationUri = data.getData();
+				File sourceFile = new File(sourceFileToExportPath);
+
+				// Запускаем копирование
+				try (InputStream in = new FileInputStream(sourceFile);
+					 OutputStream out = getContentResolver().openOutputStream(destinationUri)) {
+
+					byte[] buf = new byte[1024];
+					int len;
+					while ((len = in.read(buf)) > 0) {
+                        assert out != null;
+                        out.write(buf, 0, len);
+					}
+					//Toast.makeText(this, R.string.export_success, Toast.LENGTH_SHORT).show();
+				} catch (IOException e) {
+					Log.e(TAG, "Ошибка экспорта файла", e);
+					Toast.makeText(this, "Ошибка при экспорте: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				}
+			}
+			// Очищаем временную переменную в любом случае
+			sourceFileToExportPath = null;
+		}
 
 		for (IntentListener listener : intentListeners2) {
 			if (listener.onIntentResult(requestCode, resultCode, data)) {

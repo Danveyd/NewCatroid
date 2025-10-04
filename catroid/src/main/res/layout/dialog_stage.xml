@@ -30,7 +30,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom|center"
     android:orientation="horizontal" >
-    
+
     <ImageView
         android:id="@+id/stage_dialog_menu"
         android:layout_width="wrap_content"
@@ -39,59 +39,6 @@
         android:layout_centerHorizontal="true"
         android:scaleType="fitXY"
         android:src="@drawable/stage_dialog_background_middle" />
-
-    <LinearLayout
-        android:id="@+id/stage_layout_linear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_alignStart="@+id/stage_dialog_menu"
-        android:layout_alignEnd="@+id/stage_dialog_menu"
-        android:layout_alignTop="@+id/stage_dialog_menu"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/stage_dialog_button_back"
-            style="@style/StageButton"
-            android:drawableTop="@drawable/stage_dialog_button_back"
-            android:drawableTint="@drawable/stage_dialog_color_selector"
-            android:text="@string/stage_dialog_back"
-            android:textColor="@color/accent" />
-
-        <Button
-            android:id="@+id/stage_dialog_button_restart"
-            style="@style/StageButton"
-            android:drawableTop="@drawable/stage_dialog_button_restart"
-            android:drawableTint="@drawable/stage_dialog_color_selector"
-            android:text="@string/stage_dialog_restart"
-            android:textColor="@color/accent" />
-
-        <Button
-            android:id="@+id/stage_dialog_button_continue"
-            style="@style/StageButton"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:drawableTop="@drawable/stage_dialog_button_continue"
-            android:drawableTint="@drawable/stage_dialog_color_selector"
-            android:text="@string/stage_dialog_resume"
-            android:textColor="@color/accent" />
-
-        <Button
-            android:id="@+id/stage_dialog_button_screenshot"
-            style="@style/StageButton"
-            android:drawableTop="@drawable/stage_dialog_button_screenshot"
-            android:drawableTint="@drawable/stage_dialog_color_selector"
-            android:text="@string/stage_dialog_screenshot"
-            android:textColor="@color/accent" />
-
-        <Button
-            android:id="@+id/stage_dialog_button_toggle_axes"
-            style="@style/StageButton"
-            android:drawableTop="@drawable/stage_dialog_button_toggle_axis"
-            android:drawableTint="@drawable/stage_dialog_color_selector"
-            android:text="@string/stage_dialog_axes_on"
-            android:textColor="@color/accent" />
-    </LinearLayout>
 
     <ImageView
         android:id="@+id/stage_dialog_menu_side_left"
@@ -109,6 +56,85 @@
         android:layout_toEndOf="@+id/stage_dialog_menu"
         android:background="@drawable/stage_dialog_background_side" />
 
+    <!-- =============================================================== -->
+    <!-- ШАГ 2: ТЕПЕРЬ ОБЪЯВЛЯЕМ КНОПКИ, ЧТОБЫ ОНИ БЫЛИ ПОВЕРХ ФОНА -->
+    <!-- =============================================================== -->
+
+    <Button
+        android:id="@+id/stage_dialog_button_continue"
+        style="@style/StageButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/stage_dialog_menu"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:drawableTop="@drawable/stage_dialog_button_continue"
+        android:drawableTint="@drawable/stage_dialog_color_selector"
+        android:text="@string/stage_dialog_resume"
+        android:textColor="@color/accent" />
+
+    <!-- 3. Контейнер для кнопок СЛЕВА от центра -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/stage_dialog_button_continue"
+        android:layout_toStartOf="@id/stage_dialog_button_continue"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/stage_dialog_button_back"
+            style="@style/StageButton"
+            android:drawableTop="@drawable/stage_dialog_button_back"
+            android:drawableTint="@drawable/stage_dialog_color_selector"
+            android:text="@string/stage_dialog_back"
+            android:textColor="@color/accent" />
+
+        <Button
+            android:id="@+id/stage_dialog_button_restart"
+            style="@style/StageButton"
+            android:drawableTop="@drawable/stage_dialog_button_restart"
+            android:drawableTint="@drawable/stage_dialog_color_selector"
+            android:text="@string/stage_dialog_restart"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
+    <!-- 4. Контейнер для кнопок СПРАВА от центра -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/stage_dialog_button_continue"
+        android:layout_toEndOf="@id/stage_dialog_button_continue"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <Button
+            android:id="@+id/stage_dialog_button_screenshot"
+            style="@style/StageButton"
+            android:drawableTop="@drawable/stage_dialog_button_screenshot"
+            android:drawableTint="@drawable/stage_dialog_color_selector"
+            android:text="@string/stage_dialog_screenshot"
+            android:textColor="@color/accent" />
+
+        <Button
+            android:id="@+id/stage_dialog_button_toggle_axes"
+            style="@style/StageButton"
+            android:drawableTop="@drawable/stage_dialog_button_toggle_axis"
+            android:drawableTint="@drawable/stage_dialog_color_selector"
+            android:text="@string/stage_dialog_axes_on"
+            android:textColor="@color/accent" />
+
+        <Button
+            android:id="@+id/stage_dialog_button_debug"
+            style="@style/StageButton"
+            android:drawableTop="@drawable/bug_report_24px"
+            android:drawableTint="@drawable/stage_dialog_color_selector"
+            android:text="@string/stage_dialog_debug"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
+    <!-- Остальные элементы (боковины, share, maximize) остаются без изменений -->
+
     <ImageButton
         android:id="@+id/stage_dialog_button_maximize"
         style="@style/StageButton"
@@ -120,7 +146,7 @@
         android:layout_margin="20dp"
         android:contentDescription="@string/stage_dialog_maximize"
         android:src="@drawable/stage_dialog_button_stretch"
-        android:tint="@drawable/stage_dialog_color_selector" />
+        app:tint="@drawable/stage_dialog_color_selector" />
 
     <LinearLayout
         android:theme="@style/Theme.AppCompat"

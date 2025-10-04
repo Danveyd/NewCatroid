@@ -1,0 +1,279 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jcgray-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jcphuff-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jcsample-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jdmerge-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jdsample-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jfdctfst-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jidctred-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jquanti-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jccolor-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jidctint-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jidctfst-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/aarch64/jchuff-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jdcolor-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/jfdctint-neon.c.o"
+		},
+		{
+			"path" : "libjpeg-turbo/simd/CMakeFiles/simd.dir/./arm/aarch64/jsimd.c.o"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"libjpeg-turbo/simd/CMakeLists.txt",
+			"libjpeg-turbo/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 395,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 365,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 559,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 310,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -fno-limit-debug-info  -fPIC"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "NEON_INTRINSICS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a/libjpeg-turbo"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a/libjpeg-turbo/simd/arm"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			],
+			"sysroot" : 
+			{
+				"path" : "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+			}
+		}
+	],
+	"id" : "simd::@94917bd5066ac320edfd",
+	"name" : "simd",
+	"paths" : 
+	{
+		"build" : "libjpeg-turbo/simd",
+		"source" : "libjpeg-turbo/simd"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jcgray-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jcphuff-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jcsample-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jdmerge-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jdsample-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jfdctfst-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jidctred-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jquanti-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jccolor-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jidctint-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jidctfst-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/aarch64/jchuff-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jdcolor-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/jfdctint-neon.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "libjpeg-turbo/simd/arm/aarch64/jsimd.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

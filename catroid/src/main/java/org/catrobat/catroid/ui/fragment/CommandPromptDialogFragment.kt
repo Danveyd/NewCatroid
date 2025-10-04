@@ -1,8 +1,12 @@
-// Поместите этот файл в пакет org.catrobat.catroid.ui.fragment
 package org.catrobat.catroid.ui.fragment
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
-import android.view.KeyEvent
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,39 +14,89 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.databinding.DialogCommandPromptBinding
-import org.catrobat.catroid.python.PythonEngine
-import org.catrobat.catroid.python.PythonCommandManager
 import org.catrobat.catroid.python.CommandOutputListener
+import org.catrobat.catroid.python.PythonCommandManager
+import org.catrobat.catroid.python.PythonEngine
 import org.catrobat.catroid.ui.MainMenuActivity
 import java.io.File
+import java.util.regex.Pattern
+
+// ▼▼▼ НАЧАЛО: НАШ НОВЫЙ КЛАСС ДЛЯ ПОДСВЕТКИ СИНТАКСИСА ▼▼▼
+object SyntaxHighlighter {
+
+    // Определяем цвета (можешь настроить их как угодно)
+    private val COLOR_ERROR = Color.RED
+    private val COLOR_WARNING = Color.rgb(255, 165, 0) // Оранжевый
+    private val COLOR_SUCCESS = Color.rgb(0, 180, 0)   // Темно-зеленый
+    private val COLOR_INFO = Color.CYAN
+
+    // Определяем правила подсветки с помощью регулярных выражений
+    private val RULES = listOf(
+        // Ошибки (ключевые слова, нечувствительные к регистру)
+        Rule(Pattern.compile("\\b(error|traceback|exception|failed|fatal|failure|none)\\b", Pattern.CASE_INSENSITIVE), COLOR_ERROR, isBold = true),
+        // Предупреждения и загрузка
+        Rule(Pattern.compile("\\b(warning|downloading|collecting|looking in indexes|looking in links)\\b", Pattern.CASE_INSENSITIVE), COLOR_WARNING),
+        // Успешное завершение
+        Rule(Pattern.compile("\\b(success|successfully|installed|complete)\\b", Pattern.CASE_INSENSITIVE), COLOR_SUCCESS),
+        // Числа, версии и размеры файлов (например, 1.2.3, 50kB, 100)
+        Rule(Pattern.compile("\\b(\\d+(\\.\\d+)*[kKmM]?[bB]?)\\b"), COLOR_SUCCESS)
+    )
+
+    /**
+     * Главный метод, который принимает строку и возвращает стилизованный Spannable.
+     */
+    fun highlight(text: String): SpannableStringBuilder {
+        val spannable = SpannableStringBuilder(text)
+        for (rule in RULES) {
+            val matcher = rule.pattern.matcher(spannable)
+            while (matcher.find()) {
+                // Применяем цвет
+                spannable.setSpan(
+                    ForegroundColorSpan(rule.color),
+                    matcher.start(),
+                    matcher.end(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                // Применяем жирный шрифт, если нужно
+                if (rule.isBold) {
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        matcher.start(),
+                        matcher.end(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+        }
+        return spannable
+    }
+
+    // Вспомогательный класс для хранения правил
+    private data class Rule(val pattern: Pattern, val color: Int, val isBold: Boolean = false)
+}
+// ▲▲▲ КОНЕЦ: НАШ НОВЫЙ КЛАСС ДЛЯ ПОДСВЕТКИ СИНТАКСИСА ▲▲▲
+
 
 class CommandPromptDialogFragment : DialogFragment(), CommandOutputListener {
 
     private var _binding: DialogCommandPromptBinding? = null
     private val binding get() = _binding!!
 
-    // Эти два класса - ядро нашей системы
     private lateinit var pythonEngine: PythonEngine
     private lateinit var commandManager: PythonCommandManager
-
-    // Директория "files" текущего проекта
     private lateinit var projectFilesDir: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Устанавливаем стиль, чтобы диалог был полноэкранным
         setStyle(STYLE_NO_TITLE, android.R.style.Theme_DeviceDefault_Light_NoActionBar)
 
-        // Инициализируем Python движок
         pythonEngine = MainMenuActivity.pythonEngine
         pythonEngine.initialize()
 
-        // Получаем путь к файлам проекта из аргументов
         val project = ProjectManager.getInstance().currentProject
         projectFilesDir = project.filesDir
         if (!projectFilesDir.exists()) projectFilesDir.mkdirs()
 
-        // Создаем менеджер команд
         commandManager = PythonCommandManager(pythonEngine, project)
     }
 
@@ -55,14 +109,7 @@ class CommandPromptDialogFragment : DialogFragment(), CommandOutputListener {
         super.onViewCreated(view, savedInstanceState)
         commandManager.outputListener = this
 
-        // --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
-
-        // 1. Назначаем слушателя для новой кнопки
-        binding.sendButton.setOnClickListener {
-            submitCommand()
-        }
-
-        // 2. Улучшаем обработку нажатия "Enter" на клавиатуре
+        binding.sendButton.setOnClickListener { submitCommand() }
         binding.terminalInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitCommand()
@@ -71,40 +118,37 @@ class CommandPromptDialogFragment : DialogFragment(), CommandOutputListener {
             false
         }
 
-        // Код ниже остается без изменений
+        // Устанавливаем моноширинный шрифт для вывода, как в настоящих терминалах
+        binding.terminalOutput.typeface = Typeface.MONOSPACE
+
         binding.terminalOutput.text = "Shell initialized.\n"
         updatePrompt()
     }
 
-    /**
-     * Новая функция, которая содержит всю логику отправки команды.
-     */
     private fun submitCommand() {
         val command = binding.terminalInput.text.toString()
-        if (command.isBlank()) { // Не отправляем пустые команды
-            return
-        }
+        if (command.isBlank()) return
 
         binding.terminalInput.text.clear()
-
-        // Показываем индикатор загрузки и блокируем ввод
         showLoading(true)
-
-        // Отправляем команду на выполнение
         commandManager.processCommand(command)
     }
 
     // --- Реализация интерфейса CommandOutputListener ---
 
     override fun onOutput(output: String) {
-        // Добавляем новый текст в поле вывода
-        binding.terminalOutput.append(output)
-        // Автоматически прокручиваем вниз, чтобы видеть последний результат
+        // ▼▼▼ ГЛАВНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ ▼▼▼
+        // 1. Пропускаем полученный текст через наш хайлайтер
+        val styledOutput = SyntaxHighlighter.highlight(output)
+
+        // 2. Добавляем уже стилизованный текст в поле вывода
+        binding.terminalOutput.append(styledOutput)
+        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
         binding.scrollView.post { binding.scrollView.fullScroll(View.FOCUS_DOWN) }
     }
 
     override fun onComplete() {
-        // Команда выполнена: скрываем индикатор и разблокируем ввод
         showLoading(false)
         updatePrompt()
     }
@@ -112,28 +156,28 @@ class CommandPromptDialogFragment : DialogFragment(), CommandOutputListener {
     // --- Вспомогательные функции ---
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.terminalInput.isEnabled = false
-            binding.terminalPrompt.text = "Executing..."
-        } else {
-            binding.progressBar.visibility = View.GONE
-            binding.terminalInput.isEnabled = true
-            binding.terminalInput.requestFocus() // Возвращаем фокус на поле ввода
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.terminalInput.isEnabled = !isLoading
+        binding.terminalPrompt.text = if (isLoading) "Executing..." else "$displayPath > "
+        if (!isLoading) {
+            binding.terminalInput.requestFocus()
         }
     }
 
-    private fun updatePrompt() {
-        // Получаем текущий путь из менеджера и форматируем его
-        val currentPath = commandManager.currentWorkingDirectory
-        // Отображаем путь относительно папки 'files' для краткости
-        val displayPath = currentPath.absolutePath.removePrefix(projectFilesDir.parentFile?.absolutePath ?: "")
+    // Сделаем displayPath свойством класса для удобства
+    private val displayPath: String
+        get() {
+            val currentPath = commandManager.currentWorkingDirectory
+            return currentPath.absolutePath.removePrefix(projectFilesDir.parentFile?.absolutePath ?: "")
+        }
 
+    private fun updatePrompt() {
         binding.terminalPrompt.text = "$displayPath > "
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        commandManager.outputListener = null
         _binding = null
     }
 

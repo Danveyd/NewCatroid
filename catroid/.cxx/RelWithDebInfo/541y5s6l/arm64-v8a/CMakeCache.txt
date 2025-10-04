@@ -239,6 +239,9 @@ CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=D:\AppData\Local\Android\Sdk\ndk\26.1.1090912
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Path to a library.
+android-lib:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libandroid.so
+
 //Value Computed by CMake
 catroid_BINARY_DIR:STATIC=D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/arm64-v8a
 
@@ -247,6 +250,15 @@ catroid_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 catroid_SOURCE_DIR:STATIC=D:/Catroid-develop/catroid/src/main/cpp
+
+//Path to a library.
+dl-lib:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libdl.so
+
+//Path to a library.
+egl-lib:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libEGL.so
+
+//Path to a library.
+glesv2-lib:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libGLESv2.so
 
 //Path to a library.
 log-lib:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/liblog.so

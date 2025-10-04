@@ -60,11 +60,34 @@ add_library(${CMAKE_PROJECT_NAME} SHARED catroid.cpp)
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
 find_library(log-lib log)
+find_library(android-lib android)
+find_library(dl-lib dl)
+find_library(egl-lib EGL)
+find_library(glesv2-lib GLESv2)
 
-# Линкуем нашу библиотеку с виртуальной библиотекой ONNX, которую мы создали.
+add_library(
+        example_core
+        SHARED
+        example_core.cpp
+)
+
+# 2. Подключаем библиотеки к ОСНОВНОЙ цели "catroid"
 target_link_libraries(
-        ${CMAKE_PROJECT_NAME}
+        ${CMAKE_PROJECT_NAME} # <-- это равно "catroid"
         onnxruntime
         ${PYTHON_LINK_LIBS}
         ${log-lib}
+        ${android-lib}
+        ${dl-lib}
+        unwind
+)
+
+# 3. СОЗДАЕМ ОТДЕЛЬНУЮ СВЯЗКУ ДЛЯ ТЕСТОВОЙ БИБЛИОТЕКИ "example_core"
+target_link_libraries(
+        example_core # <-- Указываем, что линкуем именно example_core
+        # Библиотеки, которые нужны файлу example_core.cpp
+        log
+        android
+        EGL
+        GLESv2
 )

@@ -1,9 +1,12 @@
 package org.catrobat.catroid.utils.lunoscript
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.math.Rectangle
 import org.catrobat.catroid.CatroidApplication
@@ -3217,6 +3220,57 @@ class Interpreter(
             LunoValue.NativeObject(brickInstance)
         }
 
+        defineNative("runInRenderThread", 1..1) { interpreter, args ->
+            val functionToRun = args[0] as? LunoValue.LunoFunction
+                ?: throw LunoRuntimeError("runInRenderThread expects a function as its argument.", -1)
+
+            // Проверяем, что у функции нет аргументов, для простоты
+            if (functionToRun.arity().first > 0) {
+                throw LunoRuntimeError("The function passed to runInRenderThread must not require arguments.", -1)
+            }
+
+            // Используем Gdx.app.postRunnable для отправки задачи в GL-поток
+            Gdx.app.postRunnable {
+                try {
+                    // Вызываем Luno-функцию, но уже в правильном потоке
+                    functionToRun.call(interpreter, emptyList(), Token(TokenType.EOF, "", null, -1, -1))
+                } catch (e: LunoRuntimeError) {
+                    // Ошибки из GL-потока нужно как-то логировать, т.к. мы не можем их
+                    // просто пробросить в Luno-поток.
+                    Log.e("LunoRenderThread", "Error executing task in render thread: ${e.message}")
+                }
+            }
+
+            LunoValue.Null
+        }
+
+        /**
+         * Выполняет переданную Luno-функцию в главном UI-потоке Android.
+         * Используется для всех операций с Android UI (показ Toast, диалогов и т.д.).
+         */
+        defineNative("runInUIThread", 1..1) { interpreter, args ->
+            val functionToRun = args[0] as? LunoValue.LunoFunction
+                ?: throw LunoRuntimeError("runInUIThread expects a function as its argument.", -1)
+
+            if (functionToRun.arity().first > 0) {
+                throw LunoRuntimeError("The function passed to runInUIThread must not require arguments.", -1)
+            }
+
+            // Используем стандартный Handler для отправки задачи в UI-поток
+            val uiHandler = Handler(Looper.getMainLooper())
+            uiHandler.post {
+                try {
+                    // Вызываем Luno-функцию в UI-потоке
+                    functionToRun.call(interpreter, emptyList(), Token(TokenType.EOF, "", null, -1, -1))
+                } catch (e: LunoRuntimeError) {
+                    Log.e("LunoUIThread", "Error executing task in UI thread: ${e.message}")
+                    Toast.makeText(androidContext, "LunoScript UI Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            LunoValue.Null
+        }
+
         registerAllNatives(this)
     }
 
@@ -4080,6 +4134,22 @@ class Interpreter(
         // 2. Быстрый путь: если у нас уже есть NativeObject с объектом нужного типа.
         if (value is LunoValue.NativeObject && targetClass.isAssignableFrom(value.obj.javaClass)) {
             return value.obj
+        }
+
+        if (FileHandle::class.java.isAssignableFrom(targetClass)) {
+            return when (value) {
+                // Если в скрипте передали строку-путь...
+                is LunoValue.String -> Gdx.files.absolute(value.value)
+                // Если в скрипте передали NativeObject, содержащий java.io.File...
+                is LunoValue.NativeObject -> {
+                    if (value.obj is File) {
+                        Gdx.files.absolute(value.obj.absolutePath)
+                    } else {
+                        null // Не смогли конвертировать NativeObject в FileHandle
+                    }
+                }
+                else -> null // Другие типы LunoValue не можем превратить в FileHandle
+            }
         }
 
         // 3. Главная логика конвертации для числовых типов

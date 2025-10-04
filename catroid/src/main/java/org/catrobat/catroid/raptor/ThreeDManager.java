@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
@@ -110,6 +111,14 @@ public class ThreeDManager implements Disposable {
     private final Map<String, Object> customUniforms = new HashMap<>();
     private float time = 0f;
 
+    // Добавьте эти поля к остальным полям класса
+    private ModelBatch shadowBatch;
+    private com.badlogic.gdx.graphics.glutils.FrameBuffer shadowFBO;
+    private PerspectiveCamera lightCamera; // Используем Perspective для лучшего качества
+    private com.badlogic.gdx.math.Matrix4 lightSpaceMatrix = new com.badlogic.gdx.math.Matrix4();
+    private final int SHADOW_MAP_SIZE = 2048; // Размер карты теней, можно менять (1024, 2048, 4096)
+    private ShaderProvider depthShaderProvider; // Специальный шейдер для рендера глубины
+
     public void init() {
         modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
         defaultShaderProvider = new DefaultShaderProvider();
@@ -125,6 +134,20 @@ public class ThreeDManager implements Disposable {
 
         camera.near = 0.1f;      // Минимальное расстояние
         camera.far = 2500f;    // Максимальное расстояние (увеличили с 100 до 1000)
+
+        // 1. Создаем FrameBuffer, куда будем рисовать карту теней
+        shadowFBO = new com.badlogic.gdx.graphics.glutils.FrameBuffer(com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, true);
+
+        // 2. Создаем "камеру" для источника света
+        lightCamera = new PerspectiveCamera(90, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
+        lightCamera.near = 1f;
+        lightCamera.far = 500f; // Дальность "прожектора" тени
+
+        // 3. Создаем шейдер для рендера глубины (он очень простой)
+        String depthVertexShader = "attribute vec3 a_position; uniform mat4 u_projViewTrans; void main() { gl_Position = u_projViewTrans * vec4(a_position, 1.0); }";
+        String depthFragmentShader = "#ifdef GL_ES\nprecision mediump float;\n#endif\nvoid main() { gl_FragColor = vec4(gl_FragCoord.z, 0.0, 0.0, 1.0); }";
+        depthShaderProvider = new DefaultShaderProvider(depthVertexShader, depthFragmentShader);
+        shadowBatch = new ModelBatch(depthShaderProvider);
 
         Bullet.init();
         collisionConfig = new btDefaultCollisionConfiguration();
@@ -183,7 +206,15 @@ public class ThreeDManager implements Disposable {
 
     public void update(float delta) {
         time += delta; // Обновляем время для u_time
-        customUniforms.put("time", time);
+        // Обновляем uniform'ы только если кастомный шейдер активен
+        if (customShaderProvider != null) {
+            customUniforms.put("u_time", time);
+            customUniforms.put("u_resolution", new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+            customUniforms.put("u_cameraPosition", camera.position);
+            customUniforms.put("u_cameraDirection", camera.direction);
+            customUniforms.put("u_viewMatrix", camera.view);
+            customUniforms.put("u_projectionMatrix", camera.projection);
+        }
         // 1. Обновляем физический мир, как и раньше
         dynamicsWorld.stepSimulation(delta, 5, 1f/60f);
 
@@ -235,11 +266,59 @@ public class ThreeDManager implements Disposable {
     }
 
     public void render() {
-        Gdx.gl.glClearColor(skyColor.r, skyColor.g, skyColor.b, skyColor.a);
-        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT | com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT);
+        Vector3 lightPosition = new Vector3(150, 200, 100);
+        Vector3 lightLookAt = new Vector3(0, 0, 0);
+        lightCamera.position.set(lightPosition);
+        lightCamera.lookAt(lightLookAt);
+        lightCamera.update();
+
+        // 2. Рассчитываем матрицу, которая будет переводить мировые координаты в пространство света
+        lightSpaceMatrix.set(lightCamera.combined);
+
+        // 3. Начинаем рисовать в наш FrameBuffer
+        shadowFBO.begin();
+        Gdx.gl.glViewport(0, 0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
+        Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT);
+
+        // 4. Рендерим все объекты с помощью простого depth-шейдера
+        shadowBatch.begin(lightCamera);
+        for (ModelInstance instance : sceneObjects.values()) {
+            shadowBatch.render(instance);
+        }
+        shadowBatch.end();
+
+        // 5. Заканчиваем рисовать в FrameBuffer
+        shadowFBO.end();
+
+        // --- ПРОХОД 2: ОСНОВНОЙ РЕНДЕР СЦЕНЫ ---
+
+        // 1. Возвращаем viewport к размеру экрана
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // 2. Очищаем основной экран
+        if (skyColor.a != 0) {
+            Gdx.gl.glClearColor(skyColor.r, skyColor.g, skyColor.b, skyColor.a);
+            Gdx.gl.glClear(com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT | com.badlogic.gdx.graphics.GL20.GL_DEPTH_BUFFER_BIT);
+        }
+
 
         camera.update();
         modelBatch.begin(camera);
+
+        if (customShaderProvider != null) {
+            // Привязываем текстуру с картой теней к текстурному юниту, например, 5
+            int shadowMapTextureUnit = 5;
+            shadowFBO.getColorBufferTexture().bind(shadowMapTextureUnit);
+
+            // Передаем в шейдер, какой юнит использовать и матрицу
+            setShaderUniform("shadowMap", shadowMapTextureUnit);
+            customUniforms.put("u_lightSpaceMatrix", lightSpaceMatrix);
+
+            // VVV ВОТ ИСПРАВЛЕНИЕ VVV
+            // Передаем размер нашей карты теней в шейдер
+            customUniforms.put("u_shadowMapSize", new Vector2(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE));
+        }
+
         for (ModelInstance instance : sceneObjects.values()) {
             modelBatch.render(instance, environment);
         }
@@ -1072,59 +1151,78 @@ public class ThreeDManager implements Disposable {
      * @param fragmentCode Строка с кодом фрагментного шейдера.
      */
     public void setShaderCode(String vertexCode, String fragmentCode) {
-        // Если код пустой, сбрасываем к стандартному
-        if (vertexCode == null || vertexCode.isEmpty() || fragmentCode == null || fragmentCode.isEmpty()) {
-            resetSceneShader();
-            return;
-        }
+        Gdx.app.postRunnable(() -> {
+            Gdx.app.log("ShaderDebug", "--- setShaderCode CALLED ---");
+            if (vertexCode == null || vertexCode.isEmpty() || fragmentCode == null || fragmentCode.isEmpty()) {
+                resetSceneShader();
+                return;
+            }
 
-        try {
-            // Создаем Config, передавая в него наш код
-            DefaultShader.Config config = new DefaultShader.Config(vertexCode, fragmentCode);
-            // Проверяем компиляцию, создавая временный шейдер
-            new DefaultShader(null, config);
+            try {
+                // --- НАЧАЛО ГЛАВНЫХ ИЗМЕНЕНИЙ ---
 
-            // Если все ОК, освобождаем старые ресурсы
-            if (customShaderProvider != null) customShaderProvider.dispose();
-            if (modelBatch != null) modelBatch.dispose();
+                // 1. Создаем Config, как и раньше
+                DefaultShader.Config config = new DefaultShader.Config(vertexCode, fragmentCode);
 
-            this.currentVertexShader = vertexCode;
-            this.currentFragmentShader = fragmentCode;
+                // 2. Чтобы проверить компиляцию, создаем временный ShaderProgram
+                ShaderProgram tempProgram = new ShaderProgram(vertexCode, fragmentCode);
+                if (!tempProgram.isCompiled()) {
+                    throw new Exception("Shader compilation failed: " + tempProgram.getLog());
+                }
+                tempProgram.dispose(); // Не забываем очистить
 
-            // Создаем наш кастомный провайдер
-            customShaderProvider = new CustomShaderProvider(config, customUniforms);
-            modelBatch = new ModelBatch(customShaderProvider);
+                // 3. Освобождаем старые ресурсы
+                if (customShaderProvider != null) customShaderProvider.dispose();
+                if (modelBatch != null) modelBatch.dispose();
 
-        } catch (Exception e) {
-            Gdx.app.error("3DManager", "Shader compilation failed: " + e.getMessage());
-            // В случае ошибки ничего не меняем или сбрасываем на стандартный
-            resetSceneShader();
-        }
+                // 4. Создаем НАШ кастомный провайдер
+                customShaderProvider = new CustomShaderProvider(config, customUniforms);
+
+                // 5. Создаем новый ModelBatch с нашим провайдером
+                modelBatch = new ModelBatch(customShaderProvider);
+
+                // --- КОНЕЦ ГЛАВНЫХ ИЗМЕНЕНИЙ ---
+                Gdx.app.log("ShaderDebug", "--- CustomShaderProvider and new ModelBatch CREATED successfully ---");
+
+            } catch (Exception e) {
+                Gdx.app.error("3DManager", "Shader setup failed: " + e.getMessage());
+                resetSceneShader(); // В случае ошибки сбрасываем на стандартный
+            }
+        });
     }
 
     /**
      * Сбрасывает шейдер к стандартному.
      */
     public void resetSceneShader() {
-        if (customShaderProvider != null) {
-            customShaderProvider.dispose();
-            customShaderProvider = null;
-        }
-        if (modelBatch != null) modelBatch.dispose();
+        Gdx.app.postRunnable(() -> {
+            // --- НАЧАЛО ИЗМЕНЕНИЙ ---
 
-        currentVertexShader = null;
-        currentFragmentShader = null;
-        customUniforms.clear();
+            // 1. Если был кастомный провайдер, очищаем его
+            if (customShaderProvider != null) {
+                customShaderProvider.dispose();
+                customShaderProvider = null;
+            }
 
-        modelBatch = new ModelBatch(defaultShaderProvider);
+            // 2. Очищаем старый ModelBatch (если он был кастомным)
+            if (modelBatch != null) modelBatch.dispose();
+
+            customUniforms.clear();
+
+            // 3. Создаем новый ModelBatch со СТАНДАРТНЫМ провайдером
+            modelBatch = new ModelBatch(defaultShaderProvider);
+
+            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+        });
     }
 
     /**
      * Устанавливает uniform-переменную (float) по имени.
      */
     public void setShaderUniform(String name, float value) {
+        // Добавляем префикс "u_" здесь, чтобы в LunoScript было чистое имя
         if (name != null && !name.isEmpty()) {
-            customUniforms.put(name, value);
+            customUniforms.put("u_" + name, value);
         }
     }
 
@@ -1133,7 +1231,31 @@ public class ThreeDManager implements Disposable {
      */
     public void setShaderUniform(String name, float x, float y, float z) {
         if (name != null && !name.isEmpty()) {
-            customUniforms.put(name, new Vector3(x, y, z));
+            customUniforms.put("u_" + name, new Vector3(x, y, z));
+        }
+    }
+
+    public void setShaderUniform(String name, int value) {
+        if (name != null && !name.isEmpty()) {
+            customUniforms.put("u_" + name, value);
+        }
+    }
+
+    /**
+     * Устанавливает uniform-переменную (vec2).
+     */
+    public void setShaderUniform(String name, float x, float y) {
+        if (name != null && !name.isEmpty()) {
+            customUniforms.put("u_" + name, new Vector2(x, y));
+        }
+    }
+
+    /**
+     * Устанавливает uniform-переменную (vec4 или цвет с альфа-каналом).
+     */
+    public void setShaderUniform(String name, float x, float y, float z, float w) {
+        if (name != null && !name.isEmpty()) {
+            customUniforms.put("u_" + name, new Vector4(x, y, z, w));
         }
     }
 
@@ -1199,7 +1321,12 @@ public class ThreeDManager implements Disposable {
             collisionCallback.dispose();
         }
         if (defaultShaderProvider != null) ((DefaultShaderProvider) defaultShaderProvider).dispose();
-        if (customShaderProvider != null) ((DefaultShaderProvider) customShaderProvider).dispose();
+        if (customShaderProvider != null) customShaderProvider.dispose();
+
+        if (shadowBatch != null) shadowBatch.dispose();
+        if (shadowFBO != null) shadowFBO.dispose();
+        if (depthShaderProvider != null) depthShaderProvider.dispose();
+
         customUniforms.clear();
 
         // Обнуляем ссылки, чтобы избежать случайного использования после очистки

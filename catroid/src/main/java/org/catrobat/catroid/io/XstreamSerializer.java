@@ -242,7 +242,16 @@ public final class XstreamSerializer {
 		xstream.alias("brick", CopyProjectFileBrick.class);
 		xstream.alias("brick", SetSoundVolumeBrick.class);
 		xstream.alias("brick", RunPythonScriptBrick.class);
+		xstream.alias("brick", AttachSOBrick.class);
+		xstream.alias("brick", ToggleDisplayBrick.class);
+		xstream.alias("brick", StopVMBrick.class);
+		xstream.alias("brick", MouseEventBrick.class);
+		xstream.alias("brick", KeyEventBrick.class);
+		xstream.alias("brick", RunVMBrick.class);
+		xstream.alias("brick", CreateDiskBrick.class);
+		xstream.alias("brick", CreateGLViewBrick.class);
 		xstream.alias("brick", RunShellBrick.class);
+		xstream.alias("brick", ExportProjectFileBrick.class);
 		xstream.alias("brick", LoadNativeModuleBrick.class);
 		xstream.alias("brick", LoadPythonLibraryBrick.class);
 		xstream.alias("brick", LoadPythonLibraryBrick.class);
@@ -542,6 +551,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", BigAskBrick.class);
 		xstream.alias("brick", ZipBrick.class);
 		xstream.alias("brick", UnzipBrick.class);
+		xstream.alias("brick", GetZipFileNamesBrick.class);
 		xstream.alias("brick", ShowText3Brick.class);
 		xstream.alias("brick", ShowTextFontAction.class);
 		xstream.alias("brick", HideText3Brick.class);

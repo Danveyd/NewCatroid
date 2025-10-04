@@ -66,7 +66,11 @@ fun unzipAndImportProjects(files: Array<File>): Boolean {
 private fun unzipAndImportProject(projectDir: File): Boolean = try {
     val cachedProjectDir = File(CACHE_DIRECTORY, StorageOperations.getSanitizedFileName(projectDir.name))
     if (cachedProjectDir.isDirectory) {
-        StorageOperations.deleteDir(cachedProjectDir)
+        try {
+            StorageOperations.deleteDir(cachedProjectDir)
+        } catch (e: Exception) {
+            Log.e("ZIP_TASK", "ERROR: " + e.message)
+        }
     }
     ZipArchiver().unzip(projectDir, cachedProjectDir)
     importProject(cachedProjectDir)

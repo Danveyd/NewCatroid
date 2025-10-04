@@ -48,8 +48,13 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.MyActivityManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.content.bricks.PointInDirectionBrick;
+import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.VisualPlacementBrick;
 import org.catrobat.catroid.formulaeditor.UserData;
 import org.catrobat.catroid.formulaeditor.UserList;
@@ -108,6 +113,10 @@ import static org.catrobat.catroid.ui.SpriteActivityOnTabSelectedListenerKt.load
 import static org.catrobat.catroid.ui.SpriteActivityOnTabSelectedListenerKt.removeTabLayout;
 import static org.catrobat.catroid.ui.WebViewActivity.MEDIA_FILE_PATH;
 import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.CHANGED_COORDINATES;
+import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.HEIGHT_BUNDLE_ARGUMENT;
+import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.ROTATION_ANGLE_BUNDLE_ARGUMENT;
+import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.SIZE_PERCENT_BUNDLE_ARGUMENT;
+import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.WIDTH_BUNDLE_ARGUMENT;
 import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.X_COORDINATE_BUNDLE_ARGUMENT;
 import static org.catrobat.catroid.visualplacement.VisualPlacementActivity.Y_COORDINATE_BUNDLE_ARGUMENT;
 
@@ -147,6 +156,7 @@ public class SpriteActivity extends BaseActivity {
 
 	public static final String EXTRA_X_TRANSFORM = "X";
 	public static final String EXTRA_Y_TRANSFORM = "Y";
+	public static final String EXTRA_ROTATION = "ROTATION";
 	public static final String EXTRA_TEXT = "TEXT";
 	public static final String EXTRA_TEXT_COLOR = "TEXT_COLOR";
 	public static final String EXTRA_TEXT_SIZE = "TEXT_SIZE";
@@ -324,6 +334,8 @@ public class SpriteActivity extends BaseActivity {
 		new ProjectSaver(currentProject, getApplicationContext()).saveProjectAsync();
 	}
 
+	private Bundle visualPlacementResult = null;
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -413,35 +425,91 @@ public class SpriteActivity extends BaseActivity {
 				addSoundFromUri(uri);
 				break;
 			case REQUEST_CODE_VISUAL_PLACEMENT:
-				Bundle extras = data.getExtras();
-				if (extras == null) {
-					return;
+				visualPlacementResult = data.getExtras();
+				if (visualPlacementResult != null) {
+					int brickHash = visualPlacementResult.getInt(EXTRA_BRICK_HASH, -1);
+					if (brickHash != -1) {
+						updateBrickFromVisualPlacement(visualPlacementResult);
+					}
 				}
+				break;
+		}
+	}
 
-				int xCoordinate = extras.getInt(X_COORDINATE_BUNDLE_ARGUMENT);
-				int yCoordinate = extras.getInt(Y_COORDINATE_BUNDLE_ARGUMENT);
-				int brickHash = extras.getInt(EXTRA_BRICK_HASH);
+	private void updateBrickFromVisualPlacement(Bundle extras) {
+		if (extras == null) {
+			return;
+		}
 
-				Fragment fragment = getCurrentFragment();
-				Brick brick = null;
+		// Шаг 1: Получаем все данные из VisualPlacementActivity
+		int xCoordinate = extras.getInt(X_COORDINATE_BUNDLE_ARGUMENT);
+		int yCoordinate = extras.getInt(Y_COORDINATE_BUNDLE_ARGUMENT);
+		float rotation = extras.getFloat(ROTATION_ANGLE_BUNDLE_ARGUMENT);
+		float size = extras.getFloat(SIZE_PERCENT_BUNDLE_ARGUMENT);
+		int brickHash = extras.getInt(EXTRA_BRICK_HASH);
 
-				if (fragment instanceof ScriptFragment) {
-					brick = ((ScriptFragment) fragment).findBrickByHash(brickHash);
-				} else if (fragment instanceof FormulaEditorFragment) {
-					brick = ((FormulaEditorFragment) fragment).getFormulaBrick();
-				}
+		// Шаг 2: Находим кирпичик, который вызвал редактирование
+		Fragment fragment = getCurrentFragment();
+		Brick brick = null;
 
-				if (brick != null) {
-					((VisualPlacementBrick) brick).setCoordinates(xCoordinate, yCoordinate);
-					if (fragment instanceof FormulaEditorFragment) {
-						((FormulaEditorFragment) fragment).updateFragmentAfterVisualPlacement();
+		if (fragment instanceof ScriptFragment) {
+			brick = ((ScriptFragment) fragment).findBrickByHash(brickHash);
+		} else if (fragment instanceof FormulaEditorFragment) {
+			brick = ((FormulaEditorFragment) fragment).getFormulaBrick();
+		}
+
+		// Шаг 3: Убеждаемся, что кирпичик найден и имеет правильный тип
+		if (brick instanceof VisualPlacementBrick) {
+			VisualPlacementBrick visualBrick = (VisualPlacementBrick) brick;
+			Script parentScript = visualBrick.getScript();
+
+			// Всегда обновляем координаты в текущем кирпичике
+			visualBrick.setCoordinates(xCoordinate, yCoordinate);
+
+			// Шаг 4: Проверяем, нужно ли добавлять новые кирпичики
+			Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+			boolean isNotBackground = !currentSprite.equals(currentScene.getBackgroundSprite());
+
+			// Добавляем блоки только для объектов (не для фона)
+			if (isNotBackground) {
+				boolean hasDirectionBrick = false;
+				boolean hasSizeBrick = false;
+
+				// Ищем, есть ли уже такие блоки в скрипте
+				for (Brick b : parentScript.getBrickList()) {
+					if (b instanceof PointInDirectionBrick) {
+						hasDirectionBrick = true;
+					}
+					// --- ВНИМАНИЕ: Проверьте точное имя класса для размера! ---
+					if (b instanceof SetSizeToBrick) {
+						hasSizeBrick = true;
 					}
 				}
 
-				setUndoMenuItemVisibility(extras.getBoolean(CHANGED_COORDINATES));
+				// Находим, куда вставлять новые блоки.
+				// Script не имеет getBrickIndex, но его brickList - это обычный List!
+				int insertionPoint = parentScript.getBrickList().indexOf(visualBrick) + 1;
 
-				break;
+				// Если блока вращения нет, добавляем его
+				if (!hasDirectionBrick) {
+					parentScript.addBrick(insertionPoint++, new PointInDirectionBrick(rotation + 90));
+				}
+
+				// Если блока размера нет, добавляем его
+				if (!hasSizeBrick) {
+					parentScript.addBrick(insertionPoint, new SetSizeToBrick(size));
+				}
+			}
+
+			// Шаг 5: Обновляем интерфейс, чтобы показать изменения
+			if (fragment instanceof ScriptFragment) {
+				((ScriptFragment) fragment).notifyDataSetChanged();
+			} else if (fragment instanceof FormulaEditorFragment) {
+				((FormulaEditorFragment) fragment).updateFragmentAfterVisualPlacement();
+			}
 		}
+
+		setUndoMenuItemVisibility(extras.getBoolean(CHANGED_COORDINATES));
 	}
 
 	public void registerOnNewSpriteListener(NewItemInterface<Sprite> listener) {
@@ -461,6 +529,9 @@ public class SpriteActivity extends BaseActivity {
 	}
 
 	private void addSpriteFromUri(final Uri uri, String imageExtension) {
+		final Bundle placementData = visualPlacementResult;
+		// И сразу же очищаем ее, чтобы она не использовалась повторно
+		visualPlacementResult = null;
 		String resolvedName;
 		String resolvedFileName = StorageOperations.resolveFileName(getContentResolver(), uri);
 
@@ -486,12 +557,35 @@ public class SpriteActivity extends BaseActivity {
 				.setText(lookDataName)
 				.setTextWatcher(new DuplicateInputTextWatcher<>(currentScene.getSpriteList()))
 				.setPositiveButton(getString(R.string.ok), (TextInputDialog.OnClickListener) (dialog, textInput) -> {
+					// --- НАЧАЛО НОВЫХ ИЗМЕНЕНИЙ ---
 					Sprite sprite = new Sprite(textInput);
 					currentScene.addSprite(sprite);
+
+					// Создаем скрипт по умолчанию (StartScript)
+					StartScript startScript = new StartScript();
+					sprite.addScript(startScript);
+
+					// Если у нас есть данные от VisualPlacement, используем их
+					if (placementData != null) {
+						int x = placementData.getInt(X_COORDINATE_BUNDLE_ARGUMENT);
+						int y = placementData.getInt(Y_COORDINATE_BUNDLE_ARGUMENT);
+						float rotation = placementData.getFloat(ROTATION_ANGLE_BUNDLE_ARGUMENT);
+						float size = placementData.getFloat(SIZE_PERCENT_BUNDLE_ARGUMENT);
+
+						// Добавляем наши три кирпичика в новый скрипт
+						startScript.addBrick(new PointInDirectionBrick(rotation + 90));
+						startScript.addBrick(new SetSizeToBrick(size));
+						startScript.addBrick(new PlaceAtBrick(x, y)); // Создаем новый PlaceAtBrick
+					} else {
+						// Если данных нет (старый способ добавления), добавляем PlaceAt по умолчанию
+						startScript.addBrick(new PlaceAtBrick(0, 0));
+					}
+
+					// --- КОНЕЦ НОВЫХ ИЗМЕНЕНИЙ ---
+
 					try {
 						File imageDirectory = new File(currentScene.getDirectory(), IMAGE_DIRECTORY_NAME);
-						File file = StorageOperations
-								.copyUriToDir(getContentResolver(), uri, imageDirectory, lookFileName);
+						File file = StorageOperations.copyUriToDir(getContentResolver(), uri, imageDirectory, lookFileName);
 						Utils.removeExifData(imageDirectory, lookFileName);
 						LookData lookData = new LookData(textInput, file);
 						sprite.getLookList().add(lookData);
@@ -499,6 +593,7 @@ public class SpriteActivity extends BaseActivity {
 					} catch (IOException e) {
 						Log.e(TAG, Log.getStackTraceString(e));
 					}
+
 					if (onNewSpriteListener != null) {
 						onNewSpriteListener.addItem(sprite);
 						Fragment currentFragment = getCurrentFragment();

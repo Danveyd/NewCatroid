@@ -1,3 +1,4 @@
 D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/x86/CMakeFiles/catroid.dir
+D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/x86/CMakeFiles/example_core.dir
 D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/x86/CMakeFiles/edit_cache.dir
 D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/x86/CMakeFiles/rebuild_cache.dir

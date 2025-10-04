@@ -70,6 +70,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.danvexteam.lunoscript_annotations.LunoClass;
+import com.gaurav.avnc.vnc.VncClient;
 import com.google.common.collect.Multimap;
 
 import org.catrobat.catroid.CatroidApplication;
@@ -107,6 +108,7 @@ import org.catrobat.catroid.raptor.ThreeDManager;
 import org.catrobat.catroid.sensing.CollisionDetection;
 import org.catrobat.catroid.sensing.ColorAtXYDetection;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.dialogs.DebugMenuManager;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.recyclerview.controller.SpriteController;
 import org.catrobat.catroid.utils.GlobalShaderManager;
@@ -246,11 +248,16 @@ public class StageListener implements ApplicationListener {
 	private FrameBuffer postProcessFbo;
 	private TextureRegion fboRegion;
 
+	private Mesh vmScreenMesh;
+	private float vmX, vmY, vmWidth, vmHeight;
+
 	private Look.BrightnessContrastHueShader brightnessContrastHueShader;
 
 	public StageListener() {
 		webConnectionHolder = new WebConnectionHolder();
 	}
+
+	private ShaderProgram vncSwizzleShader;
 
 	@Override
 	public void create() {
@@ -389,6 +396,67 @@ public class StageListener implements ApplicationListener {
 			fullscreenQuad.setVertices(vertices);
 			fullscreenQuad.setIndices(indices);
 		}
+
+		try {
+			String vertexShader = Gdx.files.internal("vnc_shader.vert").readString();
+			String fragmentShader = Gdx.files.internal("vnc_shader.frag").readString();
+			vncSwizzleShader = new ShaderProgram(vertexShader, fragmentShader);
+
+			if (!vncSwizzleShader.isCompiled()) {
+				Log.e("SHADER_ERROR", "VNC Swizzle Shader failed to compile: " + vncSwizzleShader.getLog());
+			} else {
+				Log.i("SHADER_INFO", "VNC Swizzle Shader compiled successfully.");
+			}
+		} catch (Exception e) {
+			Log.e("SHADER_ERROR", "Could not load VNC Swizzle Shader files", e);
+		}
+	}
+	private boolean vmGeometryDirty = false;
+
+	public void setVmScreenGeometry(float x, float y, float width, float height) {
+		// Просто сохраняем значения
+		this.vmX = x;
+		this.vmY = y;
+		this.vmWidth = width;
+		this.vmHeight = height;
+
+		// Выставляем флаг, что геометрию нужно пересоздать в потоке рендера
+		this.vmGeometryDirty = true;
+	}
+
+	private boolean isVmDisplayVisible = false;
+
+	// Добавьте этот публичный метод
+	public void setVmDisplayVisible(boolean visible) {
+		this.isVmDisplayVisible = visible;
+		Log.d("Display", "Display is: " + isVmDisplayVisible);
+	}
+
+	private void updateVmScreenMesh() {
+		float x2 = vmX + vmWidth;
+		float y2 = vmY + vmHeight;
+
+		float[] vertices = {
+				// X,  Y,  Z,  U, V
+				vmX, vmY,  0,  0, 1,
+				x2,  vmY,  0,  1, 1,
+				x2,  y2,  0,  1, 0,
+				vmX, y2,  0,  0, 0
+		};
+		short[] indices = { 0, 1, 2, 2, 3, 0 };
+
+		// Создаем Mesh, только если его еще нет
+		if (vmScreenMesh == null) {
+			vmScreenMesh = new Mesh(true, 4, 6,
+					new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
+					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoord0"));
+		}
+
+		vmScreenMesh.setVertices(vertices);
+		vmScreenMesh.setIndices(indices);
+
+		// Сбрасываем флаг
+		vmGeometryDirty = false;
 	}
 
 	private void resetConditionScriptTriggers() {
@@ -857,10 +925,12 @@ public class StageListener implements ApplicationListener {
 			stageActivity.removeAllNativeViews();
 		}
 
-		//if (threeDManager != null) {
-		//	threeDManager.dispose();
-		//}
-		//threeDManager = null;
+		if (threeDManager != null) {
+			threeDManager.dispose();
+		}
+		threeDManager = null;
+
+		isVmDisplayVisible = false;
 
 		this.stageDialog = stageDialog;
 		if (!ProjectManager.getInstance().getStartScene().getName().equals(scene.getName())) {
@@ -889,8 +959,13 @@ public class StageListener implements ApplicationListener {
 		GlobalManager.Companion.setStopSounds(true);
 		GlobalManager.Companion.setSaveScenes(true);
 
-		//threeDManager = new ThreeDManager();
-		//threeDManager.init();
+		try {
+			RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			threeDManager = new ThreeDManager();
+			threeDManager.init();
+		} catch (Exception e) {
+			Log.e("StageListener", "INITIALIZE ERROR: " + e);
+		}
 
 		reloadProject = true;
 	}
@@ -918,98 +993,146 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
+	private Texture vmTexture; // Текстура для экрана виртуальной машины
+
+	public void setVmScreenSize(int width, int height) {
+		Gdx.app.postRunnable(() -> {
+			if (vmTexture != null) {
+				vmTexture.dispose();
+			}
+			vmTexture = new Texture(width, height, Pixmap.Format.RGBA8888);
+
+			// --- НАЧАЛО: Финальная, правильная настройка ---
+			// Устанавливаем режим "обрезки" по краям, как в aVNC
+			vmTexture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
+
+			// Устанавливаем режим фильтрации (сглаживания) при растягивании/сжатии, как в aVNC
+			vmTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			// --- КОНЕЦ: Финальная, правильная настройка ---
+
+			vmWidth = width;
+			vmHeight = height;
+			Log.i("StageListener", "VM Texture resized to " + width + "x" + height + " with aVNC settings.");
+		});
+	}
+
+	private volatile boolean captureNextFrame = false; // Флаг для захвата
+
+	// Метод, который мы будем вызывать из StageActivity, чтобы включить флаг
+	public void captureAndSaveVmTexture() {
+		this.captureNextFrame = true;
+	}
+
+	public float getVirtualWidth() { return virtualWidth; }
+	public float getVirtualHeight() { return virtualHeight; }
+	public int getVmWidth() { return (int) vmWidth; }
+	public int getVmHeight() { return (int) vmHeight; }
+
 	@Override
 	public void render() {
-		Look.tickGlobalFrame();
-		//CameraManager cameraManager = StageActivity.getActiveCameraManager();
-		float color = 0f; //cameraManager != null && cameraManager.getPreviewVisible() ? 0f : 1f;
-		Gdx.gl20.glClearColor(color, color, color, 0f);
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // <-- ИЗМЕНЕНО
+		try {
+			Look.tickGlobalFrame();
+			//CameraManager cameraManager = StageActivity.getActiveCameraManager();
+			float color = 0f; //cameraManager != null && cameraManager.getPreviewVisible() ? 0f : 1f;
+			Gdx.gl20.glClearColor(color, color, color, 0f);
+			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // <-- ИЗМЕНЕНО
 
-		if (reloadProject) {
-			if (threeDManager != null) {
-				threeDManager.dispose();
-			}
+			StageActivity stageActivity = StageActivity.activeStageActivity.get();
 
-			// 2. Создаем и инициализируем новый менеджер
-			threeDManager = new ThreeDManager();
-			threeDManager.init();
-
-			stage.clear();
-			if (penActor != null) {
-				penActor.dispose();
-			}
-
-			if (plotActor != null) {
-				plotActor.dispose();
-			}
-
-			embroideryPatternManager.clear();
-
-			SoundManager.getInstance().clear();
-
-			physicsWorld = scene.resetPhysicsWorld();
-
-			initActors(sprites);
-			stage.addActor(passepartout);
-
-			initStageInputListener();
-
-			paused = true;
-			scene.firstStart = true;
-			reloadProject = false;
-
-			cameraPositioner.reset();
-
-			if (stageDialog != null) {
-				synchronized (stageDialog) {
-					stageDialog.notify();
+			if (isVmDisplayVisible && stageActivity != null && stageActivity.frameReadyToRender && vmTexture != null) {
+				VncClient client = stageActivity.vncClients.get("default_vm");
+				if (client != null) {
+					vmTexture.bind();
+					client.uploadFrameTexture();
+					stageActivity.frameReadyToRender = false;
 				}
 			}
-		}
 
-		batch.setProjectionMatrix(camera.combined);
-		shapeRenderer.setProjectionMatrix(camera.combined);
+			if (reloadProject) {
+				if (threeDManager != null) {
+					threeDManager.dispose();
+				}
 
-		if (scene.firstStart) {
-			for (Sprite sprite : sprites) {
-				sprite.initializeEventThreads(EventId.START);
-				sprite.initConditionScriptTriggers();
-				sprite.initIfConditionBrickTriggers();
-				if (!sprite.getLookList().isEmpty()) {
-					sprite.look.setLookData(sprite.getLookList().get(0));
+				// 2. Создаем и инициализируем новый менеджер
+				threeDManager = new ThreeDManager();
+				threeDManager.init();
+
+				stage.clear();
+				if (penActor != null) {
+					penActor.dispose();
+				}
+
+				if (plotActor != null) {
+					plotActor.dispose();
+				}
+
+				embroideryPatternManager.clear();
+
+				SoundManager.getInstance().clear();
+
+				physicsWorld = scene.resetPhysicsWorld();
+
+				initActors(sprites);
+				stage.addActor(passepartout);
+
+				initStageInputListener();
+
+				paused = true;
+				scene.firstStart = true;
+				reloadProject = false;
+
+				cameraPositioner.reset();
+
+				if (stageDialog != null) {
+					synchronized (stageDialog) {
+						stageDialog.notify();
+					}
 				}
 			}
-			scene.firstStart = false;
-		}
 
-		if (!paused) {
-			float deltaTime = Gdx.graphics.getDeltaTime();
+			batch.setProjectionMatrix(camera.combined);
+			shapeRenderer.setProjectionMatrix(camera.combined);
 
-			float optimizedDeltaTime = deltaTime / deltaActionTimeDivisor;
-			long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
-
-			while (deltaTime > 0f) {
-				physicsWorld.step(optimizedDeltaTime);
-				stage.act(optimizedDeltaTime);
-				deltaTime -= optimizedDeltaTime;
+			if (scene.firstStart) {
+				for (Sprite sprite : sprites) {
+					sprite.initializeEventThreads(EventId.START);
+					sprite.initConditionScriptTriggers();
+					sprite.initIfConditionBrickTriggers();
+					if (!sprite.getLookList().isEmpty()) {
+						sprite.look.setLookData(sprite.getLookList().get(0));
+					}
+				}
+				scene.firstStart = false;
 			}
 
-			long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;
-			if (executionTimeOfActionsUpdate <= ACTIONS_COMPUTATION_TIME_MAXIMUM) {
-				deltaActionTimeDivisor += 1f;
-				deltaActionTimeDivisor = Math.min(DELTA_ACTIONS_DIVIDER_MAXIMUM, deltaActionTimeDivisor);
-			} else {
-				deltaActionTimeDivisor -= 1f;
-				deltaActionTimeDivisor = Math.max(1f, deltaActionTimeDivisor);
+			if (!paused) {
+				float deltaTime = Gdx.graphics.getDeltaTime();
+
+				float optimizedDeltaTime = deltaTime / deltaActionTimeDivisor;
+				long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
+
+				while (deltaTime > 0f) {
+					physicsWorld.step(optimizedDeltaTime);
+					stage.act(optimizedDeltaTime);
+					deltaTime -= optimizedDeltaTime;
+				}
+
+				long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;
+				if (executionTimeOfActionsUpdate <= ACTIONS_COMPUTATION_TIME_MAXIMUM) {
+					deltaActionTimeDivisor += 1f;
+					deltaActionTimeDivisor = Math.min(DELTA_ACTIONS_DIVIDER_MAXIMUM, deltaActionTimeDivisor);
+				} else {
+					deltaActionTimeDivisor -= 1f;
+					deltaActionTimeDivisor = Math.max(1f, deltaActionTimeDivisor);
+				}
+				DebugMenuManager.getInstance().updateIfVisible();
 			}
-		}
 
-		ShaderProgram customShader = null; //GlobalShaderManager.INSTANCE.getCustomSceneShader();
+			ShaderProgram customShader = null; //GlobalShaderManager.INSTANCE.getCustomSceneShader();
 
-		if (customShader == null) {
-			// --- СТАНДАРТНЫЙ РЕНДЕРИНГ (без эффектов) ---
-			// Просто рисуем сцену как обычно
+			if (customShader == null) {
+				// --- СТАНДАРТНЫЙ РЕНДЕРИНГ (без эффектов) ---
+				// Просто рисуем сцену как обычно
             /*if(cameraManager == null) {
 				Gdx.gl.glClearColor(1, 1, 1, 0);
 			} else if(cameraManager.isCameraActive()) {
@@ -1017,65 +1140,94 @@ public class StageListener implements ApplicationListener {
 			} else {
 				Gdx.gl.glClearColor(1, 1, 1, 0);
 			}*/
-			//Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
-			//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			if (!finished) {
-				if (!paused) {
-					if (threeDManager != null) {
-						threeDManager.update(Gdx.graphics.getDeltaTime());
+				//Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
+				//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				if (isVmDisplayVisible && vmTexture != null && vncSwizzleShader != null && vncSwizzleShader.isCompiled()) {
+					// 1. Активируем (bind) наш шейдер.
+					vncSwizzleShader.bind();
+
+					// 2. "Привязываем" нашу текстуру к текстурному юниту 0.
+					vmTexture.bind(0);
+
+					// 3. Передаем в шейдер данные (uniforms).
+					//    - Говорим шейдеру, что u_texture находится в юните 0.
+					//    - Передаем матрицу проекции от нашей камеры, чтобы прямоугольник правильно растянулся на весь экран.
+					vncSwizzleShader.setUniformi("u_texture", 0);
+					vncSwizzleShader.setUniformMatrix("u_projectionMatrix", camera.combined);
+
+					// 4. Отдаем команду на отрисовку нашего прямоугольника (Mesh).
+					//    Шейдер применится к нему и натянет на него текстуру с исправленными цветами.
+					fullscreenQuad.render(vncSwizzleShader, GL20.GL_TRIANGLES);
+				}
+				if (!finished) {
+					try {
+						if (!paused) {
+							if (threeDManager != null) {
+								threeDManager.update(Gdx.graphics.getDeltaTime());
+							}
+						}
+						try {
+							if (threeDManager != null) threeDManager.render();
+						} catch (Exception e) {
+							Log.e("3DRENDER", "ERROR: " + e);// Здесь ваша логика отрисовки из прошлого ответа (с группировкой по шейдерам и т.д.)
+						}
+						renderSceneNormally(stage); // Вынесите старую логику stage.draw() в отдельный метод
+						// RenderManager.INSTANCE.render();
+					} catch (Exception e) {
+						Log.e("RENDER", "FATAL ERROR: " + e.toString());
 					}
 				}
-				threeDManager.render();
-				// Здесь ваша логика отрисовки из прошлого ответа (с группировкой по шейдерам и т.д.)
-				renderSceneNormally(stage); // Вынесите старую логику stage.draw() в отдельный метод
 			}
-		}
 
-		RenderManager.INSTANCE.render();
-
-		if (makeScreenshot) {
-			Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
-			String manualScreenshotPath = scene.getDirectory()
-					+ "/" + SCREENSHOT_MANUAL_FILE_NAME;
-			File manualScreenshot = new File(manualScreenshotPath);
-			if (!manualScreenshot.exists() || Objects.equals(screenshotName,
-					SCREENSHOT_MANUAL_FILE_NAME)) {
-				byte[] screenshot = ScreenUtils
-						.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth, screenshotHeight, true);
-				screenshotSaver.saveScreenshotAndNotify(
-						screenshot,
-						screenshotName,
-						this::notifyScreenshotCallbackAndCleanup,
-						GlobalScope.INSTANCE
-				);
+			if (makeScreenshot) {
+				Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
+				String manualScreenshotPath = scene.getDirectory()
+						+ "/" + SCREENSHOT_MANUAL_FILE_NAME;
+				File manualScreenshot = new File(manualScreenshotPath);
+				if (!manualScreenshot.exists() || Objects.equals(screenshotName,
+						SCREENSHOT_MANUAL_FILE_NAME)) {
+					byte[] screenshot = ScreenUtils
+							.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth, screenshotHeight, true);
+					screenshotSaver.saveScreenshotAndNotify(
+							screenshot,
+							screenshotName,
+							this::notifyScreenshotCallbackAndCleanup,
+							GlobalScope.INSTANCE
+					);
+				}
+				String automaticScreenShotPath = scene.getDirectory()
+						+ "/" + SCREENSHOT_AUTOMATIC_FILE_NAME;
+				File automaticScreenShot = new File(automaticScreenShotPath);
+				if (manualScreenshot.exists() && automaticScreenShot.exists()) {
+					automaticScreenShot.delete();
+				}
+				makeScreenshot = false;
 			}
-			String automaticScreenShotPath = scene.getDirectory()
-					+ "/" + SCREENSHOT_AUTOMATIC_FILE_NAME;
-			File automaticScreenShot = new File(automaticScreenShotPath);
-			if (manualScreenshot.exists() && automaticScreenShot.exists()) {
-				automaticScreenShot.delete();
+
+			if (axesOn && !finished) {
+				drawAxes();
 			}
-			makeScreenshot = false;
-		}
 
-		if (axesOn && !finished) {
-			drawAxes();
-		}
+			if (PhysicsDebugSettings.Render.RENDER_PHYSIC_OBJECT_LABELING) {
+				printPhysicsLabelOnScreen();
+			}
 
-		if (PhysicsDebugSettings.Render.RENDER_PHYSIC_OBJECT_LABELING) {
-			printPhysicsLabelOnScreen();
-		}
+			if (PhysicsDebugSettings.Render.RENDER_COLLISION_FRAMES && !finished) {
+				physicsWorld.render(camera.combined);
+			}
 
-		if (PhysicsDebugSettings.Render.RENDER_COLLISION_FRAMES && !finished) {
-			physicsWorld.render(camera.combined);
-		}
+			if (makeTestPixels) {
+				testPixels = ScreenUtils.getFrameBufferPixels(testX, testY, testWidth, testHeight, false);
+				makeTestPixels = false;
+			}
 
-		if (makeTestPixels) {
-			testPixels = ScreenUtils.getFrameBufferPixels(testX, testY, testWidth, testHeight, false);
-			makeTestPixels = false;
+			cameraPositioner.updateCameraPositionForFocusedSprite();
+		} catch (Exception e) {
+			// Логируем критическую ошибку рендера
+			Log.e("RENDER_CRASH", "Fatal error during render loop", e);
+			// Можно даже попытаться безопасно остановить сцену
+			// или показать диалоговое окно об ошибке.
 		}
-
-		cameraPositioner.updateCameraPositionForFocusedSprite();
 	}
 
 	private void renderSceneNormally(Stage stage) {
@@ -1670,8 +1822,14 @@ public class StageListener implements ApplicationListener {
 	public void dispose() {
 		executeExitScriptsSynchronously();
 
+		if (vmScreenMesh != null) {
+			vmScreenMesh.dispose();
+		}
 		if (brightnessContrastHueShader != null) { // <-- ДОБАВЬТЕ ЭТОТ БЛОК
 			brightnessContrastHueShader.dispose();
+		}
+		if (vncSwizzleShader != null) {
+			vncSwizzleShader.dispose();
 		}
 		if (!finished) {
 			this.finish();
@@ -1689,6 +1847,11 @@ public class StageListener implements ApplicationListener {
 
 		if (postProcessShader != null) {
 			postProcessShader.dispose();
+		}
+
+		StageActivity stageActivity = StageActivity.activeStageActivity.get();
+		if (stageActivity != null) {
+			stageActivity.removeAllNativeViews();
 		}
 
 		RenderManager.INSTANCE.dispose();
@@ -1720,6 +1883,10 @@ public class StageListener implements ApplicationListener {
 
 		if (postProcessBatch != null) {
 			postProcessBatch.dispose();
+		}
+		if (vmTexture != null) {
+			vmTexture.dispose();
+			vmTexture = null;
 		}
 	}
 

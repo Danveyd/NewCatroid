@@ -1,0 +1,410 @@
+{
+  "buildFiles": [
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\BuildPackages.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\cmake_uninstall.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\GNUInstallDirs.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\cmakescripts\\PackageInfo.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\md5\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\release\\Config.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libjpeg-turbo\\simd\\CMakeLists.txt",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindFFMPEG.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindLZO.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\FindSDL2.cmake",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\cmake\\Modules\\LibVNCServerConfig.cmake.in",
+    "D:\\Catroid-develop\\vncclient\\src\\main\\cpp\\libvncserver\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "D:\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "cjpeg-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "cjpeg-static",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\cjpeg-static",
+      "runtimeFiles": []
+    },
+    "client_examples_backchannel::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "client_examples_backchannel",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\client\\backchannel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "client_examples_ppmtest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "client_examples_ppmtest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\client\\ppmtest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "copy-compile-commands::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "copy-compile-commands"
+    },
+    "croptest::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "croptest"
+    },
+    "dist::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "dist"
+    },
+    "djpeg-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "djpeg-static",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\djpeg-static",
+      "runtimeFiles": []
+    },
+    "examples_androidvncserver::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_androidvncserver",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\androidvncserver",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_backchannel::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_backchannel",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\backchannel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_blooptest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_blooptest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\blooptest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_camera::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_camera",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\camera",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_colourmaptest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_colourmaptest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\colourmaptest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_cursors::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_cursors",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\cursors",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_example::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_example",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\example",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_filetransfer::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_filetransfer",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\filetransfer",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_fontsel::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_fontsel",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\fontsel",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_pnmshow::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_pnmshow",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\pnmshow",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_pnmshow24::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_pnmshow24",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\pnmshow24",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_regiontest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_regiontest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\regiontest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_repeater::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_repeater",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\repeater",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_rotate::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_rotate",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\rotate",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_simple::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_simple",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\simple",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_simple15::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_simple15",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\simple15",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_storepasswd::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_storepasswd",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\storepasswd",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "examples_vncev::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "examples_vncev",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\examples\\server\\vncev",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so"
+      ]
+    },
+    "jpeg-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "jpeg-static",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libjpeg-turbo\\libjpeg.a"
+    },
+    "jpegtran-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "jpegtran-static",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\jpegtran-static",
+      "runtimeFiles": []
+    },
+    "md5cmp::@59abb547d11294bb0ea1": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "md5cmp",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\md5cmp",
+      "runtimeFiles": []
+    },
+    "native-vnc::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "native-vnc",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libnative-vnc.so",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "rdjpgcom::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "rdjpgcom",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\rdjpgcom",
+      "runtimeFiles": []
+    },
+    "simd::@94917bd5066ac320edfd": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "simd"
+    },
+    "strtest::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "strtest",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\strtest",
+      "runtimeFiles": []
+    },
+    "tarball::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "tarball"
+    },
+    "test_cargstest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "test_cargstest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\test\\cargstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "test_copyrecttest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "test_copyrecttest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\test\\copyrecttest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "test_encodingstest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "test_encodingstest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\test\\encodingstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "test_wstest::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "test_wstest",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libvncserver\\test\\wstest",
+      "runtimeFiles": [
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so",
+        "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so"
+      ]
+    },
+    "testclean::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "testclean"
+    },
+    "tjbench-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "tjbench-static",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\tjbench-static",
+      "runtimeFiles": []
+    },
+    "tjtest::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "tjtest"
+    },
+    "tjunittest-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "tjunittest-static",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\tjunittest-static",
+      "runtimeFiles": []
+    },
+    "turbojpeg-static::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "turbojpeg-static",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libjpeg-turbo\\libturbojpeg.a"
+    },
+    "uninstall::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "uninstall"
+    },
+    "vncclient::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "vncclient",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncclient.so",
+      "runtimeFiles": []
+    },
+    "vncserver::@0fec0a8495017b2d3a39": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "vncserver",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\libvncserver.so",
+      "runtimeFiles": []
+    },
+    "wolfssl::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "wolfssl",
+      "output": "D:\\Catroid-develop\\vncclient\\.cxx\\Debug\\305v1k2y\\arm64-v8a\\libwolfssl.a"
+    },
+    "wrjpgcom::@4d4a656a4ff6bc0d959c": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "wrjpgcom",
+      "output": "D:\\Catroid-develop\\vncclient\\build\\intermediates\\cxx\\Debug\\305v1k2y\\obj\\arm64-v8a\\wrjpgcom",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

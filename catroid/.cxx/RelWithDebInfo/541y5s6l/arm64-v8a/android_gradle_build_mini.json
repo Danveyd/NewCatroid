@@ -17,6 +17,12 @@
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
+    "example_core::@6890427a1f51a3e7e1df": {
+      "artifactName": "example_core",
+      "abi": "arm64-v8a",
+      "output": "D:\\Catroid-develop\\catroid\\build\\intermediates\\cxx\\RelWithDebInfo\\541y5s6l\\obj\\arm64-v8a\\libexample_core.so",
+      "runtimeFiles": []
+    },
     "catroid::@6890427a1f51a3e7e1df": {
       "artifactName": "catroid",
       "abi": "arm64-v8a",

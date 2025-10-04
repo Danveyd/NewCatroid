@@ -471,23 +471,27 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
         }
 
         try {
-            Log.d("STANDALONE", BuildConfig.START_PROJECT + ".zip")
+            Log.d("STANDALONE", "First run detected. Unpacking project from assets...")
             val inputStream = assets.open(BuildConfig.START_PROJECT + ".zip")
-            Log.d("STANDALONE", inputStream.toString())
-            Log.d("STANDALONE", BuildConfig.START_PROJECT + ".zip")
-            Log.d("STANDALONE", FlavoredConstants.DEFAULT_ROOT_DIRECTORY.toString() + BuildConfig.START_PROJECT + ".zip")
             val projectDir = File(
                 FlavoredConstants.DEFAULT_ROOT_DIRECTORY,
                 FileMetaDataExtractor.encodeSpecialCharsForFileSystem(
                     BuildConfig.PROJECT_NAME
                 )
             )
-            Log.d("STANDALONE", projectDir.toString())
             ZipArchiver()
                 .unzip(inputStream, projectDir)
+
             ProjectLoader(projectDir, this)
                 .setListener(this)
                 .loadProjectAsync()
+
+            // ▼▼▼ ВОТ РЕШЕНИЕ! ▼▼▼
+            // После успешной распаковки, мы записываем, что первый запуск завершен.
+            prefs.edit().putBoolean("standalone_first_run", false).apply()
+            Log.d("STANDALONE", "First run complete. Flag 'standalone_first_run' is now set to false.")
+            // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
         } catch (e: IOException) {
             Log.e("STANDALONE", "Cannot unpack standalone project: ", e)
         }

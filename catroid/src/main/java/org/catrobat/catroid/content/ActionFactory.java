@@ -1173,6 +1173,16 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createGetZipFileNamesAction(Sprite sprite, SequenceAction sequence,
+											  Formula zipFileName, UserVariable userVariable) {
+		GetZipFileNamesAction action = action(GetZipFileNamesAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setZipFileName(zipFileName);
+		action.setUserVariable(userVariable);
+		return action;
+	}
+
 	public Action createTextfield(Sprite sprite, SequenceAction sequence,
 										  Formula name, Formula def, Formula x, Formula y, Formula w, Formula h, Formula ts, Formula tc, Formula bc, Formula ht, Formula hc, Formula align,
                                   Formula pass, Formula corner, Formula len, Formula type, Formula font, UserVariable userVariable) {
@@ -2973,6 +2983,87 @@ public class ActionFactory extends Actions {
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
 		action.setScope(scope);
 		action.nextLookAction(nextLookAction);
+		return action;
+	}
+
+    public Action createExportProjectFileAction(Sprite sprite, ScriptSequenceAction sequence, Formula formulaWithBrickField) {
+		ExportProjectFileAction action = action(ExportProjectFileAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setProjectFileName(formulaWithBrickField);
+		return action;
+    }
+
+	public Action createGLViewAction(Sprite sprite, SequenceAction sequence, Formula name, Formula x, Formula y, Formula width, Formula height) {
+		CreateGLViewAction action = action(CreateGLViewAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setViewName(name);
+		action.setX(x);
+		action.setY(y);
+		action.setWidth(width);
+		action.setHeight(height);
+		return action;
+	}
+
+	public Action createAttachSOAction(Sprite sprite, SequenceAction sequence, Formula name, Formula file) {
+		AttachSOAction action = action(AttachSOAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setViewName(name);
+		action.setSoFileName(file);
+		return action;
+	}
+
+	public Action createDiskAction(Sprite sprite, SequenceAction sequence, Formula name, Formula size) {
+		CreateDiskAction action = action(CreateDiskAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setDiskName(name);
+		action.setDiskSize(size);
+		return action;
+	}
+
+	public Action createRunVMAction(Sprite sprite, SequenceAction sequence, Formula memory, Formula cpu, Formula hda, Formula cdrom) {
+		RunVMAction action = action(RunVMAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setMemory(memory);
+		action.setCpuCores(cpu);
+		action.setHdaPath(hda);
+		action.setCdromPath(cdrom);
+		return action;
+	}
+
+	public Action createStopVMAction(Sprite sprite, SequenceAction sequence) {
+		StopVMAction action = action(StopVMAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		return action;
+	}
+
+	public Action createToggleDisplayAction(Sprite sprite, SequenceAction sequence, Formula visible) {
+		ToggleDisplayAction action = action(ToggleDisplayAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setVisible(visible);
+		return action;
+	}
+
+	public Action createMouseEventAction(Sprite sprite, SequenceAction sequence, Formula x, Formula y, Formula state) {
+		MouseEventAction action = action(MouseEventAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setX(x);
+		action.setY(y);
+		action.setButtonState(state);
+		return action;
+	}
+
+	public Action createKeyEventAction(Sprite sprite, SequenceAction sequence, Formula character, Formula isDown) {
+		KeyEventAction action = action(KeyEventAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setCharacter(character);
+		action.setDown(isDown);
 		return action;
 	}
 }
