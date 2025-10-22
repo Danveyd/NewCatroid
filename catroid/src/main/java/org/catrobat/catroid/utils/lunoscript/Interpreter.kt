@@ -123,7 +123,10 @@ class Interpreter(
         }
 
         defineNative("GetStageListener", 0..0) { _, _ ->
-            LunoValue.NativeObject(StageActivity.stageListener)
+            StageActivity.activeStageActivity.get()?.stageListener?.let {
+                LunoValue.NativeObject(it)
+            }
+            LunoValue.Null
         }
 
         defineNative("StageActivity", 0..0) { _, _ ->

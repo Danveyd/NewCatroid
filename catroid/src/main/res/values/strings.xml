@@ -63,6 +63,12 @@
     <string formatted="false" name="dialog_value">Value</string>
     <string formatted="false" name="dialog_show">Show Dialog</string>
     <!-- Look Tables -->
+    <string name="brick_set_physics_state_shape">Shape</string>
+    <string-array name="brick_physics_shapes">
+        <item>Box</item>
+        <item>Sphere</item>
+        <item>Capsule</item>
+    </string-array>
     <string formatted="false" name="look_from_table">Look from tables</string>
     <string formatted="false" name="look_to_table">Look to tables</string>
     <string formatted="false" name="table_r">Table (red)</string>
@@ -78,6 +84,142 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <string name="brick_lock_mouse">Lock mouse cursor</string>
+    <string name="brick_unlock_mouse">Unlock mouse cursor</string>
+    <string name="formula_editor_sensor_mouse_x">mouse_X</string>
+    <string name="formula_editor_sensor_mouse_y">mouse_Y</string>
+    <string name="formula_editor_sensor_mouse_delta_x">mouse_delta_X</string>
+    <string name="formula_editor_sensor_mouse_delta_y">mouse_delta_Y</string>
+    <string name="formula_editor_sensor_mouse_scroll">mouse_scroll</string>
+    <string name="formula_editor_function_is_mouse_button_down">is_mouse_down</string>
+    <string name="formula_editor_function_is_mouse_button_down_parameter" translatable="false">(\'Left\')</string>
+    <string name="brick_when_mouse_button_clicked">When mouse clicked</string>
+    <string name="brick_when_mouse_wheel_scrolled">When mouse wheel scrolled</string>
+    <string-array name="mouse_buttons">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Middle</item>
+    </string-array>
+    <string name="formula_editor_sensor_nfc_techs">NFC_technologies</string>
+    <string name="formula_editor_sensor_nfc_size">NFC_memory_size</string>
+    <string name="formula_editor_sensor_nfc_writable">NFC_is_writable</string>
+    <string name="formula_editor_sensor_nfc_type">NFC_tag_type</string>
+    <string name="brick_when_nfc_scanned">When NFC tag detected</string>
+    <string name="brick_write_nfc_tag">Write to NFC tag</string>
+    <string name="brick_set_camera_position2">Set camera position</string>
+    <string name="brick_set_camera_zoom">Set camera zoom to</string>
+    <string name="brick_set_camera_rotation2">Set camera rotation</string>
+    <string name="brick_pin_to_camera">Pin sprite to camera</string>
+    <string name="brick_unpin_from_camera">Unpin sprite from camera</string>
+    <string name="brick_zoom_label">zoom</string>
+    <string name="brick_rotation_label">degrees</string>
+    <string name="formula_ray_did_hit">ray_did_hit</string>
+    <string name="formula_ray_hit_x">ray_hit_x</string>
+    <string name="formula_ray_hit_y">ray_hit_y</string>
+    <string name="formula_ray_hit_z">ray_hit_z</string>
+    <string name="formula_ray_normal_x">ray_normal_x</string>
+    <string name="formula_ray_normal_y">ray_normal_y</string>
+    <string name="formula_ray_normal_z">ray_normal_z</string>
+    <string name="brick_start_mic_recording">Start microphone recording</string>
+    <string name="brick_stop_recording_and_save">Save recording as</string>
+    <string name="brick_try">Try</string>
+    <string name="brick_catch">Catch</string>
+    <string name="brick_finally">Finally</string>
+    <string name="brick_error_variable_label">error to</string>
+    <string name="formula_editor_sensor_fps">FPS</string>
+    <string name="brick_launch_project">Launch project from file</string>
+    <string name="brick_return_to_previous_project">Return to previous project</string>
+    <string name="brick_set_view_position">Set position of view</string>
+    <string name="brick_x_label">X</string>
+    <string name="brick_y_label">Y</string>
+    <string name="brick_video_transparent_bg">transparent background</string>
+    <string name="brick_prepare_sound">Prepare sound from file</string>
+    <string name="brick_as">as</string>
+    <string name="brick_play_prepared_sound">Play prepared sound</string>
+    <string name="times_label_part_2">times</string>
+    <string name="brick_async_repeat">Async repeat</string>
+    <string name="brick_interval_repeat">Repeat with interval</string>
+    <string name="brick_interval_label">interval</string>
+    <string formatted="false" name="formula_editor_function_json_get">json_get</string>
+    <string formatted="false" name="formula_editor_function_json_get_parameter">(\'{"id":1}\', \'id\')</string>
+    <string formatted="false" name="formula_editor_function_json_set">json_set</string>
+    <string formatted="false" name="formula_editor_function_json_set_parameter">(\'{"id":1}\', \'id\', 2)</string>
+    <string formatted="false" name="formula_editor_function_json_is_valid">json_is_valid</string>
+    <string formatted="false" name="formula_editor_function_json_is_valid_parameter">(\'{"id":1}\')</string>
+    <string name="brick_load_scene" formatted="false">Load 3D Scene</string>
+    <string name="brick_load_scene_file" formatted="false">Scene file</string>
+    <string name="error_file_not_found" formatted="false">Error: File not found in project files: %s</string>
+    <string-array name="brick_physics_states_full">
+        <item>None</item>
+        <item>Static</item>
+        <item>Dynamic</item>
+        <item>Mesh Static</item>
+    </string-array>
+
+    <string-array name="light_types">
+        <item>Directional</item>
+        <item>Point</item>
+        <item>Spot</item>
+    </string-array>
+    <string name="inspector_title">Inspector</string>
+    <string name="title_activity_editor">Scene Editor</string>
+    <string name="menu_save_scene">Save Scene</string>
+    <string name="menu_load_scene">Load Scene</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="threed_skybox_set">Set Skybox</string>
+    <string name="threed_skybox_filename">Filename</string>
+    <string name="brick_set_camera_range_header">Set camera range</string>
+    <string name="brick_set_camera_range_near">Near</string>
+    <string name="brick_set_camera_range_far">Far</string>
+    <string name="brick_set_background_light_header">Set background light</string>
+    <string name="brick_set_background_light_intensity">Intensity (0-1)</string>
+    <string name="brick_remove_pbr_light_header">Remove light</string>
+    <string name="brick_set_spot_light_header">Set spot light</string>
+    <string name="brick_set_spot_light_dir_x">Direction X</string>
+    <string name="brick_set_spot_light_dir_y">Direction Y</string>
+    <string name="brick_set_spot_light_dir_z">Direction Z</string>
+    <string name="brick_set_spot_light_angle">Angle</string>
+    <string name="brick_set_spot_light_exponent">Exponent</string>
+    <string name="brick_set_directional_light_header">Set directional light</string>
+    <string name="brick_set_directional_light_dir_x">Direction X</string>
+    <string name="brick_set_directional_light_dir_y">Direction Y</string>
+    <string name="brick_set_directional_light_dir_z">Direction Z</string>
+    <string name="brick_set_directional_light_intensity">Intensity</string>
+    <string name="brick_set_point_light_header">Set point light</string>
+    <string name="brick_set_point_light_id">Light ID</string>
+    <string name="brick_set_point_light_pos_x">Position X</string>
+    <string name="brick_set_point_light_pos_y">Position Y</string>
+    <string name="brick_set_point_light_pos_z">Position Z</string>
+    <string name="brick_set_point_light_color_r">Color R (0-255)</string>
+    <string name="brick_set_point_light_color_g">Color G (0-255)</string>
+    <string name="brick_set_point_light_color_b">Color B (0-255)</string>
+    <string name="brick_set_point_light_intensity">Intensity</string>
+    <string name="brick_set_point_light_range">Range</string>
+    <string name="brick_set_anisotropic_filter_header">Set texture quality of</string>
+    <string name="brick_set_anisotropic_filter_level">Level</string>
+    <string name="brick_stop_animation_header">Stop animation of</string>
+    <string name="brick_play_animation_header">Play animation</string>
+    <string name="brick_play_animation_object_id">Object ID</string>
+    <string name="brick_play_animation_name">Animation name</string>
+    <string name="brick_play_animation_loops">Loops (-1 = inf.)</string>
+    <string name="brick_play_animation_speed">Speed</string>
+    <string name="brick_play_animation_transition">Transition time</string>
+    <string name="brick_enable_pbr_render">Enable realistic render</string>
+    <string-array name="brick_pbr_render_states">
+        <item>Off</item>
+        <item>On</item>
+    </string-array>
+    <string name="git_connect">Connect Git</string>
+    <string name="git_publish_changes">Publish changes</string>
+    <string name="git_update_project">Update project</string>
+    <string name="github_logout_dialog_title">Log out?</string>
+    <string name="github_logout_dialog_message">Are you sure want to log out?</string>
+    <string name="github_logout_button">Log out</string>
+    <string name="github_integration">Integration with Git</string>
+    <string name="github_account">GitHub account</string>
+    <string name="github_not_logged_in">Sign in cancelled</string>
+    <string name="github_logged_in_as">You sign in as: %s</string>
     <string name="brick_key_event">Key event</string>
     <string name="brick_key_char">character</string>
     <string name="brick_key_is_down">is down (1/0)</string>
@@ -459,6 +601,7 @@
     <string formatted="false" name="brick_run_js2">and store result in</string>
     <string formatted="false" name="project_files">Project files</string>
     <string formatted="false" name="project_libs">Project libraries</string>
+    <string formatted="false" name="editor3d">3D Editor</string>
     <string formatted="false" name="files_add">Add file</string>
     <string formatted="false" name="files_delete">Delete</string>
     <string formatted="false" name="brick_gemini_request">Ask Gemini</string>

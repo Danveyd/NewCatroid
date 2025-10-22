@@ -65,7 +65,7 @@ public class SimpleRunningStitch extends RunningStitchType {
 	private void interpolateStitches(int interpolationCount, float currentX, float currentY) {
 		if (first) {
 			first = false;
-			StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(firstX, firstY,
+			StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(firstX, firstY,
 					sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 		}
 
@@ -73,7 +73,7 @@ public class SimpleRunningStitch extends RunningStitchType {
 			float splitFactor = (float) count / interpolationCount;
 			float x = interpolate(currentX, firstX, splitFactor);
 			float y = interpolate(currentY, firstY, splitFactor);
-			StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+			StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 					sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 		}
 	}

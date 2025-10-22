@@ -62,24 +62,25 @@ class SquareAction() : TemporalAction() {
         val transparency = trans?.interpretFloat(scope) ?: 0f
         val borders = bord?.interpretFloat(scope) ?: 0f
 
-        val stage = StageActivity.stageListener.stage
+        val stage = StageActivity.activeStageActivity.get()?.stageListener?.stage
 
         scope?.project?.xmlHeader?.virtualScreenWidth?.div(2)?.let { scrX ->
             scope?.project?.xmlHeader?.getVirtualScreenHeight()?.div(2)?.let { scrY ->
-                SquareController.instance.createOrUpdateSquare(
-                    name,
-                    pos_x + scrX,
-                    pos_y + scrY,
-                    width,
-                    height,
-                    color_str,
-                    rotation,
-                    transparency,
-                    borders,
-                    stage
-                )
+                if (stage != null) {
+                    SquareController.instance.createOrUpdateSquare(
+                        name,
+                        pos_x + scrX,
+                        pos_y + scrY,
+                        width,
+                        height,
+                        color_str,
+                        rotation,
+                        transparency,
+                        borders,
+                        stage
+                    )
+                }
             }
         }
-        //val squareActor = SquareActor(pos_x, pos_y, width, height, color_str)
     }
 }

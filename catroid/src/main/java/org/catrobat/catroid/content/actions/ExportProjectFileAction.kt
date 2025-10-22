@@ -1,4 +1,3 @@
-// В пакете: org.catrobat.catroid.content.actions
 package org.catrobat.catroid.content.actions
 
 import android.widget.Toast
@@ -26,18 +25,14 @@ class ExportProjectFileAction : TemporalAction() {
 
         val fileName = projectFileName?.interpretString(scope)
         if (fileName.isNullOrEmpty()) {
-            //Toast.makeText(context, R.string.error_empty_file_name, Toast.LENGTH_SHORT).show()
             return
         }
 
         val sourceFile: File = project.getFile(fileName)
         if (!sourceFile.exists()) {
-            //Toast.makeText(context, context.getString(R.string.error_file_not_found, fileName), Toast.LENGTH_SHORT).show()
             return
         }
 
-        // "Просим" StageActivity запустить файловый менеджер
-        // Выполняем в UI-потоке, так как это связано с интерфейсом
         activity.runOnUiThread {
             activity.launchExportFilePicker(sourceFile.absolutePath, fileName)
         }

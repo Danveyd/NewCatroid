@@ -65,9 +65,9 @@ class PostWebRequestAction() : TemporalAction() {
 
     override fun update(percent: Float) {
         val client = OkHttpClient.Builder()
-            .connectTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут подключения в 0 секунд
-            .readTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут чтения в 0 секунд
-            .writeTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут записи в 0 секунд
+            .connectTimeout(0, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
+            .writeTimeout(0, TimeUnit.SECONDS)
             .build()
 
 
@@ -76,9 +76,8 @@ class PostWebRequestAction() : TemporalAction() {
         var headerVal = header?.interpretObject(scope) ?: ""
         var bodyVal = body?.interpretObject(scope) ?: ""
 
-        // Извлекаем только тип контента из заголовка
         var headerText = headerVal.toString().trim()
-        var mediaTypeString = headerText.removePrefix("Content-Type:").trim() // Убираем префикс
+        var mediaTypeString = headerText.removePrefix("Content-Type:").trim()
 
         var json = bodyVal.toString()
 
@@ -86,10 +85,7 @@ class PostWebRequestAction() : TemporalAction() {
             return
         }
 
-        val mediaType = mediaTypeString.toMediaTypeOrNull() ?: "application/json".toMediaType() // Фолбэк на JSON, если тип не валиден
-        //val latch = CountDownLatch(1) // Создаем CountDownLatch с 1
-        var responseBody: String? = null
-        var errorMessage: String? = null
+        val mediaType = mediaTypeString.toMediaTypeOrNull() ?: "application/json".toMediaType()
         val bodyn = RequestBody.create(mediaType, json)
         val request = Request.Builder()
             .url(urlText)
@@ -98,7 +94,6 @@ class PostWebRequestAction() : TemporalAction() {
         Thread {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: okhttp3.Call, e: IOException) {
-                    // Обновляем UI в основном потоке
                     MyActivityManager.stage_activity?.runOnUiThread {
                         userVariable?.value = "Response error: ${e.message}"
                     }
@@ -107,19 +102,17 @@ class PostWebRequestAction() : TemporalAction() {
                 override fun onResponse(call: okhttp3.Call, response: Response) {
                     if (response.isSuccessful) {
                         val bodyStr = response.body?.string() ?: "Empty response"
-                        // Обновляем UI в основном потоке
                         MyActivityManager.stage_activity?.runOnUiThread {
                             userVariable?.value = bodyStr
                         }
                     } else {
                         val errorMessage = "Error ${response.code}: ${response.message}"
-                        // Обновляем UI в основном потоке
                         MyActivityManager.stage_activity?.runOnUiThread {
                             userVariable?.value = errorMessage
                         }
                     }
                 }
             })
-        }.start() // Запускаем поток
+        }.start()
     }
 }

@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/repo_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Имя репозитория">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/repo_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/repo_private_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Приватный репозиторий" />
+</LinearLayout>

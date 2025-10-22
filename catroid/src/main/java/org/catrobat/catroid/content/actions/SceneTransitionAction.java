@@ -38,7 +38,7 @@ public class SceneTransitionAction extends TemporalAction {
 	protected void update(float percent) {
 		if (sceneName != null && !ProjectManager.getInstance().getCurrentlyPlayingScene().getName().equals(sceneName)) {
 			sprite.releaseAllPointers();
-			StageActivity.stageListener.transitionToScene(sceneName, GlobalManager.Companion.getStopSounds(), GlobalManager.Companion.getSaveScenes());
+			StageActivity.getActiveStageListener().transitionToScene(sceneName, GlobalManager.Companion.getStopSounds(), GlobalManager.Companion.getSaveScenes());
 		}
 	}
 

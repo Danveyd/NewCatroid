@@ -10,7 +10,6 @@ public class RunPythonScriptBrick extends FormulaBrick {
 
     public RunPythonScriptBrick() {
         addAllowedBrickField(BrickField.SCRIPT, R.id.brick_python_script_text);
-        // ДОБАВЛЕНО: Регистрация нового поля
         addAllowedBrickField(BrickField.VARIABLE_NAME, R.id.brick_python_script_variable_name);
     }
 
@@ -34,7 +33,7 @@ public class RunPythonScriptBrick extends FormulaBrick {
         sequence.addAction(sprite.getActionFactory()
                 .createRunPythonScriptAction(sprite, sequence,
                         getFormulaWithBrickField(BrickField.SCRIPT),
-                        getFormulaWithBrickField(BrickField.VARIABLE_NAME) // Передаем новую формулу
+                        getFormulaWithBrickField(BrickField.VARIABLE_NAME)
                 ));
     }
 }

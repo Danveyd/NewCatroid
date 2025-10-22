@@ -48,7 +48,7 @@ public class SetTextAction extends TemporalAction {
 			int posY = endY.interpretInteger(scope);
 
 			actor = new TextActor(string, posX, posY);
-			StageActivity.stageListener.addActor(actor);
+			StageActivity.getActiveStageListener().addActor(actor);
 		} catch (InterpretationException exception) {
 			Log.e(getClass().getSimpleName(), Log.getStackTraceString(exception));
 		}

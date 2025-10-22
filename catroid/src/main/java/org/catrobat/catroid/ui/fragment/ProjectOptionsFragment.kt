@@ -43,10 +43,15 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.android.apksig.ApkSigner
 import com.danvexteam.lunoscript_annotations.LunoClass
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
@@ -69,9 +74,13 @@ import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.ui.BottomBar.hideBottomBar
 import org.catrobat.catroid.ui.PROJECT_DIR
 import org.catrobat.catroid.ui.ProjectUploadActivity
+import org.catrobat.catroid.ui.SettingsActivity
 import org.catrobat.catroid.ui.runtimepermissions.RequiresPermissionTask
 import org.catrobat.catroid.utils.ToastUtil
 import org.catrobat.catroid.utils.Utils
+import org.catrobat.catroid.utils.git.GitController
+import org.catrobat.catroid.utils.git.GitResult
+import org.catrobat.catroid.utils.git.TokenManager
 import org.catrobat.catroid.utils.notifications.StatusBarNotificationManager
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -99,6 +108,8 @@ class ProjectOptionsFragment : Fragment() {
     private var projectInZip: File? = null
     private var buildFilename: String? = null
     private var zipTempDir: File? = null
+    private lateinit var gitController: GitController
+    private var progressDialog: AlertDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,6 +128,8 @@ class ProjectOptionsFragment : Fragment() {
         project = projectManager.currentProject
         sceneName = projectManager.currentlyEditedScene.name
 
+        gitController = GitController(project!!.directory)
+
         setupNameInputLayout()
         setupPhysicsInputLayout()
         setupDescriptionInputLayout()
@@ -134,7 +147,282 @@ class ProjectOptionsFragment : Fragment() {
         setupProjectOptionDelete()
         setupMishkFrede()
 
+        setupGitButtons()
+
         hideBottomBar(requireActivity())
+    }
+
+    private fun setupGitButtons() {
+        updateGitButtonsVisibility()
+
+        binding.gitConnectButton.setOnClickListener { handleGitConnect() }
+        binding.gitPublishButton.setOnClickListener { showCommitMessageDialog() } // Теперь вызывает диалог
+        binding.gitUpdateButton.setOnClickListener { handleGitUpdate() }
+    }
+
+    private fun updateGitButtonsVisibility() {
+        val remoteUrl = project?.xmlHeader?.gitRemoteUrl
+        val isConnected = !remoteUrl.isNullOrEmpty()
+
+        binding.gitConnectButton.visibility = if (isConnected) View.GONE else View.VISIBLE
+        binding.gitPublishButton.visibility = if (isConnected) View.VISIBLE else View.GONE
+        binding.gitUpdateButton.visibility = if (isConnected) View.VISIBLE else View.GONE
+    }
+
+    private fun handleGitConnect() {
+        if (TokenManager.getToken(requireContext()) == null) {
+            showLoginRequiredDialog()
+            return
+        }
+        showGitConnectDialog()
+    }
+
+    private fun showLoginRequiredDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Требуется вход")
+            .setMessage("Для подключения проекта к Git необходимо войти в свой аккаунт GitHub в настройках приложения.")
+            .setPositiveButton("В настройки") { _, _ ->
+                startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun showGitConnectDialog() {
+        val options = arrayOf("Создать новый репозиторий", "Подключиться к существующему")
+        AlertDialog.Builder(requireContext())
+            .setTitle("Подключение к Git")
+            .setItems(options) { _, which ->
+                if (which == 0) {
+                    showCreateRepoDialog()
+                } else {
+                    showCloneRepoDialog()
+                }
+            }
+            .show()
+    }
+
+    private fun showCreateRepoDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_create_repo, null)
+        val repoNameEditText = dialogView.findViewById<TextInputEditText>(R.id.repo_name_edit_text)
+        val privateSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.repo_private_switch)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Создание нового репозитория")
+            .setView(dialogView)
+            .setPositiveButton("Создать") { _, _ ->
+                val repoName = repoNameEditText.text.toString().trim()
+                if (repoName.isEmpty()) {
+                    ToastUtil.showError(requireContext(), "Имя репозитория не может быть пустым")
+                    return@setPositiveButton
+                }
+                val isPrivate = privateSwitch.isChecked
+                val token = TokenManager.getToken(requireContext()) ?: return@setPositiveButton
+
+                showProgressDialog("Создание репозитория...")
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val result = gitController.initializeAndPushNewRepository(token, repoName, isPrivate)
+                    withContext(Dispatchers.Main) {
+                        hideProgressDialog()
+                        when (result) {
+                            is GitResult.Success -> {
+                                ToastUtil.showSuccess(requireContext(), "Проект успешно опубликован!")
+                                project?.xmlHeader?.gitRemoteUrl = result.data
+                                saveProject() // Сохраняем URL в code.xml
+                                updateGitButtonsVisibility()
+                            }
+                            is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                            else -> {}
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun showCloneRepoDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_clone_repo, null)
+        val repoUrlEditText = dialogView.findViewById<TextInputEditText>(R.id.repo_url_edit_text)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Подключение к репозиторию")
+            .setView(dialogView)
+            .setMessage("Внимание! Текущие файлы проекта будут ЗАМЕНЕНЫ файлами из удаленного репозитория. Это действие необратимо.")
+            .setPositiveButton("Подключить") { _, _ ->
+                val repoUrl = repoUrlEditText.text.toString().trim()
+                if (!repoUrl.startsWith("https://") || !repoUrl.endsWith(".git")) {
+                    ToastUtil.showError(requireContext(), "Введите корректный HTTPS URL репозитория")
+                    return@setPositiveButton
+                }
+                val token = TokenManager.getToken(requireContext()) ?: return@setPositiveButton
+                val originalProjectDir = project?.directory ?: return@setPositiveButton
+
+                val tempDir = File(requireContext().cacheDir, "git_clone_temp_${System.currentTimeMillis()}")
+                tempDir.mkdirs()
+
+                showProgressDialog("Клонирование проекта...")
+                lifecycleScope.launch(Dispatchers.IO) {
+                    // 1. Клонируем во временную папку
+                    val result = gitController.cloneRepository(repoUrl, token, tempDir)
+
+                    var finalResult: GitResult<Unit> = GitResult.Error("Operation failed before replacement.")
+                    if (result is GitResult.Success) {
+                        try {
+                            // 2. Атомарная замена папок
+                            originalProjectDir.deleteRecursively()
+                            if (!tempDir.renameTo(originalProjectDir)) {
+                                throw IOException("Failed to replace project directory.")
+                            }
+
+                            // 3. *** КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ***
+                            // Загружаем только что склонированный проект с диска, чтобы не использовать старые данные из памяти.
+                            val clonedProject = XstreamSerializer.getInstance().loadProject(originalProjectDir, requireContext())
+                            if (clonedProject == null) {
+                                throw IOException("Failed to load cloned project from disk.")
+                            }
+
+                            // 4. Обновляем URL в новом проекте и сохраняем ТОЛЬКО ЕГО
+                            clonedProject.xmlHeader.gitRemoteUrl = repoUrl
+                            XstreamSerializer.getInstance().saveProject(clonedProject)
+
+                            // Обновляем текущий проект в менеджере
+                            projectManager.currentProject = clonedProject
+                            project = clonedProject
+
+                            finalResult = GitResult.Success(Unit)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            tempDir.deleteRecursively() // Очистка в случае ошибки
+                            finalResult = GitResult.Error("Failed to replace or load project: ${e.message}")
+                        }
+                    } else {
+                        finalResult = result // Передаем ошибку клонирования
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        hideProgressDialog()
+                        when (finalResult) {
+                            is GitResult.Success -> {
+                                ToastUtil.showSuccess(requireContext(), "Проект успешно склонирован!")
+                                shouldSaveOnPause = false // Мы уже все сохранили
+                                showProjectReloadDialog()
+                            }
+                            is GitResult.Error -> {
+                                tempDir.deleteRecursively()
+                                ToastUtil.showError(requireContext(), "Ошибка: ${finalResult.message}")
+                            }
+                            else -> {} // MergeConflict невозможен при клонировании
+                        }
+                    }
+                }
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun showCommitMessageDialog() {
+        val editText = TextInputEditText(requireContext())
+        AlertDialog.Builder(requireContext())
+            .setTitle("Опубликовать изменения")
+            .setMessage("Введите краткое описание сделанных изменений (коммит):")
+            .setView(editText)
+            .setPositiveButton("Опубликовать") { _, _ ->
+                val commitMessage = editText.text.toString().ifEmpty { "Update project" }
+                handleGitPublish(commitMessage)
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private var shouldSaveOnPause = true
+
+    private fun handleGitPublish(commitMessage: String) {
+        val token = TokenManager.getToken(requireContext()) ?: return
+        showProgressDialog("Публикация изменений...")
+        lifecycleScope.launch(Dispatchers.IO) {
+            saveProject() // Сохраняем все несохраненные изменения перед пушем
+            val result = gitController.commitAndPush(commitMessage, "User", "user@email.com", token) // Имя и email - заглушки
+            withContext(Dispatchers.Main) {
+                hideProgressDialog()
+                when (result) {
+                    is GitResult.Success -> ToastUtil.showSuccess(requireContext(), "Изменения опубликованы!")
+                    is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun handleGitUpdate() {
+        val token = TokenManager.getToken(requireContext()) ?: return
+        showProgressDialog("Обновление проекта...")
+        lifecycleScope.launch(Dispatchers.IO) {
+            val result = gitController.pullAndMerge(token)
+            withContext(Dispatchers.Main) {
+                hideProgressDialog()
+                when (result) {
+                    is GitResult.Success -> {
+                        ToastUtil.showSuccess(requireContext(), "Проект обновлен!")
+                        shouldSaveOnPause = false
+
+                        // *** КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ ***
+                        // Мы получили новый, объединенный проект.
+                        // Теперь мы должны обновить его в памяти приложения!
+                        val mergedProject = result.data.mergedProject
+                        project = mergedProject
+                        projectManager.currentProject = mergedProject
+                        // ************************************
+
+                        if (result.data.conflicts.isNotEmpty()) {
+                            val conflictsString = result.data.conflicts.joinToString("\n") { "- ${it.path}" }
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Обнаружены конфликты")
+                                .setMessage("Система обнаружила конфликты, думайте сами какой вариант оставить. Конфликты:\n$conflictsString")
+                                .setPositiveButton("OK") { _, _ ->
+                                    showProjectReloadDialog()
+                                }
+                                .show()
+                        } else {
+                            showProjectReloadDialog()
+                        }
+                    }
+                    is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                    is GitResult.MergeConflict -> {
+                        val conflictsString = result.conflicts.joinToString("\n") { "- ${it.fieldName}" }
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Конфликты слияния!")
+                            .setMessage("Не удалось автоматически обновить проект. Конфликты:\n$conflictsString")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showProgressDialog(message: String) {
+        progressDialog = AlertDialog.Builder(requireContext())
+            .setCancelable(false)
+            .setView(R.layout.dialog_progress) // Предполагается, что у вас есть layout с ProgressBar
+            .setMessage(message)
+            .show()
+    }
+
+    private fun hideProgressDialog() {
+        progressDialog?.dismiss()
+    }
+
+    private fun showProjectReloadDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Требуется перезагрузка")
+            .setMessage("Проект был изменен. Чтобы увидеть изменения, необходимо его перезапустить.")
+            .setPositiveButton("Перезапустить") { _, _ ->
+                // Закрываем текущую Activity и возвращаемся в главное меню
+                requireActivity().finish()
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun setupMishkFrede() {
@@ -395,7 +683,9 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     override fun onPause() {
-        saveProject()
+        if (shouldSaveOnPause) {
+            saveProject()
+        }
         super.onPause()
     }
 

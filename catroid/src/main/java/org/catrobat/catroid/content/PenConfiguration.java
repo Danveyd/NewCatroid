@@ -47,7 +47,7 @@ public class PenConfiguration {
 
 	public void drawLinesForSprite(Float screenRatio, Camera camera) {
 
-		ShapeRenderer renderer = StageActivity.stageListener.shapeRenderer;
+		ShapeRenderer renderer = StageActivity.getActiveStageListener().shapeRenderer;
 		renderer.setColor(new Color(penColor.r, penColor.g, penColor.b, penColor.a));
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -64,14 +64,10 @@ public class PenConfiguration {
 	}
 
 	public void drawAllLines(ShapeRenderer renderer, Float screenRatio, Camera camera) {
-		// Устанавливаем цвет для рисования
 		renderer.setColor(new Color(penColor.r, penColor.g, penColor.b, penColor.a));
 
-		// Это ГЛАВНЫЙ цикл из оригинального кода. Мы просто вернули его.
 		while (currentQueueHasJobToHandle()) {
-			// Рисуем один сегмент линии
 			drawLine(screenRatio, renderer, camera);
-			// Обновляем состояние очередей
 			updateQueues();
 		}
 		renderer.flush();

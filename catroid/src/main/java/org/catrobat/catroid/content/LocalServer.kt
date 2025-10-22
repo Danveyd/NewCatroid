@@ -16,11 +16,9 @@ class LocalServer private constructor() {
         private var receivedValue: String = ""
         private var isRunning = false
 
-        // ИЗМЕНЕНО: Используем кастомный CoroutineScope для лучшего управления жизненным циклом
         private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
         fun startOrJoin(ip: String?, port: String) {
-            // ИЗМЕНЕНО: Запускаем корутину в нашем scope
             coroutineScope.launch {
                 try {
                     isRunning = true
@@ -30,13 +28,13 @@ class LocalServer private constructor() {
                         connectToServer(ip, port)
                     }
                 } catch (e: Exception) {
-                    if (isRunning) { // Логируем ошибку, только если сервер не был остановлен намеренно
+                    if (isRunning) {
                         ErrorLog.log(e.message ?: "**message not provided :(**")
                         Log.e("LocalServer", "Ошибка в startOrJoin: ${e.message}", e)
                     }
                 } finally {
                     if (isRunning) {
-                        stop() // Убедимся, что все ресурсы освобождены при ошибке
+                        stop()
                     }
                 }
             }
@@ -48,17 +46,12 @@ class LocalServer private constructor() {
             connectedIP = getLocalIPAddress()
             Log.d("LocalServer", "Сервер запущен на $connectedIP:$port и ожидает подключения...")
 
-            // Принимаем ОДНО подключение. Это блокирующая операция.
             val socket = serverSocket!!.accept()
             Log.d("LocalServer", "Клиент подключился: ${socket.remoteSocketAddress}")
 
-            // ИЗМЕНЕНО: Вот ключевое исправление.
-            // Теперь сервер тоже сохраняет clientSocket и outputStream.
-            // После этого он ничем не отличается от клиента.
             clientSocket = socket
             outputStream = socket.getOutputStream()
 
-            // Начинаем слушать сообщения от подключенного клиента
             listenForMessages(socket)
         }
 
@@ -70,11 +63,9 @@ class LocalServer private constructor() {
             connectedPort = port
             Log.d("LocalServer", "Подключен к серверу $ip:$port")
 
-            // Начинаем слушать сообщения от сервера
             listenForMessages(socket)
         }
 
-        // Эта функция не требует изменений, но теперь ее вызывает и сервер, и клиент
         private fun handleClient(socket: Socket) {
             coroutineScope.launch {
                 listenForMessages(socket)
@@ -85,17 +76,17 @@ class LocalServer private constructor() {
             try {
                 val reader = BufferedReader(InputStreamReader(socket.getInputStream()))
                 while (isRunning && socket.isConnected) {
-                    // readLine() будет ждать, пока не придет строка с символом новой строки '\n'
+
                     val message = reader.readLine()
                     if (message == null) {
                         Log.d("LocalServer", "Соединение разорвано удаленной стороной.")
-                        break // Выходим из цикла, если стрим закрыт
+                        break
                     }
                     receivedValue = message
                     Log.d("LocalServer", "Получено: $message")
                 }
             } catch (e: Exception) {
-                if (isRunning) { // Не показываем ошибку, если мы сами закрыли сокет
+                if (isRunning) {
                     ErrorLog.log(e.message ?: "**message not provided :(**")
                     Log.e("LocalServer", "Ошибка чтения: ${e.message}")
                 }
@@ -103,14 +94,12 @@ class LocalServer private constructor() {
         }
 
         fun send(value: String) {
-            // ИЗМЕНЕНО: Запускаем в том же scope
             coroutineScope.launch {
                 if (outputStream == null) {
                     Log.e("LocalServer", "Ошибка: соединение не установлено (outputStream is null).")
                     return@launch
                 }
                 try {
-                    // Добавляем '\n' в конец, чтобы readLine() на другой стороне сработал
                     outputStream?.write((value + "\n").toByteArray())
                     outputStream?.flush()
                     Log.d("LocalServer", "Отправлено: $value")
@@ -126,7 +115,7 @@ class LocalServer private constructor() {
             isRunning = false
             try {
                 serverSocket?.close()
-                clientSocket?.close() // Закрытие сокета также закроет его input/output stream
+                clientSocket?.close()
             } catch (e: IOException) {
                 Log.w("LocalServer", "Ошибка при закрытии сокетов: ${e.message}")
             } finally {

@@ -46,9 +46,8 @@ class DelSquareAction() : TemporalAction() {
     override fun update(percent: Float) {
         val name = nam?.interpretString(scope) ?: "square"
 
-        val stage = StageActivity.stageListener.stage
+        val stage = StageActivity.activeStageActivity.get()?.stageListener?.stage
 
         SquareController.instance.removeSquare(name)
-        //val squareActor = SquareActor(pos_x, pos_y, width, height, color_str)
     }
 }

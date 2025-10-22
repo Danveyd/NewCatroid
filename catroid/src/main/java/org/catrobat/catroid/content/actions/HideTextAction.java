@@ -41,8 +41,8 @@ public class HideTextAction extends TemporalAction {
 
 	@Override
 	protected void begin() {
-		if (StageActivity.stageListener != null) {
-			Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
+		if (StageActivity.getActiveStageListener() != null) {
+			Array<Actor> stageActors = StageActivity.getActiveStageListener().getStage().getActors();
 			ShowTextActor dummyActor = new ShowTextActor(false, new UserVariable("dummyActor"),
 					0, 0, 1.0f, null, sprite, androidStringProvider);
 			for (Actor actor : stageActors) {

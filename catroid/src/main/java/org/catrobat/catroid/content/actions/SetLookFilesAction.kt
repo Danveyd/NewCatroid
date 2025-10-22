@@ -73,19 +73,15 @@ open class SetLookFilesAction : TemporalAction() {
             }
         }
         scope?.project?.let { proj ->
-            //val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val filename = getName(name) ?: "my_actor.png"
             val file = File(proj.filesDir, filename)
             if(file.exists()) {
                 Gdx.app.postRunnable {
                     Log.d("PhotoAction", "Running on libGDX thread...")
-
-                    // 1. Создаем LookData. Он еще "пустой" внутри.
                     val look = LookData(file.name, file)
 
                     val loadedPixmap = look.pixmap
-                    if (loadedPixmap != null) { // Проверяем, что загрузилось нечто большее, чем 1x1 пиксель
-                        // 3. Теперь, когда LookData "заряжен", устанавливаем его спрайту.
+                    if (loadedPixmap != null) {
                         setLook(look)
                         Log.d("PhotoAction", "Look successfully prepared and set!")
                     } else {

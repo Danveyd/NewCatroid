@@ -401,9 +401,8 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 	protected void initBluetooth() {
 		int bluetoothState = activateBluetooth();
 		if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
-			// ИЗМЕНЕНО: Проверяем разрешения перед тем, как что-то делать
 			if (checkAndRequestBluetoothPermissions()) {
-				listAndSelectDevices(); // Этот метод теперь безопасен для вызова
+				listAndSelectDevices();
 				startAcceptThread();
 				activateBluetoothVisibility();
 			}
@@ -414,16 +413,14 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 		if (isDiscovering) {
 			cancelDiscovery();
 		} else {
-			// ИЗМЕНЕНО: Проверяем разрешения перед запуском сканирования
 			if (checkAndRequestBluetoothPermissions()) {
-				doDiscovery(); // Этот метод теперь безопасен для вызова
+				doDiscovery();
 			}
 		}
 	}
 
 	private void activateBluetoothVisibility() {
 		if (btDevice instanceof Multiplayer) {
-			// ИЗМЕНЕНО: Добавляем проверку разрешения перед созданием Intent
 			if (checkAndRequestBluetoothPermissions()) {
 				try {
 					Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -445,7 +442,6 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 	private void listAndSelectDevices() {
 		pairedDevicesArrayAdapter.clear();
 		try {
-			// Этот код теперь будет выполняться только если есть разрешения
 			Set<android.bluetooth.BluetoothDevice> pairedDevices = btManager.getBluetoothAdapter().getBondedDevices();
 
 			if (pairedDevices.size() > 0) {
@@ -475,17 +471,11 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		// ИЗМЕНЕНО: Добавляем проверку разрешений перед отменой поиска
 		cancelDiscovery();
 		this.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
-	/**
-	 * НОВЫЙ МЕТОД: Централизованная проверка и запрос разрешений.
-	 * @return true, если разрешения есть, false, если был сделан запрос.
-	 */
-	// В методе checkAndRequestBluetoothPermissions
 	private boolean checkAndRequestBluetoothPermissions() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 			ArrayList<String> permissionsToRequest = new ArrayList<>();
@@ -495,7 +485,6 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 				permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT);
 			}
-			// ИЗМЕНЕНО: Добавляем проверку для ADVERTISE
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
 				permissionsToRequest.add(Manifest.permission.BLUETOOTH_ADVERTISE);
 			}
@@ -510,7 +499,6 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 
 	protected void doDiscovery() {
 		try {
-			// Этот код теперь будет выполняться только если есть разрешения
 			isDiscovering = true;
 			scanButton.setImageResource(R.drawable.ic_close);
 			newDevicesArrayAdapter.clear();
@@ -590,9 +578,6 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 		}
 	}
 
-	/**
-	 * НОВЫЙ МЕТОД: Обработка результата запроса разрешений.
-	 */
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -606,10 +591,7 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 			}
 
 			if (allGranted) {
-				// Разрешения получены! Теперь можно безопасно выполнять действия
 				Log.d(TAG, "All Bluetooth permissions granted.");
-				// Повторяем действие, которое вызвало запрос.
-				// Например, если пользователь нажал "сканировать", начинаем сканирование
 				if (!isDiscovering) {
 					doDiscovery();
 				}
@@ -626,12 +608,11 @@ public class ConnectBluetoothDeviceActivity extends AppCompatActivity {
 
 		AcceptThread() {
 			try {
-				// Мы уже проверили разрешение, но компилятор требует явной обработки
 				serverSocket = BluetoothAdapter.getDefaultAdapter()
 						.listenUsingRfcommWithServiceRecord(getString(R.string.app_name), btDevice.getBluetoothDeviceUUID());
 			} catch (IOException e) {
 				Log.e(TAG, "Creating ServerSocket failed due to IOException!", e);
-			} catch (SecurityException e) { // ИЗМЕНЕНО: Добавлен catch для SecurityException
+			} catch (SecurityException e) {
 				Log.e(TAG, "Creating ServerSocket failed due to missing BLUETOOTH_CONNECT permission!", e);
 			}
 

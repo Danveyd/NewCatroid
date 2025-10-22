@@ -29,21 +29,13 @@ class PredictNNAction() : TemporalAction() {
             return true
         }
 
-        // --- ПОЛУЧАЕМ ДАННЫЕ НАПРЯМУЮ ---
         val inputArray = FloatArrayManager.getArray(arrayName)
 
         if (inputArray != null && inputArray.isNotEmpty()) {
             OnnxSessionManager.predict(inputArray) { rawResult ->
                 if (rawResult != null) {
-                    // --- НОВАЯ ЛОГИКА ВЫВОДА ---
-
-                    // 1. Находим индекс максимального элемента
-                    val bestIndex = FloatArrayManager.findMaxIndex(rawResult) // Используем нашу быструю функцию
-
-                    // 2. Преобразуем весь массив в строку
+                    val bestIndex = FloatArrayManager.findMaxIndex(rawResult)
                     val resultString = rawResult.joinToString(",")
-
-                    // 3. Формируем финальный вывод с переносом строки
                     safeVariable.value = "$bestIndex\n$resultString"
 
                 } else {
@@ -51,7 +43,6 @@ class PredictNNAction() : TemporalAction() {
                 }
             }
         } else {
-            // Массив не найден или пуст
             safeVariable.value = "ARRAY_ERROR"
         }
 
@@ -59,7 +50,7 @@ class PredictNNAction() : TemporalAction() {
     }
 
     override fun update(percent: Float) {
-        // Обязательный, но пустой метод
+
     }
 
     override fun restart() {

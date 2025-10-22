@@ -1,21 +1,18 @@
-package org.catrobat.catroid.utils // или любой другой ваш пакет утилит
+package org.catrobat.catroid.utils
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.GdxRuntimeException
 
 object GlobalShaderManager {
-    // Здесь будет храниться скомпилированный шейдер пользователя
     var customSceneShader: ShaderProgram? = null
         private set
 
-    // Здесь храним исходный код, чтобы можно было его редактировать
     var fragmentShaderCode: String? = null
         private set
 
     var vertexShaderCode: String? = null
         private set
 
-    // Стандартный Vertex Shader, который почти никогда не меняется для 2D пост-эффектов
     val DEFAULT_VERTEX_SHADER = """
     attribute vec4 a_position;
     attribute vec2 a_texCoord0;
@@ -27,23 +24,6 @@ object GlobalShaderManager {
         gl_Position = u_projTrans * a_position;
     }
 """.trimIndent()
-
-    /*"""
-    attribute vec4 a_position;
-    attribute vec2 a_texCoord0;
-    
-    // ДОБАВЬТЕ ЭТУ СТРОКУ
-    uniform mat4 u_projTrans; 
-
-    varying vec2 v_texCoords;
-
-    void main() {
-        v_texCoords = a_texCoord0;
-        // И ИЗМЕНИТЕ ЭТУ СТРОКУ
-        gl_Position = u_projTrans * a_position;
-    }
-""".trimIndent()*/
-
 
 
     val DEFAULT_TEST_SHADER = """// Код для вашего фрагментного шейдера
@@ -66,15 +46,11 @@ void main() {
     gl_FragColor = mix(sceneColor, gradientColor, 0.5);
 }"""
 
-    // Пытаемся установить новый шейдер
-    // Возвращает null в случае успеха или строку с ошибкой в случае неудачи
     fun setCustomShader(fragmentCode: String, vertexCode: String): String? {
         android.util.Log.d("ShaderDebug", "--- GlobalShaderManager.setCustomShader CALLED ---")
-        // Сначала уничтожаем старый шейдер, если он был
         customSceneShader?.dispose()
         customSceneShader = null
 
-        // Если код пустой, просто сбрасываем шейдер
         if (fragmentCode.isBlank()) {
             fragmentShaderCode = null
             android.util.Log.d("ShaderDebug", "Fragment code is blank. Resetting shader.")
@@ -92,19 +68,17 @@ void main() {
         if (!newShader.isCompiled) {
             val log = newShader.log
             android.util.Log.e("ShaderDebug", "SHADER COMPILATION FAILED! Log: $log")
-            newShader.dispose() // Очищаем мусор
+            newShader.dispose()
             vertexShaderCode = null
-            return log // Возвращаем ошибку компиляции
+            return log
         }
 
-        // Успех!
         android.util.Log.d("ShaderDebug", "SHADER COMPILED SUCCESSFULLY!")
         customSceneShader = newShader
         fragmentShaderCode = fragmentCode
-        return null // Нет ошибок
+        return null
     }
 
-    // Сброс к стандартному рендерингу
     fun resetToDefault() {
         customSceneShader?.dispose()
         customSceneShader = null
@@ -112,7 +86,6 @@ void main() {
         vertexShaderCode = null
     }
 
-    // Важно вызывать при закрытии приложения, чтобы избежать утечек памяти GPU
     fun dispose() {
         customSceneShader?.dispose()
         customSceneShader = null

@@ -64,7 +64,6 @@ open class SetHitboxAction : TemporalAction() {
 
     fun setHitbox(look: LookData) {
         look.apply {
-            //updateLookListIndex()
             scope?.sprite?.look?.setLookData2(this)
             collisionInformation?.collisionPolygonCalculationThread?.join()
             isWebRequest = false

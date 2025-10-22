@@ -10,12 +10,9 @@ class KeyEventAction : TemporalAction() {
     var scope: Scope? = null
     var character: Formula? = null
     var isDown: Formula? = null
-
-    // Простой маппинг символов в X11 keysyms
     private fun stringToKeysym(input: String): Int {
         if (input.isEmpty()) return 0
 
-        // Проверяем специальные клавиши
         return when (input.uppercase()) {
             "<CTRL_L>" -> 0xFFE3 // Left Control
             "<CTRL_R>" -> 0xFFE4 // Right Control

@@ -3,8 +3,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.LinearLayout
 
-class WebViewManager(private val context: Context) {  // Вы принимаете контекст
-    private val webViews = mutableMapOf<String, WebView>()  // Хранение WebView по имени
+class WebViewManager(private val context: Context) {
+    private val webViews = mutableMapOf<String, WebView>()
 
     fun createWebView(name: String, url: String, posX: Int, posY: Int, width: Int, height: Int, container: LinearLayout) {
         val webView = WebView(context).apply {

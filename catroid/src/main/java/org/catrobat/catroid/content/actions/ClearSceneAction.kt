@@ -34,7 +34,7 @@ class ClearSceneAction : TemporalAction() {
     override fun update(percent: Float) {
         if (sceneName != null) {
             sprite.releaseAllPointers()
-            StageActivity.stageListener.clearScene(sceneName)
+            StageActivity.activeStageActivity.get()?.stageListener?.clearScene(sceneName)
         }
     }
 

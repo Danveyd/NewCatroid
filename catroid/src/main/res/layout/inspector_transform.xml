@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Transform"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <ImageButton
+            android:id="@+id/btn_align_position_with_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:tooltipText="Align Position with View"
+            app:tint="@android:color/white"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageButton
+            android:id="@+id/btn_align_rotation_with_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_rotate"
+            android:tooltipText="Align Rotation with View"
+            app:tint="@android:color/white"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+
+    <!-- Position -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Position" android:layout_marginTop="8dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X"/>
+        <EditText android:id="@+id/edit_pos_x" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Y"/>
+        <EditText android:id="@+id/edit_pos_y" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Z"/>
+        <EditText android:id="@+id/edit_pos_z" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+    </LinearLayout>
+
+    <!-- Rotation (Euler Angles) -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rotation" android:layout_marginTop="8dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X"/>
+        <EditText android:id="@+id/edit_rot_x" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Y"/>
+        <EditText android:id="@+id/edit_rot_y" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Z"/>
+        <EditText android:id="@+id/edit_rot_z" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned"/>
+    </LinearLayout>
+
+    <!-- Scale -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scale" android:layout_marginTop="8dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X"/>
+        <EditText android:id="@+id/edit_scale_x" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Y"/>
+        <EditText android:id="@+id/edit_scale_y" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Z"/>
+        <EditText android:id="@+id/edit_scale_z" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+</LinearLayout>

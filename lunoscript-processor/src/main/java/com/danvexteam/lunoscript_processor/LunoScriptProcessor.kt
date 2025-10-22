@@ -1,4 +1,3 @@
-// В модуле :lunoscript-processor
 package org.catrobat.catroid.lunoscript.processor
 
 import com.danvexteam.lunoscript_annotations.LunoClass
@@ -24,7 +23,7 @@ class LunoScriptProcessor : AbstractProcessor() {
     override fun getSupportedAnnotationTypes(): Set<String> {
         return setOf(
             LunoFunction::class.java.name,
-            LunoClass::class.java.name // <-- ДОБАВИТЬ
+            LunoClass::class.java.name
         )
     }
 
@@ -48,7 +47,6 @@ class LunoScriptProcessor : AbstractProcessor() {
 
     private fun getKotlinType(typeName: TypeName): TypeName {
         if (typeName !is ClassName) return typeName
-        // Сопоставляем канонические имена Java-типов с их Kotlin-аналогами
         return when (typeName.canonicalName) {
             "java.lang.String" -> ClassName("kotlin", "String")
             "java.lang.Double" -> ClassName("kotlin", "Double")
@@ -58,8 +56,7 @@ class LunoScriptProcessor : AbstractProcessor() {
             "java.lang.Object" -> ClassName("kotlin", "Any")
             "java.io.File" -> ClassName("java.io", "File")
             "org.catrobat.catroid.utils.lunoscript.LunoValue.Float" -> ClassName("kotlin", "Float")
-            // Добавьте другие типы по необходимости
-            else -> typeName // Если сопоставления нет, возвращаем как есть
+            else -> typeName
         }
     }
 
@@ -77,26 +74,21 @@ class LunoScriptProcessor : AbstractProcessor() {
         val registerFunctionBuilder = FunSpec.builder("registerAllNatives")
             .addParameter("interpreter", interpreterClass)
 
-        // --- ОБРАБОТКА ГЛОБАЛЬНЫХ ФУНКЦИЙ ---
         val annotatedFunctions = roundEnv.getElementsAnnotatedWith(LunoFunction::class.java)
-            .filter { it.enclosingElement.kind != ElementKind.CLASS } // Только top-level
+            .filter { it.enclosingElement.kind != ElementKind.CLASS }
 
         for (funcElement in annotatedFunctions) {
             if (funcElement !is ExecutableElement) continue
 
-            // --- НОВАЯ, ПРОСТАЯ И НАДЕЖНАЯ ЛОГИКА ---
-            // 'enclosingElement' для top-level функции - это и есть TypeElement, представляющий ...Kt класс!
             val enclosingElement = funcElement.enclosingElement
             if (enclosingElement !is TypeElement) {
                 processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, "Can't process function not in class or top-level file.", funcElement)
                 continue
             }
 
-            // Получаем полное имя функции, включая класс/файл-контейнер
             val containerClassName = enclosingElement.asClassName()
             val functionName = funcElement.simpleName.toString()
             val kotlinFuncReference = MemberName(containerClassName, functionName)
-            // --- КОНЕЦ НОВОЙ ЛОГИКИ ---
 
             val lunoFuncName = funcElement.getAnnotation(LunoFunction::class.java).name.ifEmpty { functionName }
             val arity = funcElement.parameters.size
@@ -107,9 +99,8 @@ class LunoScriptProcessor : AbstractProcessor() {
             val argNames = funcElement.parameters.mapIndexed { index, param ->
                 val argName = "arg$index"
 
-                // --- ИСПРАВЛЕНИЕ: ИСПОЛЬЗУЕМ НАШУ ФУНКЦИЮ-КОНВЕРТЕР ---
                 val javaType = param.asType().asTypeName().copy(nullable = false)
-                val paramType = getKotlinType(javaType) // <-- ВЫЗЫВАЕМ НАШУ ФУНКЦИЮ
+                val paramType = getKotlinType(javaType)
 
                 registerFunctionBuilder.addStatement(
                     "val %L = arguments[%L].%M<%T>(funcNameForError, %L)",
@@ -119,7 +110,6 @@ class LunoScriptProcessor : AbstractProcessor() {
             }
             val joinedArgs = argNames.joinToString(", ")
 
-            // Генерируем вызов с полным именем, чтобы избежать проблем с импортами
             if (funcElement.returnType.kind != TypeKind.VOID) {
                 registerFunctionBuilder.addStatement("val result = %M(%L)", kotlinFuncReference, joinedArgs)
                 registerFunctionBuilder.addStatement("%T.fromKotlin(result)", lunoValueClass)
@@ -137,23 +127,14 @@ class LunoScriptProcessor : AbstractProcessor() {
             val classTypeName = classElement.asClassName()
             val lunoClassName = classElement.getAnnotation(LunoClass::class.java).name.ifEmpty { classElement.simpleName.toString() }
 
-            // Находим ВСЕ ПУБЛИЧНЫЕ конструкторы
             val constructors = classElement.enclosedElements.filter {
-                // Для Java это public. Для Kotlin - public по умолчанию.
-                // Убираем явную проверку на PUBLIC, чтобы она работала и для Kotlin.
-                // Рефлексия в рантайме все равно не даст вызвать private.
                 it.kind == ElementKind.CONSTRUCTOR
             }.map { it as ExecutableElement }
 
-// Если конструкторов нет ВООБЩЕ (даже по умолчанию), тогда пропускаем
             if (constructors.isEmpty() && classElement.kind != ElementKind.INTERFACE) {
-                // Если это Kotlin класс без явных конструкторов, нужно добавить пустой
-                // Но для начала просто проверим, что список не пуст
-                // Если `constructors` пуст для `AddEditAction` - это наша проблема
                 continue
             }
 
-            // Создаем NativeCallable для этого класса
             registerFunctionBuilder.beginControlFlow(
                 "interpreter.defineNative(%S, %T.NativeCallable(%T(%S, %L..%L) { _, args ->",
                 lunoClassName,

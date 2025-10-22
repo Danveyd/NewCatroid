@@ -60,7 +60,6 @@ class SplitAction() : TemporalAction() {
     }
 
     fun splitString(input: String, delimiter: String): List<String> {
-        // Используем метод split с регулярным выражением, которое учитывает многосимвольный разделитель
         return input.split(delimiter).map { it.trim() }.filter { it.isNotEmpty() }
     }
 }

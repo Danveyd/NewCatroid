@@ -34,8 +34,7 @@ data class MapLiteralExpr(val entries: Map<Token, Expression>, val brace: Token,
 // --- Statements ---
 data class ExpressionStatement(val expression: Expression, override val line: Int) : Statement
 data class VarDeclarationStatement(val name: Token, val initializer: Expression?, override val line: Int) : Statement
-// Присваивание теперь всегда Statement. Для compound assignments можно отдельные узлы или обрабатывать в AssignmentStatement
-data class AssignmentStatement(val target: Expression, /* было Token name, теперь Expression для SetExpr */ val value: Expression, val operatorToken: Token, override val line: Int) : Statement
+data class AssignmentStatement(val target: Expression, val value: Expression, val operatorToken: Token, override val line: Int) : Statement
 
 data class BlockStatement(val statements: List<Statement>, override val line: Int) : Statement // line - это строка {
 data class IfStatement(val condition: Expression, val thenBranch: Statement, val elseBranch: Statement?, val ifToken: Token, override val line: Int) : Statement

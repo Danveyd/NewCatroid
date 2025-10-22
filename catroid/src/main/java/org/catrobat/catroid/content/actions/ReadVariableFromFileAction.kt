@@ -58,13 +58,11 @@ class ReadVariableFromFileAction : Action(), IntentListener {
     var deleteFile: Boolean = false
 
     fun request(activity: Activity) {
-        //showSuccessMessage("requesting...")
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
             1002,
         )
-        //ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_STORAGE)
     }
 
     override fun act(delta: Float): Boolean {
@@ -92,8 +90,7 @@ class ReadVariableFromFileAction : Action(), IntentListener {
 
     @VisibleForTesting
     fun readVariableFromFile(fileName: String) {
-        //showSuccessMessage(fileName)
-        if (fileName == ".txt") {//(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (fileName == ".txt") {
             readUsingSystemFilePicker()
         } else {
             readUsingLegacyExternalStorage(fileName)
@@ -183,9 +180,9 @@ class ReadVariableFromFileAction : Action(), IntentListener {
                     deleteFileWithUri(it)
                 }
             }
-            return true // Возвращаем true, если обработка выполнена
+            return true
         }
-        return false // Возвращаем false, если событие не обработано
+        return false
     }
 
 }

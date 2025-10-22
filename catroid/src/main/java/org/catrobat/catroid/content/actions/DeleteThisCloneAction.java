@@ -38,7 +38,7 @@ public class DeleteThisCloneAction extends TemporalAction {
 			return;
 		}
 
-		StageActivity.stageListener.removeClonedSpriteFromStage(sprite);
+		StageActivity.getActiveStageListener().removeClonedSpriteFromStage(sprite);
 	}
 
 	public void setSprite(Sprite sprite) {

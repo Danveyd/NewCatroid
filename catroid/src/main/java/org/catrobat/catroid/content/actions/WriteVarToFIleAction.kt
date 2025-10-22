@@ -64,13 +64,11 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
     var userVariable: UserVariable? = null
 
     fun request(activity: Activity) {
-        //showSuccessMessage("requesting...")
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
             1001,
         )
-        //ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_STORAGE)
     }
 
     override fun update(percent: Float) {
@@ -86,29 +84,16 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
         saveOrOverwriteInDownloads(CatroidApplication.getAppContext(), getFileName(), userVariable!!.value.toString())
     }
 
-    /**
-     * Сохраняет текстовый контент в файл в общую папку "Загрузки".
-     * Если файл с таким именем уже существует, он будет ПЕРЕЗАПИСАН.
-     * Если файл не существует, он будет создан.
-     *
-     * @param context Контекст приложения.
-     * @param fileName Имя файла для сохранения (например, "my-data.txt").
-     * @param content Новое содержимое файла.
-     * @return Uri файла или null в случае ошибки.
-     */
     fun saveOrOverwriteInDownloads(context: Context, fileName: String, content: String): Uri? {
-        // --- Логика для Android 10 (Q) и новее ---
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val contentResolver = context.contentResolver
 
-            // 1. Попытка найти существующий файл
             val projection = arrayOf(MediaStore.MediaColumns._ID)
             val selection = "${MediaStore.MediaColumns.RELATIVE_PATH} = ? AND ${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
             val selectionArgs = arrayOf("${Environment.DIRECTORY_DOWNLOADS}/", fileName)
 
             var existingFileUri: Uri? = null
 
-            // Выполняем запрос
             contentResolver.query(
                 MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
                 projection,
@@ -116,7 +101,6 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
                 selectionArgs,
                 null
             )?.use { cursor ->
-                // Если курсор не пустой и есть хотя бы одна строка - файл найден
                 if (cursor.moveToFirst()) {
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
                     val id = cursor.getLong(idColumn)
@@ -128,21 +112,18 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
             }
 
             try {
-                // 2. Если файл НАЙДЕН - перезаписываем его
                 if (existingFileUri != null) {
-                    // 'w' означает "write mode", который обрезает файл до нуля перед записью (т.е. перезаписывает)
                     contentResolver.openOutputStream(existingFileUri!!, "w")?.use {
                         it.write(content.toByteArray(Charsets.UTF_8))
                     }
                     println("Файл успешно перезаписан: $existingFileUri")
                     return existingFileUri
                 }
-                // 3. Если файл НЕ НАЙДЕН - создаем новый
+
                 else {
                     val newValues = ContentValues().apply {
                         put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                        // ИСПРАВЛЕНИЕ: Позволяем системе самой определить тип или используем обобщенный
-                        put(MediaStore.MediaColumns.MIME_TYPE, "*/*") // Вместо "text/plain"
+                        put(MediaStore.MediaColumns.MIME_TYPE, "*/*")
                         put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
                     }
                     val newFileUri = contentResolver.insert(MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY), newValues)
@@ -160,18 +141,13 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
                 return null
             }
         }
-        // --- Логика для старых версий Android (до 10) ---
         else {
-            // Требует разрешения WRITE_EXTERNAL_STORAGE в манифесте для API < 29
             val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
             val file = File(downloadsDir, fileName)
 
             try {
-                // writeText по умолчанию создает или перезаписывает файл.
                 file.writeText(content, Charsets.UTF_8)
                 println("Файл успешно сохранен/перезаписан: ${file.absolutePath}")
-                // Для старых версий мы не можем легко получить content:// Uri, но можем вернуть файловый Uri.
-                // Однако для совместимости лучше просто вернуть null или true/false.
                 return Uri.fromFile(file)
             } catch (e: Exception) {
                 println("Ошибка при сохранении/перезаписи файла: ${e.message}")
@@ -183,14 +159,9 @@ class WriteVarToFileAction : TemporalAction(), IntentListener {
     private fun getFileName(): String {
         var fileName = Utils.sanitizeFileName(formula?.interpretString(scope))
 
-        // ИСПРАВЛЕНИЕ: Более простая и надежная проверка.
-        // Если в имени файла нет точки, значит, пользователь не указал расширение.
-        // Тогда добавляем .txt по умолчанию.
         if (!fileName.contains(".")) {
             fileName += Constants.TEXT_FILE_EXTENSION // ".txt"
         }
-        // Если точка есть (например, "my_archive.zip"), то ничего не делаем,
-        // оставляя расширение пользователя.
 
         return fileName
     }

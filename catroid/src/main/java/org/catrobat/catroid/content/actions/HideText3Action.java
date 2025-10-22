@@ -51,12 +51,12 @@ public class HideText3Action extends TemporalAction {
     protected void begin() {
         if (scope == null) {
             Log.e("HideText", "Scope is null");
-            return; // Прекращаем выполнение, если scope не установлен
+            return;
         }
         
         variableToHide = new UserVariable(name);
-        if (StageActivity.stageListener != null) {
-            Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
+        if (StageActivity.getActiveStageListener() != null) {
+            Array<Actor> stageActors = StageActivity.getActiveStageListener().getStage().getActors();
             ShowTextActor dummyActor = new ShowTextActor(true, new UserVariable("dummyActor"),
                     0, 0, 1.0f, null, sprite, androidStringProvider);
             for (Actor actor : stageActors) {
@@ -80,11 +80,8 @@ public class HideText3Action extends TemporalAction {
         try {
             this.name = name.interpretString(this.scope);
         } catch (InterpretationException e) {
-            // Логируем или обрабатываем исключение. Например, можно вывести сообщение об ошибке.
-            //System.err.println("Ошибка интерпретации имени: " + e.getMessage());
-            // Или можно установить имя в значение по умолчанию
             Log.e("HideText", "InterpretationException: " + e.getMessage());
-            this.name = "defaultName"; // Замените на ваше значение по умолчанию
+            this.name = "defaultName";
         }
     }
 

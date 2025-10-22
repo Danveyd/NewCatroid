@@ -11,14 +11,14 @@ import org.catrobat.catroid.ui.MainMenuActivity
 class RunPythonScriptAction : TemporalAction() {
     var scope: Scope? = null
     var script: Formula? = null
-    var variableName: Formula? = null // Новое поле
+    var variableName: Formula? = null
 
     override fun update(percent: Float) {
         val scriptContent = script?.interpretString(scope)
         val varName = variableName?.interpretString(scope) ?: "myVar"
 
         if (scriptContent.isNullOrEmpty()) {
-            return // Ничего не делаем, если скрипт пуст
+            return
         }
 
         val pythonEngine = MainMenuActivity.pythonEngine
@@ -27,9 +27,6 @@ class RunPythonScriptAction : TemporalAction() {
             return
         }
 
-        // УБИРАЕМ СОЗДАНИЕ ЛИШНЕГО ПОТОКА!
-        // Просто добавляем задачу в очередь. Движок сам разберется с потоком.
-        // Если varName пустой, логи будут просто проигнорированы, что нормально.
         pythonEngine.runScriptAsync(scriptContent, {output: String ->
             UserVarsManager.setVar(varName, output)
         })

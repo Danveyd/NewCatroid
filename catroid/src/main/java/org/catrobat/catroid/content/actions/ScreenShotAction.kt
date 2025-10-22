@@ -46,27 +46,18 @@ open class ScreenShotAction : TemporalAction() {
         private const val FILE_EXTENSION = ".png"
     }
 
-    /**
-     * Этот метод вызывается каждый кадр. Мы запускаем логику скриншота один раз
-     * с помощью Gdx.app.postRunnable, чтобы она выполнилась в основном потоке рендеринга.
-     */
     override fun update(percent: Float) {
-        // Выполняем захват кадра в потоке рендеринга LibGDX для обеспечения безопасности потоков
         Gdx.app.postRunnable {
             captureAndSetLook()
         }
     }
 
-    /**
-     * Основная логика захвата экрана, создания файла и установки нового "образа" (Look).
-     */
     private fun captureAndSetLook() {
         val activity = MyActivityManager.stage_activity ?: run {
             Log.e(TAG, "StageActivity is null, cannot take screenshot.")
             return
         }
 
-        // Получаем размеры всего окна приложения
         val view = activity.window.decorView
         val width = view.measuredWidth
         val height = view.measuredHeight
@@ -76,71 +67,49 @@ open class ScreenShotAction : TemporalAction() {
             return
         }
 
-        // Захватываем пиксели из буфера кадра LibGDX
         val pixels = ScreenUtils.getFrameBufferPixels(0, 0, width, height, true)
         Log.d(TAG, "Screenshot data size: ${pixels.size}")
 
-        // Используем ScreenshotSaver для преобразования пикселей в InputStream
         val screenshotInputStream = getScreenshotStream(pixels, width, height)
 
-        // Создаем LookData из полученного потока
         val lookData = createLookDataFromFile(screenshotInputStream)
 
-        // Применяем новый образ к спрайту
         setLook(lookData)
     }
 
-    /**
-     * Преобразует массив байт с пикселями в InputStream с помощью ScreenshotSaver.
-     */
     private fun getScreenshotStream(pixels: ByteArray, width: Int, height: Int): InputStream {
         val screenshotPath = getScreenshotPath()
         val screenshotSaver = ScreenshotSaver(Gdx.files, screenshotPath, width, height)
         return screenshotSaver.getScreenshot(pixels)
     }
 
-    /**
-     * Возвращает путь для сохранения временных файлов скриншота.
-     */
     private fun getScreenshotPath(): String {
         val scene = ProjectManager. getInstance().currentlyPlayingScene
         return scene.directory.absolutePath + "/"
     }
 
-    /**
-     * Создает временный файл, копирует в него данные из InputStream и возвращает готовый [LookData].
-     */
     private fun createLookDataFromFile(fileStream: InputStream): LookData {
         val finalFileName = name ?: DEFAULT_FILENAME
         val tempFile = File.createTempFile(finalFileName, FILE_EXTENSION)
         StorageOperations.copyStreamToFile(fileStream, tempFile)
 
         return LookData(finalFileName, tempFile).apply {
-            // Запускаем расчет коллизии для нового образа
             collisionInformation.calculate()
         }
     }
 
-    /**
-     * Применяет новый [LookData] к спрайту в указанном [scope].
-     */
     private fun setLook(lookData: LookData) {
         val sprite = scope?.sprite ?: return
 
         lookData.apply {
             updateLookListIndex()
             sprite.look.lookData = this
-            // Ожидаем завершения расчета полигона коллизии, если он был запущен
             collisionInformation?.collisionPolygonCalculationThread?.join()
-            // Удаляем временный файл после использования
             file?.delete()
-            isWebRequest = true // Флаг для обработки как нового образа
+            isWebRequest = true
         }
     }
 
-    /**
-     * Сохраняет индекс текущего "образа" в списке, чтобы его можно было восстановить.
-     */
     private fun updateLookListIndex() {
         val currentLook = scope?.sprite?.look
         if (currentLook != null && currentLook.lookListIndexBeforeLookRequest <= -1) {

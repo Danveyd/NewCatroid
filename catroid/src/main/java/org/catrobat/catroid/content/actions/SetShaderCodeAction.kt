@@ -11,7 +11,7 @@ class SetShaderCodeAction : TemporalAction() {
     var fragmentCode: Formula? = null
 
     override fun update(percent: Float) {
-        val manager = StageActivity.stageListener?.threeDManager ?: return
+        val manager = StageActivity.activeStageActivity.get()?.stageListener?.threeDManager ?: return
         val vert = vertexCode?.interpretString(scope)
         val frag = fragmentCode?.interpretString(scope)
         if (vert != "" && frag != "") {

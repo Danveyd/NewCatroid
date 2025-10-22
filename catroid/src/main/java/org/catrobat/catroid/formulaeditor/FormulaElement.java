@@ -56,6 +56,9 @@ import org.catrobat.catroid.utils.lunoscript.LunoValue;
 import org.catrobat.catroid.utils.lunoscript.Token;
 import org.catrobat.catroid.utils.lunoscript.TokenType;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
@@ -112,8 +115,8 @@ import static org.catrobat.catroid.formulaeditor.common.FormulaElementResources.
 import static org.catrobat.catroid.formulaeditor.common.FormulaElementResources.addSensorsResources;
 import static org.catrobat.catroid.utils.NumberFormats.trimTrailingCharacters;
 
-import org.catrobat.catroid.formulaeditor.CustomFormula; // Добавьте этот импорт
-import org.catrobat.catroid.formulaeditor.CustomFormulaManager; // Добавьте этот импорт
+import org.catrobat.catroid.formulaeditor.CustomFormula;
+import org.catrobat.catroid.formulaeditor.CustomFormulaManager;
 import org.mozilla.javascript.ContextFactory; // Rhino
 import org.mozilla.javascript.Context;     // Rhino
 import org.mozilla.javascript.Scriptable;  // Rhino
@@ -122,6 +125,7 @@ import org.mozilla.javascript.RhinoException; // Rhino
 
 import android.util.Log;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.danvexteam.lunoscript_annotations.LunoClass;
 
@@ -137,18 +141,15 @@ public class FormulaElement implements Serializable {
 	}
 
 	private static void ensureRhinoInitialized() {
-		// Этот код нужен, если вы сталкиваетесь с ошибками ClassDefNotFound для классов Rhino на некоторых устройствах
-		// Обычно ContextFactory.getGlobal() сам инициализируется.
-		// Если есть проблемы, можно попробовать:
 		if (!ContextFactory.hasExplicitGlobal()) {
 		    ContextFactory.initGlobal(new ContextFactory());
 		}
 	}
 
-	private ElementType type;
+	public ElementType type;
 	private String value;
-	private FormulaElement leftChild = null;
-	private FormulaElement rightChild = null;
+	public FormulaElement leftChild = null;
+	public FormulaElement rightChild = null;
 	public List<FormulaElement> additionalChildren;
 	private transient FormulaElement parent;
 	private transient Map<Functions, FormulaFunction> formulaFunctions;
@@ -457,7 +458,6 @@ public class FormulaElement implements Serializable {
 				return tryInterpretOperator(scope, value);
 			case FUNCTION:
 				Functions function = Functions.getFunctionByValue(value);
-				//return interpretFunction(function, scope);
 				return interpretFunction(value, scope);
 			case SENSOR:
 				return interpretSensor(scope.getSprite(), currentlyEditedScene, currentProject, value);
@@ -472,7 +472,7 @@ public class FormulaElement implements Serializable {
 						scope.getSequence());
 				return interpretUserDefinedBrickInput(userBrickVariable);
 			case COLLISION_FORMULA:
-				StageListener stageListener = StageActivity.stageListener;
+				StageListener stageListener = StageActivity.getActiveStageListener();
 				return tryInterpretCollision(scope.getSprite().look, value, currentlyPlayingScene,
 						stageListener);
 		}
@@ -491,14 +491,13 @@ public class FormulaElement implements Serializable {
 	private Object interpretFunction(String name, Scope scope) {
 		List<Object> arguments = new ArrayList<>();
 
-		// Собираем аргументы как раньше
 		arguments.add(tryInterpretRecursive(leftChild, scope));
 		arguments.add(tryInterpretRecursive(rightChild, scope));
 		for (FormulaElement child : additionalChildren) {
 			arguments.add(tryInterpretRecursive(child, scope));
 		}
 
-		Functions standardFunction = Functions.getFunctionByValue(name); // Получаем стандартную функцию
+		Functions standardFunction = Functions.getFunctionByValue(name);
 
 		if (standardFunction != null) {
 			Log.d("Formula", "isDefaultFunction");
@@ -507,8 +506,6 @@ public class FormulaElement implements Serializable {
 			Log.d("Formula", "isCustomFunction");
 			CustomFormula customFormula = CustomFormulaManager.INSTANCE.getFormulaByUniqueName(name);
 			if (customFormula != null) {
-				// Удаляем null значения из аргументов, если функция ожидает меньше параметров
-				// чем максимально возможно (leftChild, rightChild, additionalChildren)
 				List<Object> actualArguments = new ArrayList<>();
 				if (leftChild != null) actualArguments.add(arguments.get(0));
 				if (rightChild != null) actualArguments.add(arguments.get(1));
@@ -524,9 +521,8 @@ public class FormulaElement implements Serializable {
 	}
 
 	private ThreeDManager getThreeDManager() {
-		//if (StageActivity == null) return null;
-		if (StageActivity.stageListener != null) {
-			return StageActivity.stageListener.getThreeDManager();
+		if (StageActivity.getActiveStageListener() != null) {
+			return StageActivity.getActiveStageListener().getThreeDManager();
 		}
 		return null;
 	}
@@ -557,19 +553,13 @@ public class FormulaElement implements Serializable {
 				try {
 					File file = scope.getProject().getFile(fileName);
 
-					// --- ЛУЧШАЯ ПРАКТИКА ---
-					// Объединяем все проверки в одну.
-					// Это безопасно и эффективно благодаря "ленивому" вычислению &&.
 					if (file != null && file.exists() && file.isFile() && file.canRead()) {
 						return true;
 					}
 
-					// Если любая из проверок не удалась, возвращаем false.
 					return false;
 
 				} catch (Exception e) {
-					// Добавляем блок try-catch на случай непредвиденных ошибок
-					// (например, если в имени файла есть недопустимые символы).
 					Log.e("FileCheck", "Error while checking file existence for: " + fileName, e);
 					return false;
 				}
@@ -584,6 +574,11 @@ public class FormulaElement implements Serializable {
 			case TO_DEC:
 				String hex = String.valueOf(arguments.get(0));
 				return Integer.parseInt(hex, 16);
+			case IS_MOUSE_BUTTON_DOWN: {
+				Integer buttonCode = tryParseIntFromObject(arguments.get(0));
+				if (buttonCode == null) return Conversions.FALSE;
+				return Conversions.booleanToDouble(Gdx.input.isButtonPressed(buttonCode));
+			}
 			case RANDOM_STR:
 				String LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 				SecureRandom random = new SecureRandom();
@@ -595,9 +590,7 @@ public class FormulaElement implements Serializable {
 				}
 				return result2.toString();
 			case GET_DIRECTION_X: {
-				// Используем правильный метод для конвертации
 				double angleDegrees = tryInterpretDoubleValue(arguments.get(0));
-				// MathUtils.cosDeg возвращает float, но наш интерпретатор работает с Double
 				return (double) com.badlogic.gdx.math.MathUtils.cosDeg((float) angleDegrees);
 			}
 			case GET_DIRECTION_Y: {
@@ -607,7 +600,6 @@ public class FormulaElement implements Serializable {
 			case GET_ANGLE: {
 				double x = tryInterpretDoubleValue(arguments.get(0));
 				double y = tryInterpretDoubleValue(arguments.get(1));
-				// atan2Degrees возвращает градусы, что более привычно для пользователей Catrobat
 				return (double) com.badlogic.gdx.math.MathUtils.atan2Deg((float) y, (float) x);
 			}
 			case GET_3D_VELOCITY_X: {
@@ -693,21 +685,21 @@ public class FormulaElement implements Serializable {
 				ThreeDManager manager = getThreeDManager();
 				return (manager != null) ? (double) manager.getCameraDirection().z : 0.0;
 			}
-			case GET_3D_ROTATION_YAW: { // Вращение Y = Yaw
+			case GET_3D_ROTATION_YAW: {
 				ThreeDManager manager = getThreeDManager();
 				if (manager == null) return 0.0;
 				String id = String.valueOf(arguments.get(0));
 				Vector3 rot = manager.getRotation(id);
 				return (rot != null) ? rot.y : 0.0;
 			}
-			case GET_3D_ROTATION_PITCH: { // Вращение X = Pitch
+			case GET_3D_ROTATION_PITCH: {
 				ThreeDManager manager = getThreeDManager();
 				if (manager == null) return 0.0;
 				String id = String.valueOf(arguments.get(0));
 				Vector3 rot = manager.getRotation(id);
 				return (rot != null) ? rot.x : 0.0;
 			}
-			case GET_3D_ROTATION_ROLL: { // Вращение Z = Roll
+			case GET_3D_ROTATION_ROLL: {
 				ThreeDManager manager = getThreeDManager();
 				if (manager == null) return 0.0;
 				String id = String.valueOf(arguments.get(0));
@@ -743,6 +735,12 @@ public class FormulaElement implements Serializable {
 				Float dist = manager.getDistance(id1, id2);
 				return (dist != null) ? dist : 0.0;
 			}
+			case JSON_GET:
+				return interpretFunctionJsonGet(arguments.get(0), arguments.get(1));
+			case JSON_SET:
+				return interpretFunctionJsonSet(arguments.get(0), arguments.get(1), arguments.get(2));
+			case JSON_IS_VALID:
+				return interpretFunctionJsonIsValid(arguments.get(0));
 			case REPEAT:
 				String str3 = String.valueOf(arguments.get(0));
 				Integer times = tryParseIntFromObject(arguments.get(1));
@@ -757,14 +755,6 @@ public class FormulaElement implements Serializable {
 				String substring = String.valueOf(arguments.get(1));
 				return str2.contains(substring);
 			case TABLE_X:
-				/*TableManager.Companion.createTable("myTable", 6, 4); // Создаем таблицу размером 6x4
-				TableManager.Companion.insertElement("myTable", "Hello", 3, 2); // Вставляем элемент
-				String value = TableManager.Companion.getElementValue("myTable", 3, 2); // Получаем элемент
-				Log.d("TABLE_MANAGER", value); // Выводит: Hello
-
-				Integer xSize = TableManager.Companion.getTableXSize("myTable"); // Получение размера по X
-				Integer ySize = TableManager.Companion.getTableYSize("myTable"); // Получение размера по Y
-				Log.d("TABLE_MANAGER", "Размеры таблицы: " + xSize + " по X и " + ySize + " по Y"); // Выводит: Размеры таблицы: 6 по X и 4 по Y */
 				return TableManager.Companion.getTableXSize(String.valueOf(arguments.get(0)));
 			case VIEW_X:
 				final WeakReference ref = StageActivity.activeStageActivity;
@@ -798,6 +788,48 @@ public class FormulaElement implements Serializable {
 				}
 				if (activity3 == null) return 0;
 				return activity3.getViewHeight(String.valueOf(arguments.get(0)));
+			case RAY_DID_HIT: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return Conversions.FALSE;
+				String rayName = String.valueOf(arguments.get(0));
+				return Conversions.booleanToDouble(manager.getRayDidHit(rayName));
+			}
+			case GET_RAY_HIT_X: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitPointX(rayName);
+			}
+			case GET_RAY_HIT_Y: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitPointY(rayName);
+			}
+			case GET_RAY_HIT_Z: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitPointZ(rayName);
+			}
+			case GET_RAY_HIT_NORMAL_X: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitNormalX(rayName);
+			}
+			case GET_RAY_HIT_NORMAL_Y: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitNormalY(rayName);
+			}
+			case GET_RAY_HIT_NORMAL_Z: {
+				ThreeDManager manager = getThreeDManager();
+				if (manager == null) return 0.0;
+				String rayName = String.valueOf(arguments.get(0));
+				return (double) manager.getRayHitNormalZ(rayName);
+			}
 			case VIDEO_PLAYING:
 				final WeakReference ref4 = StageActivity.activeStageActivity;
 				StageActivity activity4 = null;
@@ -873,13 +905,13 @@ public class FormulaElement implements Serializable {
 			case FIND:
 				return interpretFunctionFind(arguments.get(1), scope);
 			case COLLIDES_WITH_COLOR:
-				return booleanToDouble(new ColorCollisionDetection(scope, StageActivity.stageListener)
+				return booleanToDouble(new ColorCollisionDetection(scope, StageActivity.getActiveStageListener())
 						.tryInterpretFunctionTouchesColor(arguments.get(0)));
 			case COLOR_TOUCHES_COLOR:
-				return booleanToDouble(new ColorCollisionDetection(scope, StageActivity.stageListener)
+				return booleanToDouble(new ColorCollisionDetection(scope, StageActivity.getActiveStageListener())
 						.tryInterpretFunctionColorTouchesColor(arguments.get(0), arguments.get(1)));
 			case COLOR_AT_XY:
-				return new ColorAtXYDetection(scope, StageActivity.stageListener)
+				return new ColorAtXYDetection(scope, StageActivity.getActiveStageListener())
 						.tryInterpretFunctionColorAtXY(arguments.get(0), arguments.get(1));
 			case TEXT_BLOCK_FROM_CAMERA:
 				return textBlockFunctionProvider.interpretFunctionTextBlock(Double.parseDouble(arguments.get(0).toString()));
@@ -894,18 +926,15 @@ public class FormulaElement implements Serializable {
 	}
 
 	private Object interpretCustomLunoFunction(CustomFormula customFormula, List<Object> arguments, Scope scope) {
-		// 1. Находим загруженную библиотеку по ID
 		LoadedLibrary library = LibraryManager.INSTANCE.getLoadedLibrary(customFormula.getOwnerLibraryId());
 		if (library == null) {
 			Log.e(TAG_FORMULA_ELEMENT, "Библиотека " + customFormula.getOwnerLibraryId() + " не загружена для функции " + customFormula.getUniqueName());
 			return "LIB NOT FOUND";
 		}
 
-		// 2. Получаем интерпретатор этой библиотеки
 		Interpreter interpreter = library.getInterpreter();
 
 		try {
-			// 3. Находим Luno-функцию в глобальной области видимости интерпретатора
 			LunoValue functionValue = interpreter.getGlobals().get(new Token(TokenType.IDENTIFIER, customFormula.getLunoFunctionName(), null, -1, -1));
 
 			if (!(functionValue instanceof LunoValue.Callable)) {
@@ -914,26 +943,21 @@ public class FormulaElement implements Serializable {
 			}
 			LunoValue.Callable lunoFunction = (LunoValue.Callable) functionValue;
 
-			// 4. Конвертируем аргументы из Java/Catroid в LunoValue
 			List<LunoValue> lunoArgs = new ArrayList<>();
 			for (Object arg : arguments) {
 				lunoArgs.add(LunoValue.Companion.fromKotlin(arg));
 			}
 
-			// 5. Вызываем функцию!
 			LunoValue result = lunoFunction.call(interpreter, lunoArgs, new Token(TokenType.EOF, "", null, -1, -1));
 
-			// 6. Конвертируем результат обратно в Java-тип, который ожидает Catroid
 			Object resultJava;
 			if (result instanceof LunoValue.Number) {
-				resultJava = ((LunoValue.Number) result).getValue(); // Получаем чистый Double
+				resultJava = ((LunoValue.Number) result).getValue();
 			} else if (result instanceof LunoValue.String) {
-				resultJava = ((LunoValue.String) result).getValue(); // Получаем чистый String
+				resultJava = ((LunoValue.String) result).getValue();
 			} else if (result instanceof LunoValue.Boolean) {
-				// FormulaElement работает с Double для логики (0.0 = false, 1.0 = true)
 				resultJava = ((LunoValue.Boolean) result).getValue() ? Conversions.TRUE : Conversions.FALSE;
 			} else {
-				// Для всех остальных типов (List, Object, Null) возвращаем их строковое представление
 				resultJava = interpreter.lunoValueToString(result, true);
 			}
 
@@ -1038,37 +1062,37 @@ public class FormulaElement implements Serializable {
 	private Object interpretFunctionConnect(Object right, Scope scope) {
 		UserList userlist = getUserListOfChild(leftChild, scope);
 		if (userlist == null) {
-			return ""; // Если userlist не найден, возвращаем пустую строку.
+			return "";
 		}
 
 		List<Object> list = userlist.getValue();
-		StringBuilder strBuilder = new StringBuilder(); // Используем StringBuilder для эффективной конкатенации строк.
+		StringBuilder strBuilder = new StringBuilder();
 		String comma = String.valueOf(right);
 		
-		for (Object object : list) { // Исправляем синтаксис на Java
-			if (object != null) { // Проверяем на null, чтобы избежать NullPointerException
-				strBuilder.append(String.valueOf(object) + comma); // Собираем строку из значений
+		for (Object object : list) {
+			if (object != null) {
+				strBuilder.append(String.valueOf(object) + comma);
 			}
 		}
 
-		return strBuilder.toString(); // Возвращаем собранную строку
+		return strBuilder.toString();
 	}
 
 	private Object interpretFunctionFind(Object right, Scope scope) {
 		UserList userlist = getUserListOfChild(leftChild, scope);
 		if (userlist == null) {
-			return null; // Если userlist не найден, возвращаем null.
+			return null;
 		}
 
 		List<Object> list = userlist.getValue();
 		for (int i = 0; i < list.size(); i++) {
 			Object object = list.get(i);
 			if (object != null && String.valueOf(object).equals(String.valueOf(right))) { // Проверяем на null и соответствие значению
-				return i + 1; // Возвращаем индекс (индексация с 1)
+				return i + 1;
 			}
 		}
 
-		return ""; // Если значение не найдено, возвращаем null.
+		return "";
 	}
 
 
@@ -1232,24 +1256,21 @@ public class FormulaElement implements Serializable {
 		int lenStr1 = str1.length();
 		int lenStr2 = str2.length();
 
-		// Создаем массив для хранения расстояний
 		int[][] dp = new int[lenStr1 + 1][lenStr2 + 1];
 
-		// Инициализируем базовые случаи
 		for (int i = 0; i <= lenStr1; i++) {
-			dp[i][0] = i; // удаление всех символов
+			dp[i][0] = i;
 		}
 		for (int j = 0; j <= lenStr2; j++) {
-			dp[0][j] = j; // добавление всех символов
+			dp[0][j] = j;
 		}
 
-		// Заполняем таблицу
 		for (int i = 1; i <= lenStr1; i++) {
 			for (int j = 1; j <= lenStr2; j++) {
 				int cost = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1;
-				dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1,     // Удаление
-								dp[i][j - 1] + 1),    // Вставка
-						dp[i - 1][j - 1] + cost); // Замена
+				dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1,
+								dp[i][j - 1] + 1),
+						dp[i - 1][j - 1] + cost);
 			}
 		}
 
@@ -1261,6 +1282,95 @@ public class FormulaElement implements Serializable {
 		var value2 = val2.toString();
 
 		return(levenshtain(value1, value2));
+	}
+
+	private Object interpretFunctionJsonIsValid(Object arg) {
+		String jsonString = String.valueOf(arg);
+		try {
+			String trimmed = jsonString.trim();
+			if (trimmed.startsWith("{")) {
+				new JSONObject(jsonString);
+			} else if (trimmed.startsWith("[")) {
+				new JSONArray(jsonString);
+			} else {
+				return Conversions.FALSE;
+			}
+		} catch (JSONException e) {
+			return Conversions.FALSE;
+		}
+		return Conversions.TRUE;
+	}
+
+	private Object interpretFunctionJsonGet(Object jsonArg, Object pathArg) {
+		String jsonString = String.valueOf(jsonArg);
+		String path = String.valueOf(pathArg);
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			String[] keys = path.split("\\.");
+			Object current = jsonObject;
+			for (int i = 0; i < keys.length; i++) {
+				if (current instanceof JSONObject) {
+					JSONObject currentObj = (JSONObject) current;
+					String key = keys[i];
+					if (i == keys.length - 1) {
+						Object result = currentObj.opt(key);
+						if (result == null || result == JSONObject.NULL) return "";
+
+						if (result instanceof JSONObject || result instanceof JSONArray) {
+							return result.toString();
+						}
+						return result;
+					} else {
+						current = currentObj.opt(key);
+						if (current == null) return "";
+					}
+				} else {
+					return "";
+				}
+			}
+			return "";
+		} catch (JSONException e) {
+			return "";
+		}
+	}
+
+	private Object interpretFunctionJsonSet(Object jsonArg, Object pathArg, Object valueArg) {
+		String jsonString = String.valueOf(jsonArg);
+		String path = String.valueOf(pathArg);
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			String[] keys = path.split("\\.");
+			JSONObject current = jsonObject;
+			for (int i = 0; i < keys.length - 1; i++) {
+				String key = keys[i];
+				JSONObject next = current.optJSONObject(key);
+				if (next == null) {
+					next = new JSONObject();
+					current.put(key, next);
+				}
+				current = next;
+			}
+
+			String finalKey = keys[keys.length - 1];
+			try {
+				if (valueArg instanceof String) {
+					String valStr = (String) valueArg;
+					if (valStr.contains(".")) {
+						current.put(finalKey, Double.parseDouble(valStr));
+					} else {
+						current.put(finalKey, Integer.parseInt(valStr));
+					}
+				} else {
+					current.put(finalKey, valueArg);
+				}
+			} catch (NumberFormatException e) {
+				current.put(finalKey, valueArg);
+			}
+
+			return jsonObject.toString();
+		} catch (JSONException e) {
+			return jsonString;
+		}
 	}
 
 	private Object interpretFunctionSubtext(Object leftChild,

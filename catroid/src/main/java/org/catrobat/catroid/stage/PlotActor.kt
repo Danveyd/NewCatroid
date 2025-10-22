@@ -153,7 +153,7 @@ class PlotActor : Actor() {
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         buffer!!.begin()
-        for (sprite in StageActivity.stageListener.spritesFromStage) {
+        for (sprite in StageActivity.activeStageActivity.get()?.stageListener?.spritesFromStage!!) {
             val plot = sprite.plot
             plot.drawLinesForSprite(screenRatio, stage.viewport.camera)
         }

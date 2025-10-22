@@ -72,11 +72,7 @@ class LookFromTableAction : TemporalAction() {
         bitmap.recycle()
     }
 
-    /**
-     * Сохраняет Bitmap во временный файл. Этот код взят из вашего оригинала.
-     */
     private fun saveBitmapToTempFile(bitmap: Bitmap): File {
-        // Используем уникальное имя, чтобы избежать конфликтов при одновременной работе
         val tempFile = File(CatroidApplication.getAppContext().cacheDir, "generated_${System.nanoTime()}.png")
         try {
             FileOutputStream(tempFile).use { out ->
@@ -88,22 +84,14 @@ class LookFromTableAction : TemporalAction() {
         return tempFile
     }
 
-    /**
-     * Создает новый LookData из файла и устанавливает его для спрайта.
-     */
     private fun setLookFromFile(file: File) {
         val currentSprite = scope?.sprite ?: return
 
-        // Создаем LookData из файла (как в вашем оригинальном коде)
         val newLookData = LookData(file.name, file)
         newLookData.collisionInformation.calculate()
 
-        // Устанавливаем Look для спрайта
         updateLookListIndex()
         currentSprite.look.lookData = newLookData
-
-        // Дожидаемся расчета коллизии
-        //newLookData.collisionInformation?.collisionPolygonCalculationThread?.join()
     }
 
     private fun updateLookListIndex() {

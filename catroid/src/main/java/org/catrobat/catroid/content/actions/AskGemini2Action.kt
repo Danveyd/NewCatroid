@@ -69,9 +69,9 @@ class AskGemini2Action() : TemporalAction() {
     override fun update(percent: Float) {
         val client = OkHttpClient.Builder()
             .dns(CustomDns())
-            .connectTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут подключения в 0 секунд
-            .readTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут чтения в 0 секунд
-            .writeTimeout(0, TimeUnit.SECONDS) // Устанавливаем таймаут записи в 0 секунд
+            .connectTimeout(0, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
+            .writeTimeout(0, TimeUnit.SECONDS)
             .hostnameVerifier { hostname, session -> true }
             .build()
         val model_str = model?.interpretString(scope) ?: "models/gemini-1.5-flash-latest"
@@ -108,7 +108,6 @@ class AskGemini2Action() : TemporalAction() {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     userVariable?.value = "Response error: ${e.message}"
-                    // Обновляем UI в основном потоке, если это необходимо
                 }
 
                 override fun onResponse(call: Call, response: Response) {
@@ -128,9 +127,8 @@ class AskGemini2Action() : TemporalAction() {
                         val errorBody = response.body?.string() ?: "Unknown error"
                         Log.e("GeminiAPI", "Error body: $errorBody")
                     }
-                    // Обновляем UI в основном потоке, если это необходимо
                 }
             })
-        }.start() // Запускаем поток
+        }.start()
     }
 }

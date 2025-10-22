@@ -1,0 +1,25 @@
+<!-- res/layout/inspector_camera.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <CheckBox
+        android:id="@+id/check_main_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Is Main Camera"
+        android:textColor="@android:color/white"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Field of View" android:layout_marginTop="8dp"/>
+    <EditText android:id="@+id/edit_cam_fov" style="@style/InspectorEditText" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clipping Planes" android:layout_marginTop="8dp"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Near"/>
+        <EditText android:id="@+id/edit_cam_near" style="@style/InspectorEditText" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Far"/>
+        <EditText android:id="@+id/edit_cam_far" style="@style/InspectorEditText" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+    </LinearLayout>
+</LinearLayout>

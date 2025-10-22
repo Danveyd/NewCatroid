@@ -1,4 +1,3 @@
-// В пакете: org.catrobat.catroid.content
 package org.catrobat.catroid.content;
 
 import org.catrobat.catroid.content.bricks.ScriptBrick;

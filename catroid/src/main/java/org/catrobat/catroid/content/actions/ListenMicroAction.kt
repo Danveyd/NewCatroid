@@ -53,11 +53,9 @@ class ListenMicroAction() : TemporalAction() {
         Log.d("ListemMicro", "Started")
         var value = time?.interpretObject(scope) ?: ""
         var value2 = value.toString().toLong()
-
-        //val activity = CatroidApplication.getAppContext() as? Activity
         val activity = StageActivity.activeStageActivity.get()
         activity?.runOnUiThread {
-            recogController.start(activity) // Передаем Activity здесь
+            recogController.start(activity)
             freqController.start()
             countDownTimer = object : CountDownTimer(60_000, value2) {
                 override fun onTick(p0: Long) {

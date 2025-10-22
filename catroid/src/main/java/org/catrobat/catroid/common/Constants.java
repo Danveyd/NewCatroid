@@ -42,7 +42,7 @@ import static org.catrobat.catroid.common.FlavoredConstants.DEFAULT_ROOT_DIRECTO
 
 public final class Constants {
 
-	public static final double CURRENT_CATROBAT_LANGUAGE_VERSION = 1.15;
+	public static final double CURRENT_CATROBAT_LANGUAGE_VERSION = 1.17;
 	public static final String REMOTE_DISPLAY_APP_ID = "CEBB9229";
 	public static final int CAST_CONNECTION_TIMEOUT = 5000; //in milliseconds
 	public static final int CAST_NOT_SEEING_DEVICE_TIMEOUT = 3000; //in
@@ -280,9 +280,7 @@ public final class Constants {
 	public static final double COORDINATE_TRANSFORMATION_OFFSET = 0.5;
 
 	public static final String COLLISION_PNG_META_TAG_KEY = "CollisionPolygonVertices";
-	public static final int COLLISION_VERTEX_LIMIT = 100;
 	public static final float COLLISION_POLYGON_CREATION_EPSILON = 10.0f;
-	// ИСПРАВЛЕННАЯ ВЕРСИЯ
 	public static final String COLLISION_POLYGON_METADATA_PATTERN = "^(((\\-?\\d+(\\.\\d+)?);)*(\\-?\\d+(\\.\\d+)?))(\\|(((\\-?\\d+(\\.\\d+)?);)*(\\-?\\d+(\\.\\d+)?)))*$";
 	public static final float COLLISION_WITH_FINGER_TOUCH_RADIUS = 50;
 
@@ -384,7 +382,8 @@ public final class Constants {
 	public static final String DEVICE_BRAND_HUAWEI = "huawei";
 
 	public static final String COLLISION_PNG_META_VERSION_KEY = "CatrobatCollisionVersion";
-	public static final String LATEST_COLLISION_VERSION = "4_epsilon";
+	public static final String LATEST_COLLISION_VERSION = "5_epsilon";
+	public static final int COLLISION_VERTEX_LIMIT = 2048;
 
 	private Constants() {
 		throw new AssertionError("No.");

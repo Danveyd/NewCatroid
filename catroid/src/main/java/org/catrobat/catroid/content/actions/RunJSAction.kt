@@ -29,7 +29,6 @@ class RunJSAction : TemporalAction() {
     var userVariable: UserVariable? = null
 
     init {
-        // Это действие должно быть мгновенным
         duration = 0f
     }
 
@@ -39,21 +38,15 @@ class RunJSAction : TemporalAction() {
         }
 
         val scriptToRun = runScript?.interpretObject(scope) as? String ?: ""
-
-
-        // Выполняем JS, передавая скрипт и переменную для результата
         Companion.evaluateJS(scriptToRun, userVariable)
     }
 
-    // В классе RunJSAction
     companion object {
 
         private var isWebViewCreated = false
         private val uiHandler = Handler(Looper.getMainLooper())
 
         private val sharedWebView: WebView by lazy {
-            // В блоке lazy мы теперь делаем только самую базовую настройку.
-            // loadData здесь больше не нужен.
             val webView = WebView(CatroidApplication.getAppContext())
             webView.settings.javaScriptEnabled = true
             webView.addJavascriptInterface(JsInterface(), "Android")
@@ -65,15 +58,10 @@ class RunJSAction : TemporalAction() {
 
         fun evaluateJS(script: String, variable: UserVariable?) {
             uiHandler.post {
-                // !!! ГЛАВНОЕ ИСПРАВЛЕНИЕ !!!
-                // Перед каждым выполнением скрипта мы перезагружаем пустую страницу.
-                // Это сбрасывает JavaScript-контекст и гарантирует чистое окружение.
-                // Эта операция очень быстрая.
                 sharedWebView.loadData("", "text/html", null)
 
-                // Теперь выполняем скрипт
                 sharedWebView.evaluateJavascript(script) { result ->
-                    val cleanResult = result ?: "" //?.removeSurrounding("\"") ?: ""
+                    val cleanResult = result ?: ""
                     variable?.value = cleanResult
                 }
             }
@@ -83,7 +71,6 @@ class RunJSAction : TemporalAction() {
             if (isWebViewCreated) {
                 uiHandler.post {
                     sharedWebView.stopLoading()
-                    //sharedWebView.destroy()
                 }
             }
         }

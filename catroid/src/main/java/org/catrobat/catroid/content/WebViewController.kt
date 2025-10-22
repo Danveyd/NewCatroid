@@ -15,13 +15,16 @@ import androidx.core.app.ActivityCompat
 import org.catrobat.catroid.R
 import android.widget.FrameLayout
 
+
+//УСТАРЕВШИЙ И НЕ ИСПОЛЬЗУЕТСЯ
+//УСТАРЕВШИЙ И НЕ ИСПОЛЬЗУЕТСЯ
 class WebViewController {
     companion object {
-        private val webViews = mutableMapOf<String, WebView>() // Хранение WebView по имени
+        private val webViews = mutableMapOf<String, WebView>()
         var rootLayout: FrameLayout = FrameLayout(CatroidApplication.getAppContext())
 
         fun createWebView(
-            activity: Activity, // Передаем активность
+            activity: Activity,
             name: String,
             url: String,
             x: Int,
@@ -29,7 +32,6 @@ class WebViewController {
             width: Int,
             height: Int
         ) {
-            // Запускаем создание WebView в главном потоке
             activity.runOnUiThread {
                 if (webViews.containsKey(name)) {
                     println("WebView с именем $name уже существует")
@@ -52,7 +54,7 @@ class WebViewController {
         }
 
         fun loadHtmlIntoWebView(
-            activity: Activity, // Передаем активность
+            activity: Activity,
             name: String,
             html: String,
             x: Int,
@@ -60,7 +62,6 @@ class WebViewController {
             width: Int,
             height: Int
         ) {
-            // Запускаем загрузку HTML в главном потоке
             activity.runOnUiThread {
                 if (webViews.containsKey(name)) {
                     println("WebView с именем $name уже существует")
@@ -83,15 +84,12 @@ class WebViewController {
         }
 
 
-        /**
-         * Удаление WebView по имени
-         */
         fun removeWebView(name: String) {
             val webView = webViews[name]
             if (webView != null) {
-                rootLayout.removeView(webView) // Убираем из макета
-                webView.destroy() // Уничтожаем WebView
-                webViews.remove(name) // Удаляем из Map
+                rootLayout.removeView(webView)
+                webView.destroy()
+                webViews.remove(name)
                 println("WebView с именем $name удалён")
             } else {
                 println("WebView с именем $name не найден")

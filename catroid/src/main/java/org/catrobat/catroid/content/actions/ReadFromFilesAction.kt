@@ -64,7 +64,6 @@ class ReadFromFilesAction() : TemporalAction() {
     }
 
     fun readFromFile(file: File): String {
-        // Читаем содержимое файла и возвращаем его как строку
-        return file.readText() // или можно использовать file.readLines().joinToString("\n")
+        return file.readText()
     }
 }

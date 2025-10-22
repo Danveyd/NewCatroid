@@ -32,6 +32,9 @@ import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
@@ -58,6 +61,7 @@ import com.badlogic.gdx.graphics.glutils.HdpiUtils;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -68,6 +72,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.gaurav.avnc.vnc.VncClient;
@@ -93,10 +98,12 @@ import org.catrobat.catroid.content.XmlHeader;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.content.eventids.GamepadEventId;
+import org.catrobat.catroid.content.eventids.MouseButtonEventId;
 import org.catrobat.catroid.embroidery.DSTPatternManager;
 import org.catrobat.catroid.embroidery.EmbroideryPatternManager;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.formulaeditor.UserDataWrapper;
+import org.catrobat.catroid.io.SoundCacheManager;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.physics.PhysicsDebugSettings;
 import org.catrobat.catroid.physics.PhysicsLook;
@@ -104,6 +111,7 @@ import org.catrobat.catroid.physics.PhysicsObject;
 import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.physics.shapebuilder.PhysicsShapeBuilder;
 import org.catrobat.catroid.pocketmusic.mididriver.MidiSoundManager;
+import org.catrobat.catroid.raptor.SceneManager;
 import org.catrobat.catroid.raptor.ThreeDManager;
 import org.catrobat.catroid.sensing.CollisionDetection;
 import org.catrobat.catroid.sensing.ColorAtXYDetection;
@@ -146,6 +154,7 @@ public class StageListener implements ApplicationListener {
 	private float deltaActionTimeDivisor = 10f;
 
 	private Stage stage = null;
+	private Stage uiStage = null;
 	private boolean paused = true;
 	private boolean finished = false;
 	private boolean reloadProject = false;
@@ -163,6 +172,7 @@ public class StageListener implements ApplicationListener {
 	private PhysicsWorld physicsWorld;
 
 	private OrthographicCamera camera;
+	private OrthographicCamera uiCamera;
 	private Batch batch = null;
 	private BitmapFont font;
 	private Passepartout passepartout;
@@ -198,6 +208,9 @@ public class StageListener implements ApplicationListener {
 	private StageDialog stageDialog;
 
 	private Resolution maxViewPort = null;
+	private Viewport uiViewPort;
+
+	private float cameraRotation = 0f;
 
 	public void setMaxViewPort(Resolution maxViewPort) {
 		this.maxViewPort = maxViewPort;
@@ -237,9 +250,15 @@ public class StageListener implements ApplicationListener {
 	private ModelInstance yourModelInstance;*/
 	private ThreeDManager threeDManager;
 
+	public SceneManager sceneManager;
+
 	// ▼▼▼ ДОБАВЬТЕ ЭТОТ МЕТОД ▼▼▼
 	public ThreeDManager getThreeDManager() {
 		return threeDManager;
+	}
+
+	public SceneManager getSceneManager() {
+		return sceneManager;
 	}
 
 	private com.badlogic.gdx.graphics.g3d.Environment environment;
@@ -247,6 +266,8 @@ public class StageListener implements ApplicationListener {
 	private FrameBuffer sceneFbo;
 	private FrameBuffer postProcessFbo;
 	private TextureRegion fboRegion;
+
+	private InputMultiplexer inputMultiplexer;
 
 	private Mesh vmScreenMesh;
 	private float vmX, vmY, vmWidth, vmHeight;
@@ -272,64 +293,14 @@ public class StageListener implements ApplicationListener {
 		threeDManager = new ThreeDManager();
 		threeDManager.init();
 
-		//modelBatch = new ModelBatch();
-		/*modelBatch = new ModelBatch();
-
-		try {
-			FileHandle originalObjHandle = Gdx.files.internal("models/dom/Residential Buildings 001.obj"); // <--- УКАЖИТЕ ИМЯ ВАШЕГО ФАЙЛА
-
-			// 2. ОБРАБАТЫВАЕМ ФАЙЛЫ С ПОМОЩЬЮ НАШЕГО КЛАССА
-			FileHandle patchedObjHandle = ModelPathProcessor.process(originalObjHandle);
-
-			// 3. Загружаем модель, используя ИСПРАВЛЕННЫЙ handle
-			com.badlogic.gdx.assets.loaders.ModelLoader loader =
-					new com.badlogic.gdx.graphics.g3d.loader.ObjLoader();
-
-			yourModel = loader.loadModel(patchedObjHandle);
-			yourModelInstance = new ModelInstance(yourModel);
-
-		} catch (Exception e) {
-			Log.e("3D_LOADING", "Не удалось загрузить OBJ модель, создаем куб для теста.", e);
-			// ... ваш запасной код с созданием куба ...
-			com.badlogic.gdx.graphics.g3d.utils.ModelBuilder modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-			yourModel = modelBuilder.createBox(50f, 50f, 50f,
-					new com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(Color.RED)), // Сделаем его красным, чтобы отличать
-					com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal);
-			yourModelInstance = new ModelInstance(yourModel);
-		}
-
-		environment = new com.badlogic.gdx.graphics.g3d.Environment();
-
-		// 2. Добавляем фоновый (ambient) свет.
-		// Это предотвратит появление абсолютно черных областей.
-		// Параметры: R, G, B интенсивность (от 0 до 1) и альфа (всегда 1).
-		// 0.4f - это умеренно-серый свет.
-		environment.set(new com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute(
-				com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-
-		// 3. Добавляем направленный (directional) свет, как солнце.
-		// Параметры set(): цвет (R, G, B) и вектор направления (X, Y, Z).
-		// Вектор (-1f, -0.8f, -0.2f) означает, что свет светит "сверху-справа-спереди" на объект.
-		// Этот свет создаст основные блики и тени.
-		environment.add(new com.badlogic.gdx.graphics.g3d.environment.DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-
-		threeDCamera = new com.badlogic.gdx.graphics.PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		threeDCamera.position.set(200f, 200f, 200f); // Позиция камеры в 3D пространстве
-		threeDCamera.lookAt(0,0,0); // Смотрим на центр координат
-		threeDCamera.near = 1f; // Ближняя плоскость отсечения
-		threeDCamera.far = 500f; // Дальняя плоскость отсечения
-		threeDCamera.update();*/
-
-		//yourModel = new ModelLoader.loadModel(Gdx.files.internal("path/to/your/model.g3db"));
-
-		// Создаем экземпляр модели
-		//yourModelInstance = new ModelInstance(yourModel);
+		sceneManager = new SceneManager(threeDManager);
 
 		if (stage == null) {
 			createNewStage();
-			Gdx.input.setInputProcessor(stage);
+			Gdx.input.setInputProcessor(inputMultiplexer);
 		} else {
 			stage.getRoot().clear();
+			uiStage.getRoot().clear();
 		}
 		initScreenMode();
 		initStageInputListener();
@@ -345,6 +316,8 @@ public class StageListener implements ApplicationListener {
 
 		embroideryPatternManager = new DSTPatternManager();
 		initActors(sprites);
+
+		SoundCacheManager.getInstance().initialize();
 
 		RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -371,7 +344,7 @@ public class StageListener implements ApplicationListener {
 				maxViewPort.getHeight(),
 				virtualWidth,
 				virtualHeight);
-		stage.addActor(passepartout);
+		//stage.addActor(passepartout);
 
 		axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
 
@@ -411,6 +384,63 @@ public class StageListener implements ApplicationListener {
 			Log.e("SHADER_ERROR", "Could not load VNC Swizzle Shader files", e);
 		}
 	}
+
+	public void setCameraPosition(float x, float y) {
+		if (camera != null) {
+			camera.position.set(x, y, 0);
+		}
+	}
+
+	public void setCameraZoom(float zoom) {
+		if (camera != null && zoom > 0) {
+			camera.zoom = zoom;
+		}
+	}
+
+	public void setCameraRotation(float degrees) {
+		if (camera != null) {
+			// Вращаем на разницу между новым и старым углом, чтобы установить, а не добавить
+			camera.rotate(cameraRotation - degrees);
+			cameraRotation = degrees;
+		}
+	}
+
+	public void pinSpriteToCamera(Sprite sprite) {
+		if (sprite == null || uiStage == null || stage == null) return;
+
+		Look look = sprite.look;
+		if (look == null || look.getParent() == uiStage.getRoot()) {
+			return; // Спрайт уже привязан или не существует
+		}
+
+		// Конвертируем мировые координаты в координаты экрана
+		Vector3 screenCoords = new Vector3(look.getX(), look.getY(), 0);
+		camera.project(screenCoords); // Теперь screenCoords содержит позицию на экране
+
+		// Удаляем из игрового мира и добавляем в мир UI
+		look.remove();
+		uiStage.addActor(look);
+		look.setPosition(screenCoords.x, screenCoords.y);
+	}
+
+	public void unpinSpriteFromCamera(Sprite sprite) {
+		if (sprite == null || uiStage == null || stage == null) return;
+
+		Look look = sprite.look;
+		if (look == null || look.getParent() == stage.getRoot()) {
+			return; // Спрайт уже отвязан или не существует
+		}
+
+		// Конвертируем координаты экрана обратно в мировые
+		Vector3 worldCoords = new Vector3(look.getX(), look.getY(), 0);
+		camera.unproject(worldCoords); // Теперь worldCoords содержит позицию в игровом мире
+
+		// Удаляем из мира UI и возвращаем в игровой мир
+		look.remove();
+		stage.addActor(look);
+		look.setPosition(worldCoords.x, worldCoords.y);
+	}
+
 	private boolean vmGeometryDirty = false;
 
 	public void setVmScreenGeometry(float x, float y, float width, float height) {
@@ -535,7 +565,68 @@ public class StageListener implements ApplicationListener {
 		}
 
 		stage = new Stage(viewPort, batch);
+
+		uiCamera = new OrthographicCamera();
+		uiViewPort = new ScreenViewport(uiCamera); // ScreenViewport идеален для UI
+		uiStage = new Stage(uiViewPort, batch);
+
+		inputMultiplexer = new InputMultiplexer();
+		// Сначала добавляем UI-сцену. Она получит нажатие первой и, если обработает,
+		// событие не пойдет дальше, в игровую сцену.
+		inputMultiplexer.addProcessor(uiStage);
+		inputMultiplexer.addProcessor(stage);
+
+		initMouseInputAdapter();
+		//inputMultiplexer.addProcessor(mouseInputAdapter);
+
 		SensorHandler.timerReferenceValue = SystemClock.uptimeMillis();
+	}
+
+	private void initStageInputListener() {
+		if (stage != null) {
+			stage.getRoot().clearListeners();
+		}
+		if (uiStage != null) {
+			uiStage.getRoot().clearListeners();
+		}
+
+		InputListener gameListener = new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				TouchUtil.touchDown(event.getStageX(), event.getStageY(), pointer);
+				return true;
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				TouchUtil.touchUp(pointer);
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y, int pointer) {
+				TouchUtil.updatePosition(event.getStageX(), event.getStageY(), pointer);
+			}
+		};
+
+		InputListener uiPassThroughListener = new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return event.getTarget() != uiStage.getRoot();
+            }
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				TouchUtil.touchUp(pointer);
+			}
+
+			@Override
+			public void touchDragged(InputEvent event, float x, float y, int pointer) {
+				TouchUtil.updatePosition(event.getStageX(), event.getStageY(), pointer);
+			}
+		};
+
+		stage.addListener(gameListener);
+		uiStage.addListener(uiPassThroughListener);
 	}
 
 	private void initActors(List<Sprite> sprites) {
@@ -594,7 +685,7 @@ public class StageListener implements ApplicationListener {
 		}
 		boolean removedSprite = sprites.remove(sprite);
 		if (removedSprite) {
-			sprite.look.remove();
+			sprite.look.destroy();
 			sprite.invalidate();
 		}
 		return removedSprite;
@@ -635,27 +726,44 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
-	private void initStageInputListener() {
-		if (inputListener == null) {
-			inputListener = new InputListener() {
+	private InputProcessor mouseInputAdapter; // --- НОВОЕ: Отдельный обработчик для мыши ---
+	private final Vector3 tempVec3 = new Vector3(); // --- НОВОЕ: Временный вектор для избежания создания мусора ---
+
+	private void initMouseInputAdapter() {
+		if (mouseInputAdapter == null) {
+			mouseInputAdapter = new InputAdapter() {
 				@Override
-				public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-					TouchUtil.touchDown(event.getStageX(), event.getStageY(), pointer);
-					return true;
+				public boolean mouseMoved(int screenX, int screenY) {
+					// Конвертируем координаты экрана в мировые координаты Catroid
+					tempVec3.set(screenX, screenY, 0);
+					camera.unproject(tempVec3); // Используем основную игровую камеру
+
+					// Обновляем позицию в SensorHandler
+					SensorHandler.getInstance(null).updateMousePosition(tempVec3.x, tempVec3.y);
+					return false; // Не "поглощаем" событие
 				}
 
 				@Override
-				public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-					TouchUtil.touchUp(pointer);
+				public boolean touchDragged(int screenX, int screenY, int pointer) {
+					if (pointer == 0) { // Только для мыши/основного касания
+						return mouseMoved(screenX, screenY);
+					}
+					return false;
 				}
 
 				@Override
-				public void touchDragged(InputEvent event, float x, float y, int pointer) {
-					TouchUtil.updatePosition(event.getStageX(), event.getStageY(), pointer);
+				public boolean scrolled(float amountX, float amountY) {
+					// amountY будет 1 для прокрутки вниз, -1 для вверх. Инвертируем для интуитивности.
+					SensorHandler.getInstance(null).setLastScrollAmount(-amountY);
+
+					// Стреляем событием (этот код можно оставить здесь или перенести в initStageInputListener)
+					EventWrapper e = new EventWrapper(new EventId(EventId.MOUSE_WHEEL_SCROLLED), false);
+					if (project != null) project.fireToAllSprites(e);
+
+					return true; // "Поглощаем" событие прокрутки
 				}
 			};
 		}
-		stage.addListener(inputListener);
 	}
 
 	void menuResume() {
@@ -963,6 +1071,7 @@ public class StageListener implements ApplicationListener {
 			RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			threeDManager = new ThreeDManager();
 			threeDManager.init();
+			sceneManager = new SceneManager(threeDManager);
 		} catch (Exception e) {
 			Log.e("StageListener", "INITIALIZE ERROR: " + e);
 		}
@@ -1032,10 +1141,11 @@ public class StageListener implements ApplicationListener {
 	public void render() {
 		try {
 			Look.tickGlobalFrame();
-			//CameraManager cameraManager = StageActivity.getActiveCameraManager();
-			float color = 0f; //cameraManager != null && cameraManager.getPreviewVisible() ? 0f : 1f;
+			//SensorHandler.getInstance(null).resetMouseDelta();
+
+			float color = 0f;
 			Gdx.gl20.glClearColor(color, color, color, 0f);
-			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // <-- ИЗМЕНЕНО
+			Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 			StageActivity stageActivity = StageActivity.activeStageActivity.get();
 
@@ -1053,9 +1163,10 @@ public class StageListener implements ApplicationListener {
 					threeDManager.dispose();
 				}
 
-				// 2. Создаем и инициализируем новый менеджер
+
 				threeDManager = new ThreeDManager();
 				threeDManager.init();
+				sceneManager = new SceneManager(threeDManager);
 
 				stage.clear();
 				if (penActor != null) {
@@ -1073,7 +1184,7 @@ public class StageListener implements ApplicationListener {
 				physicsWorld = scene.resetPhysicsWorld();
 
 				initActors(sprites);
-				stage.addActor(passepartout);
+				//stage.addActor(passepartout);
 
 				initStageInputListener();
 
@@ -1082,6 +1193,7 @@ public class StageListener implements ApplicationListener {
 				reloadProject = false;
 
 				cameraPositioner.reset();
+				resetCamera();
 
 				if (stageDialog != null) {
 					synchronized (stageDialog) {
@@ -1114,6 +1226,7 @@ public class StageListener implements ApplicationListener {
 				while (deltaTime > 0f) {
 					physicsWorld.step(optimizedDeltaTime);
 					stage.act(optimizedDeltaTime);
+					uiStage.act(optimizedDeltaTime);
 					deltaTime -= optimizedDeltaTime;
 				}
 
@@ -1128,58 +1241,46 @@ public class StageListener implements ApplicationListener {
 				DebugMenuManager.getInstance().updateIfVisible();
 			}
 
-			ShaderProgram customShader = null; //GlobalShaderManager.INSTANCE.getCustomSceneShader();
+            if (isVmDisplayVisible && vmTexture != null && vncSwizzleShader != null && vncSwizzleShader.isCompiled()) {
 
-			if (customShader == null) {
-				// --- СТАНДАРТНЫЙ РЕНДЕРИНГ (без эффектов) ---
-				// Просто рисуем сцену как обычно
-            /*if(cameraManager == null) {
-				Gdx.gl.glClearColor(1, 1, 1, 0);
-			} else if(cameraManager.isCameraActive()) {
-				Gdx.gl.glClearColor(0, 0, 0, 0);
-			} else {
-				Gdx.gl.glClearColor(1, 1, 1, 0);
-			}*/
-				//Gdx.gl.glClearColor(0f, 0f, 0f, 0f); // Всегда прозрачный черный
-				//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				if (isVmDisplayVisible && vmTexture != null && vncSwizzleShader != null && vncSwizzleShader.isCompiled()) {
-					// 1. Активируем (bind) наш шейдер.
-					vncSwizzleShader.bind();
+                vncSwizzleShader.bind();
 
-					// 2. "Привязываем" нашу текстуру к текстурному юниту 0.
-					vmTexture.bind(0);
 
-					// 3. Передаем в шейдер данные (uniforms).
-					//    - Говорим шейдеру, что u_texture находится в юните 0.
-					//    - Передаем матрицу проекции от нашей камеры, чтобы прямоугольник правильно растянулся на весь экран.
-					vncSwizzleShader.setUniformi("u_texture", 0);
-					vncSwizzleShader.setUniformMatrix("u_projectionMatrix", camera.combined);
+                vmTexture.bind(0);
 
-					// 4. Отдаем команду на отрисовку нашего прямоугольника (Mesh).
-					//    Шейдер применится к нему и натянет на него текстуру с исправленными цветами.
-					fullscreenQuad.render(vncSwizzleShader, GL20.GL_TRIANGLES);
-				}
-				if (!finished) {
-					try {
-						if (!paused) {
-							if (threeDManager != null) {
-								threeDManager.update(Gdx.graphics.getDeltaTime());
-							}
-						}
-						try {
-							if (threeDManager != null) threeDManager.render();
-						} catch (Exception e) {
-							Log.e("3DRENDER", "ERROR: " + e);// Здесь ваша логика отрисовки из прошлого ответа (с группировкой по шейдерам и т.д.)
-						}
-						renderSceneNormally(stage); // Вынесите старую логику stage.draw() в отдельный метод
-						// RenderManager.INSTANCE.render();
-					} catch (Exception e) {
-						Log.e("RENDER", "FATAL ERROR: " + e.toString());
-					}
-				}
-			}
 
-			if (makeScreenshot) {
+
+
+                vncSwizzleShader.setUniformi("u_texture", 0);
+                vncSwizzleShader.setUniformMatrix("u_projectionMatrix", camera.combined);
+
+
+
+                fullscreenQuad.render(vncSwizzleShader, GL20.GL_TRIANGLES);
+            }
+            if (!finished) {
+                try {
+                    if (!paused) {
+                        if (threeDManager != null) {
+                            threeDManager.update(Gdx.graphics.getDeltaTime());
+                        }
+                    }
+                    try {
+                        if (threeDManager != null) threeDManager.render();
+                    } catch (Exception e) {
+                        Log.e("3DRENDER", "ERROR: " + e);
+                    }
+					//Log.d("StageListener", stage.getActors().toString());
+                    stage.draw();
+					uiStage.draw();
+                    // RenderManager.INSTANCE.render();
+                } catch (Exception e) {
+                    Log.e("RENDER", "FATAL ERROR: " + e.toString());
+                }
+                firstFrameDrawn = true;
+            }
+
+            if (makeScreenshot) {
 				Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
 				String manualScreenshotPath = scene.getDirectory()
 						+ "/" + SCREENSHOT_MANUAL_FILE_NAME;
@@ -1223,10 +1324,10 @@ public class StageListener implements ApplicationListener {
 
 			cameraPositioner.updateCameraPositionForFocusedSprite();
 		} catch (Exception e) {
-			// Логируем критическую ошибку рендера
+
 			Log.e("RENDER_CRASH", "Fatal error during render loop", e);
-			// Можно даже попытаться безопасно остановить сцену
-			// или показать диалоговое окно об ошибке.
+
+
 		}
 	}
 
@@ -1761,6 +1862,14 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
+		// --- ИЗМЕНЕНИЕ ---
+		// Теперь нужно обновлять оба viewport'а
+		if (viewPort != null) {
+			viewPort.update(width, height, false);
+		}
+		if (uiViewPort != null) {
+			uiViewPort.update(width, height, true); // true = center camera
+		}
 	}
 
 	/**
@@ -1818,14 +1927,49 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
+	public void resetCamera() {
+		if (camera != null) {
+			// Сбрасываем позицию в центр (0, 0)
+			camera.position.set(0, 0, 0);
+
+			// Сбрасываем зум к 1.0 (без приближения/отдаления)
+			camera.zoom = 1.0f;
+
+			// Вращаем камеру на ОБРАТНЫЙ угол, чтобы вернуть ее в 0 градусов
+			camera.rotate(-cameraRotation);
+			cameraRotation = 0f; // Также сбрасываем наш собственный счетчик вращения
+
+			// Применяем все изменения
+			camera.update();
+		}
+	}
+
 	@Override
 	public void dispose() {
 		executeExitScriptsSynchronously();
 
+		if (stage != null) {
+			for (Actor actor : stage.getActors()) {
+				if (actor instanceof Look) {
+					((Look) actor).destroy();
+				}
+			}
+		}
+		if (uiStage != null) {
+			for (Actor actor : uiStage.getActors()) {
+				if (actor instanceof Look) {
+					((Look) actor).destroy();
+				}
+			}
+		}
+		if (uiStage != null) {
+			uiStage.dispose();
+			uiStage = null;
+		}
 		if (vmScreenMesh != null) {
 			vmScreenMesh.dispose();
 		}
-		if (brightnessContrastHueShader != null) { // <-- ДОБАВЬТЕ ЭТОТ БЛОК
+		if (brightnessContrastHueShader != null) {
 			brightnessContrastHueShader.dispose();
 		}
 		if (vncSwizzleShader != null) {
@@ -1866,6 +2010,8 @@ public class StageListener implements ApplicationListener {
 		sceneFbo.dispose();
 		GlobalShaderManager.INSTANCE.dispose();
 		GlobalShaderManager.INSTANCE.clear();
+
+		SoundCacheManager.getInstance().release();
 
 		disposeTextures();
 		disposeClonedSprites();
@@ -1993,8 +2139,12 @@ public class StageListener implements ApplicationListener {
 	}
 
 	private void disposeStageButKeepActors() {
-		stage.unfocusAll();
-		batch.dispose();
+		if (stage != null) { // <--- ДОБАВИТЬ ЭТУ ПРОВЕРКУ
+			stage.unfocusAll();
+		}
+		if (batch != null) { // <--- И ЭТУ ТОЖЕ, НА ВСЯКИЙ СЛУЧАЙ
+			batch.dispose();
+		}
 	}
 
 	public void gamepadPressed(String buttonType) {

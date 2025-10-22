@@ -403,16 +403,71 @@
 
         </LinearLayout>-->
 
-       <Button
-           android:id="@+id/project_options_delete"
-           android:layout_width="220dp"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center"
-           android:layout_marginBottom="@dimen/material_design_spacing_x_large"
-           android:layout_marginTop="@dimen/material_design_spacing_x_large"
-           android:backgroundTint="@color/red"
-           android:text="@string/project_options_delete_project"
-           android:textAllCaps="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:showDividers="middle|end">
 
-    </LinearLayout>
-</ScrollView>
+            <TextView
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/material_design_spacing_x_large"
+                android:paddingEnd="@dimen/material_design_spacing_x_large"
+                android:paddingBottom="8dp"
+                android:text="@string/github_integration" />
+
+            <TextView
+                android:id="@+id/git_connect_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background_selector_dark"
+                android:paddingStart="@dimen/material_design_spacing_x_large"
+                android:paddingTop="@dimen/material_design_spacing_x_large"
+                android:paddingEnd="@dimen/material_design_spacing_x_large"
+                android:paddingBottom="@dimen/material_design_spacing_x_large"
+                android:text="@string/git_connect" />
+
+            <TextView
+                android:id="@+id/git_publish_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background_selector_dark"
+                android:paddingStart="@dimen/material_design_spacing_x_large"
+                android:paddingTop="@dimen/material_design_spacing_x_large"
+                android:paddingEnd="@dimen/material_design_spacing_x_large"
+                android:paddingBottom="@dimen/material_design_spacing_x_large"
+                android:text="@string/git_publish_changes"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/git_update_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background_selector_dark"
+                android:paddingStart="@dimen/material_design_spacing_x_large"
+                android:paddingTop="@dimen/material_design_spacing_x_large"
+                android:paddingEnd="@dimen/material_design_spacing_x_large"
+                android:paddingBottom="@dimen/material_design_spacing_x_large"
+                android:text="@string/git_update_project"
+                android:visibility="gone" />
+
+        </LinearLayout>
+        <!-- !!! КОНЕЦ НОВОГО БЛОКА !!! -->
+
+        <Button
+            android:id="@+id/project_options_delete"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/material_design_spacing_x_large"
+            android:layout_marginTop="@dimen/material_design_spacing_x_large"
+            android:backgroundTint="@color/red"
+            android:text="@string/project_options_delete_project"
+            android:textAllCaps="true" />
+
+     </LinearLayout>
+ </ScrollView>

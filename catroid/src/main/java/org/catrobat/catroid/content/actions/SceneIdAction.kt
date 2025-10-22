@@ -30,11 +30,11 @@ class SceneIdAction : TemporalAction() {
     private var sceneId: Int? = null
     private lateinit var sprite: Sprite
     override fun update(percent: Float) {
-        val currentSceneId = sceneId // Получаем текущее значение
+        val currentSceneId = sceneId
         if (currentSceneId != null) {
             sprite.releaseAllPointers()
             var id = currentSceneId
-            StageActivity.stageListener.startSceneById(id - 1)
+            StageActivity.activeStageActivity.get()?.stageListener?.startSceneById(id - 1)
         }
     }
 

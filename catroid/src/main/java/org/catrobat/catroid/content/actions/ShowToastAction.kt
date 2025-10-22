@@ -42,28 +42,14 @@ class ShowToastAction() : TemporalAction() {
     var scope: Scope? = null
     var toast: Formula? = null
 
-    // Новый конструктор с параметром контекста
-    constructor(context: Context) : this() {
-        this.contextt = context
-    }
-
     override fun update(percent: Float) {
         val value = toast?.interpretObject(scope) ?: ""
         val gval = value.toString()
         Log.d("ShowToastAction", "Showing toast with value: $gval")
         Log.d("ShowToastAction", "Update method called with percent: $percent")
 
-
-        //if (context is Activity) {
-            //Toast.makeText(context, gval, Toast.LENGTH_SHORT).show()
-        val context = CatroidApplication.getAppContext()
         val params = ArrayList<Any>(listOf(gval))
         StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_TOAST, params).sendToTarget()
-        if (context is Activity) {
-            Log.d("ShowToastAction", "Context is an Activity: ${context.javaClass.simpleName}")
-        } else {
-            Log.e("ShowToastAction", "Context is not an Activity")
-        }
 
     }
 }

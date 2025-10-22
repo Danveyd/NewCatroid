@@ -83,6 +83,11 @@
         app:showAsAction="never"
         android:icon="@drawable/sdk_24px"/>
     <item
+        android:id="@+id/editor3d"
+        android:title="@string/editor3d"
+        app:showAsAction="never"
+        android:icon="@drawable/threed_24px"/>
+    <item
         android:id="@+id/from_library"
         android:title="@string/from_library"
         android:icon="@drawable/ic_apps_small"

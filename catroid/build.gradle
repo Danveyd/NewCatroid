@@ -44,6 +44,7 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
@@ -108,8 +109,8 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
     }
 }
 
-def defaultVersionCode = 123
-def defaultVersionName = "2.0.6"
+def defaultVersionCode = 126
+def defaultVersionName = "2.1.1"
 
 android {
     compileSdk 34
@@ -402,6 +403,32 @@ dependencies {
     } else {
         implementation fileTree(dir: 'src/main/libs', include: ['*.aar'])
     }
+
+    implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.1.202206130422-r'
+
+    implementation 'org.xmlunit:xmlunit-core:2.9.1'  // Android-совместимая
+    implementation 'net.sf.kxml:kxml2:2.3.0'
+    implementation "xerces:xercesImpl:2.12.2"
+
+    // JGit для Android требует несколько дополнительных зависимостей
+    implementation "org.slf4j:slf4j-android:1.7.36"
+    implementation 'com.jcraft:jsch:0.1.55' // для SSH, может понадобиться
+
+    // Эта библиотека поможет сравнивать объекты, чтобы найти отличия
+    // (опционально, но очень полезно)
+    implementation 'io.github.java-diff-utils:java-diff-utils:4.12'
+
+
+    //gdx-gltf
+    implementation 'com.github.mgsx-dev.gdx-gltf:core:2.2.1'
+    // https://mvnrepository.com/artifact/com.github.mgsx-dev.gdx-gltf/gltf
+    implementation 'com.github.mgsx-dev.gdx-gltf:gltf:2.2.1'
+
+    //implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.4'
+    //implementation 'com.crashinvaders.vfx:gdx-vfx-effects:0.5.4'
+
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation ('com.esotericsoftware:kryo:5.1.1')
     implementation 'id.zelory:compressor:2.1.1'

@@ -23,11 +23,9 @@ class SquareController private constructor() {
         cornerRadius: Float = 0f,
         stage: Stage
     ) {
-        // Если квадрат с таким именем уже существует, обновляем его
         squares[name]?.remove()
         squares.remove(name)
 
-        // Создаем новый квадрат
         val squareActor = SquareActor(x, y, width, height, colorHex, rotation, transparency, cornerRadius)
         squares[name] = squareActor
         stage.addActor(squareActor)
@@ -35,8 +33,8 @@ class SquareController private constructor() {
 
     fun removeSquare(name: String) {
         squares[name]?.let { square ->
-            square.remove() // Удаляем квадрат из сцены
-            squares.remove(name) // Удаляем из карты
+            square.remove()
+            squares.remove(name)
         }
     }
 

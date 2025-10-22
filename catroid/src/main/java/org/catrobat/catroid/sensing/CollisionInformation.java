@@ -345,10 +345,37 @@ public class CollisionInformation {
 			return;
 		}
 
-		float minDimension = Math.min(bitmap.getWidth(), bitmap.getHeight());
-		float epsilon = Math.max(1.0f, minDimension * 0.05f);
+		int initialVertices = 0;
+		for (ArrayList<CollisionPolygonVertex> part : boundingPolygon) {
+			initialVertices += part.size();
+		}
+		Log.d("CollisionDebug", "Look: " + lookData.getName() + " - Initial vertex count: " + initialVertices + " / Limit: " + Constants.COLLISION_VERTEX_LIMIT);
+
+		//float minDimension = Math.min(bitmap.getWidth(), bitmap.getHeight());
+		android.graphics.Rect spriteBounds = ImageEditing.findVisibleBounds(bitmap);
+
+// Если изображение полностью прозрачное, используем старый метод
+		if (spriteBounds == null) {
+			collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+			if (!isCalculationThreadCancelled && lookData.isValid()) {
+				writeCollisionVerticesToPNGMeta(collisionPolygons, path);
+			}
+			return;
+		}
+
+// 2. Вычисляем epsilon на основе реальных размеров
+		float contentWidth = spriteBounds.width();
+		float contentHeight = spriteBounds.height();
+		float minContentDimension = Math.min(contentWidth, contentHeight);
+
+// Формула остается похожей, но теперь использует правильные размеры
+		float epsilon = Math.max(1.5f, minContentDimension * 0.05f);
+
+		collisionPolygons = new Polygon[0];
 
 		do {
+			Log.d("CollisionDebug", "Look: " + lookData.getName() + " - Simplification loop. Epsilon: " + epsilon + ", Vertices: " + getNumberOfVertices());
+
 			if (isCalculationThreadCancelled) {
 				return;
 			}
@@ -413,6 +440,8 @@ public class CollisionInformation {
 			epsilon *= 1.2f;
 
 		} while (getNumberOfVertices() > Constants.COLLISION_VERTEX_LIMIT);
+
+		Log.d("CollisionDebug", "Look: " + lookData.getName() + " - Final vertex count: " + getNumberOfVertices() + " in " + collisionPolygons.length + " polygons.");
 
 		if (collisionPolygons == null || collisionPolygons.length == 0) {
 			if (bitmap != null) {

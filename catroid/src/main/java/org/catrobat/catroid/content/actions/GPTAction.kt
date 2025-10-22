@@ -33,7 +33,6 @@ import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.formulaeditor.InterpretationException
 import org.catrobat.catroid.stage.BrickDialogManager
 import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.stage.StageActivity.stageListener
 import org.catrobat.catroid.utils.ErrorLog
 import org.catrobat.catroid.web.WebConnection
 import org.catrobat.catroid.web.WebConnection.WebRequestListener
@@ -48,7 +47,7 @@ abstract class GPTAction : Action(), WebRequestListener {
     var scope: Scope? = null
     var prompt: String? = null
     var system: String? = null
-    var url: String? = "https://text.pollinations.ai" //hi?private=true&system=you%20are%20ilon%20mask"
+    var url: String? = "https://text.pollinations.ai"
 
     enum class RequestStatus {
         NOT_SENT, WAITING, FINISHED
@@ -69,13 +68,10 @@ abstract class GPTAction : Action(), WebRequestListener {
             val seed = Random.nextInt(0, 999999999)
 
             url = "https://text.pollinations.ai/$promptEnc?private=true&system=$systemEnc&seed=$seed"
-            //url = "https://www.google.com"
             Log.d("GPTAction", "url: " + url)
             return true
         } catch (e: Exception) {
             ErrorLog.log(e.message?: "**message not provided :(**")
-            // UnsupportedEncodingException может возникнуть, если указана неверная кодировка,
-            // но с StandardCharsets.UTF_8 это крайне маловероятно.
             Log.e("GPTAction_Interpret", "Error in interpretUrl", e)
             return false
         }
@@ -99,15 +95,11 @@ abstract class GPTAction : Action(), WebRequestListener {
         permissionStatus = PermissionStatus.DENIED
     }
 
-    // В WebAction.java и GPTAction.java
-    // В WebAction.kt и GPTAction.kt
     override fun act(delta: Float): Boolean {
-        // Интерпретация URL (остается без изменений)
         if (url == null && !interpretUrl()) {
             return true
         }
 
-        // Проверка разрешений (остается без изменений)
         when (permissionStatus) {
             PermissionStatus.UNKNOWN -> checkPermission()
             PermissionStatus.DENIED -> {
@@ -120,48 +112,35 @@ abstract class GPTAction : Action(), WebRequestListener {
             return false
         }
 
-        // ▼▼▼ НАЧАЛО ИСПРАВЛЕННОЙ ЛОГИКИ ▼▼▼
-
-        // Атомарная проверка: если мы еще не отправляли запрос И отправка не удалась,
-        // то обрабатываем ошибку и завершаем действие.
         if (requestStatus == RequestStatus.NOT_SENT && !sendRequest()) {
             handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
             return true
         }
 
-        // Если мы в состоянии ожидания, просто ждем дальше.
         if (requestStatus == RequestStatus.WAITING) {
             return false
         }
 
-        // Сюда мы попадаем, только если requestStatus == FINISHED
-        stageListener.webConnectionHolder.removeConnection(webConnection)
-        handleResponse() // Этот метод будет вызван только после успешного onRequestSuccess
+        StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.removeConnection(webConnection)
+        handleResponse()
         return true
-
-        // ▲▲▲ КОНЕЦ ИСПРАВЛЕННОЙ ЛОГИКИ ▲▲▲
     }
 
     private fun checkPermission() =
         if (TrustedDomainManager.isURLTrusted(url!!)) {
             grantPermission()
         } else {
-            //askForPermission()
             grantPermission()
         }
 
     private fun sendRequest(): Boolean {
-        // Сначала меняем состояние. Это гарантирует, что мы не будем пытаться
-        // отправить запрос снова и снова в каждом кадре.
         requestStatus = RequestStatus.WAITING
         webConnection = WebConnection(this, url!!)
 
-        if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
+        if (StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.addConnection(webConnection!!) ?: false) {
             webConnection!!.sendWebRequest()
             return true
         } else {
-            // Если не удалось добавить в холдер, возвращаем false,
-            // но статус уже WAITING, поэтому мы не застрянем в цикле отправки.
             return false
         }
     }
@@ -183,7 +162,7 @@ abstract class GPTAction : Action(), WebRequestListener {
 
     @CallSuper
     override fun restart() {
-        stageListener.webConnectionHolder.removeConnection(webConnection)
+        StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.removeConnection(webConnection)
         webConnection = null
         url = null
         requestStatus = RequestStatus.NOT_SENT

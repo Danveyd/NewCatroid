@@ -7,12 +7,10 @@ import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.content.WebViewController
 
 class DeleteWebAction : TemporalAction() {
-    //private lateinit var rootLayout: FrameLayout // Контейнер для WebView
     var scope: Scope? = null
     var name: Formula? = null
 
     override fun update(percent: Float) {
-        //rootLayout = FrameLayout(CatroidApplication.getAppContext())
         var namev = name?.interpretObject(scope)?.toString() ?: ""
 
         StageActivity.activeStageActivity.get()?.removeView(namev);

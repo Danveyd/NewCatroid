@@ -25,7 +25,6 @@ class ChooseFileAction : TemporalAction() {
         private const val REQUEST_CODE_PICK_FILE = 2013
         private val TAG = ChooseFileAction::class.java.simpleName
 
-        // Фильтры MIME-типов для выбора файлов
         private val MIME_TYPES = arrayOf(
             "image/*",   // 0 - Изображения
             "video/*",   // 1 - Видео
@@ -34,7 +33,6 @@ class ChooseFileAction : TemporalAction() {
             "*/*"        // 4 - Любые файлы
         )
 
-        // Директория, куда копировать файл (можно поменять)
         private var TARGET_DIRECTORY = File(CatroidApplication.getAppContext().filesDir, "chosen_files")
     }
 
@@ -48,10 +46,7 @@ class ChooseFileAction : TemporalAction() {
                     addCategory(Intent.CATEGORY_OPENABLE)
                 }
 
-                /*activity.startActivityForResult(
-                    Intent.createChooser(intent, "Choose a file"),
-                    REQUEST_CODE_PICK_FILE
-                )*/
+
                 activity.startActivityForResult(
                     Intent.createChooser(intent, "Choose a file"),
                     REQUEST_CODE_PICK_FILE
@@ -71,10 +66,8 @@ class ChooseFileAction : TemporalAction() {
                         return false
                     }
 
-                    // Реализация метода getTargetIntent()
                     override fun getTargetIntent(): Intent {
-                        // Возвращаем пустое намерение или нужное для вашего случая
-                        return Intent() // Здесь можно добавить любой Intent, если нужно
+                        return Intent()
                     }
                 })
             }
@@ -95,14 +88,12 @@ class ChooseFileAction : TemporalAction() {
                 variable?.value = fileName
             }
         } catch (e: Exception) {
-            //ErrorLog.log(e.message?: "**message not provided :(**")
             Log.e(TAG, "Ошибка при копировании файла: ${e.message}")
         }
     }
 
     private fun getFileName(context: Context, uri: Uri): String {
         var fileName = ""
-        // Проверяем схему URI, так как ContentResolver работает в основном с content://
         if (uri.scheme == "content") {
             context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 if (cursor.moveToFirst()) {
@@ -113,7 +104,6 @@ class ChooseFileAction : TemporalAction() {
                 }
             }
         }
-        // Если имя файла получить не удалось, генерируем его из пути
         if (fileName.isBlank()) {
             fileName = uri.lastPathSegment ?: "chosen_file_${System.currentTimeMillis()}"
         }

@@ -1,27 +1,23 @@
 #include "newcatroid_gl_api.h"
 #include <android/log.h>
 #include <EGL/egl.h>
-#include <GLES3/gl3.h> // Используем GLES3 для более современных функций
+#include <GLES3/gl3.h>
 #include <thread>
 #include <atomic>
 #include <vector>
 #include <random>
 
-// Включаем stb_image.h, который вы добавили в проект
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-// Глобальный указатель на функцию-ресолвер путей
 static ResolvePathCallback g_resolve_path = nullptr;
 
-// --- Структуры ---
 struct Particle {
     float x, y;
     float vx, vy;
     float life;
 };
 
-// --- Глобальные переменные ---
 static ANativeWindow* native_window = nullptr;
 static EGLDisplay display = EGL_NO_DISPLAY;
 static EGLContext context = EGL_NO_CONTEXT;
@@ -34,10 +30,8 @@ static std::vector<Particle> particles;
 static std::atomic<float> touch_x(-1.0f), touch_y(-1.0f);
 static int screen_width = 1, screen_height = 1;
 
-// НОВОЕ: Переменная для хранения ID нашей текстуры
 static GLuint particle_texture_id = 0;
 
-// --- НОВОЕ: Обновленные Шейдеры ---
 const char* VERTEX_SHADER = R"glsl(
 #version 300 es
 // 'in' вместо 'attribute' в GLES 3
@@ -64,21 +58,18 @@ void main() {
 )glsl";
 static GLuint shader_program;
 
-// НОВОЕ: Функция для загрузки текстуры
 void load_particle_texture() {
     if (!g_resolve_path) {
         __android_log_print(ANDROID_LOG_ERROR, "ExampleCore", "Path resolver is not available!");
         return;
     }
 
-    // 1. Получаем полный путь к файлу "particle.png" из проекта
     const char* full_path = g_resolve_path("particle.png");
     if (!full_path) {
         __android_log_print(ANDROID_LOG_ERROR, "ExampleCore", "Could not find 'particle.png' in project files.");
         return;
     }
 
-    // 2. Загружаем и декодируем изображение с помощью stb_image
     int width, height, channels;
     unsigned char* image_data = stbi_load(full_path, &width, &height, &channels, 4);
     if (!image_data) {
@@ -86,32 +77,27 @@ void load_particle_texture() {
         return;
     }
 
-    // 3. Создаем и загружаем текстуру в OpenGL
     glGenTextures(1, &particle_texture_id);
     glBindTexture(GL_TEXTURE_2D, particle_texture_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
 
-    // 4. Очищаем память CPU, так как данные уже на GPU
     stbi_image_free(image_data);
 
     __android_log_print(ANDROID_LOG_INFO, "ExampleCore", "Successfully loaded particle texture with ID %d", particle_texture_id);
 }
 
 
-// --- Логика ---
 void update_and_render() {
-    // Обновление физики частиц (без изменений)
     for (auto& p : particles) {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.005f; // Гравитация
+        p.vy += 0.005f;
         p.life -= 0.01f;
     }
     particles.erase(std::remove_if(particles.begin(), particles.end(), [](const Particle& p){ return p.life <= 0; }), particles.end());
 
-    // Эмиссия новых частиц (без изменений)
     float tx = touch_x.load();
     float ty = touch_y.load();
     if (tx > 0 && particles.size() < 500) {
@@ -122,7 +108,6 @@ void update_and_render() {
         }
     }
 
-    // Рендеринг
     glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -136,13 +121,11 @@ void update_and_render() {
 
         glUseProgram(shader_program);
 
-        // НОВОЕ: Активируем текстуру и передаем ее в шейдер
         GLint texture_uniform_location = glGetUniformLocation(shader_program, "u_texture");
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, particle_texture_id);
-        glUniform1i(texture_uniform_location, 0); // Говорим шейдеру использовать текстурный юнит 0
+        glUniform1i(texture_uniform_location, 0);
 
-        // Передаем позиции и рисуем (как и раньше)
         GLint pos_attrib = glGetAttribLocation(shader_program, "a_position");
         glEnableVertexAttribArray(pos_attrib);
         glVertexAttribPointer(pos_attrib, 2, GL_FLOAT, GL_FALSE, 0, positions.data());
@@ -150,7 +133,6 @@ void update_and_render() {
     }
 }
 
-// ... render_loop, core_initialize, core_shutdown остаются без изменений ...
 void render_loop() {
     eglMakeCurrent(display, surface, surface, context);
     while (should_render) {
@@ -186,7 +168,6 @@ void core_on_surface_created(const char* view_name, ANativeWindow* window) {
 
     eglMakeCurrent(display, surface, surface, context);
 
-    // Создание шейдерной программы (без изменений)
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vs, 1, &VERTEX_SHADER, NULL);
     glCompileShader(vs);
@@ -197,17 +178,12 @@ void core_on_surface_created(const char* view_name, ANativeWindow* window) {
     glAttachShader(shader_program, vs);
     glAttachShader(shader_program, fs);
     glLinkProgram(shader_program);
-    glDeleteShader(vs); // НОВОЕ: Очищаем шейдеры после линковки
+    glDeleteShader(vs);
     glDeleteShader(fs);
-
-    // НОВОЕ: Включаем Point Sprites, чтобы gl_PointCoord работал
-    //glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    // НОВОЕ: Вызываем нашу функцию загрузки текстуры
     load_particle_texture();
 
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE); // НОВОЕ: Режим смешивания "Additive" для красивого свечения частиц
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
@@ -215,7 +191,6 @@ void core_on_surface_created(const char* view_name, ANativeWindow* window) {
     render_thread = std::thread(render_loop);
 }
 
-// ... core_on_surface_changed без изменений ...
 void core_on_surface_changed(const char* view_name, int width, int height) {
     screen_width = width;
     screen_height = height;
@@ -228,7 +203,6 @@ void core_on_surface_destroyed(const char* view_name) {
         render_thread.join();
     }
 
-    // НОВОЕ: Очищаем ресурсы OpenGL
     eglMakeCurrent(display, surface, surface, context);
     if (particle_texture_id > 0) {
         glDeleteTextures(1, &particle_texture_id);
@@ -238,7 +212,6 @@ void core_on_surface_destroyed(const char* view_name) {
     }
     eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
 
-    // EGL очистка (без изменений)
     if (display != EGL_NO_DISPLAY) {
         eglDestroySurface(display, surface);
         eglDestroyContext(display, context);
@@ -249,7 +222,6 @@ void core_on_surface_destroyed(const char* view_name) {
     surface = EGL_NO_SURFACE;
 }
 
-// ... core_on_touch_event без изменений ...
 void core_on_touch_event(const char* view_name, int action, float x, float y, int pointerId) {
     if (action == 0 || action == 2) { // ACTION_DOWN or ACTION_MOVE
         touch_x = x;

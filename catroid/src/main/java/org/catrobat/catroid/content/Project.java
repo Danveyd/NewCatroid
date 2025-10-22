@@ -175,11 +175,9 @@ public class Project implements Serializable {
 	}
 
 	public Scene getDefaultScene() {
-		//return sceneList.get(0);
 		try {
 			return sceneList.get(0);
 		} catch (Exception e) {
-			//getDirectory().delete();
 			return null;
 		}
 	}
@@ -369,11 +367,16 @@ public class Project implements Serializable {
 	}
 
 	public List<Sprite> getSpriteListWithClones() {
-		if (StageActivity.stageListener != null) {
-			return StageActivity.stageListener.getSpritesFromStage();
-		} else {
-			return getDefaultScene().getSpriteList();
+		if (StageActivity.activeStageActivity != null) {
+			StageActivity currentStage = StageActivity.activeStageActivity.get();
+
+			if (currentStage != null && currentStage.stageListener != null) {
+
+				return currentStage.stageListener.getSpritesFromStage();
+			}
 		}
+
+		return getDefaultScene().getSpriteList();
 	}
 
 	public void fireToAllSprites(EventWrapper event) {
@@ -454,11 +457,10 @@ public class Project implements Serializable {
 	}
 
 	public String checkExtension(String filename, String extension) {
-		// Проверяем, если имя файла уже содержит точку с расширением
 		if (filename.contains(".")) {
-			return filename; // Если расширение уже есть, возвращаем оригинальное имя файла
+			return filename;
 		} else {
-			return filename + "." + extension; // Если нет, добавляем расширение
+			return filename + "." + extension;
 		}
 	}
 
@@ -559,17 +561,17 @@ public class Project implements Serializable {
 
 	public Scene getSceneById(Integer id) {
 		if (id != null && id >= 0 && id < sceneList.size()) {
-			return sceneList.get(id); // используем метод get для ArrayList
+			return sceneList.get(id);
 		} else {
-			return null; // если id некорректный, возвращаем null
+			return null;
 		}
 	}
 
 	public String getSceneNameById(Integer id) {
 		if (id != null && id >= 0 && id < sceneList.size()) {
-			return sceneList.get(id).getName(); // используем метод get для ArrayList
+			return sceneList.get(id).getName();
 		} else {
-			return null; // если id некорректный, возвращаем null
+			return null;
 		}
 	}
 

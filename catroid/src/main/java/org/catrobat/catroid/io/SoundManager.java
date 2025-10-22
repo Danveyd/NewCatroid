@@ -57,6 +57,8 @@ public class SoundManager {
 
 	private final Set<SoundFilePathWithSprite> recentlyStoppedSoundfilePaths = new HashSet<>();
 
+	private final java.util.Map<String, MediaPlayerWithSoundDetails> preparedSounds = new java.util.HashMap<>();
+
 	@VisibleForTesting
 	public SoundManager() {
 	}
@@ -69,13 +71,7 @@ public class SoundManager {
 		playSoundFileWithStartTime(soundFilePath, sprite, 0);
 	}
 
-	/**
-	 * Устанавливает громкость для конкретного проигрываемого звука.
-	 *
-	 * @param soundFilePath Путь к файлу звука.
-	 * @param sprite        Спрайт, который запустил звук.
-	 * @param volume        Новая громкость в процентах (0-100).
-	 */
+
 	public synchronized void setVolumeForSound(String soundFilePath, Sprite sprite, float volume) {
 		if (volume > 100.0f) {
 			volume = 100.0f;
@@ -86,14 +82,11 @@ public class SoundManager {
 		float volumeScalar = volume * 0.01f;
 
 		for (MediaPlayerWithSoundDetails mediaPlayer : mediaPlayers) {
-			// Ищем плеер, который сейчас играет, запущен нужным спрайтом и проигрывает нужный файл
 			if (mediaPlayer.isPlaying() &&
 					mediaPlayer.getStartedBySprite() == sprite &&
 					mediaPlayer.getPathToSoundFile().equals(soundFilePath)) {
 
 				mediaPlayer.setVolume(volumeScalar, volumeScalar);
-				// Можно было бы выйти из цикла, если звук уникален, но на всякий случай
-				// изменим громкость у всех совпадений.
 			}
 		}
 	}
@@ -189,6 +182,11 @@ public class SoundManager {
 			mediaPlayer.release();
 		}
 		mediaPlayers.clear();
+		for (MediaPlayerWithSoundDetails preparedPlayer : preparedSounds.values()) {
+			preparedPlayer.release();
+		}
+		preparedSounds.clear();
+
 		recentlyStoppedSoundfilePaths.clear();
 	}
 
@@ -226,6 +224,57 @@ public class SoundManager {
 			}
 		}
 		return backupList;
+	}
+
+
+	public synchronized boolean prepareSound(String cacheName, String soundFilePath, Sprite sprite) {
+		if (preparedSounds.containsKey(cacheName)) {
+			// If a sound with this name is already prepared, release it first
+			MediaPlayerWithSoundDetails oldPlayer = preparedSounds.get(cacheName);
+			if (oldPlayer != null) {
+				oldPlayer.release();
+			}
+		}
+
+		try {
+			MediaPlayerWithSoundDetails mediaPlayer = new MediaPlayerWithSoundDetails();
+			mediaPlayer.setStartedBySprite(sprite);
+			mediaPlayer.setPathToSoundFile(soundFilePath);
+			mediaPlayer.setDataSource(soundFilePath);
+			mediaPlayer.prepare(); // This is the slow part we do in advance
+
+			float volumeScalar = volume * 0.01f;
+			mediaPlayer.setVolume(volumeScalar, volumeScalar);
+
+			preparedSounds.put(cacheName, mediaPlayer);
+			return true;
+		} catch (Exception exception) {
+			Log.e(TAG, "Couldn't prepare sound file '" + soundFilePath + "' for cache name '" + cacheName + "'", exception);
+			return false;
+		}
+	}
+
+	public synchronized boolean playSoundFromCache(String cacheName) {
+		MediaPlayerWithSoundDetails mediaPlayer = preparedSounds.get(cacheName);
+		if (mediaPlayer == null) {
+			Log.e(TAG, "No prepared sound found for cache name: " + cacheName);
+			return false;
+		}
+
+		if (mediaPlayer.isPlaying()) {
+			mediaPlayer.stop();
+			try {
+				// Must re-prepare after stop()
+				mediaPlayer.prepare();
+			} catch (Exception e) {
+				Log.e(TAG, "Could not re-prepare sound from cache", e);
+				return false;
+			}
+		}
+
+		mediaPlayer.seekTo(0);
+		mediaPlayer.start();
+		return true;
 	}
 
 	public List<MediaPlayerWithSoundDetails> getMediaPlayers() {

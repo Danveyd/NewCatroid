@@ -120,14 +120,13 @@ class FilesUrlAction() : TemporalAction() {
                 }
 
                 val inputStream = connection.inputStream
-                val downloadsFolder = proj.filesDir//Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val downloadsFolder = proj.filesDir
                 val destFile = File(downloadsFolder, newFileName)
 
                 val fileOutputStream = FileOutputStream(destFile)
                 inputStream.copyTo(fileOutputStream)
 
                 Log.d("DownloadFile", "Файл скачан: ${destFile.absolutePath}")
-                //showToast("Файл скачан: ${destFile.absolutePath}")
             }
         }
     }

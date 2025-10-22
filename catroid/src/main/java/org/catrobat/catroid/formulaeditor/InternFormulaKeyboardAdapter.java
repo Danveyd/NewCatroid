@@ -262,6 +262,20 @@ public class InternFormulaKeyboardAdapter {
 				return buildSingleParameterFunction(Functions.GET_RAY_DISTANCE, STRING, "ray");
 			case R.string.formula_ray_hit_object:
 				return buildSingleParameterFunction(Functions.GET_RAY_HIT_OBJECT, STRING, "ray");
+			case R.string.formula_ray_did_hit:
+				return buildSingleParameterFunction(Functions.RAY_DID_HIT, STRING, "ray");
+			case R.string.formula_ray_hit_x:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_X, STRING, "ray");
+			case R.string.formula_ray_hit_y:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_Y, STRING, "ray");
+			case R.string.formula_ray_hit_z:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_Z, STRING, "ray");
+			case R.string.formula_ray_normal_x:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_NORMAL_X, STRING, "ray");
+			case R.string.formula_ray_normal_y:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_NORMAL_Y, STRING, "ray");
+			case R.string.formula_ray_normal_z:
+				return buildSingleParameterFunction(Functions.GET_RAY_HIT_NORMAL_Z, STRING, "ray");
 			case R.string.formula_cam_pos_x: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_X);
 			case R.string.formula_cam_pos_y: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_Y);
 			case R.string.formula_cam_pos_z: return buildFunctionWithoutParametersAndBrackets(Functions.GET_CAMERA_POS_Z);
@@ -292,6 +306,8 @@ public class InternFormulaKeyboardAdapter {
 			case R.string.formula_editor_function_distance:
 				return buildDoubleParameterFunction(Functions.DISTANCE, STRING, "panda",
 						STRING, "lavanda");
+			case R.string.formula_editor_sensor_fps:
+				return buildSensor(Sensors.FPS);
 			case R.string.formula_editor_function_joinnumber:
 				return buildDoubleParameterFunction(Functions.JOINNUMBER, NUMBER, "1",
 						NUMBER, "1");
@@ -309,6 +325,12 @@ public class InternFormulaKeyboardAdapter {
 				return buildDoubleParameterFunction(Functions.INDEX_OF_ITEM,
 						NUMBER, "1",
 						USER_LIST, "list_name");
+			case R.string.formula_editor_function_json_get:
+				return buildDoubleParameterFunction(Functions.JSON_GET, STRING, "{\"id\": 1, \"data\": {\"value\": \"text\"}}", STRING, "data.value");
+			case R.string.formula_editor_function_json_set:
+				return buildTripleParameterFunction(Functions.JSON_SET, STRING, "{\"id\": 1}", STRING, "id", NUMBER, "2");
+			case R.string.formula_editor_function_json_is_valid:
+				return buildSingleParameterFunction(Functions.JSON_IS_VALID, STRING, "{\"id\": 1}");
 			case R.string.formula_editor_function_flatten:
 				return buildSingleParameterFunction(Functions.FLATTEN, STRING, "list_name");
 			case R.string.formula_editor_function_connect:
@@ -532,6 +554,14 @@ public class InternFormulaKeyboardAdapter {
 				return buildSensor(Sensors.PHIRO_FRONT_RIGHT);
 			case R.string.formula_editor_phiro_sensor_side_left:
 				return buildSensor(Sensors.PHIRO_SIDE_LEFT);
+			case R.string.formula_editor_sensor_mouse_x: return buildSensor(Sensors.MOUSE_X);
+			case R.string.formula_editor_sensor_mouse_y: return buildSensor(Sensors.MOUSE_Y);
+			case R.string.formula_editor_sensor_mouse_delta_x: return buildSensor(Sensors.MOUSE_DELTA_X);
+			case R.string.formula_editor_sensor_mouse_delta_y: return buildSensor(Sensors.MOUSE_DELTA_Y);
+			case R.string.formula_editor_sensor_mouse_scroll: return buildSensor(Sensors.MOUSE_SCROLL);
+			case R.string.formula_editor_function_is_mouse_button_down:
+				// По умолчанию проверяем левую кнопку (код 0)
+				return buildSingleParameterFunction(Functions.IS_MOUSE_BUTTON_DOWN, InternTokenType.NUMBER, "0");
 			case R.string.formula_editor_phiro_sensor_side_right:
 				return buildSensor(Sensors.PHIRO_SIDE_RIGHT);
 			case R.string.formula_editor_phiro_sensor_bottom_left:
@@ -558,7 +588,14 @@ public class InternFormulaKeyboardAdapter {
 				return buildSensor(Sensors.NFC_TAG_ID);
 			case R.string.formula_editor_nfc_tag_message:
 				return buildSensor(Sensors.NFC_TAG_MESSAGE);
-
+			case R.string.formula_editor_sensor_nfc_techs:
+				return buildSensor(Sensors.NFC_TECH_LIST);
+			case R.string.formula_editor_sensor_nfc_size:
+				return buildSensor(Sensors.NFC_MEMORY_SIZE);
+			case R.string.formula_editor_sensor_nfc_writable:
+				return buildSensor(Sensors.NFC_IS_WRITABLE);
+			case R.string.formula_editor_sensor_nfc_type:
+				return buildSensor(Sensors.NFC_TAG_TYPE);
 			case R.string.formula_editor_sensor_lego_nxt_1:
 				return buildSensor(Sensors.NXT_SENSOR_1);
 			case R.string.formula_editor_sensor_lego_nxt_2:

@@ -19,7 +19,7 @@ public class SetFogAction extends TemporalAction {
 
     @Override
     protected void update(float percent) {
-        if (StageActivity.stageListener == null || StageActivity.stageListener.getThreeDManager() == null) {
+        if (StageActivity.getActiveStageListener() == null || StageActivity.getActiveStageListener().getThreeDManager() == null) {
             return;
         }
 
@@ -30,7 +30,7 @@ public class SetFogAction extends TemporalAction {
             float b = blue.interpretFloat(scope);
             float d = density.interpretFloat(scope);
 
-            StageActivity.stageListener.getThreeDManager().setFog(r, g, b, d);
+            StageActivity.getActiveStageListener().getThreeDManager().setFog(r, g, b, d);
         } catch (Exception e) {
             e.printStackTrace();
         }

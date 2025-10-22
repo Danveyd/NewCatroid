@@ -87,6 +87,10 @@ public class Formula implements Serializable {
 		return formulaTree;
 	}
 
+	public void setFormulaTree(FormulaElement tree) {
+		formulaTree = tree;
+	}
+
 	private void init(ElementType number, String s) {
 		formulaTree = new FormulaElement(number, s, null);
 		internFormula = new InternFormula(formulaTree.getInternTokenList());

@@ -69,4 +69,24 @@
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
+    <style name="InspectorHeader" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="InspectorLabel" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">#CCCCCC</item> <!-- Светло-серый для подписей -->
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="InspectorEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">#888888</item>
+        <item name="android:backgroundTint">#AAAAAA</item> <!-- Цвет подчеркивания -->
+    </style>
+
+    <style name="InspectorSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:backgroundTint">#AAAAAA</item>
+        <!-- Для самого текста в Spinner'е нужно создавать кастомный layout, но мы сделаем проще -->
+    </style>
+
 </resources>

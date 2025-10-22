@@ -70,9 +70,9 @@ class CreateVideoAction() : TemporalAction() {
         activity.runOnUiThread {
             activity.createVideoPlayer(
                 nameT,
-                projFile.absolutePath,  // <--- Передаем абсолютный путь
+                projFile.absolutePath,
                 posXT, posYT, widthT, heightT,
-                controlsT, loopT
+                controlsT, loopT, true
             )
         }
         Log.d("VideoPlayerAction", "showed")

@@ -18,17 +18,12 @@ class RegexAction : TemporalAction() {
         val regexPattern = regex_f?.interpretString(scope) ?: ""
 
         if (userlist != null) {
-            // Очищаем список перед добавлением новых результатов
             userlist!!.reset()
 
-            // Пытаемся найти совпадения
             try {
                 val regex = Regex(regexPattern)
-
-                // Находим все совпадения
                 val matches = regex.findAll(text)
 
-                // Добавляем найденные результаты в userlist
                 for (match in matches) {
                     userlist!!.addListItem(match.value)
                 }

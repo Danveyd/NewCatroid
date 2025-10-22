@@ -10,8 +10,6 @@ import com.google.firebase.database.ValueEventListener
 import org.catrobat.catroid.CatroidApplication
 
 object FireBaseManager {
-
-    // Убедитесь, что FirebaseApp инициализирован
     fun initializeFirebase() {
         Log.d("Firebase", "Initialization")
         if (!FirebaseApp.getApps(CatroidApplication.getAppContext()).isEmpty()) return
@@ -29,7 +27,7 @@ object FireBaseManager {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("Firebase", "Error reading data: ${error.message}", error.toException())
-                callback(null) // Обработка ошибок
+                callback(null)
             }
         })
         Log.d("Firebase", "End")

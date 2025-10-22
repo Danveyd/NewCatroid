@@ -22,10 +22,9 @@ public class UploadFileBrick extends FormulaBrick {
     private int storageTypeSelection = 0;
 
     public UploadFileBrick() {
-        // Поля для URL, пути к файлу и MIME-типа
         addAllowedBrickField(BrickField.URL, R.id.brick_upload_url_edit);
         addAllowedBrickField(BrickField.FILE, R.id.brick_upload_file_path_edit);
-        addAllowedBrickField(BrickField.TEXT, R.id.brick_upload_mime_type_edit); // Используем TEXT или другое подходящее поле
+        addAllowedBrickField(BrickField.TEXT, R.id.brick_upload_mime_type_edit);
     }
 
     public UploadFileBrick(Formula url, Formula filePath, int fileType, Formula mimeType, int storageType) {
@@ -44,9 +43,8 @@ public class UploadFileBrick extends FormulaBrick {
 
     @Override
     public View getView(Context context) {
-        super.getView(context); // Важно для инициализации полей формул
+        super.getView(context);
 
-        // Настройка первого спиннера (Тип файла)
         Spinner fileTypeSpinner = view.findViewById(R.id.brick_upload_file_type_spinner);
         ArrayAdapter<CharSequence> fileTypeAdapter = ArrayAdapter.createFromResource(
                 context, R.array.upload_file_types, android.R.layout.simple_spinner_item);
@@ -61,7 +59,6 @@ public class UploadFileBrick extends FormulaBrick {
         });
         fileTypeSpinner.setSelection(fileTypeSelection);
 
-        // Настройка второго спиннера (Тип хранения)
         Spinner storageTypeSpinner = view.findViewById(R.id.brick_upload_storage_type_spinner);
         ArrayAdapter<CharSequence> storageTypeAdapter = ArrayAdapter.createFromResource(
                 context, R.array.upload_storage_types, android.R.layout.simple_spinner_item);

@@ -77,8 +77,8 @@ public class ShowTextFontAction extends TemporalAction {
             int yPosition = this.yPosition.interpretInteger(scope);
             float relativeTextSize = this.relativeTextSize.interpretFloat(scope) / 100;
             String color = this.color.interpretString(scope);
-            if (StageActivity.stageListener != null) {
-                Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
+            if (StageActivity.getActiveStageListener() != null) {
+                Array<Actor> stageActors = StageActivity.getActiveStageListener().getStage().getActors();
                 ShowTextActor dummyActor = new ShowTextActor(true, new UserVariable("dummyActor"), 0,
                         0, relativeTextSize, color, scope.getSprite(), alignment, androidStringProvider);
                 dummyActor.setFont(font);
@@ -97,7 +97,7 @@ public class ShowTextFontAction extends TemporalAction {
                 actor.setFont(font);
                 actor.setWrap(true);
             }
-            StageActivity.stageListener.addActor(actor);
+            StageActivity.getActiveStageListener().addActor(actor);
             variableToShow.setVisible(true);
         } catch (InterpretationException e) {
             Log.d(TAG, "InterpretationException: " + e);

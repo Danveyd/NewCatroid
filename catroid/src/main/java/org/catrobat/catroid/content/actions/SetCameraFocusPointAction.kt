@@ -35,11 +35,11 @@ class SetCameraFocusPointAction : Action() {
     var vertical: Formula? = null
 
     override fun act(delta: Float): Boolean {
-        StageActivity.stageListener.cameraPositioner.horizontalFlex =
+        StageActivity.activeStageActivity.get()?.stageListener?.cameraPositioner?.horizontalFlex =
             horizontal?.interpretFloat(scope) ?: 0.0f
-        StageActivity.stageListener.cameraPositioner.verticalFlex =
+        StageActivity.activeStageActivity.get()?.stageListener?.cameraPositioner?.verticalFlex =
             vertical?.interpretFloat(scope) ?: 0.0f
-        StageActivity.stageListener.cameraPositioner.spriteToFocusOn = sprite
+        StageActivity.activeStageActivity.get()?.stageListener?.cameraPositioner?.spriteToFocusOn = sprite
         return true
     }
 }

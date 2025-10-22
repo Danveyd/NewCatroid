@@ -1,4 +1,3 @@
-// В пакете: org.catrobat.catroid.content.bricks
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
@@ -91,8 +90,6 @@ public class SetSoundVolumeBrick extends FormulaBrick implements BrickSpinner.On
                 getFormulaWithBrickField(BrickField.VOLUME)
         ));
     }
-
-    // --- Методы для работы спиннера (как в PlaySoundBrick) ---
 
     @Override
     public void onItemSelected(Integer spinnerId, @Nullable SoundInfo item) {

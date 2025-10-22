@@ -25,7 +25,6 @@ object ErrorLog {
             }
         } catch (e: Exception) {
             e.printStackTrace(System.err)
-            // Попытка показать Toast хотя бы об основной ошибке, если запись в лог не удалась
         }
     }
 }

@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sky Color"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+    <Button
+        android:id="@+id/btn_sky_color"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:text="Select Color"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ambient Light Intensity"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+    <SeekBar
+        android:id="@+id/seekbar_ambient_light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:max="200" />
+    <TextView
+        android:id="@+id/text_ambient_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="1.0"/>
+
+</LinearLayout>

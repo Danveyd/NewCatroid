@@ -1,7 +1,5 @@
 package org.catrobat.catroid.content;
 
-// package org.catrobat.catroid.content.actions;
-
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import org.catrobat.catroid.content.Scope;
 import org.catrobat.catroid.formulaeditor.Formula;
@@ -14,7 +12,7 @@ public class CreateSphereAction extends TemporalAction {
 
     @Override
     protected void update(float percent) {
-        ThreeDManager manager = StageActivity.stageListener.getThreeDManager();
+        ThreeDManager manager = StageActivity.getActiveStageListener().getThreeDManager();
         if (manager == null) return;
 
         try {

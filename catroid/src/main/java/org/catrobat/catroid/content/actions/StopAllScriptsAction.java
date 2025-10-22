@@ -34,7 +34,7 @@ public class StopAllScriptsAction extends Action {
 
 	@Override
 	public boolean act(float delta) {
-		Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
+		Array<Actor> stageActors = StageActivity.getActiveStageListener().getStage().getActors();
 		for (Actor actor : stageActors) {
 			if (actor instanceof Look) {
 				Look look = (Look) actor;

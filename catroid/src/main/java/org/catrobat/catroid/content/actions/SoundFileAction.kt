@@ -74,13 +74,8 @@ class SoundFileAction : TemporalAction() {
             }
             val file = File(CatroidApplication.getAppContext().filesDir, fileName)
             StorageOperations.copyFile(file0, file)
-            // Здесь получаем InputStream
-            //val inputStream = getInputStreamFromFile(file0)
             if (true) {
-                //val file = createTemporaryFile(fileName)
-                //StorageOperations.copyStreamToFile(inputStream, file)
                 if (file0.exists()) {
-                    // Продолжение вашего кода
                     val isMidiFile = file.name.endsWith(".mid", ignoreCase = true) ||
                             file.name.endsWith(".midi", ignoreCase = true)
                     val sound = SoundInfo("playingFileSound_" + generateRandomString(7), file, isMidiFile)
@@ -104,10 +99,10 @@ class SoundFileAction : TemporalAction() {
     }
 
     fun generateRandomString(length: Int): String {
-        val letters = ('a'..'z') + ('A'..'Z') // Учитываем строчные и заглавные буквы
+        val letters = ('a'..'z') + ('A'..'Z')
         return (1..length)
-            .map { letters.random() } // Генерируем случайные буквы из списка
-            .joinToString("") // Собираем их в строку
+            .map { letters.random() }
+            .joinToString("")
     }
 
     fun getInputStreamFromFile(file: File): InputStream? {
@@ -121,12 +116,9 @@ class SoundFileAction : TemporalAction() {
     }
 
     fun createTemporaryFile(fileName: String): File {
-        // Получаем расширение файла, если оно есть
         val extension = fileName.substringAfterLast('.', "")
-        // Создаем временный файл с уникальным именем
         val tempFile = File.createTempFile("temp_", ".$extension")
 
-        // Возвращаем временный файл
         return tempFile
     }
 

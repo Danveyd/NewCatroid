@@ -68,43 +68,25 @@ class MoveFilesAction() : TemporalAction() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun copyFileToDownloads(context: Context, sourceFile: File): File? {
-        // MediaStore работает с ContentResolver, а не напрямую с файлами
         val resolver = context.contentResolver
 
-        // 1. Описываем наш файл с помощью ContentValues
         val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, sourceFile.name) // Имя файла
-            // Можно указать MIME-тип, если он известен, например "application/zip"
-            // put(MediaStore.MediaColumns.MIME_TYPE, "application/zip")
+            put(MediaStore.MediaColumns.DISPLAY_NAME, sourceFile.name)
             put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
         }
 
         try {
-            // 2. Просим систему создать для нас пустой файл в Downloads и дать нам URI
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
                 ?: throw IOException("Failed to create new MediaStore record.")
 
-            // 3. Открываем OutputStream в этот новый файл
             resolver.openOutputStream(uri)?.use { outputStream ->
-                // 4. Открываем InputStream из нашего исходного файла
                 sourceFile.inputStream().use { inputStream ->
-                    // 5. Копируем байты из источника в место назначения
                     inputStream.copyTo(outputStream)
                 }
             }
-            // Возвращаем File-представление, хотя лучше работать с Uri
             return File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), sourceFile.name)
         } catch (e: IOException) {
-            // Если файл уже существует, resolver.insert может выдать ошибку.
-            // В некоторых версиях Android нужно сначала удалить старый файл через MediaStore.
             Log.e("MoveFilesAction", "Error copying file to Downloads: ${e.message}")
-
-            // Попытка удаления существующего файла через MediaStore (более сложный вариант)
-            // val selection = "${MediaStore.MediaColumns.RELATIVE_PATH}=? AND ${MediaStore.MediaColumns.DISPLAY_NAME}=?"
-            // val selectionArgs = arrayOf(Environment.DIRECTORY_DOWNLOADS + "/", sourceFile.name)
-            // resolver.delete(MediaStore.Downloads.EXTERNAL_CONTENT_URI, selection, selectionArgs)
-            // ... и потом снова пробовать insert ...
-
             return null
         }
     }

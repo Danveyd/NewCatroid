@@ -33,7 +33,7 @@ class SceneStartAction : TemporalAction() {
     override fun update(percent: Float) {
         if (sceneName != null) {
             sprite.releaseAllPointers()
-            StageActivity.stageListener.startScene(sceneName, GlobalManager.stopSounds, GlobalManager.saveScenes)
+            StageActivity.activeStageActivity.get()?.stageListener?.startScene(sceneName, GlobalManager.stopSounds, GlobalManager.saveScenes)
         }
     }
 

@@ -20,17 +20,11 @@ public class CustomShader extends DefaultShader {
 
     @Override
     public void render(Renderable renderable) {
-        Gdx.app.log("ShaderDebug", ">>> CustomShader is RENDERING! Time is: " + customUniforms.get("u_time"));
-        // 1. Сначала вызываем стандартный рендер.
-        super.render(renderable);
-
-        // 2. Теперь устанавливаем наши кастомные uniform'ы.
         if (!customUniforms.isEmpty()) {
             for (Map.Entry<String, Object> entry : customUniforms.entrySet()) {
-                String name = entry.getKey(); // Имя уже содержит "u_" префикс
+                String name = entry.getKey();
                 Object value = entry.getValue();
 
-                // Проверяем тип и вызываем соответствующий setUniform
                 if (value instanceof Float) {
                     program.setUniformf(name, (Float) value);
                 } else if (value instanceof Integer) {
@@ -44,8 +38,9 @@ public class CustomShader extends DefaultShader {
                 } else if (value instanceof Matrix4) {
                     program.setUniformMatrix(name, (Matrix4) value);
                 }
-                // Можно добавить другие типы, например, массивы (float[], vec3[])
             }
         }
+        super.render(renderable);
     }
+
 }

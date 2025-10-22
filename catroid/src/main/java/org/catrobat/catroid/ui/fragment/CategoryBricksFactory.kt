@@ -46,6 +46,7 @@ import org.catrobat.catroid.content.bricks.AskGeminiBrick
 import org.catrobat.catroid.content.bricks.AskSpeechBrick
 import org.catrobat.catroid.content.bricks.AssertEqualsBrick
 import org.catrobat.catroid.content.bricks.AssertUserListsBrick
+import org.catrobat.catroid.content.bricks.AsyncRepeatBrick
 import org.catrobat.catroid.content.bricks.AttachSOBrick
 import org.catrobat.catroid.content.bricks.BackgroundRequestBrick
 import org.catrobat.catroid.content.bricks.BigAskBrick
@@ -121,6 +122,7 @@ import org.catrobat.catroid.content.bricks.DroneTakeOffLandBrick
 import org.catrobat.catroid.content.bricks.DroneTurnLeftBrick
 import org.catrobat.catroid.content.bricks.DroneTurnRightBrick
 import org.catrobat.catroid.content.bricks.EditLookBrick
+import org.catrobat.catroid.content.bricks.EnablePbrRenderBrick
 import org.catrobat.catroid.content.bricks.EvalWebBrick
 import org.catrobat.catroid.content.bricks.ExitStageBrick
 import org.catrobat.catroid.content.bricks.ExportProjectFileBrick
@@ -146,6 +148,7 @@ import org.catrobat.catroid.content.bricks.IfOnEdgeBounceBrick
 import org.catrobat.catroid.content.bricks.IfThenLogicBeginBrick
 import org.catrobat.catroid.content.bricks.InsertItemIntoUserListBrick
 import org.catrobat.catroid.content.bricks.InsertTableBrick
+import org.catrobat.catroid.content.bricks.IntervalRepeatBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoAnimationsBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoJumpHighBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoJumpLongBrick
@@ -158,6 +161,7 @@ import org.catrobat.catroid.content.bricks.JumpingSumoSoundBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoTakingPictureBrick
 import org.catrobat.catroid.content.bricks.JumpingSumoTurnBrick
 import org.catrobat.catroid.content.bricks.KeyEventBrick
+import org.catrobat.catroid.content.bricks.LaunchProjectBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorMoveBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorStopBrick
 import org.catrobat.catroid.content.bricks.LegoEv3MotorTurnAngleBrick
@@ -172,6 +176,8 @@ import org.catrobat.catroid.content.bricks.ListenServerBrick
 import org.catrobat.catroid.content.bricks.LoadNNBrick
 import org.catrobat.catroid.content.bricks.LoadNativeModuleBrick
 import org.catrobat.catroid.content.bricks.LoadPythonLibraryBrick
+import org.catrobat.catroid.content.bricks.LoadSceneBrick
+import org.catrobat.catroid.content.bricks.LockMouseBrick
 import org.catrobat.catroid.content.bricks.LookFileBrick
 import org.catrobat.catroid.content.bricks.LookFromTableBrick
 import org.catrobat.catroid.content.bricks.LookRequestBrick
@@ -205,9 +211,12 @@ import org.catrobat.catroid.content.bricks.PhiroMotorStopBrick
 import org.catrobat.catroid.content.bricks.PhiroPlayToneBrick
 import org.catrobat.catroid.content.bricks.PhiroRGBLightBrick
 import org.catrobat.catroid.content.bricks.PhotoBrick
+import org.catrobat.catroid.content.bricks.PinToCameraBrick
 import org.catrobat.catroid.content.bricks.PlaceAtBrick
+import org.catrobat.catroid.content.bricks.PlayAnimationBrick
 import org.catrobat.catroid.content.bricks.PlayDrumForBeatsBrick
 import org.catrobat.catroid.content.bricks.PlayNoteForBeatsBrick
+import org.catrobat.catroid.content.bricks.PlayPreparedSoundBrick
 import org.catrobat.catroid.content.bricks.PlaySoundAndWaitBrick
 import org.catrobat.catroid.content.bricks.PlaySoundAtBrick
 import org.catrobat.catroid.content.bricks.PlaySoundBrick
@@ -216,6 +225,7 @@ import org.catrobat.catroid.content.bricks.PointInDirectionBrick
 import org.catrobat.catroid.content.bricks.PointToBrick
 import org.catrobat.catroid.content.bricks.PostWebRequestBrick
 import org.catrobat.catroid.content.bricks.PredictNNBrick
+import org.catrobat.catroid.content.bricks.PrepareSoundBrick
 import org.catrobat.catroid.content.bricks.PreviousLookBrick
 import org.catrobat.catroid.content.bricks.PutFloatBrick
 import org.catrobat.catroid.content.bricks.RaspiIfLogicBeginBrick
@@ -228,12 +238,14 @@ import org.catrobat.catroid.content.bricks.ReadVariableFromDeviceBrick
 import org.catrobat.catroid.content.bricks.ReadVariableFromFileBrick
 import org.catrobat.catroid.content.bricks.RegexBrick
 import org.catrobat.catroid.content.bricks.Remove3dObjectBrick
+import org.catrobat.catroid.content.bricks.RemovePbrLightBrick
 import org.catrobat.catroid.content.bricks.RepeatBrick
 import org.catrobat.catroid.content.bricks.RepeatUntilBrick
 import org.catrobat.catroid.content.bricks.ReplaceItemInUserListBrick
 import org.catrobat.catroid.content.bricks.ReportBrick
 import org.catrobat.catroid.content.bricks.ResetTimerBrick
 import org.catrobat.catroid.content.bricks.ResizeImgBrick
+import org.catrobat.catroid.content.bricks.ReturnToPreviousProjectBrick
 import org.catrobat.catroid.content.bricks.RunJSBrick
 import org.catrobat.catroid.content.bricks.RunLuaBrick
 import org.catrobat.catroid.content.bricks.RunPythonScriptBrick
@@ -258,18 +270,25 @@ import org.catrobat.catroid.content.bricks.Set3dRotationBrick
 import org.catrobat.catroid.content.bricks.Set3dScaleBrick
 import org.catrobat.catroid.content.bricks.Set3dVelocityBrick
 import org.catrobat.catroid.content.bricks.SetAmbientLightBrick
+import org.catrobat.catroid.content.bricks.SetAnisotropicFilterBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundAndWaitBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundByIndexAndWaitBrick
 import org.catrobat.catroid.content.bricks.SetBackgroundByIndexBrick
+import org.catrobat.catroid.content.bricks.SetBackgroundLightBrick
 import org.catrobat.catroid.content.bricks.SetBounceBrick
 import org.catrobat.catroid.content.bricks.SetBrightnessBrick
 import org.catrobat.catroid.content.bricks.SetCCDBrick
 import org.catrobat.catroid.content.bricks.SetCallbackBrick
 import org.catrobat.catroid.content.bricks.SetCameraFocusPointBrick
+import org.catrobat.catroid.content.bricks.SetCameraPosition2Brick
 import org.catrobat.catroid.content.bricks.SetCameraPositionBrick
+import org.catrobat.catroid.content.bricks.SetCameraRangeBrick
+import org.catrobat.catroid.content.bricks.SetCameraRotation2Brick
 import org.catrobat.catroid.content.bricks.SetCameraRotationBrick
+import org.catrobat.catroid.content.bricks.SetCameraZoomBrick
 import org.catrobat.catroid.content.bricks.SetColorBrick
+import org.catrobat.catroid.content.bricks.SetDirectionalLight2Brick
 import org.catrobat.catroid.content.bricks.SetDirectionalLightBrick
 import org.catrobat.catroid.content.bricks.SetDnsBrick
 import org.catrobat.catroid.content.bricks.SetFogBrick
@@ -294,6 +313,7 @@ import org.catrobat.catroid.content.bricks.SetPenColorBrick
 import org.catrobat.catroid.content.bricks.SetPenSizeBrick
 import org.catrobat.catroid.content.bricks.SetPhysicsObjectTypeBrick
 import org.catrobat.catroid.content.bricks.SetPhysicsStateBrick
+import org.catrobat.catroid.content.bricks.SetPointLightBrick
 import org.catrobat.catroid.content.bricks.SetPositiveBrick
 import org.catrobat.catroid.content.bricks.SetRestitutionBrick
 import org.catrobat.catroid.content.bricks.SetRotationStyleBrick
@@ -303,13 +323,16 @@ import org.catrobat.catroid.content.bricks.SetShaderUniformFloatBrick
 import org.catrobat.catroid.content.bricks.SetShaderUniformVec3Brick
 import org.catrobat.catroid.content.bricks.SetSizeToBrick
 import org.catrobat.catroid.content.bricks.SetSkyColorBrick
+import org.catrobat.catroid.content.bricks.SetSkyboxBrick
 import org.catrobat.catroid.content.bricks.SetSoundVolumeBrick
+import org.catrobat.catroid.content.bricks.SetSpotLightBrick
 import org.catrobat.catroid.content.bricks.SetStopSoundsBrick
 import org.catrobat.catroid.content.bricks.SetTempoBrick
 import org.catrobat.catroid.content.bricks.SetThreadColorBrick
 import org.catrobat.catroid.content.bricks.SetTransparencyBrick
 import org.catrobat.catroid.content.bricks.SetVariableBrick
 import org.catrobat.catroid.content.bricks.SetVelocityBrick
+import org.catrobat.catroid.content.bricks.SetViewPositionBrick
 import org.catrobat.catroid.content.bricks.SetVolumeToBrick
 import org.catrobat.catroid.content.bricks.SetWebBrick
 import org.catrobat.catroid.content.bricks.SetWidthBrick
@@ -335,10 +358,13 @@ import org.catrobat.catroid.content.bricks.SquareBrick
 import org.catrobat.catroid.content.bricks.StampBrick
 import org.catrobat.catroid.content.bricks.StartListeningBrick
 import org.catrobat.catroid.content.bricks.StartPlotBrick
+import org.catrobat.catroid.content.bricks.StartRecordingBrick
 import org.catrobat.catroid.content.bricks.StartServerBrick
 import org.catrobat.catroid.content.bricks.StitchBrick
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick
+import org.catrobat.catroid.content.bricks.StopAnimationBrick
 import org.catrobat.catroid.content.bricks.StopPlotBrick
+import org.catrobat.catroid.content.bricks.StopRecordingBrick
 import org.catrobat.catroid.content.bricks.StopRunningStitchBrick
 import org.catrobat.catroid.content.bricks.StopScriptBrick
 import org.catrobat.catroid.content.bricks.StopServerBrick
@@ -355,11 +381,14 @@ import org.catrobat.catroid.content.bricks.ThinkForBubbleBrick
 import org.catrobat.catroid.content.bricks.ToggleDisplayBrick
 import org.catrobat.catroid.content.bricks.TouchAndSlideBrick
 import org.catrobat.catroid.content.bricks.TripleStitchBrick
+import org.catrobat.catroid.content.bricks.TryCatchFinallyBrick
 import org.catrobat.catroid.content.bricks.TurnLeftBrick
 import org.catrobat.catroid.content.bricks.TurnLeftSpeedBrick
 import org.catrobat.catroid.content.bricks.TurnRightBrick
 import org.catrobat.catroid.content.bricks.TurnRightSpeedBrick
 import org.catrobat.catroid.content.bricks.UnloadNNBrick
+import org.catrobat.catroid.content.bricks.UnlockMouseBrick
+import org.catrobat.catroid.content.bricks.UnpinFromCameraBrick
 import org.catrobat.catroid.content.bricks.UnzipBrick
 import org.catrobat.catroid.content.bricks.UploadFileBrick
 import org.catrobat.catroid.content.bricks.UserDefinedBrick
@@ -376,6 +405,8 @@ import org.catrobat.catroid.content.bricks.WhenBrick
 import org.catrobat.catroid.content.bricks.WhenClonedBrick
 import org.catrobat.catroid.content.bricks.WhenConditionBrick
 import org.catrobat.catroid.content.bricks.WhenGamepadButtonBrick
+import org.catrobat.catroid.content.bricks.WhenMouseButtonClickedBrick
+import org.catrobat.catroid.content.bricks.WhenMouseWheelScrolledBrick
 import org.catrobat.catroid.content.bricks.WhenNfcBrick
 import org.catrobat.catroid.content.bricks.WhenProjectExitsBrick
 import org.catrobat.catroid.content.bricks.WhenRaspiPinChangedBrick
@@ -398,6 +429,7 @@ import org.catrobat.catroid.ui.controller.RecentBrickListManager
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import java.util.ArrayList
 import java.util.Locale
+import kotlin.contracts.contract
 
 open class CategoryBricksFactory {
 
@@ -487,6 +519,10 @@ open class CategoryBricksFactory {
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {
             eventBrickList.add(WhenNfcBrick())
         }
+        //eventBrickList.add(WhenMouseButtonClickedBrick())
+        //eventBrickList.add(LockMouseBrick())
+        //eventBrickList.add(UnlockMouseBrick())
+        //eventBriFckList.add(WhenMouseWheelScrolledBrick())
         return eventBrickList
     }
 
@@ -502,6 +538,8 @@ open class CategoryBricksFactory {
         controlBrickList.add(ForeverBrick())
         controlBrickList.add(IfLogicBeginBrick(ifConditionFormula))
         controlBrickList.add(IfThenLogicBeginBrick(ifConditionFormula))
+        controlBrickList.add(AsyncRepeatBrick(Formula(3)))
+        controlBrickList.add(IntervalRepeatBrick(Formula(3), Formula(1)))
         controlBrickList.add(WaitUntilBrick(ifConditionFormula))
         controlBrickList.add(RepeatBrick(Formula(BrickValues.REPEAT)))
         controlBrickList.add(RepeatUntilBrick(ifConditionFormula))
@@ -513,12 +551,15 @@ open class CategoryBricksFactory {
         controlBrickList.add(ClearSceneBrick(null))
         controlBrickList.add(SetSaveScenesBrick(1))
         controlBrickList.add(SetStopSoundsBrick(1))
+        controlBrickList.add(LaunchProjectBrick("project.newtrobat"))
+        controlBrickList.add(ReturnToPreviousProjectBrick())
         if (SettingsFragment.isPhiroSharedPreferenceEnabled(context)) {
             controlBrickList.add(PhiroIfLogicBeginBrick())
         }
         controlBrickList.add(ExitStageBrick())
         controlBrickList.add(StopScriptBrick(BrickValues.STOP_THIS_SCRIPT))
         controlBrickList.add(WaitTillIdleBrick())
+        controlBrickList.add(TryCatchFinallyBrick());
         controlBrickList.add(WhenClonedBrick())
         controlBrickList.add(CloneBrick())
         controlBrickList.add(DeleteThisCloneBrick())
@@ -606,13 +647,17 @@ open class CategoryBricksFactory {
         soundBrickList.add(PlaySoundAndWaitBrick())
         soundBrickList.add(PlaySoundAtBrick(BrickValues.PLAY_AT_DEFAULT_OFFSET))
         soundBrickList.add(SoundFileBrick("my_sound.mp3"))
-        soundBrickList.add(SoundFilesBrick("my_sound.mp3"))
+        soundBrickList.add(SoundFilesBrick("my_sound_FROM_PROJECT_FILES.mp3"))
+        soundBrickList.add(PrepareSoundBrick("my_sound.mp3", "sound"))
+        soundBrickList.add(PlayPreparedSoundBrick("sound"))
         soundBrickList.add(StopSoundBrick())
         soundBrickList.add(StopAllSoundsBrick())
         soundBrickList.add(SetVolumeToBrick(BrickValues.SET_VOLUME_TO))
         soundBrickList.add(SetSoundVolumeBrick(50.0))
         soundBrickList.add(ChangeVolumeByNBrick(Formula(BrickValues.CHANGE_VOLUME_BY)))
         soundBrickList.add(ListenMicroBrick("100"))
+        soundBrickList.add(StartRecordingBrick())
+        soundBrickList.add(StopRecordingBrick("audio.mp3"))
         if (SettingsFragment.isAISpeechSynthetizationSharedPreferenceEnabled(context)) {
             soundBrickList.add(SpeakBrick(context.getString(R.string.brick_speak_default_value)))
             soundBrickList.add(SpeakAndWaitBrick(context.getString(R.string.brick_speak_default_value)))
@@ -672,6 +717,11 @@ open class CategoryBricksFactory {
         looksBrickList.add(SetParticleColorBrick(BrickValues.PARTICLE_COLOR))
         looksBrickList.add(ClearGraphicEffectBrick())
         looksBrickList.add(SetCameraFocusPointBrick())
+        looksBrickList.add(SetCameraPosition2Brick(100, 300))
+        looksBrickList.add(SetCameraRotation2Brick(90.0))
+        looksBrickList.add(SetCameraZoomBrick(3.0))
+        looksBrickList.add(PinToCameraBrick())
+        looksBrickList.add(UnpinFromCameraBrick())
         looksBrickList.add(WhenBackgroundChangesBrick())
         looksBrickList.add(SetBackgroundBrick())
         looksBrickList.add(SetBackgroundByIndexBrick(BrickValues.SET_LOOK_BY_INDEX))
@@ -892,6 +942,7 @@ print("Bot has stopped.")""", "myVar"))
         //deviceBrickList.add(NativeLayerBrick(0))
         deviceBrickList.add(AttachSOBrick("glView", "mylib.so"))
         deviceBrickList.add(CreateGLViewBrick("glView", 100, 200, 500, 300))
+        deviceBrickList.add(SetViewPositionBrick("myVideoPlayer", 100, 200))
         deviceBrickList.add(DeleteWebBrick("myWebView"))
         deviceBrickList.add(RunVMBrick("1024", "2", "myDisk.qcow2", "flash.iso"))
         deviceBrickList.add(CreateDiskBrick("myDisk.qcow2", "10G"))
@@ -1131,7 +1182,7 @@ void main() {
         threedBrickList.add(Set3dRotationBrick("myObject", 1.0, 0.0, 0.0))
         threedBrickList.add(Set3dScaleBrick("myObject", 2.0, 1.0, 1.5))
         threedBrickList.add(ObjectLookAtBrick("myObject", 0.0, 0.0, 0.0))
-        threedBrickList.add(SetPhysicsStateBrick("myObject", 2, 1.0))
+        threedBrickList.add(SetPhysicsStateBrick("myObject", 2, 0, 1.0))
         threedBrickList.add(Set3dGravityBrick(0.0, -9.81, 0.0))
         threedBrickList.add(Set3dVelocityBrick("myObject", 0.0, 25.0, 0.0))
         threedBrickList.add(Apply3dForceBrick("myObject", 5.0, 0.0, 0.0))
@@ -1141,6 +1192,7 @@ void main() {
         threedBrickList.add(SetCameraPositionBrick(200.0, 200.0, 200.0))
         threedBrickList.add(CameraLookAtBrick(0.0, 0.0, 0.0))
         threedBrickList.add(SetCameraRotationBrick(0.0, 180.0, 0.0))
+        threedBrickList.add(SetCameraRangeBrick(0.1, 2500.0))
         threedBrickList.add(SetAmbientLightBrick(0.8, 0.8, 0.8))
         threedBrickList.add(SetDirectionalLightBrick("sun", 0.8, 0.8, 0.8, -1.0, -0.8, -0.2))
         threedBrickList.add(SetSkyColorBrick(0.5, 0.6, 1.0))
@@ -1186,6 +1238,17 @@ void main() {
 }"""))
         threedBrickList.add(SetShaderUniformVec3Brick("lightColor", 0.4, 1.0, 0.4))
         threedBrickList.add(SetShaderUniformFloatBrick("meaningOfLife", 42.0))
+        threedBrickList.add(EnablePbrRenderBrick(1))
+        threedBrickList.add(PlayAnimationBrick("myObject", "idle", -1, 1.0, 0.2))
+        threedBrickList.add(StopAnimationBrick("myObject"))
+        threedBrickList.add(SetAnisotropicFilterBrick("myObject", 2.0))
+        threedBrickList.add(SetPointLightBrick("sun", 100.0, 100.0, 0.0, 255, 255, 230, 5.0, 300.0))
+        threedBrickList.add(SetSpotLightBrick("sun", 100.0, 100.0, 0.0, 0.3, -0.4, 0.2, 255, 255, 230, 5.0, 60.0, 0.4, 300.0))
+        threedBrickList.add(SetDirectionalLight2Brick(0.3, -0.2, -0.3, 5.0))
+        threedBrickList.add(SetBackgroundLightBrick(0.3))
+        threedBrickList.add(RemovePbrLightBrick("sun"))
+        threedBrickList.add(LoadSceneBrick("my_level.rscene"))
+        //threedBrickList.add(SetSkyboxBrick("skybox.png"))
 
         return threedBrickList
     }

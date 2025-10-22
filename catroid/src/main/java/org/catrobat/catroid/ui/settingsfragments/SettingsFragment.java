@@ -23,11 +23,13 @@
 package org.catrobat.catroid.ui.settingsfragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -37,6 +39,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import org.catrobat.catroid.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
@@ -51,6 +54,8 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.recyclerview.dialog.AppStoreDialogFragment;
 import org.catrobat.catroid.ui.recyclerview.dialog.AppStoreDialogFragment.Companion.Extension;
 import org.catrobat.catroid.utils.SnackbarUtil;
+import org.catrobat.catroid.utils.git.TokenManager;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +71,10 @@ import static org.catrobat.catroid.common.SharedPreferenceKeys.DEVICE_LANGUAGE;
 import static org.catrobat.catroid.common.SharedPreferenceKeys.LANGUAGE_TAGS;
 import static org.catrobat.catroid.common.SharedPreferenceKeys.LANGUAGE_TAG_KEY;
 import static org.koin.java.KoinJavaComponent.inject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -140,6 +149,11 @@ public class SettingsFragment extends PreferenceFragment {
 	public static final String TAG = SettingsFragment.class.getSimpleName();
 
 	public static final String SETTINGS_USE_CATBLOCKS = "settings_use_catblocks";
+
+	private static final String GITHUB_CLIENT_ID = "Ov23liKoq3h0cTgAbVYA"; // ЗАМЕНИТЕ
+	private static final String GITHUB_REDIRECT_URI = "newcatroid://github-callback";
+
+	private Preference githubPreference;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -238,6 +252,21 @@ public class SettingsFragment extends PreferenceFragment {
 			testPreference.setEnabled(BuildConfig.DEBUG);
 			screen.removePreference(testPreference);
 		}
+
+		githubPreference = findPreference("setting_github_login");
+
+		// Устанавливаем обработчик нажатия
+		githubPreference.setOnPreferenceClickListener(preference -> {
+			boolean isLoggedIn = TokenManager.INSTANCE.getToken(getActivity()) != null;
+
+			if (isLoggedIn) {
+				showLogoutDialog();
+			} else {
+				startGitHubLogin();
+			}
+			return true;
+		});
+
 		setCorrectPreferenceViewForEmbroidery();
 		setCorrectPreferenceViewForPhiro();
 	}
@@ -246,6 +275,92 @@ public class SettingsFragment extends PreferenceFragment {
 	public void onResume() {
 		super.onResume();
 		((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.preference_title);
+		updateGitHubPreference();
+	}
+
+	private void updateGitHubPreference() {
+		String token = TokenManager.INSTANCE.getToken(getActivity());
+		if (token != null) {
+			// Устанавливаем временный текст на время загрузки
+			githubPreference.setSummary("Загрузка данных пользователя...");
+			// Запускаем сетевой запрос в фоновом потоке
+			fetchGitHubUser(token);
+		} else {
+			githubPreference.setSummary(R.string.github_not_logged_in);
+		}
+	}
+
+	/**
+	 * Выполняет сетевой запрос к GitHub API для получения информации о пользователе.
+	 * Должен выполняться в фоновом потоке.
+	 *
+	 * @param token OAuth токен для аутентификации.
+	 */
+	private void fetchGitHubUser(final String token) {
+		new Thread(() -> {
+			OkHttpClient client = new OkHttpClient();
+			Request request = new Request.Builder()
+					.url("https://api.github.com/user")
+					.header("Authorization", "Bearer " + token)
+					.build();
+
+			try (Response response = client.newCall(request).execute()) {
+				if (response.isSuccessful()) {
+					String responseBody = response.body().string();
+					JSONObject json = new JSONObject(responseBody);
+					String username = json.getString("login");
+
+					// Обновление UI должно происходить в главном потоке
+					if (getActivity() != null) {
+						getActivity().runOnUiThread(() -> {
+							githubPreference.setSummary(getString(R.string.github_logged_in_as, username));
+						});
+					}
+				} else {
+					// Если токен недействителен или другая ошибка
+					handleFailedFetch();
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "Failed to fetch GitHub user", e);
+				handleFailedFetch();
+			}
+		}).start();
+	}
+
+	/**
+	 * Обрабатывает ошибку при загрузке данных пользователя.
+	 * Устанавливает текст по умолчанию и, возможно, удаляет недействительный токен.
+	 */
+	private void handleFailedFetch() {
+		if (getActivity() != null) {
+			getActivity().runOnUiThread(() -> {
+				githubPreference.setSummary("Не удалось получить данные");
+				// Опционально: можно удалить невалидный токен
+				// TokenManager.INSTANCE.clearToken(getActivity());
+			});
+		}
+	}
+
+	private void startGitHubLogin() {
+		String authUrl = "https://github.com/login/oauth/authorize" +
+				"?client_id=" + GITHUB_CLIENT_ID +
+				"&redirect_uri=" + GITHUB_REDIRECT_URI +
+				"&scope=repo";
+
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl));
+		startActivity(intent);
+	}
+
+	private void showLogoutDialog() {
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.github_logout_dialog_title)
+				.setMessage(R.string.github_logout_dialog_message)
+				.setPositiveButton(R.string.github_logout_button, (dialog, which) -> {
+					TokenManager.INSTANCE.clearToken(getActivity());
+					updateGitHubPreference();
+				})
+				.setNegativeButton(android.R.string.cancel, null)
+				.show();
 	}
 
 	@Override

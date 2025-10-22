@@ -5,9 +5,6 @@
 
 typedef const char* (*ResolvePathCallback)(const char* fileName);
 
-// API, который должен реализовать каждый пользовательский .so файл.
-// 'extern "C"' нужен, чтобы C++ не "портил" имена функций,
-// и мы могли найти их по имени с помощью dlsym.
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,4 +62,4 @@ typedef const char* (*ResolvePathCallback)(const char* fileName);
 }
 #endif
 
-#endif // NEWCATROID_GL_API_H
+#endif

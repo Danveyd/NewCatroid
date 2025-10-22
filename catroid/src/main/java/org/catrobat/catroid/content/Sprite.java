@@ -70,12 +70,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
 @XStreamFieldKeyOrder({
+		"spriteId",
 		"name",
 		"lookList",
 		"soundList",
@@ -104,6 +106,8 @@ public class Sprite implements Nameable, Serializable {
 	private transient Color embroideryThreadColor = Color.BLACK;
 
 	@XStreamAsAttribute
+	private String spriteId;
+	@XStreamAsAttribute
 	private String name;
 	private List<Script> scriptList = new ArrayList<>();
 	private List<LookData> lookList = new ArrayList<>();
@@ -129,24 +133,28 @@ public class Sprite implements Nameable, Serializable {
 
 	public Sprite(String name) {
 		this.name = name;
+		this.spriteId = UUID.randomUUID().toString();
+	}
+
+	public String getSpriteId() {
+		return spriteId;
+	}
+
+	public void setSpriteId(String spriteId) {
+		this.spriteId = spriteId;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Sprite)) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-
-		Sprite sprite = (Sprite) obj;
-		return sprite.name.equals(this.name);
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Sprite sprite = (Sprite) o;
+		return Objects.equals(spriteId, sprite.spriteId);
 	}
 
 	@Override
 	public int hashCode() {
-		return super.hashCode() * TAG.hashCode();
+		return Objects.hash(spriteId);
 	}
 
 	public List<Script> getScriptList() {
@@ -715,8 +723,8 @@ public class Sprite implements Nameable, Serializable {
 	}
 
 	public void releaseAllPointers() {
-		if (StageActivity.stageListener != null) {
-			Stage stage = StageActivity.stageListener.getStage();
+		if (StageActivity.getActiveStageListener() != null) {
+			Stage stage = StageActivity.getActiveStageListener().getStage();
 			for (int pointer : usedTouchPointer) {
 				stage.touchUp(0, 0, pointer, 0);
 			}

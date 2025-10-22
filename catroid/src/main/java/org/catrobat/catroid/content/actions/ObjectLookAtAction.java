@@ -16,7 +16,7 @@ public class ObjectLookAtAction extends TemporalAction {
 
     @Override
     protected void update(float percent) {
-        var threeDManager = StageActivity.stageListener.getThreeDManager();
+        var threeDManager = StageActivity.getActiveStageListener().getThreeDManager();
         if (threeDManager == null) return;
 
         try {

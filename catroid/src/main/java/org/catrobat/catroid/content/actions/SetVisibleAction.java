@@ -36,8 +36,8 @@ public class SetVisibleAction extends TemporalAction {
 	@Override
 	protected void update(float delta) {
 		sprite.look.setLookVisible(visible);
-		if (StageActivity.stageListener != null) {
-			ShowBubbleActor actor = StageActivity.stageListener.getBubbleActorForSprite(sprite);
+		if (StageActivity.getActiveStageListener() != null) {
+			ShowBubbleActor actor = StageActivity.getActiveStageListener().getBubbleActorForSprite(sprite);
 			if (actor != null) {
 				actor.setVisible(visible);
 			}

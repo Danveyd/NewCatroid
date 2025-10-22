@@ -89,20 +89,11 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
 
     init {
         if (hasFrontCamera || hasBackCamera) {
-            // --- НАЧАЛО ИЗМЕНЕНИЙ ---
-            // БЫЛО:
-            // stageActivity.addContentView(
-            //     previewView,
-            //     FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            // )
-
-            // СТАЛО: Добавляем previewView в наш специальный контейнер
-            val container = stageActivity.cameraContainer // Используем геттер, созданный на Шаге 1
+            val container = stageActivity.cameraContainer
             container.addView(
                 previewView,
                 FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             )
-            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
         }
 
         defaultCameraSelector = if (hasFrontCamera) {
@@ -163,7 +154,6 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
     private fun switchToDefaultCamera() = switchCamera(defaultCameraSelector)
 
     private fun switchCamera(cameraSelector: CameraSelector): Boolean {
-        // Проверяем, действительно ли нужно переключаться
         if (currentCameraSelector == cameraSelector) {
             return false
         }
@@ -171,21 +161,16 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
         currentCameraSelector = cameraSelector
         currentCamera = null
 
-        // 1. Собираем список ВСЕХ сценариев, которые должны быть активны.
         val useCasesToBind = mutableListOf<UseCase>()
 
-        // ImageCapture должен быть активен всегда, чтобы фото работало
         useCasesToBind.add(imageCaptureUseCase)
 
-        // Добавляем Preview, если он должен быть видим
         if (previewVisible) {
             useCasesToBind.add(previewUseCase)
         }
 
-        // Добавляем Analysis, если детекция включена
         if (detectionOn) {
             useCasesToBind.add(analysisUseCase)
-            // Настраиваем анализатор, как и раньше
             val mobileServiceAvailability = get(MobileServiceAvailability::class.java)
             if (mobileServiceAvailability.isGmsAvailable(stageActivity)) {
                 CatdroidImageAnalyzer.setActiveDetectorsWithContext(this.stageActivity.context)
@@ -196,23 +181,18 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
         }
 
         try {
-            // 2. Сначала полностью очищаем все старые привязки
             cameraProvider.unbindAll()
 
-            // 3. Если есть что привязывать, делаем это ОДНИМ вызовом
             if (useCasesToBind.isNotEmpty()) {
                 currentCamera = cameraProvider.bindToLifecycle(
                     this,
                     currentCameraSelector,
-                    *useCasesToBind.toTypedArray() // Передаем все сценарии разом
+                    *useCasesToBind.toTypedArray()
                 )
 
-                // 4. Настраиваем SurfaceProvider для Preview ПОСЛЕ успешной привязки
                 if (previewVisible) {
                     previewUseCase.setSurfaceProvider(previewView.createSurfaceProvider())
                 }
-
-                // Включаем фонарик, если нужно
                 currentCamera?.cameraControl?.enableTorch(flashOn)
                 lifecycle.currentState = Lifecycle.State.STARTED
             }
@@ -231,7 +211,7 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
             previewVisible = true
             runInMainThreadAndWait(Runnable {
                 previewView.visibility = View.VISIBLE
-                rebindUseCases() // Перепривязываем сценарии
+                rebindUseCases()
             })
         }
     }
@@ -242,8 +222,6 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
             previewVisible = false
             runInMainThreadAndWait(Runnable {
                 previewView.visibility = View.INVISIBLE
-                // Если фонарик не включен, то можно перепривязать.
-                // Если включен, превью должно оставаться для работы фонарика.
                 if (flashOn.not()) {
                     rebindUseCases()
                 }
@@ -255,21 +233,18 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
     fun startDetection(): Boolean {
         if (detectionOn.not()) {
             detectionOn = true
-            // Просто меняем флаг и пересобираем камеру
             rebindUseCases()
         }
         return true
     }
 
-    // И для включения/выключения вспышки
     @Synchronized
     fun enableFlash() {
         if (flashOn.not()) {
             flashOn = true
             if (currentCamera?.cameraInfo?.hasFlashUnit()?.not() != false && isCameraFacingFront) {
-                switchToBackCamera() // Этот вызов теперь автоматически перепривяжет всё
+                switchToBackCamera()
             } else {
-                // Просто включаем фонарик на текущей камере
                 currentCamera?.cameraControl?.enableTorch(true)
             }
         }
@@ -281,8 +256,6 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
             flashOn = false
             currentCamera?.cameraControl?.enableTorch(false)
             if (previewVisible.not()) {
-                // Если превью было выключено, но вспышка работала,
-                // теперь можно обновить состояние, чтобы убрать ненужные привязки.
                 runInMainThreadAndWait(Runnable { rebindUseCases() })
             }
         }
@@ -291,7 +264,6 @@ class CameraManager(private val stageActivity: StageActivity) : LifecycleOwner {
     private fun bindPreview(): Boolean {
         previewView.visibility = View.VISIBLE
 
-        // ИЗМЕНЕНО: теперь мы привязываем и превью, и захват изображения
         return bindUseCase(previewUseCase, imageCaptureUseCase).also {
             previewUseCase.setSurfaceProvider(previewView.createSurfaceProvider())
             if (previewVisible.not()) {

@@ -37,7 +37,7 @@ public class WaitTillIdleAction extends Action {
 	}
 
 	private boolean allActorsIdle() {
-		int numberOfActors = StageActivity.stageListener.getStage().getActors().size;
+		int numberOfActors = StageActivity.getActiveStageListener().getStage().getActors().size;
 		if (numberOfActors == 0) {
 			return false;
 		}
@@ -45,7 +45,7 @@ public class WaitTillIdleAction extends Action {
 		int actorsWithNoEventThreads = 0;
 		int actorWithOnlyThisEventThread = 0;
 
-		for (Actor actor : StageActivity.stageListener.getStage().getActors()) {
+		for (Actor actor : StageActivity.getActiveStageListener().getStage().getActors()) {
 			Array<Action> actions = actor.getActions();
 			if (actions.size == 0) {
 				actorsWithNoEventThreads++;

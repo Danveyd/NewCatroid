@@ -58,10 +58,8 @@ public class CreateTextFieldBrick extends UserVariableBrickWithFormula {
         this(new Formula(name), new Formula(defaultV), new Formula(x), new Formula(y), new Formula(w), new Formula(h), new Formula(ts), new Formula(tc), new Formula(bc), new Formula(ht), new Formula(hc), new Formula(alignment), new Formula(password), new Formula(corner), new Formula(max), new Formula(type), new Formula(font));
     }
 
-    // --- ИСПРАВЛЕНИЕ 1: Основной конструктор, принимающий Формулы ---
-    // Раньше он устанавливал только имя. Теперь он устанавливает ВСЕ поля.
     private CreateTextFieldBrick(Formula name, Formula def, Formula x, Formula y, Formula w, Formula h, Formula ts, Formula tc, Formula bc, Formula ht, Formula hc, Formula align, Formula pass, Formula corner, Formula max, Formula type, Formula font) {
-        this(); // Вызываем конструктор по умолчанию, чтобы добавить все AllowedBrickField
+        this();
         setFormulaWithBrickField(BrickField.NAME, name);
         setFormulaWithBrickField(BrickField.TEXT, def);
         setFormulaWithBrickField(BrickField.X_POSITION, x);
@@ -81,19 +79,13 @@ public class CreateTextFieldBrick extends UserVariableBrickWithFormula {
         setFormulaWithBrickField(BrickField.TYPE, type);
     }
 
-    // Конструктор для создания кирпичика с уже выбранной переменной.
-    // Он был почти правильным, мы просто используем исправленный основной конструктор.
     public CreateTextFieldBrick(Formula name, Formula def, Formula x, Formula y, Formula w, Formula h, Formula ts, Formula tc, Formula bc, Formula ht, Formula hc, Formula align, Formula pass, Formula corner, Formula max, Formula type, Formula font, UserVariable userVariable) {
         this(name, def, x, y, w, h, ts, tc, bc, ht, hc, align, pass, corner, max, type, font);
         this.userVariable = userVariable;
     }
 
-    // --- ИСПРАВЛЕНИЕ 2: Конструктор для установки значения из сенсора ---
-    // Раньше он вызывал несуществующий конструктор. Теперь он правильно устанавливает
-    // поле TEXT (начальное значение) на формулу сенсора.
     public CreateTextFieldBrick(Sensors defaultValue) {
-        this(); // Вызываем конструктор по умолчанию
-        // Устанавливаем поле начального текста (TEXT) на формулу с сенсором
+        this();
         setFormulaWithBrickField(BrickField.TEXT, new Formula(new FormulaElement(FormulaElement.ElementType.SENSOR, defaultValue.name(), null)));
     }
 
@@ -127,7 +119,7 @@ public class CreateTextFieldBrick extends UserVariableBrickWithFormula {
                 getFormulaWithBrickField(BrickField.MAX_LEN),
                 getFormulaWithBrickField(BrickField.TYPE),
                 getFormulaWithBrickField(BrickField.FILE),
-                userVariable // Передаем переменную, унаследованную от UserVariableBrickWithFormula
+                userVariable
         ));
     }
 }

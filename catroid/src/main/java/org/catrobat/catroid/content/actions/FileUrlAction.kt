@@ -107,17 +107,13 @@ class FileUrlAction() : TemporalAction() {
             var fileOutputStream: FileOutputStream? = null
             try {
                 Log.d("DownloadFile", "Connecting to URL: $fileUrl")
-                //showToast("Connecting to URL: $fileUrl")
                 val url = URL(fileUrl)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0")
                 Log.d("DownloadFile", "Connecting...")
-                //showToast("Connecting...")
                 connection.connect()
                 Log.d("DownloadFile", "Connection Ended")
-                //showToast("Connection Ended")
-
 
                 if (connection.responseCode != HttpURLConnection.HTTP_OK) {
                     Log.e("DownloadFile", "Ошибка: ${connection.responseCode}")
@@ -134,9 +130,7 @@ class FileUrlAction() : TemporalAction() {
                 inputStream.copyTo(fileOutputStream)
 
                 Log.d("DownloadFile", "Файл скачан: ${destFile.absolutePath}")
-                //showToast("Файл скачан: ${destFile.absolutePath}")
             } catch (e: Exception) {
-                //ErrorLog.log(e.message?: "**message not provided :(**")
                 showToast("Ошибка при загрузке файла: ${e.message}")
                 Log.e("DownloadFile", "Ошибка при загрузке файла: ${e.message}", e)
             } finally {

@@ -72,6 +72,8 @@ import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenBackPressedBrick;
 import org.catrobat.catroid.content.bricks.WhenClonedBrick;
+import org.catrobat.catroid.content.bricks.WhenMouseButtonClickedBrick;
+import org.catrobat.catroid.content.bricks.WhenMouseWheelScrolledBrick;
 import org.catrobat.catroid.content.bricks.WhenProjectExitsBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.content.bricks.WhenTouchDownBrick;
@@ -97,6 +99,8 @@ public class CategoryBeginnerBricksFactory extends CategoryBricksFactory {
 		eventBrickList.add(new BroadcastBrick(broadcastMessage));
 		eventBrickList.add(new WhenProjectExitsBrick());
 		eventBrickList.add(new WhenBackPressedBrick());
+		eventBrickList.add(new WhenMouseButtonClickedBrick());
+		eventBrickList.add(new WhenMouseWheelScrolledBrick());
 		return eventBrickList;
 	}
 

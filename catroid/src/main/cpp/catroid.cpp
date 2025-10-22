@@ -3,12 +3,12 @@
 #include <string>
 #include <mutex>
 #include <vector>
-#include <numeric> // Для std::accumulate
+#include <numeric>
 #include <cmath>
-#include <algorithm> // для std::min/max
+#include <algorithm>
 #include "earcut.hpp"
-#include <android/native_window_jni.h> // Для ANativeWindow_fromSurface
-#include <dlfcn.h>                     // Для dlopen, dlsym, dlclose
+#include <android/native_window_jni.h>
+#include <dlfcn.h>
 #include <fstream>
 #include <unwind.h>
 #include <dlfcn.h>
@@ -16,8 +16,8 @@
 #include <signal.h>
 #include <cstring>
 #include <spawn.h>
-#include <unistd.h> // для pid_t
-#include <sys/wait.h> // для waitpid
+#include <unistd.h>
+#include <sys/wait.h>
 #include <thread>
 
 #include "onnxruntime_cxx_api.h"
@@ -28,9 +28,6 @@
 
 extern char **environ;
 
-// Убедитесь, что путь и версия правильные!
-
-// Глобальные переменные
 Ort::Env env;
 Ort::Env ort_env;
 Ort::Session session{nullptr};
@@ -43,7 +40,7 @@ static std::string g_crashLogPath;
 static JavaVM* g_JavaVM = nullptr;
 
 std::map<std::string, pid_t> g_RunningVMs;
-std::mutex g_VmMutex; // Мьютекс для потокобезопасного доступа к карте
+std::mutex g_VmMutex;
 
 struct BacktraceState {
     _Unwind_Ptr* frames;
@@ -103,7 +100,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     g_JavaVM = vm;
 
     struct sigaction sa;
-    memset(&sa, 0, sizeof(sa)); // Теперь memset будет найден в <cstring>
+    memset(&sa, 0, sizeof(sa));
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = signal_handler;
     sa.sa_flags = SA_SIGINFO | SA_ONSTACK;
@@ -114,28 +111,24 @@ JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     return JNI_VERSION_1_6;
 }
 
-#ifdef __aarch64__  // Эта директива истинна ТОЛЬКО при сборке для arm64-v8a
+#ifdef __aarch64__
 #include "include/python3.12/Python.h"
 
 #define JNI_PYTHON_FUNCTION(name) Java_org_catrobat_catroid_python_PythonEngine_##name
 static std::atomic<PyThreadState*> g_worker_thread_state(nullptr);
-// Глобальный ID потока для PyThreadState_SetAsyncExc
 static std::atomic<unsigned long> g_worker_thread_id(0);
 
-// Новая JNI-функция для вызова из Kotlin
 extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeForceStopPythonScript)(JNIEnv* env, jobject /* this */) {
     if (!Py_IsInitialized()) {
         LOGD("Python is not initialized or is finalizing. Skipping force stop.");
-        return; // Безопасно выходим
+        return;
     }
 
     unsigned long thread_id = g_worker_thread_id.load();
     if (thread_id != 0) {
         LOGD("Attempting to inject SystemExit exception into thread ID: %lu", thread_id);
 
-        // 2. ЗАХВАТЫВАЕМ GIL ДЛЯ ДОПОЛНИТЕЛЬНОЙ БЕЗОПАСНОСТИ
-        //    Это гарантирует, что мы не помешаем другим операциям.
         PyGILState_STATE gstate = PyGILState_Ensure();
 
         PyThreadState_SetAsyncExc(thread_id, PyExc_SystemExit);
@@ -151,14 +144,13 @@ extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeInitPython)(
         JNIEnv* env,
         jobject /* this */,
-        jobjectArray modulePaths) { // <-- Теперь это массив строк
+        jobjectArray modulePaths) {
 
     PyConfig config;
     PyConfig_InitPythonConfig(&config);
     config.install_signal_handlers = 0;
     config.module_search_paths_set = 1;
 
-    // Итерируемся по массиву путей из Kotlin и добавляем каждый в PyConfig
     int numPaths = env->GetArrayLength(modulePaths);
     LOGD("Preparing Python with %d module paths...", numPaths);
     for (int i = 0; i < numPaths; i++) {
@@ -174,7 +166,6 @@ JNI_PYTHON_FUNCTION(nativeInitPython)(
         env->DeleteLocalRef(path_jstr);
     }
 
-    // Инициализируем Python
     PyStatus status = Py_InitializeFromConfig(&config);
     if (PyStatus_Exception(status)) {
         LOGD("FATAL: Py_InitializeFromConfig failed.");
@@ -186,7 +177,6 @@ JNI_PYTHON_FUNCTION(nativeInitPython)(
     PyConfig_Clear(&config);
 }
 
-// ДОБАВЬТЕ ЭТУ ФУНКЦИЮ В catroid.cpp
 extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeFinalizePython)(JNIEnv* env, jobject /* this */) {
     if (Py_IsInitialized()) {
@@ -204,7 +194,6 @@ JNI_PYTHON_FUNCTION(nativeInitPython2)(
         jstring pythonHome,
         jstring projectLibsPath) {
 
-    // --- Ресурсы для очистки ---
     const char* pyHome_cstr = env->GetStringUTFChars(pythonHome, 0);
     const char* pyLibsPath_cstr = env->GetStringUTFChars(projectLibsPath, 0);
     wchar_t *pyHomeW = Py_DecodeLocale(pyHome_cstr, NULL);
@@ -219,18 +208,12 @@ JNI_PYTHON_FUNCTION(nativeInitPython2)(
         config.verbose = 0;
         PyStatus status;
 
-        // ---> НАЧАЛО: ФИНАЛЬНЫЙ И САМЫЙ ВАЖНЫЙ ФИКС <---
-
-        // 1. Говорим Python, что мы полностью переопределяем пути поиска.
-        //    Он больше не будет пытаться угадать их сам.
         config.module_search_paths_set = 1;
 
-        // 2. Создаем три необходимых пути.
-        std::wstring path_stdlib(pyHomeW); // Путь к стандартным .py файлам
-        std::wstring path_pylibs(pyLibsPathW); // Путь к нашим библиотекам (telebot)
-        std::wstring path_dynload = std::wstring(pyHomeW) + L"/lib-dynload"; // !! КЛЮЧЕВОЙ ПУТЬ К .so МОДУЛЯМ !!
+        std::wstring path_stdlib(pyHomeW);
+        std::wstring path_pylibs(pyLibsPathW);
+        std::wstring path_dynload = std::wstring(pyHomeW) + L"/lib-dynload";
 
-        // 3. Добавляем эти три пути в список поиска модулей.
         status = PyWideStringList_Append(&config.module_search_paths, path_stdlib.c_str());
         if (!PyStatus_Exception(status)) {
             status = PyWideStringList_Append(&config.module_search_paths, path_pylibs.c_str());
@@ -238,8 +221,6 @@ JNI_PYTHON_FUNCTION(nativeInitPython2)(
         if (!PyStatus_Exception(status)) {
             status = PyWideStringList_Append(&config.module_search_paths, path_dynload.c_str());
         }
-
-        // ---> КОНЕЦ ФИНАЛЬНОГО ФИКСА <---
 
         if (PyStatus_Exception(status)) {
             LOGD("FATAL: Failed to construct module search paths.");
@@ -263,7 +244,6 @@ JNI_PYTHON_FUNCTION(nativeInitPython2)(
         LOGD("FATAL: Failed to decode Python paths.");
     }
 
-    // --- Очистка ---
     PyConfig_Clear(&config);
     if (pyHomeW) PyMem_RawFree(pyHomeW);
     if (pyLibsPathW) PyMem_RawFree(pyLibsPathW);
@@ -297,15 +277,12 @@ JNI_PYTHON_FUNCTION(nativeRunScript2)(
         LOGD("Python script failed! Using traceback module to get full error...");
 
         if (PyErr_Occurred()) {
-            // Сохраняем ошибку, так как следующие вызовы могут ее перезаписать
             PyObject *pType, *pValue, *pTraceback;
             PyErr_Fetch(&pType, &pValue, &pTraceback);
             PyErr_NormalizeException(&pType, &pValue, &pTraceback);
 
-            // Восстанавливаем ошибку, чтобы модуль traceback мог ее увидеть
             PyErr_Restore(pType, pValue, pTraceback);
 
-            // --- ИСПОЛЬЗУЕМ МОДУЛЬ TRACEBACK ---
             PyObject* traceback_module = PyImport_ImportModule("traceback");
             if (traceback_module != NULL) {
                 PyObject* format_exc_func = PyObject_GetAttrString(traceback_module, "format_exc");
@@ -326,15 +303,12 @@ JNI_PYTHON_FUNCTION(nativeRunScript2)(
     }
 
     if (errorMessage == NULL && result != 0) {
-        // Если даже traceback не сработал, возвращаем старое сообщение
         errorMessage = env->NewStringUTF("Unknown Python error, and traceback module failed.");
     }
 
     PyGILState_Release(gstate);
     return errorMessage;
 }
-
-// В файле catroid.cpp
 
 extern "C" JNIEXPORT jstring JNICALL
 JNI_PYTHON_FUNCTION(nativeRunScript)(
@@ -350,14 +324,9 @@ JNI_PYTHON_FUNCTION(nativeRunScript)(
 
     g_worker_thread_id = PyThread_get_thread_ident();
 
-    // --- НАЧАЛО: ПОЛНАЯ СИСТЕМА ПЕРЕХВАТА ВЫВОДА ---
-
-    // 1. Получаем глобальное пространство имен (__main__.__dict__)
     PyObject* main_module = PyImport_AddModule("__main__");
     PyObject* main_dict = PyModule_GetDict(main_module);
 
-    // 2. Создаем "обертку" для выполнения кода с перехватом вывода.
-    //    Этот Python-скрипт определяет функцию, которая делает всю грязную работу.
     const char* capture_script =
             "import sys, io, traceback\n"
             "def __run_and_capture(code_to_run):\n"
@@ -374,27 +343,22 @@ JNI_PYTHON_FUNCTION(nativeRunScript)(
             "    sys.stderr = sys.__stderr__\n"
             "    return buffer.getvalue()\n";
 
-    // 3. Выполняем этот скрипт, чтобы функция __run_and_capture появилась в __main__
     PyRun_String(capture_script, Py_file_input, main_dict, main_dict);
 
-    // 4. Получаем саму эту функцию
     PyObject* capture_func = PyDict_GetItemString(main_dict, "__run_and_capture");
 
     jstring result_string = NULL;
 
     if (capture_func && PyCallable_Check(capture_func)) {
-        // 5. Готовим аргументы: сам скрипт, который передал пользователь
         PyObject* pArgs = PyTuple_New(1);
         const char* script_cstr = env->GetStringUTFChars(script, 0);
         PyObject* pScript = PyUnicode_FromString(script_cstr);
         PyTuple_SetItem(pArgs, 0, pScript);
         env->ReleaseStringUTFChars(script, script_cstr);
 
-        // 6. Вызываем нашу функцию: __run_and_capture(script)
         PyObject* pResult = PyObject_CallObject(capture_func, pArgs);
-        Py_DECREF(pArgs); // pScript будет очищен вместе с pArgs
+        Py_DECREF(pArgs);
 
-        // 7. Конвертируем результат (весь захваченный вывод) в строку для Kotlin
         if (pResult != NULL) {
             const char* result_cstr = PyUnicode_AsUTF8(pResult);
             if (result_cstr) {
@@ -402,29 +366,25 @@ JNI_PYTHON_FUNCTION(nativeRunScript)(
             }
             Py_DECREF(pResult);
         } else {
-            // Если даже наша функция-обертка упала, сообщаем об этом
             PyErr_Print();
             result_string = env->NewStringUTF("FATAL: The C++ capture function itself failed.");
         }
     } else {
         result_string = env->NewStringUTF("FATAL: Could not find the __run_and_capture helper function.");
     }
-
-    // --- КОНЕЦ СИСТЕМЫ ПЕРЕХВАТА ---
      g_worker_thread_id = 0;
 
     PyGILState_Release(gstate);
     return result_string;
 }
 
-#else // ---> Для всех остальных архитектур (x86_64 и т.д.)
+#else
 
 #include <android/log.h>
 #define JNI_PYTHON_FUNCTION(name) Java_org_catrobat_catroid_python_PythonEngine_##name
 
 static std::atomic<unsigned long> g_worker_thread_id(0);
 
-// Новая JNI-функция для вызова из Kotlin
 extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeForceStopPythonScript)(JNIEnv* env, jobject /* this */) {
     LOGD("Python is not supported on this device architecture.");
@@ -432,17 +392,14 @@ JNI_PYTHON_FUNCTION(nativeForceStopPythonScript)(JNIEnv* env, jobject /* this */
 
 extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeInitPython)(JNIEnv*, jobject, jobjectArray) {
-    // Ничего не делаем
     __android_log_print(ANDROID_LOG_WARN, "PythonEngine", "nativeInitPython called on unsupported architecture. Doing nothing.");
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 JNI_PYTHON_FUNCTION(nativeRunScript)(JNIEnv* env, jobject, jstring) {
-    // Возвращаем сообщение об ошибке
     return env->NewStringUTF("Python is not supported on this device architecture.");
 }
 
-// ДОБАВЬТЕ ЭТУ ФУНКЦИЮ В catroid.cpp
 extern "C" JNIEXPORT void JNICALL
 JNI_PYTHON_FUNCTION(nativeFinalizePython)(JNIEnv* env, jobject /* this */) {
     LOGD("Python is not supported on this device architecture.");
@@ -450,10 +407,8 @@ JNI_PYTHON_FUNCTION(nativeFinalizePython)(JNIEnv* env, jobject /* this */) {
 
 #endif
 
-// ВАШ МАКРОС С ПРАВИЛЬНЫM ПУТЕМ
 #define JNI_FUNCTION(name) Java_org_catrobat_catroid_NN_OnnxSessionManager_##name
 
-// Функция loadModelJNI остается без изменений
 extern "C" JNIEXPORT jint JNICALL
 JNI_FUNCTION(loadModelJNI)(JNIEnv* env, jobject /* this */, jstring modelPath) {
     const char* model_path_chars = env->GetStringUTFChars(modelPath, nullptr);
@@ -467,62 +422,46 @@ JNI_FUNCTION(loadModelJNI)(JNIEnv* env, jobject /* this */, jstring modelPath) {
     return 0;
 }
 
-// ===== ГЛАВНОЕ ИЗМЕНЕНИЕ ЗДЕСЬ =====
 extern "C" JNIEXPORT jfloatArray JNICALL
 JNI_FUNCTION(runInferenceJNI)(JNIEnv* env, jobject /* this */, jfloatArray inputData) {
     if (!session) { return nullptr; }
 
-    // --- Шаг 1: Динамически получаем ИМЯ входного слоя ---
-    // (Для простоты предполагаем, что у модели один вход, что верно в 99% случаев)
-    if (session.GetInputCount() == 0) { return nullptr; } // Ошибка: нет входов
-    // GetInputNameAllocated требует, чтобы мы сами освободили память
+    if (session.GetInputCount() == 0) { return nullptr; }
     Ort::AllocatedStringPtr input_name_ptr = session.GetInputNameAllocated(0, allocator);
     const char* input_name_chars[] = { input_name_ptr.get() };
 
 
-    // --- Шаг 2: Динамически получаем ФОРМУ входного слоя ---
     Ort::TypeInfo input_type_info = session.GetInputTypeInfo(0);
     auto tensor_info = input_type_info.GetTensorTypeAndShapeInfo();
     std::vector<int64_t> input_shape = tensor_info.GetShape();
 
-    // --- Шаг 3: Обрабатываем "динамические" измерения (например, batch size) ---
-    // Модели часто имеют размерность -1, что означает "любой размер".
-    // Мы заменяем это на 1, так как обрабатываем один набор данных за раз.
     for (int64_t &dim : input_shape) {
         if (dim < 1) {
             dim = 1;
         }
     }
 
-    // --- Шаг 4: Проверяем, совпадают ли данные от пользователя с ожиданиями модели ---
     jsize userInputSize = env->GetArrayLength(inputData);
-    // Считаем, сколько всего элементов ожидает модель (перемножаем все измерения)
     size_t expectedInputSize = std::accumulate(input_shape.begin(), input_shape.end(), 1LL, std::multiplies<int64_t>());
 
     if (userInputSize != expectedInputSize) {
-        // Если пользователь подал 783 числа вместо 784, возвращаем ошибку
-        // (в Kotlin это можно будет обработать и показать сообщение)
         return nullptr;
     }
 
     jfloat* input_floats = env->GetFloatArrayElements(inputData, nullptr);
     std::vector<float> input_vec(input_floats, input_floats + userInputSize);
 
-    // --- Шаг 5: Создаем входной тензор с правильной формой и именем ---
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
             memory_info, input_vec.data(), input_vec.size(), input_shape.data(), input_shape.size());
 
-    // --- Шаг 6: Динамически получаем имя выходного слоя ---
     if (session.GetOutputCount() == 0) { return nullptr; }
     Ort::AllocatedStringPtr output_name_ptr = session.GetOutputNameAllocated(0, allocator);
     const char* output_name_chars[] = { output_name_ptr.get() };
 
 
-    // --- Шаг 7: Запускаем модель ---
     auto output_tensors = session.Run(Ort::RunOptions{nullptr}, input_name_chars, &input_tensor, 1, output_name_chars, 1);
 
-    // --- Шаг 8: Обрабатываем выход (этот код у нас уже был гибким) ---
     const auto& output_tensor = output_tensors[0];
     auto output_shape_info = output_tensor.GetTensorTypeAndShapeInfo();
     size_t output_size = output_shape_info.GetElementCount();
@@ -535,7 +474,6 @@ JNI_FUNCTION(runInferenceJNI)(JNIEnv* env, jobject /* this */, jfloatArray input
     return resultArray;
 }
 
-// Функция unloadModelJNI остается без изменений
 extern "C" JNIEXPORT void JNICALL
 JNI_FUNCTION(unloadModelJNI)(JNIEnv* env, jobject /* this */) {
     session = Ort::Session(nullptr);
@@ -544,12 +482,10 @@ JNI_FUNCTION(unloadModelJNI)(JNIEnv* env, jobject /* this */) {
 struct Transform {
     float x, y;
     float scaleX, scaleY;
-    float rotation; // в градусах
+    float rotation;
     float originX, originY;
 };
 
-// Функция, которая делает всю математику
-// vertices - это плоский массив [x1, y1, x2, y2, ...]
 std::vector<float> transform_vertices(const std::vector<float>& vertices, const Transform& transform) {
     std::vector<float> transformed_vertices;
     transformed_vertices.reserve(vertices.size());
@@ -559,19 +495,15 @@ std::vector<float> transform_vertices(const std::vector<float>& vertices, const 
     float sin_r = sin(rotation_rad);
 
     for (size_t i = 0; i < vertices.size(); i += 2) {
-        // 1. Смещение относительно origin
         float vx = vertices[i] - transform.originX;
         float vy = vertices[i+1] - transform.originY;
 
-        // 2. Масштабирование
         vx *= transform.scaleX;
         vy *= transform.scaleY;
 
-        // 3. Поворот
         float rotated_x = vx * cos_r - vy * sin_r;
         float rotated_y = vx * sin_r + vy * cos_r;
 
-        // 4. Возвращаем origin и добавляем позицию объекта
         transformed_vertices.push_back(rotated_x + transform.originX + transform.x);
         transformed_vertices.push_back(rotated_y + transform.originY + transform.y);
     }
@@ -591,43 +523,32 @@ JNI_OPTIMIZER_FUNCTION(transformPolygon)(
         jfloat rotation,
         jfloat originX, jfloat originY) {
 
-    // 1. Конвертируем jfloatArray в std::vector<float>
     jsize len = env->GetArrayLength(jvertices);
     jfloat* vertex_elements = env->GetFloatArrayElements(jvertices, nullptr);
     std::vector<float> vertices_vec(vertex_elements, vertex_elements + len);
     env->ReleaseFloatArrayElements(jvertices, vertex_elements, JNI_ABORT); // JNI_ABORT, т.к. мы не меняли исходные данные
 
-    // 2. Заполняем структуру Transform
     Transform t = {x, y, scaleX, scaleY, rotation, originX, originY};
 
-    // 3. Вызываем нашу "чистую" C++ функцию
     std::vector<float> transformed_vertices = transform_vertices(vertices_vec, t);
 
-    // 4. Конвертируем результат обратно в jfloatArray
     jfloatArray result_array = env->NewFloatArray(transformed_vertices.size());
     env->SetFloatArrayRegion(result_array, 0, transformed_vertices.size(), transformed_vertices.data());
 
     return result_array;
 }
-
-// В catroid.cpp
-
-// Функция, которая вычисляет AABB (Axis-Aligned Bounding Box)
-// Возвращает массив из 4-х float: [minX, minY, maxX, maxY]
 std::vector<float> calculate_aabb(const Transform& transform, float width, float height) {
-    // Вершины локального прямоугольника
     float local_coords[8] = {
-            0, 0,          // левый нижний
-            width, 0,      // правый нижний
-            width, height, // правый верхний
-            0, height      // левый верхний
+            0, 0,
+            width, 0,
+            width, height,
+            0, height
     };
 
     float rotation_rad = transform.rotation * (M_PI / 180.0f);
     float cos_r = cos(rotation_rad);
     float sin_r = sin(rotation_rad);
 
-    // Трансформируем все 4 вершины
     std::vector<float> transformed_x;
     std::vector<float> transformed_y;
     transformed_x.reserve(4);
@@ -647,17 +568,14 @@ std::vector<float> calculate_aabb(const Transform& transform, float width, float
         transformed_y.push_back(rotated_y + transform.originY + transform.y);
     }
 
-    // Находим min/max среди трансформированных вершин
     float min_x = *std::min_element(transformed_x.begin(), transformed_x.end());
     float max_x = *std::max_element(transformed_x.begin(), transformed_x.end());
     float min_y = *std::min_element(transformed_y.begin(), transformed_y.end());
     float max_y = *std::max_element(transformed_y.begin(), transformed_y.end());
 
-    return {min_x, min_y, max_x - min_x, max_y - min_y}; // Возвращаем {x, y, width, height}
+    return {min_x, min_y, max_x - min_x, max_y - min_y};
 }
 
-
-// JNI-обертка
 extern "C" JNIEXPORT jfloatArray JNICALL
 JNI_OPTIMIZER_FUNCTION(getTransformedBoundingBox)(
         JNIEnv* env,
@@ -669,7 +587,6 @@ JNI_OPTIMIZER_FUNCTION(getTransformedBoundingBox)(
         jfloat originX, jfloat originY) {
 
     Transform t = {x, y, scaleX, scaleY, rotation, originX, originY};
-    // Используем размер *до* масштабирования
     std::vector<float> aabb = calculate_aabb(t, width / scaleX, height / scaleY);
 
     jfloatArray result_array = env->NewFloatArray(4);
@@ -678,76 +595,81 @@ JNI_OPTIMIZER_FUNCTION(getTransformedBoundingBox)(
 }
 
 struct AABB {
-    float minX, minY, maxX, maxY;
+    double minX, minY, maxX, maxY;
 };
 
-// Проверяет, пересекаются ли две рамки
 bool aabbs_overlap(const AABB& a, const AABB& b) {
     if (a.maxX < b.minX || b.maxX < a.minX) return false;
     if (a.maxY < b.minY || b.maxY < a.minY) return false;
     return true;
 }
 
-std::vector<uint32_t> triangulate(const std::vector<float>& vertices) {
-    if (vertices.size() < 6) { // Невозможно триангулировать менее 3 вершин
+std::vector<uint32_t> triangulate(const std::vector<double>& vertices) {
+    if (vertices.size() < 6) {
         return {};
     }
-    // Earcut требует специфичный формат данных: std::vector<std::vector<std::array<float, 2>>>
-    std::vector<std::vector<std::array<float, 2>>> polygon_data;
-    std::vector<std::array<float, 2>> ring;
+    std::vector<std::vector<std::array<double, 2>>> polygon_data;
+    std::vector<std::array<double, 2>> ring;
     ring.reserve(vertices.size() / 2);
     for (size_t i = 0; i < vertices.size(); i += 2) {
         ring.push_back({vertices[i], vertices[i+1]});
     }
     polygon_data.push_back(ring);
 
-    // Вызываем функцию триангуляции
     return mapbox::earcut<uint32_t>(polygon_data);
 }
 
-// Ваша функция проверки столкновения ВЫПУКЛЫХ полигонов.
-// Она остается БЕЗ ИЗМЕНЕНИЙ, так как идеально подходит для проверки треугольников.
-bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int countB) {
-    // --- Проверка по осям полигона A ---
+bool polygons_overlap(const double* vertsA, int countA, const double* vertsB, int countB) {
     for (int i = 0; i < countA; i += 2) {
-        float p1x = vertsA[i];
-        float p1y = vertsA[i + 1];
-        float p2x = vertsA[(i + 2) % countA];
-        float p2y = vertsA[(i + 3) % countA];
-        float axisX = -(p2y - p1y);
-        float axisY = p2x - p1x;
+        double p1x = vertsA[i];
+        double p1y = vertsA[i + 1];
+        double p2x = vertsA[(i + 2) % countA];
+        double p2y = vertsA[(i + 3) % countA];
+        double axisX = -(p2y - p1y);
+        double axisY = p2x - p1x;
 
-        float minA = 1e9, maxA = -1e9, minB = 1e9, maxB = -1e9;
+        double len = std::sqrt(axisX * axisX + axisY * axisY);
+        if (len > 1e-8) {
+            axisX /= len;
+            axisY /= len;
+        }
+
+        double minA = 1e18, maxA = -1e18, minB = 1e18, maxB = -1e18;
         for (int j = 0; j < countA; j += 2) {
-            float dot = vertsA[j] * axisX + vertsA[j + 1] * axisY;
+            double dot = vertsA[j] * axisX + vertsA[j + 1] * axisY;
             minA = std::min(minA, dot);
             maxA = std::max(maxA, dot);
         }
         for (int j = 0; j < countB; j += 2) {
-            float dot = vertsB[j] * axisX + vertsB[j + 1] * axisY;
+            double dot = vertsB[j] * axisX + vertsB[j + 1] * axisY;
             minB = std::min(minB, dot);
             maxB = std::max(maxB, dot);
         }
         if (maxA < minB || maxB < minA) return false;
     }
 
-    // --- Проверка по осям полигона B (аналогично) ---
     for (int i = 0; i < countB; i += 2) {
-        float p1x = vertsB[i];
-        float p1y = vertsB[i + 1];
-        float p2x = vertsB[(i + 2) % countB];
-        float p2y = vertsB[(i + 3) % countB];
-        float axisX = -(p2y - p1y);
-        float axisY = p2x - p1x;
+        double p1x = vertsB[i];
+        double p1y = vertsB[i + 1];
+        double p2x = vertsB[(i + 2) % countB];
+        double p2y = vertsB[(i + 3) % countB];
+        double axisX = -(p2y - p1y);
+        double axisY = p2x - p1x;
 
-        float minA = 1e9, maxA = -1e9, minB = 1e9, maxB = -1e9;
+        double len = std::sqrt(axisX * axisX + axisY * axisY);
+        if (len > 1e-8) {
+            axisX /= len;
+            axisY /= len;
+        }
+
+        double minA = 1e18, maxA = -1e18, minB = 1e18, maxB = -1e18;
         for (int j = 0; j < countA; j += 2) {
-            float dot = vertsA[j] * axisX + vertsA[j+1] * axisY;
+            double dot = vertsA[j] * axisX + vertsA[j+1] * axisY;
             minA = std::min(minA, dot);
             maxA = std::max(maxA, dot);
         }
         for (int j = 0; j < countB; j += 2) {
-            float dot = vertsB[j] * axisX + vertsB[j+1] * axisY;
+            double dot = vertsB[j] * axisX + vertsB[j+1] * axisY;
             minB = std::min(minB, dot);
             maxB = std::max(maxB, dot);
         }
@@ -756,8 +678,6 @@ bool polygons_overlap(const float* vertsA, int countA, const float* vertsB, int 
     return true;
 }
 
-
-// НОВАЯ, ИСПРАВЛЕННАЯ ВЕРСИЯ checkSingleCollision
 extern "C" JNIEXPORT jboolean JNICALL
 Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkSingleCollision(
         JNIEnv* env,
@@ -765,65 +685,60 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkSingleCollision(
         jobjectArray firstLookPolygons,
         jobjectArray secondLookPolygons
 ) {
-    // 1. Извлекаем все полигоны в C++ векторы для удобства
     int firstPolygonCount = env->GetArrayLength(firstLookPolygons);
-    std::vector<std::vector<float>> firstPolys(firstPolygonCount);
+    std::vector<std::vector<double>> firstPolys(firstPolygonCount);
     for (int i = 0; i < firstPolygonCount; ++i) {
         auto poly_jfloatArray = (jfloatArray)env->GetObjectArrayElement(firstLookPolygons, i);
-        jfloat* verts = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
+        jfloat* verts_float = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
         int count = env->GetArrayLength(poly_jfloatArray);
-        firstPolys[i].assign(verts, verts + count);
-        env->ReleaseFloatArrayElements(poly_jfloatArray, verts, JNI_ABORT);
+        firstPolys[i].assign(verts_float, verts_float + count);
+        env->ReleaseFloatArrayElements(poly_jfloatArray, verts_float, JNI_ABORT);
         env->DeleteLocalRef(poly_jfloatArray);
     }
 
     int secondPolygonCount = env->GetArrayLength(secondLookPolygons);
-    std::vector<std::vector<float>> secondPolys(secondPolygonCount);
+    std::vector<std::vector<double>> secondPolys(secondPolygonCount);
     for (int i = 0; i < secondPolygonCount; ++i) {
         auto poly_jfloatArray = (jfloatArray)env->GetObjectArrayElement(secondLookPolygons, i);
-        jfloat* verts = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
+        jfloat* verts_float = env->GetFloatArrayElements(poly_jfloatArray, nullptr);
         int count = env->GetArrayLength(poly_jfloatArray);
-        secondPolys[i].assign(verts, verts + count);
-        env->ReleaseFloatArrayElements(poly_jfloatArray, verts, JNI_ABORT);
+        secondPolys[i].assign(verts_float, verts_float + count);
+        env->ReleaseFloatArrayElements(poly_jfloatArray, verts_float, JNI_ABORT);
         env->DeleteLocalRef(poly_jfloatArray);
     }
 
-    // 2. Основной цикл: триангулируем полигоны и проверяем треугольники
     for (const auto& polyA_verts : firstPolys) {
         std::vector<uint32_t> trianglesA_indices = triangulate(polyA_verts);
 
         for (const auto& polyB_verts : secondPolys) {
             std::vector<uint32_t> trianglesB_indices = triangulate(polyB_verts);
 
-            // 3. Проверяем каждую пару треугольников
             for (size_t i = 0; i < trianglesA_indices.size(); i += 3) {
-                float triangleA[6] = {
+                double triangleA[6] = {
                         polyA_verts[trianglesA_indices[i] * 2], polyA_verts[trianglesA_indices[i] * 2 + 1],
                         polyA_verts[trianglesA_indices[i+1] * 2], polyA_verts[trianglesA_indices[i+1] * 2 + 1],
                         polyA_verts[trianglesA_indices[i+2] * 2], polyA_verts[trianglesA_indices[i+2] * 2 + 1]
                 };
 
                 for (size_t j = 0; j < trianglesB_indices.size(); j += 3) {
-                    float triangleB[6] = {
+                    double triangleB[6] = {
                             polyB_verts[trianglesB_indices[j] * 2], polyB_verts[trianglesB_indices[j] * 2 + 1],
                             polyB_verts[trianglesB_indices[j+1] * 2], polyB_verts[trianglesB_indices[j+1] * 2 + 1],
                             polyB_verts[trianglesB_indices[j+2] * 2], polyB_verts[trianglesB_indices[j+2] * 2 + 1]
                     };
 
-                    // Вызываем вашу быструю функцию SAT
                     if (polygons_overlap(triangleA, 6, triangleB, 6)) {
-                        return JNI_TRUE; // Столкновение найдено!
+                        return JNI_TRUE;
                     }
                 }
             }
         }
     }
 
-    return JNI_FALSE; // Столкновений не найдено
+    return JNI_FALSE;
 }
 
 
-// НОВАЯ, ИСПРАВЛЕННАЯ ВЕРСИЯ checkAllCollisions
 extern "C" JNIEXPORT jintArray JNICALL
 Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         JNIEnv* env,
@@ -835,8 +750,7 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         return env->NewIntArray(0);
     }
 
-    // 1. Извлекаем все данные из Java и считаем AABB
-    std::vector<std::vector<std::vector<float>>> spritesData(spriteCount);
+    std::vector<std::vector<std::vector<double>>> spritesData(spriteCount);
     std::vector<AABB> spriteAABBs(spriteCount);
 
     for (int i = 0; i < spriteCount; ++i) {
@@ -844,34 +758,32 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         int polygonCount = env->GetArrayLength(polygonsArray);
         spritesData[i].resize(polygonCount);
 
-        float spriteMinX = 1e9, spriteMinY = 1e9, spriteMaxX = -1e9, spriteMaxY = -1e9;
+        double spriteMinX = 1e18, spriteMinY = 1e18, spriteMaxX = -1e18, spriteMaxY = -1e18;
 
         for (int j = 0; j < polygonCount; ++j) {
             auto verticesArray = (jfloatArray)env->GetObjectArrayElement(polygonsArray, j);
-            jfloat* vertices = env->GetFloatArrayElements(verticesArray, nullptr);
+            jfloat* vertices_float = env->GetFloatArrayElements(verticesArray, nullptr);
             int vertexCount = env->GetArrayLength(verticesArray);
-            spritesData[i][j].assign(vertices, vertices + vertexCount);
+
+            spritesData[i][j].assign(vertices_float, vertices_float + vertexCount);
 
             for (int k = 0; k < vertexCount; k += 2) {
-                spriteMinX = std::min(spriteMinX, vertices[k]);
-                spriteMinY = std::min(spriteMinY, vertices[k+1]);
-                spriteMaxX = std::max(spriteMaxX, vertices[k]);
-                spriteMaxY = std::max(spriteMaxY, vertices[k+1]);
+                spriteMinX = std::min(spriteMinX, (double)vertices_float[k]);
+                spriteMinY = std::min(spriteMinY, (double)vertices_float[k+1]);
+                spriteMaxX = std::max(spriteMaxX, (double)vertices_float[k]);
+                spriteMaxY = std::max(spriteMaxY, (double)vertices_float[k+1]);
             }
-            env->ReleaseFloatArrayElements(verticesArray, vertices, JNI_ABORT);
+            env->ReleaseFloatArrayElements(verticesArray, vertices_float, JNI_ABORT);
             env->DeleteLocalRef(verticesArray);
         }
         spriteAABBs[i] = {spriteMinX, spriteMinY, spriteMaxX, spriteMaxY};
         env->DeleteLocalRef(polygonsArray);
     }
 
-    // 2. Основной цикл проверки столкновений
     std::vector<int> collidingPairs;
     for (int i = 0; i < spriteCount; ++i) {
         for (int j = i + 1; j < spriteCount; ++j) {
-            // Broad phase: быстрая проверка по AABB
             if (aabbs_overlap(spriteAABBs[i], spriteAABBs[j])) {
-                // Narrow phase: детальная проверка с триангуляцией
                 bool collisionFound = false;
                 for (const auto& polyA : spritesData[i]) {
                     std::vector<uint32_t> trianglesA = triangulate(polyA);
@@ -880,14 +792,14 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
                         std::vector<uint32_t> trianglesB = triangulate(polyB);
 
                         for (size_t ti_a = 0; ti_a < trianglesA.size(); ti_a += 3) {
-                            float triangleA_verts[6] = {
+                            double triangleA_verts[6] = {
                                     polyA[trianglesA[ti_a] * 2], polyA[trianglesA[ti_a] * 2 + 1],
                                     polyA[trianglesA[ti_a+1] * 2], polyA[trianglesA[ti_a+1] * 2 + 1],
                                     polyA[trianglesA[ti_a+2] * 2], polyA[trianglesA[ti_a+2] * 2 + 1]
                             };
 
                             for (size_t ti_b = 0; ti_b < trianglesB.size(); ti_b += 3) {
-                                float triangleB_verts[6] = {
+                                double triangleB_verts[6] = {
                                         polyB[trianglesB[ti_b] * 2], polyB[trianglesB[ti_b] * 2 + 1],
                                         polyB[trianglesB[ti_b+1] * 2], polyB[trianglesB[ti_b+1] * 2 + 1],
                                         polyB[trianglesB[ti_b+2] * 2], polyB[trianglesB[ti_b+2] * 2 + 1]
@@ -909,16 +821,13 @@ Java_org_catrobat_catroid_utils_NativeLookOptimizer_checkAllCollisions(
         }
     }
 
-    // 3. Возвращаем результат в Java
     jintArray resultArray = env->NewIntArray(collidingPairs.size());
-    env->SetIntArrayRegion(resultArray, 0, collidingPairs.size(), collidingPairs.data());
+    if (!collidingPairs.empty()) {
+        env->SetIntArrayRegion(resultArray, 0, collidingPairs.size(), collidingPairs.data());
+    }
     return resultArray;
 }
 
-
-// --- Структуры для управления GL ---
-
-// API функции, которые мы будем загружать из .so
 struct CoreAPI {
     void (*initialize)(ResolvePathCallback);
     void (*on_surface_created)(const char*, ANativeWindow*);
@@ -928,19 +837,15 @@ struct CoreAPI {
     void (*shutdown)();
 };
 
-// Хранилище для каждой активной C++ части
 struct GLInstance {
-    void*               so_handle; // Указатель на библиотеку из dlopen
-    CoreAPI             api;       // Указатели на функции
-    ANativeWindow*      window;    // Нативное окно (может быть nullptr)
+    void*               so_handle;
+    CoreAPI             api;
+    ANativeWindow*      window;
     std::string         view_name;
 };
 
-// Глобальный менеджер. Ключ - имя GLSurfaceView.
 std::map<std::string, GLInstance> g_GlInstances;
-std::mutex g_Mutex; // Для потокобезопасного доступа к карте
-
-// --- JNI Функции для управления GL ---
+std::mutex g_Mutex;
 
 #define JNI_GL_FUNCTION(name) Java_org_catrobat_catroid_utils_NativeBridge_##name
 
@@ -950,7 +855,6 @@ const char* resolve_project_file_path(const char* fileName) {
     static std::string result_path;
 
     JNIEnv* env = nullptr;
-    // Используем AttachCurrentThreadAsDaemon, чтобы избежать проблем с "зависанием" потока
     if (g_JavaVM->AttachCurrentThreadAsDaemon(&env, nullptr) != JNI_OK) {
         return nullptr;
     }
@@ -974,7 +878,6 @@ const char* resolve_project_file_path(const char* fileName) {
     }
 
     env->DeleteLocalRef(jFileName);
-    // g_JavaVM->DetachCurrentThread(); // Не вызываем, это может быть неэффективно
 
     return result_path.empty() ? nullptr : result_path.c_str();
 }
@@ -989,7 +892,6 @@ JNI_GL_FUNCTION(attachSoToView)(JNIEnv *env, jobject thiz, jstring view_name_j, 
     void* handle = dlopen(pathToSo, RTLD_LAZY);
     if (!handle) {
         __android_log_print(ANDROID_LOG_ERROR, "NativeBridge", "Failed to load .so from '%s': %s", pathToSo, dlerror());
-        // Ранний выход с очисткой
         env->ReleaseStringUTFChars(view_name_j, viewName);
         env->ReleaseStringUTFChars(path_to_so_j, pathToSo);
         return;
@@ -1000,7 +902,6 @@ JNI_GL_FUNCTION(attachSoToView)(JNIEnv *env, jobject thiz, jstring view_name_j, 
     instance.window = nullptr;
     instance.view_name = viewName;
 
-    // Загружаем все функции
     instance.api.initialize = (void (*)(ResolvePathCallback))dlsym(handle, "core_initialize");
     instance.api.on_surface_created = (void (*)(const char*, ANativeWindow*))dlsym(handle, "core_on_surface_created");
     instance.api.on_surface_changed = (void (*)(const char*, int, int))dlsym(handle, "core_on_surface_changed");
@@ -1023,7 +924,6 @@ JNI_GL_FUNCTION(attachSoToView)(JNIEnv *env, jobject thiz, jstring view_name_j, 
     g_GlInstances[viewName] = instance;
     __android_log_print(ANDROID_LOG_INFO, "NativeBridge", "Attached .so to view '%s'", viewName);
 
-    // Очистка в конце
     env->ReleaseStringUTFChars(view_name_j, viewName);
     env->ReleaseStringUTFChars(path_to_so_j, pathToSo);
 }
@@ -1106,13 +1006,10 @@ JNI_GL_FUNCTION(cleanupInstance)(JNIEnv *env, jobject thiz, jstring view_name_j)
     if (it != g_GlInstances.end()) {
         GLInstance& instance = it->second;
 
-        // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-        // Если окно еще существует, нужно его отпустить!
         if (instance.window) {
             ANativeWindow_release(instance.window);
             instance.window = nullptr;
         }
-        // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
         if (instance.api.shutdown) {
             try {
@@ -1138,13 +1035,9 @@ JNIEXPORT void JNICALL
 JNI_GL_FUNCTION(cleanupAllInstances)(JNIEnv *env, jobject thiz) {
     std::lock_guard<std::mutex> lock(g_Mutex);
     for (auto const& [name, instance] : g_GlInstances) {
-
-        // --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-        // Отпускаем каждое окно перед выгрузкой библиотеки
         if (instance.window) {
             ANativeWindow_release(instance.window);
         }
-        // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
         if (instance.api.shutdown) {
             try {
@@ -1200,14 +1093,6 @@ JNI_GL_FUNCTION(setCrashLogPath)(JNIEnv* env, jobject thiz, jstring path_j) {
 #define JNI_VM_FUNCTION(name) Java_org_catrobat_catroid_virtualmachine_VirtualMachineManager_##name
 
 extern "C" {
-
-/**
- * @brief Создает и запускает новый процесс (например, QEMU).
- * @param vmName_j Уникальное имя для этой ВМ, для последующего управления.
- * @param command_j Массив строк, представляющий команду и ее аргументы.
- *        Например: ["/data/data/.../qemu-system-x86_64", "-m", "512", ...].
- * @return PID (Process ID) созданного процесса, или -1 в случае ошибки.
- */
 void log_pipe_thread(int read_fd) {
     char buffer[256];
     ssize_t len;
@@ -1222,24 +1107,19 @@ void log_pipe_thread(int read_fd) {
 
 JNIEXPORT jint JNICALL
 JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, jobjectArray command_j, jstring dataPath_j) {
-    // 1. Получаем пути из Java
     const char* vmName = env->GetStringUTFChars(vmName_j, nullptr);
-    const char* dataPath_c = env->GetStringUTFChars(dataPath_j, nullptr); // Это путь к /.../qemu_x86_64
+    const char* dataPath_c = env->GetStringUTFChars(dataPath_j, nullptr);
 
-    // 2. Формируем все необходимые пути
     const std::string libPath = std::string(dataPath_c) + "/lib";
     const std::string romPath = std::string(dataPath_c) + "/share/qemu";
     const char* linkerPath = "/system/bin/linker64";
 
-    // 3. Собираем финальную команду в векторе для удобства
     std::vector<std::string> commandVec;
 
-    // --- КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: ПЕРВАЯ КОМАНДА - ЭТО LINKER ---
     commandVec.push_back(linkerPath);
 
     int original_argc = env->GetArrayLength(command_j);
 
-    // --- ВТОРАЯ КОМАНДА - ЭТО ПУТЬ К QEMU (КАК АРГУМЕНТ ДЛЯ LINKER) ---
     jstring exe_j = (jstring) env->GetObjectArrayElement(command_j, 0);
     const char* exe_c = env->GetStringUTFChars(exe_j, nullptr);
     commandVec.push_back(exe_c);
@@ -1249,7 +1129,6 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
     commandVec.push_back("-L");
     commandVec.push_back(romPath);
 
-    // Добавляем остальные аргументы, которые пришли из Kotlin
     for (int i = 1; i < original_argc; i++) {
         jstring string_j = (jstring) env->GetObjectArrayElement(command_j, i);
         const char* string_c = env->GetStringUTFChars(string_j, nullptr);
@@ -1258,26 +1137,19 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
         env->DeleteLocalRef(string_j);
     }
 
-    // 4. Преобразуем вектор в массив char** для execv
     char** argv = new char*[commandVec.size() + 1];
     for (size_t i = 0; i < commandVec.size(); ++i) {
         argv[i] = strdup(commandVec[i].c_str());
     }
     argv[commandVec.size()] = NULL;
 
-    // --- ПРИМЕЧАНИЕ: Мы больше не добавляем -L вручную, т.к. QEMU из Termux
-    // --- скорее всего, сам знает, где искать BIOS относительно своего положения.
-    // --- Если снова будет ошибка про BIOS, мы вернем этот флаг.
-
-    // ... (код для pipe и fork остается без изменений) ...
     int pipe_fds[2];
-    if (pipe(pipe_fds) == -1) { /* ... */ return -1; }
+    if (pipe(pipe_fds) == -1) { return -1; }
     pid_t pid = fork();
 
     if (pid == -1) {
-        /* ... */ return -1;
+        return -1;
     } else if (pid == 0) {
-        // --- Дочерний процесс ---
         close(pipe_fds[0]);
         dup2(pipe_fds[1], STDOUT_FILENO);
         dup2(pipe_fds[1], STDERR_FILENO);
@@ -1285,11 +1157,9 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
 
         setenv("LD_LIBRARY_PATH", libPath.c_str(), 1);
 
-        // --- ЗАПУСКАЕМ LINKER, А НЕ QEMU НАПРЯМУЮ ---
         execv(linkerPath, argv);
         _exit(127);
     } else {
-        // --- Родительский процесс ---
         close(pipe_fds[1]);
         __android_log_print(ANDROID_LOG_INFO, "VMManager", "Successfully forked process for VM '%s' with PID %d", vmName, pid);
         std::lock_guard<std::mutex> lock(g_VmMutex);
@@ -1297,7 +1167,6 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
         std::thread log_thread(log_pipe_thread, pipe_fds[0]);
         log_thread.detach();
 
-        // Очистка
         for (size_t i = 0; i < commandVec.size(); ++i) {
             free(argv[i]);
         }
@@ -1309,11 +1178,6 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
     }
 }
 
-/**
- * @brief Останавливает процесс ВМ по ее имени.
- * @param vmName_j Имя ВМ, которую нужно остановить.
- * @return 0 в случае успеха, -1 если ВМ не найдена, или другое значение в случае ошибки kill.
- */
 JNIEXPORT jint JNICALL
 JNI_VM_FUNCTION(nativeStopVM)(JNIEnv *env, jclass, jstring vmName_j) {
     const char* vmName = env->GetStringUTFChars(vmName_j, nullptr);
@@ -1322,21 +1186,19 @@ JNI_VM_FUNCTION(nativeStopVM)(JNIEnv *env, jclass, jstring vmName_j) {
     auto it = g_RunningVMs.find(vmName);
     if (it != g_RunningVMs.end()) {
         pid_t pid = it->second;
-        g_RunningVMs.erase(it); // Удаляем из карты
+        g_RunningVMs.erase(it);
         env->ReleaseStringUTFChars(vmName_j, vmName);
 
-        // Отправляем сигнал SIGTERM (15) для "мягкой" остановки
         int result = kill(pid, SIGTERM);
         if (result != 0) {
             __android_log_print(ANDROID_LOG_WARN, "VMManager", "Failed to send SIGTERM to PID %d. Trying SIGKILL.", pid);
-            // Если SIGTERM не сработал, пробуем SIGKILL (9)
             return kill(pid, SIGKILL);
         }
         return result;
     } else {
         __android_log_print(ANDROID_LOG_WARN, "VMManager", "VM '%s' not found in running processes map.", vmName);
         env->ReleaseStringUTFChars(vmName_j, vmName);
-        return -1; // ВМ не найдена
+        return -1;
     }
 }
 

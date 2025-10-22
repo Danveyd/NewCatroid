@@ -9,41 +9,22 @@ import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.Project
 import java.io.File
 
-/**
- * Интерфейс для UI, который будет слушать события от командного менеджера.
- * Любой класс (например, ваш TerminalView) может его реализовать.
- */
 interface CommandOutputListener {
-    /**
-     * Вызывается, когда команда вернула какой-то результат.
-     * ПРИМЕЧАНИЕ: С текущим PythonEngine этот метод получит весь вывод сразу.
-     * Для "построчного" вывода в реальном времени потребуется модификация C++ части.
-     */
     fun onOutput(output: String)
 
-    /**
-     * Вызывается, когда команда полностью завершила выполнение.
-     */
     fun onComplete()
 }
 
-/**
- * Управляет выполнением команд, поддерживает состояние (текущую директорию)
- * и общается с UI через CommandOutputListener.
- */
 class PythonCommandManager(
     private val pythonEngine: PythonEngine,
     private val project: Project
 ) {
 
     private val defaultLibsPath: String = project.filesDir.absolutePath
-    // "Слушатель" из мира UI.
     var outputListener: CommandOutputListener? = null
 
-    // Состояние: текущая рабочая директория терминала.
     var currentWorkingDirectory: File = project.filesDir
 
-    // Директория для библиотек, установленных через pip.
     private val sitePackagesDir = project.filesDir
 
     init {
@@ -52,17 +33,10 @@ class PythonCommandManager(
         }
     }
 
-    /**
-     * Выполняет команду и возвращает результат в виде строки через callback.
-     * Идеально подходит для использования в коде, например, в блоках Catroid.
-     *
-     * @param command Строка с командой для выполнения (например, "pip install requests --files").
-     * @param onResult Лямбда-функция, которая будет вызвана с результатом (String) после выполнения команды.
-     */
     fun executeCommandForResult(command: String, onResult: (String) -> Unit) {
         val trimmedCommand = command.trim()
         if (trimmedCommand.isEmpty()) {
-            mainThreadHandler.post { onResult("") } // Возвращаем пустую строку для пустой команды
+            mainThreadHandler.post { onResult("") }
             return
         }
 
@@ -70,16 +44,14 @@ class PythonCommandManager(
         val commandName = parts.first()
         val args = parts.drop(1)
 
-        // Эта логика частично дублирует processCommand, но адаптирована для возврата результата
         when (commandName) {
             "pip" -> {
-                val script = buildPipScript(args) // Используем хелпер, чтобы не дублировать код
+                val script = buildPipScript(args)
                 executePythonScriptForResult(script, onResult)
             }
             "ls", "dir" -> executePythonScriptForResult("import os; print('\\n'.join(sorted(os.listdir('.'))))", onResult)
             "pwd" -> executePythonScriptForResult("import os; print(os.getcwd())", onResult)
             "cd" -> {
-                // Команда cd не выполняет Python, обрабатываем ее здесь же
                 val path = args.firstOrNull() ?: project.filesDir.absolutePath
                 val newDir = if (path.startsWith("/")) File(path) else File(currentWorkingDirectory, path)
 
@@ -95,15 +67,11 @@ class PythonCommandManager(
                 mainThreadHandler.post { onResult("Python environment has been reset.") }
             }
             else -> {
-                // Любая другая команда считается Python-скриптом
                 executePythonScriptForResult(trimmedCommand, onResult)
             }
         }
     }
 
-    /**
-     * Приватный хелпер для выполнения Python-скрипта, который возвращает результат в callback.
-     */
     private fun executePythonScriptForResult(script: String, onResult: (String) -> Unit) {
         val wrappedScript = """
 import os
@@ -123,9 +91,6 @@ except Exception as e:
         }
     }
 
-    /**
-     * Главный метод. Принимает строку от пользователя, разбирает и выполняет ее.
-     */
     fun processCommand(command: String) {
         val trimmedCommand = command.trim()
         if (trimmedCommand.isEmpty()) {
@@ -133,7 +98,6 @@ except Exception as e:
             return
         }
 
-        // Добавляем команду в "историю" вывода UI
         outputListener?.onOutput("> $trimmedCommand\n")
 
         val parts = trimmedCommand.split("\\s+".toRegex())
@@ -146,7 +110,6 @@ except Exception as e:
             "pwd" -> executePythonScript("import os; print(os.getcwd())")
             "cd" -> handleChangeDirectory(args)
             "clear" -> {
-                // Команда для очистки Python окружения
                 pythonEngine.clearEnvironment()
                 mainThreadHandler.post {
                     outputListener?.onOutput("Python environment has been reset.\n")
@@ -154,26 +117,22 @@ except Exception as e:
                 }
             }
             else -> {
-                // Если это не специальная команда, считаем ее Python-кодом
                 executePythonScript(trimmedCommand)
             }
         }
     }
 
-    /**
-     * Обрабатывает команду 'cd'. Выполняется полностью в Kotlin, т.к. меняет состояние менеджера.
-     */
     private fun handleChangeDirectory(args: List<String>) {
         val path = args.firstOrNull() ?: CatroidApplication.getAppContext().filesDir.absolutePath // 'cd' без аргументов -> домой
 
         val newDir = if (path.startsWith("/")) {
-            File(path) // Абсолютный путь
+            File(path)
         } else {
-            File(currentWorkingDirectory, path) // Относительный путь
+            File(currentWorkingDirectory, path)
         }
 
         if (newDir.exists() && newDir.isDirectory) {
-            currentWorkingDirectory = newDir.canonicalFile // .canonicalFile убирает '..' и '.'
+            currentWorkingDirectory = newDir.canonicalFile
             Log.i("CMD", "New CWD: ${currentWorkingDirectory.absolutePath}")
         } else {
             mainThreadHandler.post {
@@ -186,20 +145,16 @@ except Exception as e:
         }
     }
 
-    /**
-     * Формирует и выполняет Python-скрипт для установки пакетов через pip.
-     */
     private fun handlePipCommand(args: List<String>) {
         val pipScript = buildPipScript(args)
 
-        // Проверяем, не вернул ли хелпер ошибку
         if (pipScript.startsWith("Error:")) {
             mainThreadHandler.post {
                 outputListener?.onOutput(pipScript + "\n")
                 outputListener?.onComplete()
             }
         } else {
-            executePythonScript(pipScript) // executePythonScript - это ваша старая функция
+            executePythonScript(pipScript)
         }
     }
 
@@ -218,7 +173,6 @@ except Exception as e:
         val pypiIndex = "https://pypi.org/simple"
 
         var scriptTemplate = if (showOnlyFiles) {
-            // РЕЖИМ --files: АБСОЛЮТНАЯ ТИШИНА
             """
         import os, sys, io
         
@@ -255,7 +209,6 @@ except Exception as e:
 
         """.trimIndent()
         } else {
-            // --- НАЧАЛО ИЗМЕНЕНИЙ В СТАНДАРТНОМ РЕЖИМЕ ---
             """
         import os, sys, io
         from pip._internal.cli.main import main as pip_main
@@ -307,7 +260,6 @@ except Exception as e:
             print(f"\n--- Pip finished with an error (Code: {result}) ---")
             
         """.trimIndent()
-            // --- КОНЕЦ ИЗМЕНЕНИЙ ---
         }
 
         return scriptTemplate
@@ -316,18 +268,7 @@ except Exception as e:
             .replace("\$packageName", packageName)
     }
 
-    /**
-     * Обертка для выполнения любого Python-скрипта.
-     * Гарантирует, что скрипт будет запущен в правильной рабочей директории.
-     */
-    // В файле PythonCommandManager.kt
-
-    /**
-     * Обертка для выполнения любого Python-скрипта.
-     * Гарантирует, что скрипт будет запущен в правильной рабочей директории.
-     */
     private fun executePythonScript(script: String) {
-        // Оборачиваем скрипт в код, который сначала меняет директорию
         val wrappedScript = """
 import os
 try:
@@ -341,10 +282,7 @@ except Exception as e:
     traceback.print_exc()
     """.trimIndent()
 
-        // Используем наш PythonEngine с callback'ом
         pythonEngine.runScriptAsync(wrappedScript) { output ->
-            // Результат выполнения приходит сюда, в фоновом потоке.
-            // Передаем его в UI в главном потоке.
             mainThreadHandler.post {
                 outputListener?.onOutput(output)
                 outputListener?.onComplete()
@@ -352,6 +290,5 @@ except Exception as e:
         }
     }
 
-    // Handler для безопасной отправки результатов в главный (UI) поток
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 }

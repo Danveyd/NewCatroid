@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Light Component"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Type" android:layout_marginTop="8dp"/>
+    <Spinner android:id="@+id/spinner_light_type" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Intensity" android:layout_marginTop="8dp"/>
+    <EditText android:id="@+id/edit_light_intensity" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+
+    <!-- Дополнительные поля будут показаны/скрыты программно -->
+    <LinearLayout android:id="@+id/layout_light_range" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Range" android:layout_marginTop="8dp"/>
+        <EditText android:id="@+id/edit_light_range" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/layout_light_spot" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cutoff Angle" android:layout_marginTop="8dp"/>
+        <EditText android:id="@+id/edit_light_angle" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Exponent" android:layout_marginTop="8dp"/>
+        <EditText android:id="@+id/edit_light_exponent" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+    </LinearLayout>
+
+    <!-- НОВАЯ КНОПКА ДЛЯ ЦВЕТА -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Color" android:layout_marginTop="8dp"/>
+    <Button
+        android:id="@+id/btn_light_color"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Select Color"/>
+
+</LinearLayout>

@@ -44,11 +44,6 @@ class CreateWebAction() : TemporalAction() {
     private lateinit var webViewManager: WebViewManager
     private lateinit var viewContainer: LinearLayout
 
-    // Новый конструктор с параметром контекста
-    constructor(context: Context) : this() {
-        this.contextt = context
-    }
-
     override fun update(percent: Float) {
         val nameT = name?.interpretObject(scope).toString() ?: ""
         val urlT = url?.interpretObject(scope).toString() ?: ""

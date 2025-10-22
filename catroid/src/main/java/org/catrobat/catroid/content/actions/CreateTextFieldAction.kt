@@ -41,7 +41,6 @@ class CreateTextFieldAction() : TemporalAction() {
     var height: Formula? = null
     var initialText: Formula? = null
 
-    // --- ДЛЯ СТИЛЕЙ ---
     var text_size: Formula? = null
     var text_color: Formula? = null
     var bg_color: Formula? = null
@@ -71,17 +70,16 @@ class CreateTextFieldAction() : TemporalAction() {
         val widthT = width?.interpretInteger(scope) ?: 0
         val heightT = height?.interpretInteger(scope) ?: 0
 
-        // --- СТИЛИ ---
         val customStyles = HashMap<String, String>()
         customStyles[StageActivity.STYLE_TEXT_SIZE] = text_size?.interpretString(scope) ?: "22"
-        customStyles[StageActivity.STYLE_TEXT_COLOR] = text_color?.interpretString(scope) ?: "#FFFFFF" // Белый текст
+        customStyles[StageActivity.STYLE_TEXT_COLOR] = text_color?.interpretString(scope) ?: "#FFFFFF"
         customStyles[StageActivity.STYLE_BACKGROUND_COLOR] =
-            bg_color?.interpretString(scope) ?: "#88000000" // Полупрозрачный черный фон
+            bg_color?.interpretString(scope) ?: "#88000000"
         customStyles[StageActivity.STYLE_HINT_TEXT] = hint_text?.interpretString(scope) ?: "Enter value..."
         customStyles[StageActivity.STYLE_HINT_TEXT_COLOR] =
-            hint_color?.interpretString(scope) ?: "#CCCCCC" // Светло-серый цвет для подсказки
+            hint_color?.interpretString(scope) ?: "#CCCCCC"
         customStyles[StageActivity.STYLE_TEXT_ALIGNMENT] =
-            alignment_f?.interpretString(scope) ?: "left" // Светло-серый цвет для подсказки
+            alignment_f?.interpretString(scope) ?: "left"
         font_path?.interpretString(scope)?.let {
             customStyles[StageActivity.STYLE_FONT_PATH] = scope!!.project?.getFile(it)?.absolutePath ?: it
         }
@@ -93,13 +91,12 @@ class CreateTextFieldAction() : TemporalAction() {
 
         activity.runOnUiThread {
             activity.createInputField(
-                nameT,              // ID поля
-                variable,             // Имя переменной в Catroid
-                initialText?.interpretString(scope) ?: "",                        // Начальный текст пустой
-                posXT, posYT, widthT, heightT,        // Позиция и размеры
-                customStyles               // Передаем наши стили
+                nameT,
+                variable,
+                initialText?.interpretString(scope) ?: "",
+                posXT, posYT, widthT, heightT,
+                customStyles
             );
         }
-        Log.d("VideoPlayerAction", "showed")
     }
 }

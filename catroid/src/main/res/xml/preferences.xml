@@ -162,6 +162,15 @@
         android:summary="@string/preference_description_test_bricks"
         android:title="@string/preference_title_enable_test_bricks" />
 
+    <PreferenceCategory android:title="@string/github_integration">
+
+        <Preference
+            android:key="setting_github_login"
+            android:title="@string/github_account"
+            android:summary="@string/github_not_logged_in" />
+
+    </PreferenceCategory>
+
     <!-- https://www.meme-arsenal.com/memes/d3d151ea76e2feed9edb2d82e14133ff.jpg -->
 
     <CheckBoxPreference

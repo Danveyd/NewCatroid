@@ -66,10 +66,13 @@ import org.catrobat.catroid.ui.settingsfragments.SettingsFragment;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -91,6 +94,8 @@ public final class ProjectManager {
 	private final String downloadedProjectsName = "downloaded_projects";
 
 	private Context applicationContext;
+
+	private static Deque<String> projectCallStack = new ArrayDeque<>();
 
 	public Context getApplicationContext() {
 		return applicationContext;
@@ -184,6 +189,25 @@ public final class ProjectManager {
 			xmlh.setPhysicsWidthArea(3.0f);
 			xmlh.setPhysicsHeightArea(2.0f);
 		}
+		if (project.getCatrobatLanguageVersion() <= 1.15) {
+			xmlh.setGitRemoteUrl("");
+
+		}
+		if (project.getCatrobatLanguageVersion() < 1.17) {
+			boolean wasMigrated = migrateProjectToV1_17(project);
+			if (wasMigrated) {
+				try {
+					// Немедленно сохраняем проект, чтобы зафиксировать UUID в code.xml
+					// Это предотвратит генерацию разных UUID на разных устройствах.
+					XstreamSerializer.getInstance().saveProject(project);
+					Log.i(TAG, "Project '" + project.getName() + "' was migrated to language version 1.17 with new UUIDs.");
+				} catch (Exception e) {
+					// Если не удалось сохранить, лучше выбросить ошибку,
+					// так как работа с таким "полу-мигрированным" проектом опасна.
+					throw new LoadingProjectException("Failed to save project after migration to 1.17: " + e.getMessage());
+				}
+			}
+		}
 
 		project.setCatrobatLanguageVersion(CURRENT_CATROBAT_LANGUAGE_VERSION);
 
@@ -236,6 +260,50 @@ public final class ProjectManager {
 		if (previousProject != null) {
 			currentlyPlayingScene = project.getDefaultScene();
 		}
+	}
+
+	private boolean migrateProjectToV1_17(Project project) {
+		boolean changesMade = false;
+		if (project == null || project.getSceneList() == null) {
+			return false;
+		}
+
+		for (Scene scene : project.getSceneList()) {
+			if (scene.getSceneId() == null || scene.getSceneId().isEmpty()) {
+				scene.setSceneId(UUID.randomUUID().toString());
+				changesMade = true;
+			}
+
+			if (scene.getSpriteList() != null) {
+				for (Sprite sprite : scene.getSpriteList()) {
+					if (sprite.getSpriteId() == null || sprite.getSpriteId().isEmpty()) {
+						sprite.setSpriteId(UUID.randomUUID().toString());
+						changesMade = true;
+					}
+
+					// Добавляем миграцию для LookData
+					if (sprite.getLookList() != null) {
+						for (LookData look : sprite.getLookList()) {
+							if (look.getLookId() == null || look.getLookId().isEmpty()) {
+								look.setLookId(UUID.randomUUID().toString());
+								changesMade = true;
+							}
+						}
+					}
+
+					// Добавляем миграцию для SoundInfo
+					if (sprite.getSoundList() != null) {
+						for (SoundInfo sound : sprite.getSoundList()) {
+							if (sound.getSoundId() == null || sound.getSoundId().isEmpty()) {
+								sound.setSoundId(UUID.randomUUID().toString());
+								changesMade = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return changesMade;
 	}
 
 	@VisibleForTesting
@@ -735,5 +803,16 @@ public final class ProjectManager {
 		currentlyEditedScene = null;
 		currentlyPlayingScene = null;
 		currentSprite = null;
+	}
+
+	public static void pushProjectHistory(String projectPath) {
+		projectCallStack.push(projectPath);
+	}
+
+	public static String popProjectHistory() {
+		if (projectCallStack.isEmpty()) {
+			return null;
+		}
+		return projectCallStack.pop();
 	}
 }

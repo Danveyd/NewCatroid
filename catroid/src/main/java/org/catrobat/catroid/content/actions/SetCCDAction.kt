@@ -1,5 +1,3 @@
-// в org.catrobat.catroid.content.actions
-
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
@@ -13,7 +11,7 @@ class SetCCDAction : TemporalAction() {
     var enabled: Formula? = null // Будет "true" или "false"
 
     override fun update(percent: Float) {
-        val manager = StageActivity.stageListener?.threeDManager ?: return
+        val manager = StageActivity.activeStageActivity.get()?.stageListener?.threeDManager ?: return
         val id = objectId?.interpretString(scope)
         if (id.isNullOrEmpty()) return
 

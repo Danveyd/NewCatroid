@@ -83,6 +83,9 @@ public class XmlHeader implements Serializable {
 	private String platform = "";
 	private String platformVersion = "";
 	private String tags = "";
+
+	@XStreamAlias("gitRemoteUrl")
+	private String gitRemoteUrl = "";
 	//----------------------------------------------------------------------------------------------
 
 	//==============================================================================================
@@ -125,6 +128,17 @@ public class XmlHeader implements Serializable {
 	//----------------------------------------------------------------------------------------------
 
 	public XmlHeader() {
+	}
+
+	public String getGitRemoteUrl() {
+		if (gitRemoteUrl == null) {
+			return "";
+		}
+		return gitRemoteUrl;
+	}
+
+	public void setGitRemoteUrl(String url) {
+		this.gitRemoteUrl = url;
 	}
 
 	public int getVirtualScreenHeight() {

@@ -35,7 +35,7 @@ import java.util.ArrayList
 class StartListeningAction : Action(), OnSpeechRecognitionResultCallback {
 
     companion object {
-        private val TAG = "SpeechRecognitionBrick"//StartListeningAction::class.java.simpleName
+        private val TAG = "SpeechRecognitionBrick"
     }
 
     private var listeningRequested = false

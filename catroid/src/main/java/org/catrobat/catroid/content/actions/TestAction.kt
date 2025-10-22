@@ -13,7 +13,6 @@ class TestAction() : TemporalAction() {
     var scope: Scope? = null
 
     override fun update(percent: Float) {
-        // Для Android 11 и выше (API 30+)
         val activity = StageActivity.activeStageActivity.get()
         activity?.runOnUiThread {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -21,7 +20,6 @@ class TestAction() : TemporalAction() {
                     WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars()
                 )
             } else {
-                // Для старых версий Android (до API 30)
                 activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             }
         }

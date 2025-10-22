@@ -1,4 +1,3 @@
-// В пакете: org.catrobat.catroid.content.actions
 package org.catrobat.catroid.content.actions
 
 import android.widget.Toast
@@ -38,20 +37,17 @@ class GetZipFileNamesAction : TemporalAction() {
                 return
             }
 
-            // Используем ZipFile для безопасного чтения архива
             val zf = ZipFile(zipFile)
             val fileNames = zf.entries().asSequence()
-                .map { it.name } // Получаем имена всех записей
-                .joinToString(",") // Объединяем их через запятую
+                .map { it.name }
+                .joinToString(",")
 
-            zf.close() // Обязательно закрываем файл
+            zf.close()
 
             variable.value = fileNames
 
         } catch (e: IOException) {
-            // Эта ошибка может возникнуть, если файл поврежден или это не ZIP-архив
             variable.value = "Error: Failed to read ZIP file: ${e.message}"
-            //Toast.makeText(context, context.getString(R.string.error_zip_read_failed, fileName), Toast.LENGTH_SHORT).show()
         }
     }
 }

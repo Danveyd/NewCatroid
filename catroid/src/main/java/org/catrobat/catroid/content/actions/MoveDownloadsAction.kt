@@ -69,31 +69,24 @@ class MoveDownloadsAction() : TemporalAction() {
     private fun copyFileFromDownloads(context: Context, fileName: String, destinationDir: File): File? {
         val resolver = context.contentResolver
 
-        // 1. Описываем, какой файл мы ищем в MediaStore
         val collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI
         val projection = arrayOf(MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME)
         val selection = "${MediaStore.Downloads.DISPLAY_NAME} = ?"
         val selectionArgs = arrayOf(fileName)
-        val sortOrder = "${MediaStore.Downloads.DATE_ADDED} DESC" // Берем самый новый, если есть дубликаты
+        val sortOrder = "${MediaStore.Downloads.DATE_ADDED} DESC"
 
         try {
-            // 2. Выполняем запрос к MediaStore
             resolver.query(collection, projection, selection, selectionArgs, sortOrder)?.use { cursor ->
                 if (cursor.moveToFirst()) {
-                    // 3. Файл найден! Получаем его ID
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Downloads._ID)
                     val id = cursor.getLong(idColumn)
 
-                    // 4. Формируем URI файла, используя его ID
                     val contentUri = ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, id)
 
-                    // 5. Открываем InputStream из этого URI
                     resolver.openInputStream(contentUri)?.use { inputStream ->
                         val destinationFile = File(destinationDir, fileName)
 
-                        // 6. Открываем OutputStream в нашу приватную папку
                         destinationFile.outputStream().use { outputStream ->
-                            // 7. Копируем байты
                             inputStream.copyTo(outputStream)
                         }
                         return destinationFile
@@ -105,7 +98,6 @@ class MoveDownloadsAction() : TemporalAction() {
             return null
         }
 
-        // Если файл не был найден в MediaStore
         Log.w("MoveDownloadsAction", "File '$fileName' not found in Downloads.")
         return null
     }

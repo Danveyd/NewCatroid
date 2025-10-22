@@ -83,13 +83,11 @@ open class LookToTableAction : TemporalAction() {
             TableManager.deleteTable(b_name)
             TableManager.deleteTable(a_name)
 
-            // Создаем таблицы для каждого канала
             TableManager.createTable(r_name, width, height)
             TableManager.createTable(g_name, width, height)
             TableManager.createTable(b_name, width, height)
             TableManager.createTable(a_name, width, height)
 
-            // Заполняем таблицы значениями пикселей
             for (x in 0 until width) {
                 for (y in 0 until height) {
                     val pixel = bitmap.getPixel(x, y)

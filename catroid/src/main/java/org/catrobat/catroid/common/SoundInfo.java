@@ -29,6 +29,8 @@ import org.catrobat.catroid.io.StorageOperations;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +39,8 @@ public class SoundInfo implements Cloneable, Nameable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String TAG = SoundInfo.class.getSimpleName();
 
+	@XStreamAsAttribute
+	private String soundId;
 	@XStreamAsAttribute
 	private String name;
 	@XStreamAsAttribute
@@ -54,6 +58,7 @@ public class SoundInfo implements Cloneable, Nameable, Serializable {
 		this.file = file;
 		fileName = file.getName();
 		midiFile = false;
+		this.soundId = UUID.randomUUID().toString();
 	}
 
 	public SoundInfo(String name, @NonNull File file, boolean midiFile) {
@@ -61,6 +66,28 @@ public class SoundInfo implements Cloneable, Nameable, Serializable {
 		this.file = file;
 		fileName = file.getName();
 		this.midiFile = midiFile;
+		this.soundId = UUID.randomUUID().toString();
+	}
+
+	public String getSoundId() {
+		return soundId;
+	}
+
+	public void setSoundId(String soundId) {
+		this.soundId = soundId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		SoundInfo soundInfo = (SoundInfo) o;
+		return Objects.equals(soundId, soundInfo.soundId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(soundId);
 	}
 
 	public String getName() {

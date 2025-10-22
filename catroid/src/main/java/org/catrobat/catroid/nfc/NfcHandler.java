@@ -28,6 +28,7 @@ import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.nfc.tech.MifareClassic;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Parcelable;
@@ -42,12 +43,15 @@ import org.catrobat.catroid.content.eventids.NfcEventId;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 public final class NfcHandler {
 	private static final String TAG = NfcHandler.class.getSimpleName();
 	private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 	private static String nfcTagId = "0x0";
 	private static String nfcTagMessage = "";
+
+	private static Tag lastTag;
 
 	private NfcHandler() {
 	}
@@ -57,12 +61,103 @@ public final class NfcHandler {
 			return;
 		}
 
+		Tag tagFromIntent = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+		if (tagFromIntent != null) {
+			lastTag = tagFromIntent;
+		}
+
 		String uid = getTagIdFromIntent(intent);
 		if (uid != null) {
 			setLastNfcTagId(uid);
 			setLastNfcTagMessage(getMessageFromIntent(intent));
 			fireNfcEvents(uid);
 		}
+	}
+
+	public static synchronized String getTagTechnologies() {
+		if (lastTag == null) {
+			return "";
+		}
+		return Arrays.toString(lastTag.getTechList());
+	}
+
+	public static synchronized int getTagMemorySize() {
+		if (lastTag == null) {
+			return 0;
+		}
+		try {
+			// Пытаемся получить технологию MifareClassic
+			MifareClassic mifare = MifareClassic.get(lastTag);
+			if (mifare != null) {
+				mifare.connect();
+				int size = mifare.getSize();
+				mifare.close();
+				return size;
+			}
+			// Если не Mifare, пробуем NDEF
+			Ndef ndef = Ndef.get(lastTag);
+			if (ndef != null) {
+				ndef.connect();
+				int size = ndef.getMaxSize();
+				ndef.close();
+				return size;
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to get tag size", e);
+		}
+		return 0;
+	}
+
+	public static synchronized boolean isTagWritable() {
+		if (lastTag == null) {
+			return false;
+		}
+		try {
+			Ndef ndef = Ndef.get(lastTag);
+			if (ndef != null) {
+				ndef.connect();
+				boolean isWritable = ndef.isWritable();
+				ndef.close();
+				return isWritable;
+			}
+			// Если NDEF не поддерживается, проверяем, можно ли его отформатировать под NDEF
+			NdefFormatable formatable = NdefFormatable.get(lastTag);
+			return formatable != null;
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to check if tag is writable", e);
+		}
+		return false;
+	}
+
+	public static synchronized String getTagType() {
+		if (lastTag == null) {
+			return "Unknown";
+		}
+		try {
+			MifareClassic mifare = MifareClassic.get(lastTag);
+			if (mifare != null) {
+				mifare.connect();
+				switch (mifare.getType()) {
+					case MifareClassic.TYPE_CLASSIC: return "MIFARE Classic";
+					case MifareClassic.TYPE_PLUS: return "MIFARE Plus";
+					case MifareClassic.TYPE_PRO: return "MIFARE Pro";
+					default: return "MIFARE Unknown";
+				}
+			}
+			Ndef ndef = Ndef.get(lastTag);
+			if (ndef != null) {
+				return "NDEF (" + ndef.getType() + ")";
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to get tag type", e);
+		}
+		// Если ничего не подошло, возвращаем первую технологию из списка
+		String[] techs = lastTag.getTechList();
+		if (techs != null && techs.length > 0) {
+			String tech = techs[0];
+			return tech.substring(tech.lastIndexOf('.') + 1);
+		}
+		return "Generic Tag";
 	}
 
 	public static String getTagIdFromIntent(Intent intent) {
@@ -86,24 +181,29 @@ public final class NfcHandler {
 				|| NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
 			Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 			if (rawMsgs != null) {
-				NdefMessage[] messages = new NdefMessage[rawMsgs.length];
-				for (int i = 0; i < rawMsgs.length; i++) {
-					messages[i] = (NdefMessage) rawMsgs[i];
-				}
-				if (messages[0] != null) {
-					StringBuilder result = new StringBuilder();
-					byte[] payload = messages[0].getRecords()[0].getPayload();
-					if (payload.length > 0) {
-						int i = payloadStartContainsText(payload[0]) ? 0 : 1;
-						for (; i < payload.length; i++) {
-							result.append((char) payload[i]);
-						}
+				try {
+					NdefMessage[] messages = new NdefMessage[rawMsgs.length];
+					for (int i = 0; i < rawMsgs.length; i++) {
+						messages[i] = (NdefMessage) rawMsgs[i];
 					}
-					return result.toString();
+					if (messages[0] != null) {
+						StringBuilder result = new StringBuilder();
+						byte[] payload = messages[0].getRecords()[0].getPayload();
+						if (payload.length > 0) {
+							int i = payloadStartContainsText(payload[0]) ? 0 : 1;
+							for (; i < payload.length; i++) {
+								result.append((char) payload[i]);
+							}
+						}
+						return result.toString();
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "Error parsing NDEF message, returning empty.", e);
+					return "";
 				}
 			}
 		}
-		return null;
+		return "";
 	}
 
 	private static void fireNfcEvents(String uid) {

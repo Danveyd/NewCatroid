@@ -53,9 +53,7 @@ class CutLookAction() : TemporalAction() {
     var x2: Formula? = null
     var y2: Formula? = null
 
-
     override fun update(percent: Float) {
-        // Получаем координаты и проверяем, что они не null
         val x1_i: Int = x1?.interpretInteger(scope) ?: 0
         val y1_i: Int = y1?.interpretInteger(scope) ?: 0
         val x2_i: Int = x2?.interpretInteger(scope) ?: 0
@@ -63,47 +61,38 @@ class CutLookAction() : TemporalAction() {
         val lookData: LookData? = scope?.sprite?.look?.lookData
 
         lookData?.let {
-            val file: File = it.file //png файл
+            val file: File = it.file
             try {
-                // 1. Декодируем исходный файл в Bitmap
                 val originalBitmap = BitmapFactory.decodeFile(file.absolutePath)
                 if (originalBitmap == null) {
-                    // Не удалось декодировать файл, выходим
                     return
                 }
 
-                // 2. Рассчитываем параметры для обрезки
                 val cropX = minOf(x1_i, x2_i)
                 val cropY = minOf(y1_i, y2_i)
                 val width = abs(x2_i - x1_i)
                 val height = abs(y2_i - y1_i)
 
-                // Проверяем, чтобы область обрезки не выходила за пределы изображения
                 if (width > 0 && height > 0 &&
                     cropX + width <= originalBitmap.width &&
                     cropY + height <= originalBitmap.height) {
 
-                    // 3. Обрезаем Bitmap
                     val croppedBitmap = Bitmap.createBitmap(originalBitmap, cropX, cropY, width, height)
 
-                    // 4. Сохраняем обрезанный Bitmap во временный файл (чтобы не изменять исходный)
                     val context = CatroidApplication.getAppContext()
                     val tempFile = File.createTempFile("cropped_look_", ".png", context?.cacheDir)
                     FileOutputStream(tempFile).use { out ->
                         croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
                     }
 
-                    // 5. Создаем новый LookData из временного файла и устанавливаем его
                     val newLook = createlook(tempFile)
                     setLook(newLook)
 
-                    // 6. Освобождаем память, занятую битмапами
                     originalBitmap.recycle()
                     croppedBitmap.recycle()
                 }
 
             } catch (e: Exception) {
-                // Обработка возможных ошибок (например, OutOfMemoryError или ошибки чтения файла)
                 ErrorLog.log(e.message)
                 e.printStackTrace()
             }

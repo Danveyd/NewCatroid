@@ -157,56 +157,33 @@ public final class CastManager {
 		return selectedDevice;
 	}
 
-	// В файле CastManager.java
 	public synchronized void initializeCast(AppCompatActivity activity) {
 		initializingActivity = activity;
 
-		// Если роутер уже создан, ничего не делаем.
 		if (mediaRouter != null) {
 			return;
 		}
 
-		// Подготовка, но не запуск!
 		deviceAdapter = new CastDevicesAdapter(activity, R.layout.fragment_cast_device_list_item, routeInfos);
 		mediaRouter = MediaRouter.getInstance(activity.getApplicationContext());
 		mediaRouteSelector = new MediaRouteSelector.Builder()
 				.addControlCategory(CastMediaControlIntent.categoryForCast(Constants.REMOTE_DISPLAY_APP_ID))
 				.build();
 
-		// Просто создаем объект колбэка, но НЕ регистрируем его.
 		callback = new MyMediaRouterCallback();
 	}
 
-	// В файле CastManager.java
-
-	// Этот метод будет вызываться из onResume
 	public void addCallback() {
 		if (mediaRouter != null && callback != null) {
-			// Используем флаг для АКТИВНОГО сканирования, когда UI виден
 			mediaRouter.addCallback(mediaRouteSelector, callback, MediaRouter.CALLBACK_FLAG_PERFORM_ACTIVE_SCAN);
 		}
 	}
 
-	// Этот метод будет вызываться из onPause
 	public void removeCallback() {
 		if (mediaRouter != null && callback != null) {
 			mediaRouter.removeCallback(callback);
 		}
 	}
-
-	// Упрощаем setCallback, он больше не будет регистрировать колбэк
-	/*public synchronized void setCallback() {
-		if (callback == null) {
-			callback = new MyMediaRouterCallback();
-		}
-	}
-
-	public synchronized void setCallback(int callbackFlag) {
-		if (callback == null) {
-			callback = new MyMediaRouterCallback();
-		}
-		mediaRouter.addCallback(mediaRouteSelector, callback, callbackFlag);
-	}*/
 
 	public void openDeviceSelectorOrDisconnectDialog() {
 		openDeviceSelectorOrDisconnectDialog(initializingActivity);

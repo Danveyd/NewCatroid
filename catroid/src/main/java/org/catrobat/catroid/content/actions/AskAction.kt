@@ -34,8 +34,6 @@ import org.catrobat.catroid.stage.StageActivity
 class AskAction : Action() {
     var scope: Scope? = null
     var questionFormula: Formula? = null
-    //var messageFormula: Formula? = null
-    //var sumbitFormula: Formula? = null
     var answerVariable: UserVariable? = null
     var questionAsked = false
     private var answerReceived = false
@@ -50,24 +48,6 @@ class AskAction : Action() {
                 "formula interpretation in ask brick failed"
             )
         }
-        /*var message = ""
-        try {
-            message = messageFormula?.interpretString(scope) ?: ""
-        } catch (e: InterpretationException) {
-            Log.e(
-                javaClass.simpleName,
-                "formula interpretation in ask brick failed (message)"
-            )
-        }
-        var sumbit = ""
-        try {
-            sumbit = sumbitFormula?.interpretString(scope) ?: ""
-        } catch (e: InterpretationException) {
-            Log.e(
-                javaClass.simpleName,
-                "formula interpretation in ask brick failed (sumbit)"
-            )
-        }*/
 
         val params = arrayListOf(BrickDialogManager.DialogType.ASK_DIALOG, this, question, "", "", "", "")
         StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_DIALOG, params).sendToTarget()

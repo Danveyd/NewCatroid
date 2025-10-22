@@ -1,9 +1,7 @@
-// В lunoscript-annotations/build.gradle
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-    // Только стандартная библиотека Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

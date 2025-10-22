@@ -1,7 +1,5 @@
 package org.catrobat.catroid.content.actions;
 
-// package org.catrobat.catroid.content.actions;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import org.catrobat.catroid.content.Scope;
@@ -17,7 +15,7 @@ public class CastRayAction extends TemporalAction {
 
     @Override
     protected void update(float percent) {
-        ThreeDManager manager = StageActivity.stageListener.getThreeDManager();
+        ThreeDManager manager = StageActivity.getActiveStageListener().getThreeDManager();
         if (manager == null) return;
 
         try {

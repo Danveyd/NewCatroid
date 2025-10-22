@@ -369,7 +369,7 @@ public class StageResourceHolder implements GatherCollisionInformationTask.OnPol
 		}
 
 		stageActivity.nfcAdapter = NfcAdapter.getDefaultAdapter(stageActivity);
-		StageActivity.stageListener.setPaused(false);
+		stageActivity.stageListener.setPaused(false);
 	}
 
 	public synchronized void resourceFailed(int failedResource) {

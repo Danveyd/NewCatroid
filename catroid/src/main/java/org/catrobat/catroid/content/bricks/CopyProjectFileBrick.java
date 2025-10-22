@@ -1,4 +1,3 @@
-// Находится в пакете: org.catrobat.catroid.content.bricks
 package org.catrobat.catroid.content.bricks;
 
 import org.catrobat.catroid.R;
@@ -12,17 +11,14 @@ public class CopyProjectFileBrick extends FormulaBrick {
     private static final long serialVersionUID = 1L;
 
     public CopyProjectFileBrick() {
-        // Связываем поля из layout с типами формул
         addAllowedBrickField(BrickField.NAME, R.id.brick_copy_file_source_edit_text);
         addAllowedBrickField(BrickField.TEXT, R.id.brick_copy_file_destination_edit_text);
     }
 
-    // Конструктор для создания блока со строками
     public CopyProjectFileBrick(String sourceFileName, String newFileName) {
         this(new Formula(sourceFileName), new Formula(newFileName));
     }
 
-    // Основной конструктор с формулами
     public CopyProjectFileBrick(Formula sourceFileName, Formula newFileName) {
         this();
         setFormulaWithBrickField(BrickField.NAME, sourceFileName);

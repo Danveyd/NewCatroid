@@ -21,11 +21,10 @@ class NewDialogManager {
         fun createEmptyDialog(name: String, title: String, message: String) {
             context = MyActivityManager.stage_activity
 
-            // Если диалог уже существует, очищаем содержимое
             if (dialogMap.containsKey(name)) {
                 val existingDialogData = dialogMap[name]
-                existingDialogData?.dialogView?.removeAllViews() // Очистка содержимого
-                existingDialogData?.radioGroup = null // Сбрасываем radioGroup
+                existingDialogData?.dialogView?.removeAllViews()
+                existingDialogData?.radioGroup = null
             }
 
             val dialogData = DialogData(title, message)
@@ -105,23 +104,19 @@ class NewDialogManager {
             //context = MyActivityManager.stage_activity
             dialogMap[name]?.let { dialogData ->
                 dialogData.callback = { result: String ->
-                    // Получаем входные данные и формируем результат
                     val enteredValues = mutableListOf<String>()
 
                     dialogData.dialogView?.let { viewGroup ->
                         for (i in 0 until viewGroup.childCount) {
                             val view = viewGroup.getChildAt(i)
                             if (view is EditText) {
-                                // Добавляем текст из текстового поля в список
                                 enteredValues.add(view.text.toString())
                             }
                         }
                     }
 
-                    // Формируем строку результата
-                    val result = result //+ "\n" + enteredValues.joinToString("\n") // Объединяем значения в одну строку
+                    val result = result
 
-                    // Вызываем коллбэк с результатом
                     callback(result)
                 }
             }
@@ -143,7 +138,6 @@ class NewDialogManager {
                     .setCancelable(false)
                     .setView(dialogData.dialogView)
 
-                // Добавляем кнопки
                 dialogData.positiveButtonText?.let {
                     dialogData.alertDialogBuilder?.setPositiveButton(it) { dialog, _ ->
                         dialog.dismiss()
@@ -171,7 +165,6 @@ class NewDialogManager {
                     }
                 }
 
-                // Используем main thread для отображения диалога
                 context?.runOnUiThread {
                     dialogData.alertDialogBuilder?.create()?.show()
                 }
@@ -190,7 +183,6 @@ class NewDialogManager {
             fun getEnteredValue(): String {
                 val stringBuilder = StringBuilder()
 
-                // Получаем radio button
                 dialogView?.let {
                     for (i in 0 until it.childCount) {
                         val view = it.getChildAt(i)
@@ -215,7 +207,7 @@ class NewDialogManager {
                     }
                 }
 
-                return stringBuilder.toString().trim() // Убираем пробелы в начале и конце
+                return stringBuilder.toString().trim()
             }
         }
     }

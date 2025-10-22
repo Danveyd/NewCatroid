@@ -34,12 +34,12 @@ import org.catrobat.catroid.utils.ErrorLog
 import java.io.IOException
 import java.lang.ref.WeakReference
 
-class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequestListener, private val url: String) {
+class WebConnection(private val okHttpClient: OkHttpClient?, listener: WebRequestListener, private val url: String) {
     private var weakListenerReference: WeakReference<WebRequestListener>? = WeakReference(listener)
     private var call: Call? = null
 
     constructor(listener: WebRequestListener, url: String) :
-            this(StageActivity.stageListener.webConnectionHolder.okHttpClient, listener, url) {
+            this(StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.okHttpClient, listener, url) {
             //this(OkHttpClient(), listener, url) { // Временно используем новый OkHttpClient() с дефолтными настройками
         Log.d("WebConnection", "[${System.identityHashCode(this)}] Constructor called. URL: '$url', Listener: ${System.identityHashCode(listener)}") // ++ Лог конструктора
     }
@@ -65,7 +65,7 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
                 .header("User-Agent", "Mozilla/5.0 (Android 10; Mobile; rv:91.0) Gecko/91.0 Firefox/91.0")
                 .build()
             Log.d("WebConnection", "[${System.identityHashCode(this)}] Request object created. Starting enqueue...") // ++ Лог перед enqueue
-            call = okHttpClient.newCall(request)
+            call = okHttpClient?.newCall(request)
             call?.enqueue(createCallback())
             Log.d("WebConnection", "[${System.identityHashCode(this)}] Enqueue called.") // ++ Лог после enqueue
         } catch (exception: IllegalArgumentException) {
@@ -122,7 +122,7 @@ class WebConnection(private val okHttpClient: OkHttpClient, listener: WebRequest
     }
 
     fun cancelCall() {
-        okHttpClient.dispatcher.executorService.execute {
+        okHttpClient?.dispatcher?.executorService?.execute {
             call?.cancel()
         }
     }

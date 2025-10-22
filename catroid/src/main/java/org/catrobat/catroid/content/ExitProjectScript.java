@@ -1,8 +1,7 @@
-// В пакете: org.catrobat.catroid.content
 package org.catrobat.catroid.content;
 
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.content.bricks.WhenProjectExitsBrick; // <-- Создадим его следующим
+import org.catrobat.catroid.content.bricks.WhenProjectExitsBrick;
 import org.catrobat.catroid.content.eventids.EventId;
 
 public class ExitProjectScript extends Script {

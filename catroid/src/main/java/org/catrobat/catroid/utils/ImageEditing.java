@@ -69,6 +69,32 @@ public final class ImageEditing {
 		return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 	}
 
+	public static android.graphics.Rect findVisibleBounds(Bitmap bitmap) {
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		int[] pixels = new int[width * height];
+		bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+		int minX = width, minY = height, maxX = -1, maxY = -1;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (!isPixelTransparent(pixels, width, x, y)) {
+					if (x < minX) minX = x;
+					if (x > maxX) maxX = x;
+					if (y < minY) minY = y;
+					if (y > maxY) maxY = y;
+				}
+			}
+		}
+
+		if (maxX == -1) {
+			return null;
+		}
+
+		return new android.graphics.Rect(minX, minY, maxX, maxY);
+	}
+
 	public static Bitmap getScaledBitmapFromPath(String imagePath, int outputRectangleWidth, int outputRectangleHeight,
 			ResizeType resizeType, boolean justScaleDown) {
 		if (imagePath == null) {
@@ -223,21 +249,13 @@ public final class ImageEditing {
 		return "";
 	}
 
-	// В файле: org/catrobat/catroid/utils/ImageEditing.java
-
 	public static synchronized void writeMetaDataStringToPNG(String absolutePath, String key, String value) {
 		File oldFile = new File(absolutePath);
 
-		// --- НАЧАЛО ИСПРАВЛЕНИЯ ---
-
-		// Быстрая проверка: если это точно не PNG, даже не пытаемся.
-		// Это не 100% гарантия (файл может быть переименован), но отсечет большинство случаев.
 		if (!absolutePath.toLowerCase(Locale.US).endsWith(".png")) {
 			return;
 		}
 
-		// Блок try-catch - это главная защита. Он поймает ошибку, если файл
-		// окажется не-PNG, даже если у него расширение .png.
 		try {
 			String tempFilename = absolutePath.substring(0, absolutePath.length() - 4) + "___temp.png";
 			File newFile = new File(tempFilename);
@@ -264,14 +282,10 @@ public final class ImageEditing {
 			}
 
 		} catch (PngjInputException e) {
-			// Ловим конкретную ошибку "Bad PNG signature" и просто игнорируем ее.
-			// Это означает, что мы пытались обработать не-PNG файл, и это нормально.
 			Log.w(TAG, "Tried to write metadata to a non-PNG or corrupted file: " + absolutePath);
 		} catch (Exception e) {
-			// Ловим любые другие возможные ошибки при работе с файлами.
 			Log.e(TAG, "Generic error while writing PNG metadata for: " + absolutePath, e);
 		}
-		// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 	}
 
 	public static boolean isPixelTransparent(int[] pixels, int width, int x, int y) {

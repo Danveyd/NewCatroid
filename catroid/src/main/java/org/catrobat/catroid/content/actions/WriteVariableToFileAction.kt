@@ -69,14 +69,7 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
 
     @VisibleForTesting
     fun createAndWriteToFile() {
-        /*val fileName = getFileName()
-        createFile(fileName)?.let {
-            val content = userVariable?.value.toString() ?: "0"
-            writeToFile(it, content)
-        }*/
         writeNew()
-        /*val content = userVariable?.value.toString() ?: "0"
-        saveToFile(getFileName(), content)*/
     }
 
     private fun writeUsingSystemFilePicker() {
@@ -93,19 +86,13 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
     }
 
     fun saveToFile(data: String, fileName: String) {
-        // Проверяем, если имя файла уже содержит расширение
         val finalFileName = if (fileName.contains(".")) fileName else "$fileName.txt"
 
-        // Получаем путь до папки "Загрузки" (Downloads)
         val downloadsPath = System.getProperty("user.home") + "/Downloads"
-
-        // Создаем объект File
         val file = File(downloadsPath, finalFileName)
 
-        // Записываем данные в файл
-        file.writeText(data) // Записываем текст в файл
+        file.writeText(data)
         showSuccessMessage(file.name)
-        //println("Данные сохранены в файл: ${file.absolutePath}") // Уведомляем о сохранении
     }
 
     private fun writeNew() {
@@ -114,9 +101,8 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
         showSuccessMessage(fileName)
         CoroutineScope(Dispatchers.IO).launch {
             createFile(fileName)?.let { file ->
-                val content = userVariable?.value.toString() ?: "0"
+                val content = userVariable?.value.toString()
                 val result = writeToFile2(file, content)
-                // Теперь возвращаемся в основной поток для уведомления пользователя
                 withContext(Dispatchers.Main) {
                     if (result) {
                         //showSuccessMessage(file.name)
@@ -153,10 +139,10 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
         showSuccessMessage("write2")
         return try {
             file.writeText(content)
-            true // Возвращаем true, если запись успешна
+            true
         } catch (e: IOException) {
             Log.e(javaClass.simpleName, "Could not write variable value to storage.")
-            false // Возвращаем false, если произошла ошибка
+            false
         }
     }
 
@@ -165,10 +151,6 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
         if (!fileName.contains(Regex(Constants.ANY_EXTENSION_REGEX))) {
             fileName += Constants.TEXT_FILE_EXTENSION
         }
-        /*val message = fileName
-        val params = ArrayList<Any>(listOf(message))
-        StageActivity.messageHandler.obtainMessage(StageActivity.SHOW_LONG_TOAST, params).sendToTarget()*/
-        //Utils.sanitizeFileName(formula?.interpretString(scope))
         return fileName
     }
 
@@ -180,7 +162,6 @@ class WriteVariableToFileAction : TemporalAction(), IntentListener {
     }
 
     private fun writeToUri(uri: Uri, content: String) {
-        //showSuccessMessage("uri")
         try {
             val context: Context = CatroidApplication.getAppContext()
             val contentResolver = context.contentResolver

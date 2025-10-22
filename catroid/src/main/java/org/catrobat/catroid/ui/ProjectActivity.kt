@@ -50,6 +50,7 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick
 import org.catrobat.catroid.databinding.ActivityRecyclerBinding
 import org.catrobat.catroid.databinding.DialogNewActorBinding
 import org.catrobat.catroid.databinding.ProgressBarBinding
+import org.catrobat.catroid.editor.EditorActivity
 import org.catrobat.catroid.io.StorageOperations
 import org.catrobat.catroid.io.asynctask.ProjectSaver
 import org.catrobat.catroid.libraries.LibraryManager
@@ -202,6 +203,10 @@ class ProjectActivity : BaseCastActivity() {
                 )
                 .addToBackStack(ProjectLibsFragment.TAG)
                 .commit()
+            R.id.editor3d -> {
+                val intent = Intent(this, EditorActivity::class.java)
+                startActivity(intent)
+            }
             else -> return super.onOptionsItemSelected(item)
         }
         return true

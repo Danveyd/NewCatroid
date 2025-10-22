@@ -78,6 +78,129 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <string name="brick_lock_mouse">Заблокировать курсор</string>
+    <string name="brick_unlock_mouse">Разблокировать курсор</string>
+    <string name="formula_editor_sensor_mouse_x">мышь_X</string>
+    <string name="formula_editor_sensor_mouse_y">мышь_Y</string>
+    <string name="formula_editor_sensor_mouse_delta_x">смещение_мыши_X</string>
+    <string name="formula_editor_sensor_mouse_delta_y">смещение_мыши_Y</string>
+    <string name="formula_editor_sensor_mouse_scroll">прокрутка_мыши</string>
+    <string name="formula_editor_function_is_mouse_button_down">кнопка_мыши_нажата</string>
+    <string name="formula_editor_function_is_mouse_button_down_parameter" translatable="false">(\'Левая\')</string>
+    <string name="brick_when_mouse_button_clicked">Когда кнопка мыши нажата</string>
+    <string name="brick_when_mouse_wheel_scrolled">Когда колесико мыши прокручено</string>
+    <string-array name="mouse_buttons">
+        <item>Левая</item>
+        <item>Правая</item>
+        <item>Средняя</item>
+    </string-array>
+    <string name="formula_editor_sensor_nfc_techs">NFC_технологии</string>
+    <string name="formula_editor_sensor_nfc_size">NFC_размер_памяти</string>
+    <string name="formula_editor_sensor_nfc_writable">NFC_можно_записать</string>
+    <string name="formula_editor_sensor_nfc_type">NFC_тип_метки</string>
+    <string name="brick_when_nfc_scanned">Когда NFC метка обнаружена</string>
+    <string name="brick_write_nfc_tag">Записать в NFC метку</string>
+    <string name="brick_set_camera_position2">Задать позицию камере</string>
+    <string name="brick_set_camera_zoom">Задать зум камере</string>
+    <string name="brick_set_camera_rotation2">Задать вращение камере</string>
+    <string name="brick_pin_to_camera">Привязать спрайт к камере</string>
+    <string name="brick_unpin_from_camera">Отвязать спрайт от камеры</string>
+    <string name="brick_zoom_label">зум</string>
+    <string name="brick_rotation_label">градусов</string>
+    <string name="formula_ray_did_hit">луч_столкнулся</string>
+    <string name="formula_ray_hit_x">луч_x</string>
+    <string name="formula_ray_hit_y">луч_y</string>
+    <string name="formula_ray_hit_z">луч_z</string>
+    <string name="formula_ray_normal_x">нормаль_луча_x</string>
+    <string name="formula_ray_normal_y">нормаль_луча_y</string>
+    <string name="formula_ray_normal_z">нормаль_луча_z</string>
+    <string name="brick_start_mic_recording">Начать запись микрофона</string>
+    <string name="brick_stop_recording_and_save">Сохранить запись как</string>
+    <string name="brick_try">Попробовать</string>
+    <string name="brick_catch">Перехватить</string>
+    <string name="brick_finally">В конце</string>
+    <string name="brick_error_variable_label">ошибку в</string>
+    <string name="brick_launch_project">Запустить проект из файла</string>
+    <string name="brick_return_to_previous_project">Вернуться к пред. проекту</string>
+    <string name="brick_set_view_position">Задать позицию View</string>
+    <string name="brick_x_label">X</string>
+    <string name="brick_y_label">Y</string>
+    <string name="brick_video_transparent_bg">прозрачный фон</string>
+    <string name="brick_prepare_sound">Подготовить звук из файла</string>
+    <string name="brick_as">как</string>
+    <string name="brick_play_prepared_sound">Играть подготовленный звук</string>
+    <string name="times_label_part_2">раз</string>
+    <string name="brick_async_repeat">Асинхронно повторить</string>
+    <string name="brick_interval_repeat">Повторять с интервалом</string>
+    <string name="brick_interval_label">интервал</string>
+    <string formatted="false" name="formula_editor_function_json_get">json_получить</string>
+    <string formatted="false" name="formula_editor_function_json_get_parameter">(\'{"id":1}\', \'id\')</string>
+    <string formatted="false" name="formula_editor_function_json_set">json_задать</string>
+    <string formatted="false" name="formula_editor_function_json_set_parameter">(\'{"id":1}\', \'id\'; 2)</string>
+    <string formatted="false" name="formula_editor_function_json_is_valid">json_валидный</string>
+    <string formatted="false" name="formula_editor_function_json_is_valid_parameter">(\'{"id":1}\')</string>
+    <string name="brick_load_scene" formatted="false">Загрузить 3D сцену</string>
+    <string name="brick_load_scene_file" formatted="false">Файл сцены</string>
+    <string name="error_file_not_found" formatted="false">Ошибка: Файл не найден в файлах проекта: %s</string>
+    <string name="brick_set_physics_state_shape">Форма</string>
+    <string-array name="brick_physics_shapes">
+        <item>Куб</item>
+        <item>Сфера</item>
+        <item>Капсула</item>
+    </string-array>
+    <string name="threed_skybox_set">Задать Скайбокс</string>
+    <string name="threed_skybox_filename">Имя файла</string>
+    <string name="brick_set_camera_range_header">Задать дальность камеры</string>
+    <string name="brick_set_camera_range_near">Ближняя</string>
+    <string name="brick_set_camera_range_far">Дальняя</string>
+    <string name="brick_set_background_light_header">Задать фоновый свет</string>
+    <string name="brick_set_background_light_intensity">Интенсивность (0-1)</string>
+    <string name="brick_remove_pbr_light_header">Удалить свет</string>
+    <string name="brick_set_spot_light_header">Задать прожектор</string>
+    <string name="brick_set_spot_light_dir_x">Направление X</string>
+    <string name="brick_set_spot_light_dir_y">Направление Y</string>
+    <string name="brick_set_spot_light_dir_z">Направление Z</string>
+    <string name="brick_set_spot_light_angle">Угол</string>
+    <string name="brick_set_spot_light_exponent">Затухание</string>
+    <string name="brick_set_directional_light_header">Задать направленный свет</string>
+    <string name="brick_set_directional_light_dir_x">Направление X</string>
+    <string name="brick_set_directional_light_dir_y">Направление Y</string>
+    <string name="brick_set_directional_light_dir_z">Направление Z</string>
+    <string name="brick_set_directional_light_intensity">Интенсивность</string>
+    <string name="brick_set_point_light_header">Задать точечный свет</string>
+    <string name="brick_set_point_light_id">ID света</string>
+    <string name="brick_set_point_light_pos_x">Позиция X</string>
+    <string name="brick_set_point_light_pos_y">Позиция Y</string>
+    <string name="brick_set_point_light_pos_z">Позиция Z</string>
+    <string name="brick_set_point_light_color_r">Цвет R (0-255)</string>
+    <string name="brick_set_point_light_color_g">Цвет G (0-255)</string>
+    <string name="brick_set_point_light_color_b">Цвет B (0-255)</string>
+    <string name="brick_set_point_light_intensity">Интенсивность</string>
+    <string name="brick_set_point_light_range">Дальность</string>
+    <string name="brick_set_anisotropic_filter_header">Задать качество текстур</string>
+    <string name="brick_set_anisotropic_filter_level">Уровень</string>
+    <string name="brick_stop_animation_header">Остановить анимацию</string>
+    <string name="brick_play_animation_header">Воспроизвести анимацию</string>
+    <string name="brick_play_animation_object_id">ID объекта</string>
+    <string name="brick_play_animation_name">Имя анимации</string>
+    <string name="brick_play_animation_loops">Повторы (-1 = вечно)</string>
+    <string name="brick_play_animation_speed">Скорость</string>
+    <string name="brick_play_animation_transition">Время перехода</string>
+    <string name="brick_enable_pbr_render">Включить рендер 2.0</string>
+    <string-array name="brick_pbr_render_states">
+        <item>Выкл</item>
+        <item>Вкл</item>
+    </string-array>
+    <string name="git_connect">Подключить Git</string>
+    <string name="git_publish_changes">Опубликовать изменения</string>
+    <string name="git_update_project">Обновить проект</string>
+    <string name="github_logout_dialog_title">Выход из GitHub</string>
+    <string name="github_logout_dialog_message">Вы уверены, что хотите выйти из своего аккаунта?</string>
+    <string name="github_logout_button">Выйти</string>
+    <string name="github_integration">Интеграция с Git</string>
+    <string name="github_account">Аккаунт GitHub</string>
+    <string name="github_not_logged_in">Вход не выполнен</string>
+    <string name="github_logged_in_as">Вы вошли как: %s</string>
     <string formatted="false" name="dialog_confirm_delete">Вы уверены, что хотите это сделать? Эти изменения будет невозможно отменить.</string>
     <string name="brick_key_event">Событие клавиатуры</string>
     <string name="brick_key_char">символ</string>
@@ -220,7 +343,7 @@
     <string name="brick_cast_ray_dir" formatted="false">в направлении</string>
     <string name="formula_ray_distance" formatted="false">длина_луча</string>
     <string name="formula_ray_hit_object" formatted="false">объект_луча</string>
-    <string name="formula_ray_param" formatted="false">(\'луч\')</string>
+    <string name="formula_ray_param" formatted="false">(\'ray\')</string>
     <string name="formula_vector_dir_x" formatted="false">направление_X_из_угла</string>
     <string name="formula_vector_dir_y" formatted="false">направление_Y_из_угла</string>
     <string name="formula_vector_angle" formatted="false">угол_из_направления</string>
@@ -450,6 +573,7 @@
     <string formatted="false" name="brick_run_js2">и сохранить результат в</string>
     <string formatted="false" name="project_files">Файлы проекта</string>
     <string formatted="false" name="project_libs">Библиотеки проекта</string>
+    <string formatted="false" name="editor3d">Редактор 3D</string>
     <string name="formula_editor_custom_functions_header">Библиотеки</string>
     <string formatted="false" name="files_add">Добавить файл</string>
     <string formatted="false" name="files_delete">Удалить</string>
@@ -1173,9 +1297,9 @@
     <!--  -->
     <!-- NfcTagListFragment -->
     <string formatted="false" name="fragment_nfctag_text_description">Просканируйте NFC теги, чтобы их добавить</string>
-    <string formatted="false" name="ndef_record_label">как тип записи</string>
-    <string formatted="false" name="brick_set_nfc_tag">Ждать до следующей записи NFC тега</string>
-    <string formatted="false" name="brick_set_nfc_tag_default_value">www.catrobat.org</string>
+    <string formatted="false" name="ndef_record_label">тип записи</string>
+    <string formatted="false" name="brick_set_nfc_tag">Записать на NFC метку</string>
+    <string formatted="false" name="brick_set_nfc_tag_default_value">google.com</string>
     <string formatted="false" name="default_tag_name">NFC тег</string>
     <string formatted="false" name="tnf_empty">Пусто</string>
     <string formatted="false" name="tnf_external_type">Внешний тип</string>
@@ -1260,7 +1384,8 @@
     <string formatted="false" name="dialog_about_title">Об этом приложении</string>
     <string formatted="false" name="dialog_about_license_info">Это приложение предлагает среду
         кодирования и интерпретатор визуального языка программирования Catrobat.\n
-        Исходный код приложения в основном лицензирован под лицензией GNU AGPL v3.
+        ДАННОЕ ПРИЛОЖЕНИЕ ЯВЛЯЕТСЯ ФОРКОМ НА Catrobat/Catroid.
+        Исходный код оригинального приложения в основном лицензирован под лицензией GNU AGPL v3.
         Для подробной информации по лицензии посмотрите ссылку ниже.\n</string>
     <string formatted="false" name="dialog_about_license_link_text">Лицензия исходного кода</string>
     <string formatted="false" name="dialog_about_catrobat_link_text">О проекте Catrobat</string>
@@ -1619,7 +1744,7 @@
     <string formatted="false" name="brick_wait_until_second_part">ложь</string>
     <string formatted="false" name="brick_when_gamepad_button">Когда кнопка джойстика</string>
     <string formatted="false" name="brick_when_gamepad_button_tapped">нажата</string>
-    <string formatted="false" name="brick_when_nfc">Когда NFC</string>
+    <string formatted="false" name="brick_when_nfc">Когда NFC метка обнаружена</string>
     <string formatted="false" name="brick_stop_script">Остановить</string>
     <string formatted="false" name="brick_stop_this_script">этот скрипт</string>
     <string formatted="false" name="brick_stop_all_scripts">все скрипты</string>

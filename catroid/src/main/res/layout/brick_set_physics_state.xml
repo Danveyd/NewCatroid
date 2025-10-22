@@ -14,7 +14,7 @@
 
     <org.catrobat.catroid.ui.BrickLayout
         android:id="@+id/brick_set_physics_state_layout"
-        style="@style/BrickContainer.Threed.Medium">
+        style="@style/BrickContainer.Threed.Big">
 
         <include layout="@layout/icon_brick_category_threed" />
 
@@ -35,6 +35,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textDirection="locale" />
+
+        <LinearLayout
+            android:id="@+id/brick_set_physics_shape_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_newLine="true"
+            android:visibility="gone"> <!-- Будет видим для Static и Dynamic -->
+
+            <TextView
+                style="@style/BrickText.SingleLine"
+                android:text="@string/brick_set_physics_state_shape" />
+            <Spinner
+                android:id="@+id/brick_set_physics_shape_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <!-- Этот блок будет виден только для динамического тела -->
         <LinearLayout

@@ -6,7 +6,6 @@ import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.stage.StageActivity
 
 class CreateWebFileAction : TemporalAction() {
-    //private lateinit var rootLayout: FrameLayout // Контейнер для WebView
     var scope: Scope? = null
     var file: Formula? = null
     var name: Formula? = null
@@ -16,15 +15,13 @@ class CreateWebFileAction : TemporalAction() {
     var height: Formula? = null
 
     override fun update(percent: Float) {
-        //rootLayout = FrameLayout(CatroidApplication.getAppContext())
-        var filev = file?.interpretObject(scope)?.toString() ?: ""
-        var namev = name?.interpretObject(scope)?.toString() ?: ""
-        var posXv = posX?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
-        var posYv = posY?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
+        val filev = file?.interpretObject(scope)?.toString() ?: ""
+        val namev = name?.interpretObject(scope)?.toString() ?: ""
+        val posXv = posX?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
+        val posYv = posY?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
 
-        // Преобразование для width и height
-        var widthv = width?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
-        var heightv = height?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
+        val widthv = width?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
+        val heightv = height?.interpretObject(scope)?.toString()?.toDoubleOrNull()?.toInt() ?: 0
 
         val activity: StageActivity? = StageActivity.activeStageActivity.get();
         if (activity == null) return

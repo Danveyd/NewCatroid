@@ -23,13 +23,11 @@ class LibaryBricks {
         }
 
         fun loadActionsFromFile(filePath: String) {
-            // Логика загрузки действий из файла
-            // Например, можно прочитать файл, создать объекты TemporalAction и добавить их в список
+
         }
 
         fun loadBricksFromFile(filePath: String) {
-            // Логика загрузки кирпичей из файла
-            // Точно так же как и с действиями
+
         }
     }
 }

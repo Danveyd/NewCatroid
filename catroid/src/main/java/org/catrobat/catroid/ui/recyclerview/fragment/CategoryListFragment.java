@@ -160,7 +160,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_table_join, R.string.formula_editor_function_floatarray,
 			R.string.formula_editor_function_lua,
 			R.string.view_x, R.string.view_y, R.string.view_width, R.string.view_height, R.string.is_video_playing, //R.string.video_time,
-			R.string.formula_editor_function_file);
+			R.string.formula_editor_function_file, R.string.formula_editor_function_json_get, R.string.formula_editor_function_json_set, R.string.formula_editor_function_json_is_valid);
 	private static final List<Integer> STRING_PARAMS = asList(R.string.formula_editor_function_length_parameter,
 			R.string.formula_editor_function_letter_parameter,
 			R.string.formula_editor_function_subtext_parameter,
@@ -194,7 +194,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.view_params,
 			R.string.videoplayer_params,
 			//R.string.videoplayer_params,
-			R.string.formula_editor_function_file_parameter);
+			R.string.formula_editor_function_file_parameter, R.string.formula_editor_function_json_get_parameter, R.string.formula_editor_function_json_set_parameter, R.string.formula_editor_function_json_is_valid_parameter);
 	private static final List<Integer> LIST_FUNCTIONS = asList(R.string.formula_editor_function_number_of_items,
 			R.string.formula_editor_function_list_item, R.string.formula_editor_function_contains,
 			R.string.formula_editor_function_index_of_item, R.string.formula_editor_function_flatten, R.string.formula_editor_function_connect, R.string.formula_editor_function_find);
@@ -216,7 +216,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_cam_dir_x, R.string.formula_cam_dir_y, R.string.formula_cam_dir_z,
 			R.string.formula_cam_rot_pitch, R.string.formula_cam_rot_yaw, R.string.formula_cam_rot_roll,
 			R.string.formula_vector_dir_x, R.string.formula_vector_dir_y, R.string.formula_vector_angle,
-			R.string.formula_ray_distance, R.string.formula_ray_hit_object
+			R.string.formula_ray_did_hit, R.string.formula_ray_distance, R.string.formula_ray_hit_object, R.string.formula_ray_hit_x, R.string.formula_ray_hit_y, R.string.formula_ray_hit_z, R.string.formula_ray_normal_x,
+			R.string.formula_ray_normal_y, R.string.formula_ray_normal_z
 	);
 	private static final List<Integer> THREED_PARAMS = asList(
 			R.string.formula_3d_single_param, R.string.formula_3d_single_param, R.string.formula_3d_single_param,
@@ -227,7 +228,8 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_no_param, R.string.formula_no_param, R.string.formula_no_param, R.string.formula_no_param,
 			R.string.formula_no_param, R.string.formula_no_param,
 			R.string.formula_vector_dir_param, R.string.formula_vector_dir_param, R.string.formula_vector_angle_param,
-			R.string.formula_ray_param, R.string.formula_ray_param
+			R.string.formula_ray_param, R.string.formula_ray_param, R.string.formula_ray_param, R.string.formula_ray_param, R.string.formula_ray_param, R.string.formula_ray_param,
+			R.string.formula_ray_param, R.string.formula_ray_param, R.string.formula_ray_param
 	);
 	private static final List<Integer> LOGIC_BOOL = asList(R.string.formula_editor_logic_and,
 			R.string.formula_editor_logic_or, R.string.formula_editor_logic_not,
@@ -240,7 +242,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_touched, R.string.formula_editor_sensor_stage_width,
 			R.string.formula_editor_sensor_stage_height, R.string.formula_editor_sensor_micro, R.string.formula_editor_sensor_ip, R.string.formula_editor_sensor_port, R.string.formula_editor_sensor_battary,
 			//R.string.formula_editor_sensor_frequency,
-			R.string.formula_editor_sensor_internet, R.string.formula_editor_sensor_architecture);
+			R.string.formula_editor_sensor_internet, R.string.formula_editor_sensor_architecture, R.string.formula_editor_sensor_fps);
 	private static final List<Integer> OBJECT_COLOR_COLLISION =
 			asList(R.string.formula_editor_function_collides_with_color, R.string.formula_editor_function_color_touches_color);
 	private static final List<Integer> OBJECT_COLOR_PARAMS =
@@ -271,11 +273,13 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_function_index_of_last_finger,
 			R.string.formula_editor_function_number_of_current_touches,
 			R.string.formula_editor_function_index_of_current_touch);
+			//R.string.formula_editor_function_is_mouse_button_down,R.string.formula_editor_sensor_mouse_x, R.string.formula_editor_sensor_mouse_y, R.string.formula_editor_sensor_mouse_delta_x, R.string.formula_editor_sensor_mouse_delta_y, R.string.formula_editor_sensor_mouse_scroll);
 	private static final List<Integer> SENSORS_TOUCH_PARAMS = asList(R.string.formula_editor_function_no_parameter,
 			R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_no_parameter,
 			R.string.formula_editor_function_touch_parameter, R.string.formula_editor_function_touch_parameter,
 			R.string.formula_editor_function_touch_parameter, R.string.formula_editor_function_no_parameter,
-			R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_touch_parameter);
+			R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_touch_parameter);/*, R.string.formula_editor_function_is_mouse_button_down_parameter, R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_no_parameter, R.string.formula_editor_function_no_parameter,
+			R.string.formula_editor_function_no_parameter);*/
 	private static final List<Integer> SENSORS_FACE_DETECTION = asList(R.string.formula_editor_sensor_face_detected,
 			R.string.formula_editor_sensor_face_size, R.string.formula_editor_sensor_face_x_position,
 			R.string.formula_editor_sensor_face_y_position,
@@ -540,8 +544,10 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_sensor_drone_num_frames);
 	private static final List<Integer> SENSORS_RASPBERRY = singletonList(R.string.formula_editor_function_raspi_read_pin_value_digital);
 	private static final List<Integer> SENSORS_RASPBERRY_PARAMS = singletonList(R.string.formula_editor_function_pin_default_parameter);
-	private static final List<Integer> SENSORS_NFC = asList(R.string.formula_editor_nfc_tag_id,
-			R.string.formula_editor_nfc_tag_message);
+	private static final List<Integer> SENSORS_NFC = asList(R.string.formula_editor_nfc_tag_id, R.string.formula_editor_nfc_tag_message,
+			R.string.formula_editor_sensor_nfc_techs,
+			R.string.formula_editor_sensor_nfc_size, R.string.formula_editor_sensor_nfc_writable,
+			R.string.formula_editor_sensor_nfc_type); //R.string.formula_editor_nfc_tag_id, R.string.formula_editor_nfc_tag_message
 	private static final List<Integer> SENSORS_CAST_GAMEPAD = asList(R.string.formula_editor_sensor_gamepad_a_pressed,
 			R.string.formula_editor_sensor_gamepad_b_pressed,
 			R.string.formula_editor_sensor_gamepad_up_pressed,

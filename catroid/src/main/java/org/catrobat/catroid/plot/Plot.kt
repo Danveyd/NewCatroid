@@ -85,16 +85,18 @@ class Plot
         if (camera == null)
             return
 
-        val renderer = StageActivity.stageListener.shapeRenderer
-        renderer.color = Color(0.0F, 0.0F, 0.0F, 255.0F)
-        renderer.begin(ShapeRenderer.ShapeType.Filled)
+        val renderer = StageActivity.activeStageActivity.get()?.stageListener?.shapeRenderer
+        renderer?.color = Color(0.0F, 0.0F, 0.0F, 255.0F)
+        renderer?.begin(ShapeRenderer.ShapeType.Filled)
 
         while (canDraw()) {
-            drawLine(screenRatio, renderer, camera)
+            if (renderer != null) {
+                drawLine(screenRatio, renderer, camera)
+            }
             updateQueue()
         }
 
-        renderer.end()
+        renderer?.end()
         width = camera.viewportWidth
         height = camera.viewportHeight
 

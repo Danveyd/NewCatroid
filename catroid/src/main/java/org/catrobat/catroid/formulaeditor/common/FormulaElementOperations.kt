@@ -201,7 +201,7 @@ object FormulaElementOperations {
             Sensors.NFC_TAG_ID -> NfcHandler.getLastNfcTagId()
             Sensors.COLLIDES_WITH_EDGE -> tryCalculateCollidesWithEdge(
                 look,
-                StageActivity.stageListener,
+                StageActivity.activeStageActivity.get()?.stageListener,
                 currentProject.screenRectangle
             )
             Sensors.COLLIDES_WITH_FINGER -> calculateCollidesWithFinger(look)

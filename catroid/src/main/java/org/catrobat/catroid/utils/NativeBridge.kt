@@ -6,11 +6,9 @@ import org.catrobat.catroid.ProjectManager
 object NativeBridge {
 
     init {
-        // "catroid" - это имя библиотеки из вашего CMakeLists.txt
         System.loadLibrary("catroid")
     }
 
-    // --- Функции для управления GL ---
     external fun attachSoToView(viewName: String, pathToSo: String)
     external fun onSurfaceCreated(viewName: String, surface: Surface)
     external fun onSurfaceChanged(viewName: String, width: Int, height: Int)

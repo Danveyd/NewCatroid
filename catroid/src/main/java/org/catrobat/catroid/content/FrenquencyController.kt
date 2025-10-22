@@ -82,10 +82,9 @@ class FrequencyController(private val context: Context) {
         val buffer = ShortArray(bufferSize)
         audioRecord?.read(buffer, 0, bufferSize)
 
-        // Преобразовать buffer в массив Double
         val normalized = DoubleArray(bufferSize)
         for (i in buffer.indices) {
-            normalized[i] = buffer[i].toDouble() / Short.MAX_VALUE // Нормализация
+            normalized[i] = buffer[i].toDouble() / Short.MAX_VALUE
         }
 
         return calculateFrequency(normalized).toFloat()
@@ -111,11 +110,10 @@ class FrequencyController(private val context: Context) {
             }
         }
 
-        // Расчет частоты
         return if (maxLag > 0) {
-            sampleRate.toDouble() / maxLag // Возвращаем частоту
+            sampleRate.toDouble() / maxLag
         } else {
-            0.0  // Возврат 0.0 если колебаний не обнаружено
+            0.0
         }
     }
 

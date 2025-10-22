@@ -22,15 +22,12 @@
  */
 package org.catrobat.catroid.ui
 
-import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.preference.PreferenceManager
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -56,6 +53,7 @@ import org.catrobat.catroid.databinding.ActivityMainMenuSplashscreenBinding
 import org.catrobat.catroid.databinding.DeclinedTermsOfUseAndServiceAlertViewBinding
 import org.catrobat.catroid.databinding.PrivacyPolicyViewBinding
 import org.catrobat.catroid.databinding.ProgressBarBinding
+import org.catrobat.catroid.editor.EditorActivity
 import org.catrobat.catroid.io.ZipArchiver
 import org.catrobat.catroid.io.asynctask.ProjectLoader
 import org.catrobat.catroid.io.asynctask.ProjectLoader.ProjectLoadListener
@@ -73,7 +71,7 @@ import org.catrobat.catroid.utils.setVisibleOrGone
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
-import kotlin.time.Duration
+
 
 private const val SDK_VERSION = 24
 
@@ -455,11 +453,14 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
     private fun prepareStandaloneProject() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val isFirstRun = prefs.getBoolean("standalone_first_run", true)
+        // Вместо флага "first_run" будем хранить версию приложения,
+        // при которой была последняя распаковка.
+        val lastUnpackedVersion = prefs.getInt("standalone_project_version", -1)
+        val currentVersion = BuildConfig.VERSION_CODE
 
-        // ▼▼▼ ГЛАВНОЕ ИЗМЕНЕНИЕ ▼▼▼
-        if (!isFirstRun) {
-            // Если это не первый запуск, просто загружаем существующий проект
+        // Если текущая версия приложения > сохраненной, нужна перераспаковка.
+        if (lastUnpackedVersion >= currentVersion) {
+            Log.d("STANDALONE", "Project version ($lastUnpackedVersion) is up to date. Loading from storage.")
             val projectDir = File(
                 FlavoredConstants.DEFAULT_ROOT_DIRECTORY,
                 FileMetaDataExtractor.encodeSpecialCharsForFileSystem(BuildConfig.PROJECT_NAME)
@@ -467,30 +468,31 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
             ProjectLoader(projectDir, this)
                 .setListener(this)
                 .loadProjectAsync()
-            return // Выходим, чтобы не распаковывать zip
+            return
         }
 
         try {
-            Log.d("STANDALONE", "First run detected. Unpacking project from assets...")
-            val inputStream = assets.open(BuildConfig.START_PROJECT + ".zip")
+            Log.d("STANDALONE", "New version detected (current: $currentVersion, last: $lastUnpackedVersion). Unpacking project from assets...")
             val projectDir = File(
                 FlavoredConstants.DEFAULT_ROOT_DIRECTORY,
-                FileMetaDataExtractor.encodeSpecialCharsForFileSystem(
-                    BuildConfig.PROJECT_NAME
-                )
+                FileMetaDataExtractor.encodeSpecialCharsForFileSystem(BuildConfig.PROJECT_NAME)
             )
-            ZipArchiver()
-                .unzip(inputStream, projectDir)
+
+            // Перед распаковкой на всякий случай удалим старую папку
+            if (projectDir.exists()) {
+                projectDir.deleteRecursively()
+            }
+
+            val inputStream = assets.open(BuildConfig.START_PROJECT + ".zip")
+            ZipArchiver().unzip(inputStream, projectDir)
 
             ProjectLoader(projectDir, this)
                 .setListener(this)
                 .loadProjectAsync()
 
-            // ▼▼▼ ВОТ РЕШЕНИЕ! ▼▼▼
-            // После успешной распаковки, мы записываем, что первый запуск завершен.
-            prefs.edit().putBoolean("standalone_first_run", false).apply()
-            Log.d("STANDALONE", "First run complete. Flag 'standalone_first_run' is now set to false.")
-            // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+            // После успешной распаковки сохраняем НОВУЮ версию.
+            prefs.edit().putInt("standalone_project_version", currentVersion).apply()
+            Log.d("STANDALONE", "Unpack complete. Saved new version: $currentVersion")
 
         } catch (e: IOException) {
             Log.e("STANDALONE", "Cannot unpack standalone project: ", e)

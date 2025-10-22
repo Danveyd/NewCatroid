@@ -59,6 +59,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -105,6 +106,7 @@ import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.devices.raspberrypi.RaspberryPiService;
+import org.catrobat.catroid.exceptions.ProjectException;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.io.StageAudioFocus;
 import org.catrobat.catroid.nfc.NfcHandler;
@@ -159,9 +161,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		PermissionAdaptingActivity {
 
 	public static final String TAG = StageActivity.class.getSimpleName();
-	public static StageListener stageListener;
+	public StageListener stageListener;
 
 	public static final int REQUEST_START_STAGE = 101;
+
+	public static final String EXTRA_PROJECT_PATH = "EXTRA_PROJECT_PATH";
 
 	private static final List<IntentListener> intentListeners2 = new ArrayList<>();
 
@@ -264,6 +268,24 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		if (getIntent().hasExtra(EXTRA_PROJECT_PATH)) {
+			String projectPath = getIntent().getStringExtra(EXTRA_PROJECT_PATH);
+			File projectDir = new File(projectPath);
+			if (projectDir.exists() && projectDir.isDirectory()) {
+				try {
+					// Загружаем указанный проект. Это заменит текущий проект в ProjectManager.
+					ProjectManager.getInstance().loadProject(projectDir);
+				} catch (ProjectException e) {
+					Log.e(TAG, "Failed to load project from intent path: " + projectPath, e);
+					// Если не удалось, показываем ошибку и закрываемся
+					Toast.makeText(this, "Error loading project: " + e.getMessage(), Toast.LENGTH_LONG).show();
+					finish();
+					super.onCreate(savedInstanceState); // Вызываем super, чтобы избежать крэша
+					return;
+				}
+			}
+		}
+
 		super.onCreate(savedInstanceState);
 
 		// --- Иерархия слоев ---
@@ -385,6 +407,32 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 		// Запускаем ВМ
 		VirtualMachineManager.INSTANCE.createVM(getApplicationContext(), DEFAULT_VM_NAME, args.toString(), "", ""); // Имя и размер диска не нужны, так как мы указываем путь
+	}
+
+	/**
+	 * Перезагружает StageActivity с новым проектом.
+	 * Это предпочтительный способ смены проектов во время выполнения.
+	 * @param newProjectPath Абсолютный путь к директории нового проекта.
+	 */
+	public void reloadWithNewProject(final String newProjectPath) {
+		// Выполняем в UI потоке, чтобы избежать гонки потоков
+		runOnUiThread(() -> {
+			// 1. Пытаемся загрузить новый проект
+			try {
+				ProjectManager.getInstance().loadProject(new File(newProjectPath));
+			} catch (Exception e) {
+				Log.e(TAG, "Failed to load project for reload: " + newProjectPath, e);
+				Toast.makeText(this, "Error loading project: " + e.getMessage(), Toast.LENGTH_LONG).show();
+				// Если не удалось, ничего не делаем, остаемся в текущем проекте
+				return;
+			}
+
+			// 2. Сигнализируем LibGDX, что нужно выполнить полную перезагрузку
+			// Мы вызываем метод, который у вас уже есть и используется при перезапуске проекта!
+			if (stageListener != null) {
+				stageListener.reloadProject(stageDialog);
+			}
+		});
 	}
 
 	public void stopVM() {
@@ -1260,6 +1308,28 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	}
 
 	/**
+	 * Изменяет позицию любого нативного View на сцене.
+	 * Этот метод не пересоздает View, сохраняя его состояние.
+	 *
+	 * @param viewId Уникальный ID View, которое нужно переместить.
+	 * @param x      Новая координата X (от левого края).
+	 * @param y      Новая координата Y (от верхнего края).
+	 */
+	public void setViewPosition(final String viewId, final int x, final int y) {
+		runOnUiThread(() -> {
+			View view = dynamicViews.get(viewId);
+			if (view != null && view.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+				FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+				params.leftMargin = x;
+				params.topMargin = y;
+				view.setLayoutParams(params);
+			} else {
+				Log.w(TAG, "Cannot set position for view '" + viewId + "'. View not found or has wrong LayoutParams.");
+			}
+		});
+	}
+
+	/**
 	 * Создает и отображает видеоплеер на сцене.
 	 *
 	 * @param viewId        Уникальный строковый ID для этого плеера (например, "intro-video").
@@ -1272,58 +1342,44 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 *                      false, если нужно показывать только "чистое" видео.
 	 * @param loopVideo     true, если видео должно начинаться заново после завершения.
 	 */
-	public void createVideoPlayer(String viewId, String videoPath, int x, int y, int width, int height, boolean showControls, final boolean loopVideo) {
+	public void createVideoPlayer(String viewId, String videoPath, int x, int y, int width, int height, boolean showControls, final boolean loopVideo, boolean isTransparent) {
 		final VideoView videoView = new VideoView(this);
 
-		// Настройки Z-Order и прозрачности (оставляем, как было)
-		//videoView.setZOrderOnTop(true);
-		//videoView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-
-		// Настраиваем MediaController, если нужно (оставляем, как было)
-		if (showControls) {
-			MediaController mediaController = new MediaController(this);
-			mediaController.setAnchorView(videoView);
-			videoView.setMediaController(mediaController);
+		// --- НАСТРОЙКА ПРОЗРАЧНОСТИ ---
+		if (isTransparent) {
+			// Эта команда делает "окно", в котором рисуется видео, способным к прозрачности.
+			videoView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+			// ВАЖНО: Мы НЕ вызываем setZOrderOnTop(true). Это позволяет видео
+			// быть частью общей иерархии слоев, а не "дырой" поверх всего.
 		}
 
-		// Устанавливаем путь к видеофайлу
+		// Настраиваем MediaController, если нужно. Теперь это будет работать.
+		if (showControls) {
+			MediaController mediaController = new MediaController(this);
+			// Привязываем контроллер к нашему VideoView
+			videoView.setMediaController(mediaController);
+			// AnchorView нужен, чтобы контроллер знал, где отображаться
+			mediaController.setAnchorView(videoView);
+		}
+
 		videoView.setVideoPath(videoPath);
 
-		// --- НАЧАЛО КЛЮЧЕВОГО ИЗМЕНЕНИЯ ---
-
-		// Устанавливаем "слушатель готовности". Этот код выполнится только тогда,
-		// когда видео будет полностью подготовлено к воспроизведению.
+		// Используем OnPreparedListener для надежного автостарта и зацикливания
 		videoView.setOnPreparedListener(mediaPlayer -> {
-			// Теперь видео ГОТОВО. Это самое правильное место для вызова start().
 			mediaPlayer.start();
-
-			// Также, это лучшее место для установки зацикливания.
-			// Это более прямой способ, чем OnCompletionListener.
 			if (loopVideo) {
 				mediaPlayer.setLooping(true);
 			}
 		});
 
-		// --- КОНЕЦ КЛЮЧЕВОГО ИЗМЕНЕНИЯ ---
-
-
-		// --- УДАЛЯЕМ СТАРЫЙ СПОСОБ ЗАПУСКА ---
-		// Старые строки:
-		// videoView.requestFocus();
-		// videoView.start();
-		// Больше не нужны здесь. Запуск произойдет в onPrepared.
-
-
-		// Позиционирование и добавление на сцену (оставляем, как было)
+		// Позиционирование и добавление на сцену
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
 		params.gravity = Gravity.TOP | Gravity.START;
 		params.leftMargin = x;
 		params.topMargin = y;
 
 		addViewToStage(viewId, videoView, params);
-
-		// Запрос фокуса все еще полезен, чтобы MediaController мог работать сразу
-		videoView.requestFocus();
+		videoView.requestFocus(); // Нужно для работы MediaController
 	}
 
 	/**
@@ -1622,6 +1678,33 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		}
 	}
 
+	// org/catrobat/catroid/stage/StageActivity.java
+
+	/**
+	 * БЕЗОПАСНЫЙ статический метод для получения активного StageListener.
+	 * Это ЕДИНСТВЕННЫЙ способ, которым внешний код должен получать доступ к listener'у.
+	 * Он возвращает null, если игра не запущена, и это ПРАВИЛЬНО.
+	 *
+	 * @return Активный StageListener, если игровая сцена существует и запущена, иначе null.
+	 */
+	public static StageListener getActiveStageListener() {
+		// 1. Проверяем, существует ли вообще ссылка на активную StageActivity
+		if (activeStageActivity == null) {
+			return null;
+		}
+
+		// 2. Получаем саму StageActivity
+		StageActivity currentStage = activeStageActivity.get();
+
+		// 3. Проверяем, что и активность, и ее listener существуют
+		if (currentStage != null && currentStage.stageListener != null) {
+			return currentStage.stageListener;
+		}
+
+		// 4. Во всех остальных случаях возвращаем null
+		return null;
+	}
+
 	@Override
 	public void onBackPressed() {
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
@@ -1727,7 +1810,13 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	@Override
 	public ApplicationListener getApplicationListener() {
-		return stageListener;
+		// Убедитесь, что он создается, если еще не создан
+		if (this.stageListener == null) {
+			// Логика создания вашего StageListener (вероятно, находится в StageLifeCycleController)
+			// Для примера, создадим его здесь, но лучше перенести из вашего контроллера
+			this.stageListener = new StageListener();
+		}
+		return this.stageListener;
 	}
 
 	@Override

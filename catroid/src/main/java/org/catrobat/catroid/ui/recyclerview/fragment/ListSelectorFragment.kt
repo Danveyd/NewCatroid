@@ -281,6 +281,7 @@ class ListSelectorFragment : Fragment(), RVAdapter.SelectionListener,
                 R.id.project_options,
                 R.id.project_files,
                 R.id.project_libs,
+                R.id.editor3d,
                 R.id.from_library,
                 R.id.from_local
         )

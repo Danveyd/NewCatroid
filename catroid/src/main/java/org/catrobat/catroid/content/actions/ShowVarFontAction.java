@@ -70,8 +70,8 @@ public class ShowVarFontAction extends TemporalAction {
                 return;
             }
             Typeface font = Typeface.createFromFile(file);
-            if (StageActivity.stageListener != null) {
-                Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
+            if (StageActivity.getActiveStageListener() != null) {
+                Array<Actor> stageActors = StageActivity.getActiveStageListener().getStage().getActors();
                 ShowTextActor dummyActor = new ShowTextActor(false, new UserVariable("dummyActor"), 0,
                         0, relativeTextSize, color, scope.getSprite(), alignment, androidStringProvider);
                 dummyActor.setFont(font);
@@ -88,7 +88,7 @@ public class ShowVarFontAction extends TemporalAction {
                         color, scope.getSprite(), alignment, androidStringProvider);
                 actor.setFont(font);
             }
-            StageActivity.stageListener.addActor(actor);
+            StageActivity.getActiveStageListener().addActor(actor);
             variableToShow.setVisible(true);
         } catch (InterpretationException e) {
             Log.d(TAG, "InterpretationException: " + e);

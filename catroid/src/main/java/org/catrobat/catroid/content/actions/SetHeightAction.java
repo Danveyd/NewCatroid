@@ -42,7 +42,6 @@ public class SetHeightAction extends TemporalAction {
 			Float newSize = size == null ? Float.valueOf(0f) : size.interpretFloat(scope);
 			scope.getSprite().look.setHeightV(newSize / 100f);
 			WidthHeightManager.Companion.setHeight(newSize);
-			//scope.getSprite().look.setSize(scope.getSprite().look.getScaleX(),newSize / 100f);
 		} catch (InterpretationException interpretationException) {
 			Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);
 		}

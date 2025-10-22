@@ -23,8 +23,12 @@
 
 package org.catrobat.catroid.stage;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
+import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -91,8 +95,8 @@ public final class StageLifeCycleController {
 
 		stageActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		StageActivity.stageListener = new StageListener();
-		stageActivity.stageDialog = new StageDialog(stageActivity, StageActivity.stageListener, R.style.StageDialog);
+		stageActivity.stageListener = new StageListener();
+		stageActivity.stageDialog = new StageDialog(stageActivity, stageActivity.stageListener, R.style.StageDialog);
 		stageActivity.brickDialogManager = new BrickDialogManager(stageActivity);
 		stageActivity.calculateScreenSizes();
 
@@ -103,9 +107,9 @@ public final class StageLifeCycleController {
 			stageActivity.setContentView(R.layout.activity_stage_gamepad);
 			CastManager.getInstance().initializeGamepadActivity(stageActivity);
 			CastManager.getInstance()
-					.addStageViewToLayout((GLSurfaceView20) stageActivity.initializeForView(StageActivity.stageListener, stageActivity.configuration));
+					.addStageViewToLayout((GLSurfaceView20) stageActivity.initializeForView(stageActivity.stageListener, stageActivity.configuration));
 		} else {
-			stageActivity.initialize(StageActivity.stageListener, stageActivity.configuration);
+			stageActivity.initialize(stageActivity.stageListener, stageActivity.configuration);
 		}
 
 		//CATROID-105 - TODO: does this make any difference? probably necessary for cast:
@@ -155,7 +159,7 @@ public final class StageLifeCycleController {
 			SensorHandler.stopSensorListeners();
 			SoundManager.getInstance().pause();
 			MidiSoundManager.getInstance().pause();
-			StageActivity.stageListener.menuPause();
+			StageActivity.getActiveStageListener().menuPause();
 			stageActivity.stageAudioFocus.releaseAudioFocus();
 			if (stageActivity.cameraManager != null) {
 				stageActivity.cameraManager.pause();
@@ -228,9 +232,29 @@ public final class StageLifeCycleController {
 				stageActivity.stageAudioFocus.requestAudioFocus();
 			}
 
-			if (resourcesSet.contains(Brick.NFC_ADAPTER)
-					&& stageActivity.nfcAdapter != null) {
-				stageActivity.nfcAdapter.enableForegroundDispatch(stageActivity, stageActivity.pendingIntent, null, null);
+			if (resourcesSet.contains(Brick.NFC_ADAPTER)) {
+				// 1. Получаем адаптер. Он может быть null, если NFC не поддерживается.
+				stageActivity.nfcAdapter = NfcAdapter.getDefaultAdapter(stageActivity);
+
+				if (stageActivity.nfcAdapter != null) {
+					// 2. Создаем PendingIntent ТОЛЬКО если адаптер существует.
+					// Этот Intent будет перезапускать нашу же StageActivity, когда будет обнаружена метка.
+					int pendingIntentFlags;
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+						pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE;
+					} else {
+						pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+					}
+
+					Intent intent = new Intent(stageActivity, stageActivity.getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+					stageActivity.pendingIntent = PendingIntent.getActivity(stageActivity, 0, intent, pendingIntentFlags);
+
+					// 3. Вызываем enableForegroundDispatch только если и адаптер, и intent существуют.
+					stageActivity.nfcAdapter.enableForegroundDispatch(stageActivity, stageActivity.pendingIntent, null, null);
+					Log.d(TAG, "NFC foreground dispatch enabled.");
+				} else {
+					Log.w(TAG, "NFC is required by the project, but the device does not support it.");
+				}
 			}
 
 			if (ProjectManager.getInstance().getCurrentProject().isCastProject()) {
@@ -241,7 +265,7 @@ public final class StageLifeCycleController {
 			MidiSoundManager.getInstance().resume();
 			if (stageActivity.stageResourceHolder.initFinished()) {
 				try {
-					StageActivity.stageListener.menuResume();
+					StageActivity.getActiveStageListener().menuResume();
 				} catch(Exception e) {
 					//anything
 				}
@@ -267,9 +291,9 @@ public final class StageLifeCycleController {
 			if (ProjectManager.getInstance().getCurrentProject().isCastProject()) {
 				CastManager.getInstance().onStageDestroyed();
 			}
-			StageActivity.stageListener.finish();
+			StageActivity.getActiveStageListener().finish();
 			stageActivity.manageLoadAndFinish();
-			StageActivity.stageListener = null;
+			//StageActivity.activeStageActivity.get().stageListener = null;
 		}
 		ProjectManager.getInstance().setCurrentlyPlayingScene(ProjectManager.getInstance().getCurrentlyEditedScene());
 	}

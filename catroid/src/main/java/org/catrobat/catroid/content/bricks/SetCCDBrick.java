@@ -1,4 +1,3 @@
-// в org.catrobat.catroid.content.bricks
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
@@ -33,7 +32,7 @@ public class SetCCDBrick extends FormulaBrick {
 
     @Override
     public View getView(Context context) {
-        super.getView(context); // Важно!
+        super.getView(context);
 
         Spinner spinner = view.findViewById(R.id.brick_set_ccd_spinner);
 
@@ -57,7 +56,6 @@ public class SetCCDBrick extends FormulaBrick {
     @Override
     public void addActionToSequence(Sprite sprite, ScriptSequenceAction sequence) {
         Formula objectIdFormula = getFormulaWithBrickField(BrickField.THREED_OBJECT_ID);
-        // Преобразуем int в boolean для передачи в Action
         Formula enabledFormula;
         if (ccdSelection == 0) {
             enabledFormula = new Formula(1.0);

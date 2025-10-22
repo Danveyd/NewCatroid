@@ -47,6 +47,7 @@ import org.catrobat.catroid.camera.Position;
 import org.catrobat.catroid.camera.VisualDetectionHandler;
 import org.catrobat.catroid.cast.CastManager;
 import org.catrobat.catroid.common.CatroidService;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.ServiceProvider;
 import org.catrobat.catroid.content.LocalServer;
 import org.catrobat.catroid.content.NetworkUtils;
@@ -55,6 +56,7 @@ import org.catrobat.catroid.devices.arduino.phiro.Phiro;
 import org.catrobat.catroid.devices.mindstorms.ev3.LegoEV3;
 import org.catrobat.catroid.devices.mindstorms.nxt.LegoNXT;
 import org.catrobat.catroid.nfc.NfcHandler;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.utils.TouchUtil;
 import org.catrobat.catroid.content.VolumeManager;
@@ -69,6 +71,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 
 public final class SensorHandler implements SensorEventListener, SensorCustomEventListener,
 		LocationListener {
@@ -152,6 +155,25 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 
 	public void setLocationManager(LocationManager locationManager) {
 		this.locationManager = locationManager;
+	}
+
+	private float mouseX = 0;
+	private float mouseY = 0;
+	private float mouseDeltaX = 0;
+	private float mouseDeltaY = 0;
+	private float lastScrollAmount = 0;
+
+	// --- НОВЫЕ МЕТОДЫ ДЛЯ ОБНОВЛЕНИЯ СОСТОЯНИЯ ---
+	public void updateMousePosition(float x, float y) {
+		this.mouseDeltaX = x - this.mouseX;
+		this.mouseDeltaY = y - this.mouseY;
+		this.mouseX = x;
+		this.mouseY = y;
+	}
+
+	public void resetMouseDelta() {
+		this.mouseDeltaX = 0;
+		this.mouseDeltaY = 0;
 	}
 
 	public static boolean gpsAvailable() {
@@ -283,6 +305,12 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 		VisualDetectionHandler.removeListener(instance);
 	}
 
+
+	// И новый метод для обновления этого поля из StageListener
+	public void setLastScrollAmount(float amount) {
+		this.lastScrollAmount = amount;
+	}
+
 	@NonNull
 	public static Object getSensorValue(Sensors sensor) {
 		if (instance.sensorManager == null) {
@@ -335,6 +363,8 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 					return (double) nxt.getSensorValue(sensor);
 				}
 				break;
+			case FPS:
+				return Gdx.graphics.getFramesPerSecond();
 
 			case EV3_SENSOR_1:
 			case EV3_SENSOR_2:
@@ -374,6 +404,28 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				return (double) TouchUtil.getX(TouchUtil.getLastTouchIndex());
 			case FINGER_Y:
 				return (double) TouchUtil.getY(TouchUtil.getLastTouchIndex());
+			case NFC_TECH_LIST:
+				return NfcHandler.getTagTechnologies();
+			case NFC_MEMORY_SIZE:
+				return NfcHandler.getTagMemorySize();
+			case NFC_IS_WRITABLE:
+				return NfcHandler.isTagWritable();
+			case NFC_TAG_TYPE:
+				return NfcHandler.getTagType();
+			case MOUSE_X:
+				return (double) instance.mouseX;
+			case MOUSE_Y:
+				return (double) instance.mouseY;
+			case MOUSE_DELTA_X:
+				return (double) Gdx.input.getDeltaX();
+			case MOUSE_DELTA_Y:
+				// LibGDX инвертирует Y для дельты, возвращаем в привычном виде
+				return (double) -Gdx.input.getDeltaY();
+			case MOUSE_SCROLL: {
+				float amount = instance.lastScrollAmount;
+				instance.lastScrollAmount = 0; // Сбрасываем после прочтения
+				return (double) amount;
+			}
 			case NUMBER_CURRENT_TOUCHES:
 				return (double) TouchUtil.getNumberOfCurrentTouches();
 			case NFC_TAG_MESSAGE:
@@ -385,9 +437,9 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 			case USER_LANGUAGE:
 				return userLocaleTag;
 			case STAGE_WIDTH:
-				return (double) Gdx.graphics.getWidth();
+				return (double) ScreenValues.currentScreenResolution.getWidth();
 			case STAGE_HEIGHT:
-				return (double) Gdx.graphics.getHeight();
+				return (double) ScreenValues.currentScreenResolution.getHeight();
 			case BATTARY:
 				IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 				Intent batteryStatus = CatroidApplication.getAppContext().registerReceiver(null, intentFilter);
@@ -398,13 +450,13 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				// Вычисляем процент заряда батареи
 				return (int) ((level * 100) / (float) scale);
 			case MICRO:
-				return VolumeManager.Companion.getVolume();
+				return Objects.requireNonNull(VolumeManager.Companion.getVolume());
 			case IP:
 				return LocalServer.Companion.getIP();
 			case PORT:
 				return LocalServer.Companion.getPort();
 			case FREQ:
-				return VolumeManager.Companion.getFrequency();
+				return Objects.requireNonNull(VolumeManager.Companion.getFrequency());
 			case INTERNET:
 				return NetworkUtils.isInternetAvailable();
 			case ARCH:

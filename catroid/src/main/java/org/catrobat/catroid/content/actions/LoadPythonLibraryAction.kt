@@ -31,12 +31,9 @@ class LoadPythonLibraryAction : TemporalAction() {
             return
         }
 
-        // 1. Определяем, куда будем распаковывать библиотеку
         val unpackedLibsDir = File(CatroidApplication.getAppContext().filesDir, "pylibs_unpacked")
-        unpackedLibsDir.mkdirs() // Создаем папку, если ее нет
+        unpackedLibsDir.mkdirs()
 
-        // 2. Распаковываем архив, если он еще не был распакован
-        // (проверяем по наличию папки с таким же именем, как у архива)
         val destDir = File(unpackedLibsDir, projectFile.name)
         if (!destDir.exists()) {
             Log.i("LoadPythonLibrary", "Unpacking '${projectFile.name}' to '${destDir.absolutePath}'...")
@@ -45,13 +42,12 @@ class LoadPythonLibraryAction : TemporalAction() {
                 Log.i("LoadPythonLibrary", "Unpacking finished successfully.")
             } catch (e: IOException) {
                 Log.e("LoadPythonLibrary", "Failed to unpack library", e)
-                return // Если распаковка не удалась, выходим
+                return
             }
         } else {
             Log.d("LoadPythonLibrary", "Library '${projectFile.name}' already unpacked. Skipping.")
         }
 
-        // 3. Добавляем путь к РАСПАКОВАННОЙ папке в sys.path
         val libraryPath = destDir.absolutePath.replace("'", "\\'")
         val script = "import sys\nif '$libraryPath' not in sys.path:\n  sys.path.append('$libraryPath')"
         pythonEngine.runScriptAsync(script)
@@ -59,9 +55,6 @@ class LoadPythonLibraryAction : TemporalAction() {
         Log.d("LoadPythonLibrary", "Task to add unpacked library '${projectFile.name}' to sys.path has been queued.")
     }
 
-    /**
-     * Вспомогательная функция для распаковки zip-архива.
-     */
     @Throws(IOException::class)
     private fun unzip(zipFile: File, targetDirectory: File) {
         ZipInputStream(zipFile.inputStream()).use { zis ->
@@ -71,7 +64,6 @@ class LoadPythonLibraryAction : TemporalAction() {
                 if (entry.isDirectory) {
                     newFile.mkdirs()
                 } else {
-                    // Убедимся, что родительские папки существуют
                     File(newFile.parent!!).mkdirs()
                     FileOutputStream(newFile).use { fos ->
                         zis.copyTo(fos)

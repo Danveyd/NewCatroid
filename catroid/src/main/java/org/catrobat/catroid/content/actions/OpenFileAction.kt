@@ -65,7 +65,6 @@ class OpenFileAction() : TemporalAction() {
         var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
         if (mimeType == null) {
-            // Дополняем стандартную карту своими значениями
             mimeType = when (extension) {
                 "doc" -> "application/msword"
                 "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -79,8 +78,7 @@ class OpenFileAction() : TemporalAction() {
                 "htm" -> "team/html"
                 "gif" -> "image/gif"
                 "bin" -> "application/octet-stream"
-                // Добавьте другие нужные расширения сюда
-                else -> "*/*" // Последний рубеж
+                else -> "*/*"
             }
         }
         return mimeType
@@ -91,7 +89,6 @@ class OpenFileAction() : TemporalAction() {
         val context = CatroidApplication.getAppContext()
         if (activity == null || context == null) return
 
-        // Запрос разрешений (лучше выносить из update, но для примера оставим)
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -99,7 +96,7 @@ class OpenFileAction() : TemporalAction() {
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 PERMISSION_EXTERNAL_STORAGE_SAVE_COPY
             )
-            return // Выходим, чтобы дождаться ответа пользователя
+            return
         }
 
         val fileName = file?.interpretString(scope)
@@ -128,7 +125,6 @@ class OpenFileAction() : TemporalAction() {
 
             val intent = Intent(Intent.ACTION_VIEW)
 
-            // ИЗМЕНЕНО: Используем нашу новую надежную функцию
             val mimeType = getMimeType(fileToOpen.name)
             intent.setDataAndType(uri, mimeType)
             Log.d("OpenFileAction", "URI: $uri, MIME Type: $mimeType")
@@ -136,7 +132,6 @@ class OpenFileAction() : TemporalAction() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            // Используем createChooser, чтобы пользователь всегда видел диалог выбора
             val chooser = Intent.createChooser(intent, "Open with")
 
             if (intent.resolveActivity(context.packageManager) != null) {
@@ -147,7 +142,6 @@ class OpenFileAction() : TemporalAction() {
             }
         } catch (e: Exception) {
             ErrorLog.log(e.message ?: "**message not provided :(**")
-            // Ловим ошибки, например, от FileProvider
             Log.e("OpenFileAction", "Error creating URI or starting activity", e)
             toast("Error opening file: ${e.localizedMessage}")
         }

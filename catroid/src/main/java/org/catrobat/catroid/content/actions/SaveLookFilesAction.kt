@@ -103,14 +103,10 @@ open class SaveLookFilesAction : TemporalAction() {
     }
 
     fun copyFileToDownloads(sourceFile: File, newFileName: String) {
-        // Получаем путь к папке "Загрузки"
         scope?.project?.let { proj ->
             val downloadsFolder = proj.filesDir
-
-            // Создаем новый файл в папке "Загрузки" с заданным именем
             val destFile = File(downloadsFolder, newFileName)
 
-            // Копируем содержимое файла
             try {
                 FileInputStream(sourceFile).use { input ->
                     FileOutputStream(destFile).use { output ->

@@ -43,7 +43,7 @@ import org.luaj.vm2.Globals
 import org.luaj.vm2.LuaValue
 import org.luaj.vm2.lib.jse.JsePlatform
 import java.io.File
-import org.catrobat.catroid.content.Project // Предполагаемый импорт
+import org.catrobat.catroid.content.Project
 import org.luaj.vm2.ast.Str
 import java.io.FileOutputStream
 

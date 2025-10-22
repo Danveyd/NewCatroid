@@ -806,6 +806,31 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="Widget.App.Button.Outlined" parent="Widget.AppCompat.Button">
+        <!-- Устанавливаем наш drawable в качестве фона -->
+        <item name="android:background">@drawable/button_outline</item>
+        <!-- Устанавливаем цвет текста, чтобы он совпадал с цветом рамки -->
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
+    <style name="Widget.App.Button.CameraControl" parent="Widget.MaterialComponents.Button.TextButton">
+        <!-- Заставляем кнопку занимать всю ячейку -->
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:background">#80000000</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">12sp</item>
+        <item name="autoSizeMaxTextSize">30sp</item>
+    </style>
+
 
     <!-- END -->
 </resources>

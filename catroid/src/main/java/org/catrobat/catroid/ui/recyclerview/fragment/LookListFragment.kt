@@ -253,6 +253,7 @@ class LookListFragment : RecyclerViewFragment<LookData?>() {
             R.id.project_options,
             R.id.project_files,
             R.id.project_libs,
+            R.id.editor3d,
             R.id.edit,
             R.id.from_local,
             R.id.from_library

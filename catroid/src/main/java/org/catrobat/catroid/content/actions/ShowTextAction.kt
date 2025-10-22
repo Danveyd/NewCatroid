@@ -50,29 +50,31 @@ class ShowTextAction : TemporalAction() {
             variableToShow?.visible = true
             val xPosition = xPosition.interpretInteger(scope)
             val yPosition = yPosition.interpretInteger(scope)
-            if (StageActivity.stageListener == null) {
+            if (StageActivity.activeStageActivity.get()?.stageListener == null) {
                 return
             }
-            val stageActors = StageActivity.stageListener.stage.actors
+            val stageActors = StageActivity.activeStageActivity.get()?.stageListener?.stage?.actors
             val dummyActor = ShowTextActor( false,
                 UserVariable("dummyActor"),
                 0, 0, 0.0f, null, scope?.sprite, androidStringProvider
             )
 
-            for (stageActor in stageActors) {
-                if (stageActor.javaClass != dummyActor.javaClass) {
-                    continue
-                }
-                val showTextActor = stageActor as ShowTextActor
-                if (showTextActor.variableNameToCompare == variableToShow?.name && showTextActor.sprite == scope?.sprite) {
-                    stageActor.remove()
+            if (stageActors != null) {
+                for (stageActor in stageActors) {
+                    if (stageActor.javaClass != dummyActor.javaClass) {
+                        continue
+                    }
+                    val showTextActor = stageActor as ShowTextActor
+                    if (showTextActor.variableNameToCompare == variableToShow?.name && showTextActor.sprite == scope?.sprite) {
+                        stageActor.remove()
+                    }
                 }
             }
             showTextActor = ShowTextActor(
                 false, variableToShow, xPosition, yPosition, 1.0f, null,
                 scope?.sprite, androidStringProvider
             )
-            StageActivity.stageListener.addActor(showTextActor)
+            StageActivity.activeStageActivity.get()?.stageListener?.addActor(showTextActor)
         } catch (e: InterpretationException) {
             Log.d(TAG, "InterpretationException: $e")
         }

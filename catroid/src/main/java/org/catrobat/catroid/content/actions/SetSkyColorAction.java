@@ -14,7 +14,7 @@ public class SetSkyColorAction extends TemporalAction {
 
     @Override
     protected void update(float percent) {
-        ThreeDManager manager = StageActivity.stageListener.getThreeDManager();
+        ThreeDManager manager = StageActivity.getActiveStageListener().getThreeDManager();
         if (manager == null) return;
 
         try {

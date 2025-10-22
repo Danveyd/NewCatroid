@@ -14,7 +14,6 @@ public class SetFogBrick extends FormulaBrick {
     private static final long serialVersionUID = 1L;
 
     public SetFogBrick() {
-        // Замените FORMULA_* на реальные значения из вашего BrickField enum
         addAllowedBrickField(BrickField.FORMULA_1, R.id.brick_set_fog_r_edit);
         addAllowedBrickField(BrickField.FORMULA_2, R.id.brick_set_fog_g_edit);
         addAllowedBrickField(BrickField.FORMULA_3, R.id.brick_set_fog_b_edit);

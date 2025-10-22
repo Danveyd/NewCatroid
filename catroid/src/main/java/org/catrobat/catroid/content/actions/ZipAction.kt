@@ -96,12 +96,10 @@ open class ZipAction : TemporalAction() {
         val fileName = getName(name) ?: "myZip.zip"
         val paths = getFilePaths(files?.interpretString(scope) ?: "")
 
-        // Получаем директорию загрузок
         val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val file = File(dir, fileName)
         val path = file.absolutePath
 
-        // Создаем ZIP-архив
         zipFiles(paths, path)
     }
 
@@ -122,11 +120,10 @@ open class ZipAction : TemporalAction() {
         val delimiter = ","
         val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
-        // Разделяем входную строку на строки, удаляем пробелы и фильтруем пустые строки
         return input.split(delimiter).map { it.trim() }
-            .filter { it.isNotEmpty() } // Убираем пустые строки
+            .filter { it.isNotEmpty() }
             .map { fileName ->
-                File(dir, fileName).absolutePath // Формируем полный путь к каждому файлу
+                File(dir, fileName).absolutePath
             }
     }
 

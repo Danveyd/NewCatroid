@@ -276,6 +276,12 @@
         </activity>
 
         <activity
+            android:name=".editor.EditorActivity"
+            android:label="@string/title_activity_editor"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".visualplacement.VisualPlacementActivity"/>
 
         <activity
@@ -317,6 +323,21 @@
             android:name="org.catrobat.paintroid.WelcomeActivity"
             android:theme="@style/Theme.PaintroidFix"
             tools:replace="android:theme" />
+
+        <activity
+            android:name=".utils.git.AuthCallbackActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="github-callback"
+                    android:scheme="newcatroid" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".transfers.project.ProjectDownloadService"
             android:foregroundServiceType="dataSync" />

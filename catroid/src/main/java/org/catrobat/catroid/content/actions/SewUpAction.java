@@ -40,27 +40,27 @@ public class SewUpAction extends TemporalAction {
 
 		float x = sprite.look.getXInUserInterfaceDimensionUnit();
 		float y = sprite.look.getYInUserInterfaceDimensionUnit();
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 				sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 
 		x += STEPS * Math.sin(radians);
 		y += STEPS * Math.cos(radians);
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 				sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 
 		x -= STEPS * Math.sin(radians);
 		y -= STEPS * Math.cos(radians);
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 				sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 
 		x -= STEPS * Math.sin(radians);
 		y -= STEPS * Math.cos(radians);
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 				sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 
 		x += STEPS * Math.sin(radians);
 		y += STEPS * Math.cos(radians);
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(x, y,
 				sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 
 		sprite.runningStitch.setStartCoordinates(sprite.look.getXInUserInterfaceDimensionUnit(),

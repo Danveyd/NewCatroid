@@ -32,7 +32,7 @@ import org.catrobat.catroid.content.Script;
 import androidx.annotation.NonNull;
 
 public class ScriptSequenceAction extends SequenceAction {
-	protected final Script script;
+	protected Script script;
 
 	public ScriptSequenceAction(@NonNull Script script) {
 		this.script = script;
@@ -79,6 +79,23 @@ public class ScriptSequenceAction extends SequenceAction {
 		ScriptSequenceAction copy = (ScriptSequenceAction) ActionFactory.createScriptSequenceAction(script);
 		for (Action childAction : getActions()) {
 			copy.addAction(childAction);
+		}
+		return copy;
+	}
+
+	public ScriptSequenceAction deepCloneAndMakeInstant() {
+		ScriptSequenceAction copy = (ScriptSequenceAction) ActionFactory.createScriptSequenceAction(script);
+		for (Action childAction : getActions()) {
+			if (childAction instanceof WaitAction) {
+				continue;
+			}
+
+			if (childAction instanceof ScriptSequenceAction) {
+				copy.addAction(((ScriptSequenceAction) childAction).deepCloneAndMakeInstant());
+			}
+			else {
+				copy.addAction(childAction);
+			}
 		}
 		return copy;
 	}

@@ -45,7 +45,6 @@ class CopyTextAction() : TemporalAction() {
     var scope: Scope? = null
     var text: Formula? = null
 
-    // Новый конструктор с параметром контекста
     constructor(context: Context) : this() {
         this.contextt = context
     }

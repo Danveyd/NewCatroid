@@ -2,16 +2,13 @@
 #include <string>
 #include <vector>
 
-// Подключаем заголовочный файл ONNX
 #include "onnxruntime_cxx_api.h"
 
-// Глобальные переменные для хранения сессии ONNX
 Ort::Env env;
 Ort::Session session{nullptr};
 Ort::AllocatorWithDefaultOptions allocator;
 
 extern "C" JNIEXPORT jint JNICALL
-// Убедитесь, что имя пакета здесь (com_example_onnxtestapp) совпадает с вашим
 Java_com_danvexteam_onnxtest_MainActivity_loadModel(
         JNIEnv* env,
         jobject /* this */,
@@ -30,7 +27,6 @@ Java_com_danvexteam_onnxtest_MainActivity_loadModel(
 
 
 extern "C" JNIEXPORT jfloatArray JNICALL
-// И здесь тоже
 Java_com_danvexteam_onnxtest_MainActivity_runInference(
         JNIEnv* env,
         jobject /* this */,

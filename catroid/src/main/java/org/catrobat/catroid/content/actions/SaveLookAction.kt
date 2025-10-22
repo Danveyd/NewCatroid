@@ -103,13 +103,9 @@ open class SaveLookAction : TemporalAction() {
     }
 
     fun copyFileToDownloads(sourceFile: File, newFileName: String) {
-        // Получаем путь к папке "Загрузки"
         val downloadsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-
-        // Создаем новый файл в папке "Загрузки" с заданным именем
         val destFile = File(downloadsFolder, newFileName)
 
-        // Копируем содержимое файла
         try {
             FileInputStream(sourceFile).use { input ->
                 FileOutputStream(destFile).use { output ->

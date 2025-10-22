@@ -6,7 +6,6 @@ import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.stage.StageActivity
 
 class EvalWebAction : TemporalAction() {
-    //private lateinit var rootLayout: FrameLayout // Контейнер для WebView
     var scope: Scope? = null
     var code: Formula? = null
     var name: Formula? = null

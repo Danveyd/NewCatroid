@@ -92,7 +92,7 @@ public class ZigZagRunningStitch extends RunningStitchType {
 		float xCoord = (float) (x - (width / 2) * Math.sin(Math.toRadians(degrees + 90)) * direction);
 		float yCoord = (float) (y - (width / 2) * Math.cos(Math.toRadians(degrees + 90)) * direction);
 		direction *= (-1);
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(xCoord,
+		StageActivity.getActiveStageListener().embroideryPatternManager.addStitchCommand(new DSTStitchCommand(xCoord,
 				yCoord, sprite.look.getZIndex(), sprite, sprite.getEmbroideryThreadColor()));
 		if (listener != null) {
 			listener.onAdd(xCoord, yCoord);

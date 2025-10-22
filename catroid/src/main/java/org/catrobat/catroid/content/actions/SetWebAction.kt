@@ -18,7 +18,7 @@ class SetWebAction : TemporalAction() {
         val activity: StageActivity = StageActivity.activeStageActivity.get() ?: return;
 
         activity.setWebViewCallback(name?.interpretString(scope) ?: "",
-            WebViewCallback { message -> // Здесь переменная 'message' будет в точности равна "Привет из WebView!"
+            WebViewCallback { message ->
                 userVariable?.value = message
             })
     }

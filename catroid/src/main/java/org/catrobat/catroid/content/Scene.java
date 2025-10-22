@@ -24,6 +24,7 @@ package org.catrobat.catroid.content;
 
 import com.danvexteam.lunoscript_annotations.LunoClass;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Nameable;
@@ -42,12 +43,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
 @XStreamAlias("scene")
 @XStreamFieldKeyOrder({
+		"sceneId",
 		"name",
 		"objectList"
 })
@@ -56,6 +60,8 @@ public class Scene implements Nameable, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@XStreamAsAttribute
+	private String sceneId;
 	@XStreamAlias("name")
 	private String name;
 	@XStreamAlias("objectList")
@@ -72,6 +78,30 @@ public class Scene implements Nameable, Serializable {
 	public Scene(String name, @NonNull Project project) {
 		this.name = name;
 		this.project = project;
+		this.sceneId = UUID.randomUUID().toString();
+	}
+
+	public String getSceneId() {
+		return sceneId;
+	}
+
+	public void setSceneId(String sceneId) {
+		this.sceneId = sceneId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Scene scene = (Scene) o;
+		// Две сцены считаются ОДНОЙ И ТОЙ ЖЕ, только если у них одинаковый ID. Имена могут совпадать.
+		return Objects.equals(sceneId, scene.sceneId);
+	}
+
+	@Override
+	public int hashCode() {
+		// Хеш-код всегда должен быть основан на тех же полях, что и equals.
+		return Objects.hash(sceneId);
 	}
 
 	public String getName() {

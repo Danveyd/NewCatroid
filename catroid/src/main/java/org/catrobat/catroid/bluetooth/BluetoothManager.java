@@ -36,7 +36,7 @@ public class BluetoothManager {
 
 	public static final int REQUEST_ENABLE_BT = 2000;
 
-	public static final int REQUEST_BT_PERMISSIONS = 2001; // Новый код запроса
+	public static final int REQUEST_BT_PERMISSIONS = 2001;
 	public static final int BLUETOOTH_NOT_SUPPORTED = -1;
 	public static final int BLUETOOTH_ALREADY_ON = 1;
 	public static final int BLUETOOTH_ACTIVATING = 0;
@@ -57,11 +57,10 @@ public class BluetoothManager {
 			return BLUETOOTH_NOT_SUPPORTED;
 		}
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { // 'S' это Android 12
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 			if (ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-				// Разрешения нет, запрашиваем его
 				ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BT_PERMISSIONS);
-				return BLUETOOTH_ACTIVATING; // Прерываемся, ждем ответа пользователя
+				return BLUETOOTH_ACTIVATING;
 			}
 		}
 

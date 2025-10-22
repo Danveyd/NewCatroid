@@ -33,7 +33,6 @@ import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.formulaeditor.InterpretationException
 import org.catrobat.catroid.stage.BrickDialogManager
 import org.catrobat.catroid.stage.StageActivity
-import org.catrobat.catroid.stage.StageActivity.stageListener
 import org.catrobat.catroid.web.WebConnection
 import org.catrobat.catroid.web.WebConnection.WebRequestListener
 import okhttp3.logging.HttpLoggingInterceptor
@@ -90,15 +89,11 @@ abstract class WebAction : Action(), WebRequestListener {
         permissionStatus = PermissionStatus.DENIED
     }
 
-    // В WebAction.java и GPTAction.java
-    // В WebAction.kt и GPTAction.kt
     override fun act(delta: Float): Boolean {
-        // Интерпретация URL (остается без изменений)
         if (url == null && !interpretUrl()) {
             return true
         }
 
-        // Проверка разрешений (остается без изменений)
         when (permissionStatus) {
             PermissionStatus.UNKNOWN -> checkPermission()
             PermissionStatus.DENIED -> {
@@ -111,49 +106,35 @@ abstract class WebAction : Action(), WebRequestListener {
             return false
         }
 
-        // ▼▼▼ НАЧАЛО ИСПРАВЛЕННОЙ ЛОГИКИ ▼▼▼
-
-        // Атомарная проверка: если мы еще не отправляли запрос И отправка не удалась,
-        // то обрабатываем ошибку и завершаем действие.
         if (requestStatus == RequestStatus.NOT_SENT && !sendRequest()) {
             handleError(Constants.ERROR_TOO_MANY_REQUESTS.toString())
             return true
         }
 
-        // Если мы в состоянии ожидания, просто ждем дальше.
         if (requestStatus == RequestStatus.WAITING) {
             return false
         }
 
-        // Сюда мы попадаем, только если requestStatus == FINISHED
-        stageListener.webConnectionHolder.removeConnection(webConnection)
-        handleResponse() // Этот метод будет вызван только после успешного onRequestSuccess
+        StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.removeConnection(webConnection)
+        handleResponse()
         return true
-
-        // ▲▲▲ КОНЕЦ ИСПРАВЛЕННОЙ ЛОГИКИ ▲▲▲
     }
 
     private fun checkPermission() =
         if (TrustedDomainManager.isURLTrusted(url!!)) {
             grantPermission()
         } else {
-            //askForPermission()
             grantPermission()
         }
 
-    // В WebAction.java и GPTAction.java
     private fun sendRequest(): Boolean {
-        // Сначала меняем состояние. Это гарантирует, что мы не будем пытаться
-        // отправить запрос снова и снова в каждом кадре.
         requestStatus = RequestStatus.WAITING
         webConnection = WebConnection(this, url!!)
 
-        if (stageListener.webConnectionHolder.addConnection(webConnection!!)) {
+        if (StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.addConnection(webConnection!!) == true) {
             webConnection!!.sendWebRequest()
             return true
         } else {
-            // Если не удалось добавить в холдер, возвращаем false,
-            // но статус уже WAITING, поэтому мы не застрянем в цикле отправки.
             return false
         }
     }
@@ -173,7 +154,7 @@ abstract class WebAction : Action(), WebRequestListener {
 
     @CallSuper
     override fun restart() {
-        stageListener.webConnectionHolder.removeConnection(webConnection)
+        StageActivity.activeStageActivity.get()?.stageListener?.webConnectionHolder?.removeConnection(webConnection)
         webConnection = null
         url = null
         requestStatus = RequestStatus.NOT_SENT

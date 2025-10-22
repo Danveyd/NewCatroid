@@ -51,7 +51,6 @@ class hideStatusBarAction() : TemporalAction() {
                     WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars()
                 )
             } else {
-                // Для старых версий Android (до API 30)
                 activity.window.decorView.systemUiVisibility = (
                         View.SYSTEM_UI_FLAG_FULLSCREEN
                                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

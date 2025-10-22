@@ -44,6 +44,8 @@ import org.catrobat.catroid.utils.ImageEditing;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -56,6 +58,9 @@ public class LookData implements Cloneable, Nameable, Serializable {
 
 	private static final transient int THUMBNAIL_WIDTH = 150;
 	private static final transient int THUMBNAIL_HEIGHT = 150;
+
+	@XStreamAsAttribute
+	private String lookId;
 
 	@XStreamAsAttribute
 	protected String name;
@@ -83,12 +88,35 @@ public class LookData implements Cloneable, Nameable, Serializable {
 
 	public LookData(String name) {
 		this.name = name;
+		this.lookId = UUID.randomUUID().toString();
 	}
 
 	public LookData(String name, @NonNull File file) {
 		this.name = name;
 		this.file = file;
 		fileName = file.getName();
+		this.lookId = UUID.randomUUID().toString();
+	}
+
+	public String getLookId() {
+		return lookId;
+	}
+
+	public void setLookId(String lookId) {
+		this.lookId = lookId;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		LookData lookData = (LookData) o;
+		return Objects.equals(lookId, lookData.lookId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(lookId);
 	}
 
 	public String getName() {
@@ -141,24 +169,6 @@ public class LookData implements Cloneable, Nameable, Serializable {
 		}
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-
-		if (obj == null) {
-			return false;
-		}
-
-		if (!(obj instanceof LookData)) {
-			return false;
-		}
-
-		LookData lookData = (LookData) obj;
-		return lookData.file.equals(this.file);
-	}
-
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	@Override
 	public LookData clone() {
@@ -167,11 +177,6 @@ public class LookData implements Cloneable, Nameable, Serializable {
 		} catch (IOException e) {
 			throw new RuntimeException(TAG + ": Could not copy file: " + file.getAbsolutePath());
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return file.hashCode() + super.hashCode();
 	}
 
 	public TextureRegion getTextureRegion() {
