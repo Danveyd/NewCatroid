@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "catroid::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-catroid-Debug-1fd4b42f7e800d677966.json",
+					"jsonFile" : "target-catroid-Debug-9add72ce027292fdb340.json",
 					"name" : "catroid",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "example_core::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-example_core-Debug-800e706adff83140d656.json",
+					"jsonFile" : "target-example_core-Debug-41cacff51c371e4c9cb1.json",
 					"name" : "example_core",
 					"projectIndex" : 0
 				}

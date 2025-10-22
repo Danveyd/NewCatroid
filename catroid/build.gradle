@@ -103,9 +103,6 @@ ext.copyGoogleServicesFile = { flavorName, flavorId ->
         from "google-services-template.json"
         rename { "google-services.json" }
         into "src/$flavorName"
-        //filter { line ->
-        //    line.replaceAll('@appId@', flavorId)
-        //}
     }
 }
 
@@ -308,16 +305,7 @@ android {
 
     productFlavors {
         danvex {
-            // Здесь мы не используем суффикс, а ПОЛНОСТЬЮ ПЕРЕОПРЕДЕЛЯЕМ ID.
-            // Это самый надежный способ.
             applicationId "org.DanVexTeam.NewCatroid"
-
-            // Также переопределяем versionCode и versionName, чтобы
-            // Google Play знал, какая версия у вашего приложения.
-
-            // Вы можете добавить сюда любые другие флаги,
-            // которые вам нужны, например, включить AI по умолчанию.
-            //isDefault.set(true)
         }
         catroid {
             isDefault.set(true)
@@ -353,8 +341,6 @@ android {
             versionCode 1
             versionName '1.0'
 
-            //buildConfigField "String", "START_PROJECT", "\"$projectId\""
-            //buildConfigField "String", "PROJECT_NAME", "\"$appName\""
             ext.set("disableGoogleServices", true)
 
             buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "true"
@@ -406,22 +392,17 @@ dependencies {
 
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.1.202206130422-r'
 
-    implementation 'org.xmlunit:xmlunit-core:2.9.1'  // Android-совместимая
+    implementation 'org.xmlunit:xmlunit-core:2.9.1'
     implementation 'net.sf.kxml:kxml2:2.3.0'
     implementation "xerces:xercesImpl:2.12.2"
 
-    // JGit для Android требует несколько дополнительных зависимостей
     implementation "org.slf4j:slf4j-android:1.7.36"
-    implementation 'com.jcraft:jsch:0.1.55' // для SSH, может понадобиться
-
-    // Эта библиотека поможет сравнивать объекты, чтобы найти отличия
-    // (опционально, но очень полезно)
+    implementation 'com.jcraft:jsch:0.1.55'
     implementation 'io.github.java-diff-utils:java-diff-utils:4.12'
 
 
     //gdx-gltf
     implementation 'com.github.mgsx-dev.gdx-gltf:core:2.2.1'
-    // https://mvnrepository.com/artifact/com.github.mgsx-dev.gdx-gltf/gltf
     implementation 'com.github.mgsx-dev.gdx-gltf:gltf:2.2.1'
 
     //implementation 'com.crashinvaders.vfx:gdx-vfx-core:0.5.4'
@@ -436,11 +417,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-scripting-common:1.8.10"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'org.luaj:luaj-jse:3.0.1'
-    //implementation "org.jetbrains.kotlin:kotlin-scripting-common:$kotlin_version"
-    //implementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$kotlin_version"
-    //implementation "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31" //was 1.7.0
-    //implementation "org.jetbrains.kotlin:kotlin-scripting-jvm:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.5.31" //was 1.7.0
     implementation "org.jetbrains.kotlin:kotlin-script-util:1.5.31"
     // WorkManager
@@ -507,15 +484,11 @@ dependencies {
     //FireBase
     implementation platform('com.google.firebase:firebase-bom:33.1.2')
 
-    // Добавляем саму библиотеку Crashlytics. Версию указывать не нужно,
-    // так как она берется из BoM.
     implementation "com.google.firebase:firebase-crashlytics-ndk"
     implementation "com.google.firebase:firebase-crashlytics"
 
-    // Также рекомендуется добавить аналитику, так как Crashlytics
-    // использует ее для некоторых фич.
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-database-ktx' // Зависимость для работы с Realtime Database
+    implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
     // CAST
@@ -550,7 +523,6 @@ dependencies {
 
     implementation project(':lunoscript-annotations')
 
-    // Вы запускаете процессор для этого модуля
     kapt project(':lunoscript-processor')
 
     // ML Kit
@@ -590,14 +562,11 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
     implementation "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
-
-    // Для современных 64-битных устройств (САМАЯ ВАЖНАЯ СТРОКА!)
     implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
 
     implementation "com.google.android.gms:play-services-auth:17.0.0"
 
     androidTestImplementation('tools.fastlane:screengrab:2.1.1') {
-        // https://issuetracker.google.com/issues/123060356
         exclude group: 'com.android.support.test.uiautomator', module: 'uiautomator-v18'
     }
     androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
@@ -694,9 +663,6 @@ apply plugin: 'com.huawei.agconnect'
 
 configurations.all {
     resolutionStrategy {
-        // Эта команда принудительно заставит ВСЕ зависимости в проекте
-        // использовать ТОЛЬКО эту версию библиотеки Material.
-        // Это решит конфликт версий.
         force 'com.google.android.material:material:1.2.1'
     }
 }
