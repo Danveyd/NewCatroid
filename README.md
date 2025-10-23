@@ -10,8 +10,7 @@
 
 <p align="center">
   <a href="https://t.me/New_Catroid">Telegram</a> • 
-  <a href="https://apps.rustore.ru/app/org.DanVexTeam.NewCatroid">RuStore</a> • 
-  <a href="#quickstart">Quickstart</a> • 
+  <a href="https://apps.rustore.ru/app/org.DanVexTeam.NewCatroid">RuStore</a>  • 
   <a href="#license">License</a>
 </p>
 
