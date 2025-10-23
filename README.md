@@ -1,4 +1,19 @@
-# NewCatroid #
+<p align="center">
+  <img src="assets/logo.jpg" alt="NewCatroid Logo" width="128"/>
+</p>
+
+<h1 align="center">NewCatroid</h1>
+
+<p align="center">
+  Расширенная версия <a href="https://github.com/Catrobat/Catroid">Catrobat/Catroid</a> — с поддержкой 3D, AI и сети.
+</p>
+
+<p align="center">
+  <a href="https://t.me/New_Catroid">Telegram</a> • 
+  <a href="https://apps.rustore.ru/app/org.DanVexTeam.NewCatroid">RuStore</a> • 
+  <a href="#quickstart">Quickstart</a> • 
+  <a href="#license">License</a>
+</p>
 
 Это форк на Catrobat/Catroid
 Проект имеет телеграм канал: https://t.me/New_Catroid
