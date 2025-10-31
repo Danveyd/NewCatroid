@@ -61,31 +61,37 @@
 
        </LinearLayout>
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:divider="@drawable/divider"
-           android:orientation="vertical"
-           android:showDividers="end">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="end">
 
-           <com.google.android.material.textfield.TextInputLayout
-               android:id="@+id/project_options_description_layout"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:hint="@string/project_options_description"
-               android:paddingEnd="@dimen/dialog_content_area_padding"
-               android:paddingStart="@dimen/dialog_content_area_padding"
-               android:paddingTop="@dimen/dialog_content_area_padding_top"
-               app:errorEnabled="true"
-               app:hintEnabled="true">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/project_options_description_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/project_options_description"
+                android:paddingEnd="@dimen/dialog_content_area_padding"
+                android:paddingStart="@dimen/dialog_content_area_padding"
+                android:paddingTop="@dimen/dialog_content_area_padding_top"
+                app:errorEnabled="true"
+                app:hintEnabled="true"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/landscape_2_24px"
+                app:endIconContentDescription="@string/insert_image">
 
-               <com.google.android.material.textfield.TextInputEditText
-                   android:id="@+id/project_options_description"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:selectAllOnFocus="true" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/project_options_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:minLines="4"
+                    android:selectAllOnFocus="true" />
 
-           </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
        </LinearLayout>
 
@@ -360,6 +366,26 @@
                 android:paddingTop="@dimen/material_design_spacing_x_large"
                 android:background="@drawable/button_background_selector_dark"
                 android:text="@string/change_orientation_button" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="end">
+
+            <TextView
+                android:id="@+id/project_options_rebuild_cache"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/material_design_spacing_x_large"
+                android:paddingEnd="@dimen/material_design_spacing_x_large"
+                android:paddingStart="@dimen/material_design_spacing_x_large"
+                android:paddingTop="@dimen/material_design_spacing_x_large"
+                android:background="@drawable/button_background_selector_dark"
+                android:text="@string/rebuild_cache_button" />
 
         </LinearLayout>
 

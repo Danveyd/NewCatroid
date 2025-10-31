@@ -29,6 +29,7 @@ import android.widget.CheckBox;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
+import org.catrobat.catroid.ui.BrickLayout;
 
 import java.io.Serializable;
 import java.lang.annotation.Retention;

@@ -24,7 +24,11 @@ package org.catrobat.catroid.ui.recyclerview.adapter
 
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RectShape
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +39,8 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.annotation.IntDef
 import org.catrobat.catroid.R
+import org.catrobat.catroid.codeanalysis.AnalysisManager
+import org.catrobat.catroid.codeanalysis.Severity
 import org.catrobat.catroid.content.Script
 import org.catrobat.catroid.content.Sprite
 import org.catrobat.catroid.content.bricks.Brick
@@ -48,6 +54,7 @@ import org.catrobat.catroid.content.bricks.NoneBrick
 import org.catrobat.catroid.content.bricks.ScriptBrick
 import org.catrobat.catroid.content.bricks.SetParticleColorBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
+import org.catrobat.catroid.ui.AnalyzedBrickLayout
 import org.catrobat.catroid.ui.BrickLayout
 import org.catrobat.catroid.ui.dragndrop.BrickAdapterInterface
 import org.catrobat.catroid.ui.recyclerview.adapter.draganddrop.ViewStateManager
@@ -64,6 +71,16 @@ class BrickAdapter(private val sprite: Sprite) :
     @kotlin.annotation.Retention(AnnotationRetention.SOURCE)
     @IntDef(NONE, ALL, SCRIPTS_ONLY, CONNECTED_ONLY)
     internal annotation class CheckBoxMode
+
+    interface OnScriptChangedListener {
+        fun onScriptChanged()
+    }
+
+    private var scriptChangedListener: OnScriptChangedListener? = null
+
+    fun setOnScriptChangedListener(listener: OnScriptChangedListener?) {
+        this.scriptChangedListener = listener
+    }
 
     @CheckBoxMode
     private var checkBoxMode = NONE
@@ -127,6 +144,8 @@ class BrickAdapter(private val sprite: Sprite) :
             script.addToFlatList(items)
         }
         notifyDataSetChanged()
+
+        scriptChangedListener?.onScriptChanged()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -137,7 +156,6 @@ class BrickAdapter(private val sprite: Sprite) :
         if (item is SetParticleColorBrick) {
             Log.d("BrickCheck", "SetParticleColorBrick recognized")
 
-            // Проверяем, есть ли у него формула цвета
             val colorFormula = item.getFormulaWithBrickField(BrickField.COLOR, true)
             if (colorFormula != null) {
                 Log.d("BrickCheck", "Color formula exists: $colorFormula")
@@ -145,10 +163,17 @@ class BrickAdapter(private val sprite: Sprite) :
                 Log.d("BrickCheck", "Color formula is null")
                 item = NoneBrick()
                 items[position] = item
-                //return createUnknownView(item.javaClass.simpleName, parent)
+                return createUnknownView(item.javaClass.simpleName, parent)
             }
         }
         val itemView = item.getView(parent.context)
+
+        clearHighlights(itemView as ViewGroup)
+
+        val result = AnalysisManager.getResultFor(item)
+        if (result != null) {
+            applyHighlight(itemView, result.severity)
+        }
 
         itemView.visibility =
             if (viewStateManager.isVisible(position)) View.VISIBLE else View.INVISIBLE
@@ -172,17 +197,53 @@ class BrickAdapter(private val sprite: Sprite) :
         return itemView
     }
 
+    private fun clearHighlights(group: ViewGroup) {
+        for (i in 0 until group.childCount) {
+            val child = group.getChildAt(i)
+            if (child is TextView) {
+                child.foreground = null
+            } else if (child is ViewGroup) {
+                clearHighlights(child)
+            }
+        }
+    }
+
+    private fun applyHighlight(group: ViewGroup, severity: Severity) {
+        for (i in 0 until group.childCount) {
+            val child = group.getChildAt(i)
+            if (child is TextView && child.id != View.NO_ID) {
+                val color = if (severity == Severity.ERROR) 0xFFFF4444.toInt() else 0xFFFFBB33.toInt()
+
+                val underline = object : ShapeDrawable(RectShape()) {
+                    init {
+                        paint.color = color
+                    }
+
+                    override fun draw(canvas: android.graphics.Canvas) {
+                        val b = bounds
+                        canvas.drawRect(
+                            b.left.toFloat(),
+                            (b.bottom - 4f),
+                            b.right.toFloat(),
+                            b.bottom.toFloat(),
+                            paint
+                        )
+                    }
+                }
+                child.foreground = underline
+            } else if (child is ViewGroup) {
+                applyHighlight(child, severity)
+            }
+        }
+    }
+
     private fun createUnknownView(className: String, container: ViewGroup): View {
-        // Создаем представление из разметки
         val brickView = LayoutInflater.from(container.context).inflate(R.layout.brick_none, container, false)
 
-        // Получаем ссылку на BrickLayout
         //val brickLayout = brickView as? BrickLayout
 
-        // Находим TextView внутри BrickLayout
         //val textView: TextView? = brickLayout?.findViewById(R.id.brick_none_text) // Используем id, который вы добавили
 
-        // Устанавливаем текст
         //textView?.text = "Xz" // Устанавливает текст на TextView
         return brickView
     }

@@ -22,8 +22,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
         android:defaultValue="false"
@@ -161,6 +161,12 @@
         android:key="setting_test_bricks"
         android:summary="@string/preference_description_test_bricks"
         android:title="@string/preference_title_enable_test_bricks" />
+
+    <CheckBoxPreference
+        android:key="pref_code_analysis_enabled"
+        android:title="Анализ кода в реальном времени"
+        android:summary="Автоматически проверять скрипты на наличие потенциальных проблем и ошибок."
+        android:defaultValue="true" />
 
     <PreferenceCategory android:title="@string/github_integration">
 

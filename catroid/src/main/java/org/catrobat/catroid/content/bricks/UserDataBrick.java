@@ -72,6 +72,10 @@ public abstract class UserDataBrick extends FormulaBrick implements BrickSpinner
 		return clone;
 	}
 
+	public Map<BrickData, UserData> getAllBrickDataWithValues() {
+		return userDataList;
+	}
+
 	public UserList getUserListWithBrickData(BrickData brickData) {
 		if (userDataList.containsKey(brickData)) {
 			UserData result = userDataList.get(brickData);

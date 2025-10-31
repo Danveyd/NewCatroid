@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui.recyclerview.fragment
 import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -36,14 +37,23 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.PluralsRes
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.lifecycleScope
+import io.noties.markwon.Markwon
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.image.file.FileSchemeHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants
 import org.catrobat.catroid.common.FlavoredConstants
 import org.catrobat.catroid.common.ProjectData
 import org.catrobat.catroid.common.SharedPreferenceKeys
+import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.content.backwardcompatibility.ProjectMetaDataParser
 import org.catrobat.catroid.exceptions.LoadingProjectException
 import org.catrobat.catroid.io.StorageOperations
@@ -95,9 +105,11 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
 
     private fun onImportProjectFinished(success: Boolean) {
         setAdapterItems(adapter.projectsSorted)
-        if (!success) {
-            ToastUtil.showError(requireContext(), R.string.error_import_project)
-        } else {
+        if (success && filesForUnzipAndImportTask?.size == 1) {
+            val importedFile = filesForUnzipAndImportTask!!.first()
+            val projectName = importedFile.nameWithoutExtension
+            showReadmeForProject(projectName)
+        } else if (success) {
             ToastUtil.showSuccess(
                 requireContext(),
                 resources.getQuantityString(
@@ -106,9 +118,69 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
                     filesForUnzipAndImportTask?.size ?: 0
                 )
             )
+        } else {
+            ToastUtil.showError(requireContext(), R.string.error_import_project)
         }
         filesForUnzipAndImportTask?.clear()
         setShowProgressBar(false)
+    }
+
+    private fun showReadmeForProject(projectName: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val projectDir = File(FlavoredConstants.DEFAULT_ROOT_DIRECTORY, projectName)
+                if (!projectDir.exists()) return@launch
+
+                val project = XstreamSerializer.getInstance().loadProject(projectDir, requireContext())
+                val description = project?.description
+
+                if (!description.isNullOrBlank()) {
+                    withContext(Dispatchers.Main) {
+                        showMarkdownDialog(project, description)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load project for Readme display", e)
+            }
+        }
+    }
+
+    private fun showMarkdownDialog(project: Project, markdownText: String) {
+        val context = activity ?: return
+
+        val markdownView = TextView(context).apply {
+            val padding = (16 * resources.displayMetrics.density).toInt()
+            setPadding(padding, padding, padding, padding)
+        }
+
+        val markwon = Markwon.builder(context)
+            .usePlugin(ImagesPlugin.create { plugin ->
+                plugin.addSchemeHandler(FileSchemeHandler.create())
+            })
+            .build()
+
+        fun resolveImagePaths(markdown: String): String {
+            val projectDir = project.directory
+            val imageRegex = Regex("!\\[(.*?)]\\((?!file://)(.*?)\\)")
+            return imageRegex.replace(markdown) { matchResult ->
+                val altText = matchResult.groupValues[1]
+                val imageName = matchResult.groupValues[2]
+                val imageFile = project.getFile(imageName)
+                if (imageFile != null && imageFile.exists()) {
+                    "![${altText}](${imageFile.toURI()})"
+                } else {
+                    matchResult.value
+                }
+            }
+        }
+
+        markwon.setMarkdown(markdownView, resolveImagePaths(markdownText))
+
+        AlertDialog.Builder(context)
+            .setTitle("Сведения о проекте: ${project.name}")
+            .setView(markdownView)
+            .setPositiveButton(R.string.ok, null)
+            .show()
     }
 
     private fun onRenameFinished(success: Boolean) {
@@ -178,8 +250,6 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
 
     private fun libsMenu() {
         val intent = Intent(context, LibraryEditorActivity::class.java)
-        // Если хочешь открыть существующий черновик:
-        // intent.putExtra("DRAFT_ID", "some-uuid-string")
         startActivity(intent)
     }
 

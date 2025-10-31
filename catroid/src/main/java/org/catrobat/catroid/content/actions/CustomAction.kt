@@ -36,10 +36,8 @@ class CustomAction : TemporalAction() {
                 lunoArgs.add(LunoValue.fromKotlin(result))
             }
 
-            Thread {
-                val eofToken = Token(TokenType.EOF, "", null, -1, -1)
-                lunoFunction.call(interpreter, lunoArgs, eofToken)
-            }
+            val eofToken = Token(TokenType.EOF, "", null, -1, -1)
+            lunoFunction.call(interpreter, lunoArgs, eofToken)
 
         } catch (e: PauseExecutionSignal) {
             // TODO: Сделать паузы

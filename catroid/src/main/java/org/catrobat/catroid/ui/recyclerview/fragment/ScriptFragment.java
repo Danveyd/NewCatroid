@@ -25,9 +25,11 @@ package org.catrobat.catroid.ui.recyclerview.fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -37,12 +39,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 import org.catrobat.catroid.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.codeanalysis.AnalysisManager;
+import org.catrobat.catroid.codeanalysis.AnalysisResult;
+import org.catrobat.catroid.codeanalysis.CodeAnalyzer;
+import org.catrobat.catroid.codeanalysis.Severity;
 import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.content.BrickInfo;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Scene;
 import org.catrobat.catroid.content.Script;
@@ -92,7 +101,9 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import androidx.annotation.IntDef;
@@ -104,16 +115,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.ListFragment;
+import androidx.lifecycle.LifecycleCoroutineScope;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleOwnerKt;
 
 import static org.catrobat.catroid.common.Constants.CODE_XML_FILE_NAME;
 import static org.catrobat.catroid.common.Constants.UNDO_CODE_XML_FILE_NAME;
+
+import kotlinx.coroutines.BuildersKt;
+import kotlinx.coroutines.CoroutineStart;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.GlobalScope;
 
 public class ScriptFragment extends ListFragment implements
 		ActionMode.Callback,
 		BrickAdapter.OnBrickClickListener,
 		BrickAdapter.SelectionListener, OnCategorySelectedListener,
 		AddBrickFragment.OnAddBrickListener,
-		ProjectLoader.ProjectLoadListener {
+		ProjectLoader.ProjectLoadListener,
+		BrickAdapter.OnScriptChangedListener {
 
 	public static final String TAG = ScriptFragment.class.getSimpleName();
 	private static final String BRICK_TAG = "brickToFocus";
@@ -149,6 +169,8 @@ public class ScriptFragment extends ListFragment implements
 	private Brick brickToFocus;
 	private Script scriptToFocus;
 
+	private CodeAnalyzer codeAnalyzer;
+
 	private SpriteActivity activity;
 
 	public static ScriptFragment newInstance(Brick brickToFocus) {
@@ -179,6 +201,7 @@ public class ScriptFragment extends ListFragment implements
 			this.brickToFocus = (Brick) bundle.get(BRICK_TAG);
 			this.scriptToFocus = (Script) bundle.get(SCRIPT_TAG);
 		}
+		codeAnalyzer = new CodeAnalyzer(requireContext());
 	}
 
 	private List<UserVariable> savedUserVariables;
@@ -374,6 +397,8 @@ public class ScriptFragment extends ListFragment implements
 		adapter.setSelectionListener(this);
 		adapter.setOnItemClickListener(this);
 
+		adapter.setOnScriptChangedListener(this);
+
 		listView.setAdapter(adapter);
 		listView.setOnItemClickListener(adapter);
 		listView.setOnItemLongClickListener(adapter);
@@ -385,6 +410,11 @@ public class ScriptFragment extends ListFragment implements
 			InternToExternGenerator.setInternExternLanguageConverterMap(Sensors.OBJECT_NUMBER_OF_LOOKS,
 					R.string.formula_editor_object_number_of_looks);
 		}
+	}
+
+	@Override
+	public void onScriptChanged() {
+		runCodeAnalysis();
 	}
 
 	@Override
@@ -423,6 +453,8 @@ public class ScriptFragment extends ListFragment implements
 
 		scrollToFocusItem();
 		SnackbarUtil.showHintSnackbar(getActivity(), R.string.hint_scripts);
+
+		runCodeAnalysis();
 	}
 
 	@Override
@@ -434,7 +466,48 @@ public class ScriptFragment extends ListFragment implements
 		savedListViewState = listView.onSaveInstanceState();
 
 		((SpriteActivity) getActivity()).setUndoMenuItemVisibility(false);
+
+		AnalysisManager.INSTANCE.clearResults();
 	}
+
+    private void runCodeAnalysis() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean isAnalysisEnabled = prefs.getBoolean("pref_code_analysis_enabled", true);
+
+        // Очищаем старые результаты в любом случае
+        AnalysisManager.INSTANCE.clearResults();
+
+        if (!isAnalysisEnabled) {
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+            return;
+        }
+
+        Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+        if (currentSprite == null) return;
+
+        BuildersKt.launch(GlobalScope.INSTANCE, Dispatchers.getIO(), CoroutineStart.DEFAULT, (scope, continuation) -> {
+            final Map<Brick, AnalysisResult> allResults = new HashMap<>();
+
+            for (Script script : currentSprite.getScriptList()) {
+                Map<Brick, AnalysisResult> scriptResults = codeAnalyzer.analyzeScript(script);
+                allResults.putAll(scriptResults);
+            }
+
+            AnalysisManager.INSTANCE.updateResults(allResults);
+
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(() -> {
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+            return kotlin.Unit.INSTANCE;
+        });
+    }
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
@@ -679,24 +752,48 @@ public class ScriptFragment extends ListFragment implements
 
 		List<Integer> options = getContextMenuItems(brick);
 		List<String> names = new ArrayList<>();
-		for (Integer option: options) {
+		for (Integer option : options) {
 			names.add(getString(option));
 		}
-
 		ListAdapter arrayAdapter = UiUtils.getAlertDialogAdapterForMenuIcons(options, names,
 				requireContext(), requireActivity());
 
+		View dialogTitleView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_brick_context, null);
+
 		View brickView = brick.getView(getContext());
 		brick.disableSpinners();
+		ViewGroup brickContainer = dialogTitleView.findViewById(R.id.brick_view_container);
+		brickContainer.addView(brickView);
+
+		TextView descriptionView = dialogTitleView.findViewById(R.id.brick_description);
+		String description = BrickInfo.getDescription(brick);
+		descriptionView.setText(description);
+
+		AnalysisResult result = AnalysisManager.INSTANCE.getResultFor(brick);
+		LinearLayout warningLayout = dialogTitleView.findViewById(R.id.warning_layout);
+
+		if (result != null) {
+			TextView warningTitle = dialogTitleView.findViewById(R.id.warning_title);
+			TextView warningMessage = dialogTitleView.findViewById(R.id.warning_message);
+
+			String title = (result.getSeverity() == Severity.ERROR) ? "Ошибка:" : "Предупреждение:";
+			int color = (result.getSeverity() == Severity.ERROR) ? 0xFFFF4444 : 0xFFFFBB33;
+
+			warningTitle.setText(title);
+			warningTitle.setTextColor(color);
+			warningMessage.setText(result.getMessage());
+
+			warningLayout.setVisibility(View.VISIBLE);
+		} else {
+			warningLayout.setVisibility(View.GONE);
+		}
 
 		new AlertDialog.Builder(getContext())
-				.setCustomTitle(brickView)
-				.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						handleContextMenuItemClick(options.get(which), brick, position);
-					}
-				}).show();
+				.setCustomTitle(dialogTitleView)
+				.setAdapter(arrayAdapter, (dialog, which) ->
+						handleContextMenuItemClick(options.get(which), brick, position)
+				).show();
+
 	}
 
 	@VisibleForTesting

@@ -25,6 +25,134 @@ class ProjectMerger {
 
     fun merge(baseProject: Project, localProject: Project, remoteProject: Project): MergeResultData {
         conflicts.clear()
+        Log.d(TAG, "Starting V8 (conflict resolution merge)...")
+
+        // Начинаем с глубокой копии локального проекта, чтобы сохранить все локальные изменения и ID
+        val mergedProject = XStreamUtilGit.deepCopy(localProject)
+
+        // Рекурсивно сливаем все объекты, изменяя mergedProject
+        mergeObject("project", mergedProject, baseProject, remoteProject)
+
+        Log.d(TAG, "Semantic merge finished. Found ${conflicts.size} conflicts to resolve.")
+
+        // После основного слияния, применяем нашу новую логику разрешения конфликтов
+        if (conflicts.isNotEmpty()) {
+            applyConflictResolutions(mergedProject, conflicts, localProject)
+        }
+
+        return MergeResultData(mergedProject, conflicts)
+    }
+
+    private fun applyConflictResolutions(mergedProject: Project, conflicts: List<Conflict>, localProject: Project) {
+        for (conflict in conflicts) {
+            try {
+                Log.d(TAG, "Attempting to resolve conflict at: ${conflict.path}")
+                if (tryResolveBrickConflict(mergedProject, localProject, conflict)) continue
+                if (tryResolveScriptConflict(mergedProject, localProject, conflict)) continue
+                // Сюда можно будет добавить другие резолверы для других типов объектов
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to programmatically resolve conflict at ${conflict.path}", e)
+            }
+        }
+    }
+
+    /**
+     * Разрешает конфликт в конкретном блоке.
+     * Стратегия: в слитом проекте уже находится remote-версия блока. Мы находим
+     * локальную версию в исходном локальном проекте, клонируем, комментируем
+     * и вставляем рядом с remote-версией, обрамляя комментариями.
+     */
+    private fun tryResolveBrickConflict(mergedProject: Project, localProject: Project, conflict: Conflict): Boolean {
+        // Убеждаемся, что это конфликт изменения блока
+        if (conflict.localValue !is Brick || conflict.remoteValue !is Brick) return false
+
+        // Находим родительский скрипт в УЖЕ СЛИТОМ проекте
+        val parentScript = findObjectByPath(mergedProject, conflict.path.substringBeforeLast(".")) as? Script ?: return false
+        val brickList = parentScript.brickList
+
+        // Находим remote-версию блока (которая сейчас в списке)
+        val remoteBrickInList = brickList.find { findId(it) == findId(conflict.remoteValue) } ?: return false
+        val index = brickList.indexOf(remoteBrickInList)
+
+        // Находим оригинальную локальную версию блока
+        val originalLocalBrick = findObjectByPath(localProject, conflict.path) as? Brick ?: return false
+
+        if (index != -1) {
+            Log.i(TAG, "Resolving BRICK conflict for brick ${findId(originalLocalBrick)}. Duplicating local version.")
+            val localCopy = XStreamUtilGit.deepCopy(originalLocalBrick)
+            localCopy.isCommentedOut = true
+
+            val startComment = NoteBrick("--- КОНФЛИКТ: ВАША ВЕРСИЯ НИЖЕ ---")
+            val endComment = NoteBrick("--- КОНЕЦ КОНФЛИКТА ---")
+
+            // Вставляем все в список после remote-версии
+            brickList.add(index + 1, startComment)
+            brickList.add(index + 2, localCopy)
+            brickList.add(index + 3, endComment)
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Разрешает конфликт на уровне всего скрипта (например, разный набор блоков).
+     */
+    private fun tryResolveScriptConflict(mergedProject: Project, localProject: Project, conflict: Conflict): Boolean {
+        if (conflict.localValue !is Script || conflict.remoteValue !is Script) return false
+
+        val parentSprite = findObjectByPath(mergedProject, conflict.path.substringBeforeLast(".")) as? Sprite ?: return false
+        val scriptList = parentSprite.scriptList
+
+        val remoteScriptInList = scriptList.find { findId(it) == findId(conflict.remoteValue) } ?: return false
+        val index = scriptList.indexOf(remoteScriptInList)
+
+        val originalLocalScript = findObjectByPath(localProject, conflict.path) as? Script ?: return false
+
+        if (index != -1) {
+            Log.i(TAG, "Resolving SCRIPT conflict for script ${findId(originalLocalScript)}. Duplicating local version.")
+            val localCopy = XStreamUtilGit.deepCopy(originalLocalScript)
+            localCopy.isCommentedOut = true // Комментируем весь скрипт-дубликат
+            scriptList.add(index + 1, localCopy) // Вставляем его после оригинала
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Находит объект в дереве проекта по его пути (например, "project.sceneList[...].spriteList[...]").
+     */
+    private val pathPattern: Pattern = Pattern.compile("(.*)\\[(.*)]")
+
+    private fun findObjectByPath(root: Any, path: String): Any? {
+        if (path == "project") return root
+
+        var currentObject: Any? = root
+        val segments = path.substringAfter(".").split('.')
+
+        for (segment in segments) {
+            if (currentObject == null) return null
+
+            val matcher = pathPattern.matcher(segment)
+            currentObject = if (matcher.matches()) {
+                val listName = matcher.group(1)
+                val itemId = matcher.group(2)
+
+                val listField = getAllFields(currentObject.javaClass).find { it.name == listName } ?: return null
+                listField.isAccessible = true
+                val list = listField.get(currentObject) as? List<*> ?: return null
+
+                list.find { findId(it).toString() == itemId }
+            } else {
+                val field = getAllFields(currentObject.javaClass).find { it.name == segment } ?: return null
+                field.isAccessible = true
+                field.get(currentObject)
+            }
+        }
+        return currentObject
+    }
+
+    /*fun merge(baseProject: Project, localProject: Project, remoteProject: Project): MergeResultData {
+        conflicts.clear()
         Log.d(TAG, "Starting V7 (deep list comparison) semantic merge...")
         val mergedProject = XStreamUtilGit.deepCopy(localProject)
         mergeObject("project", mergedProject, baseProject, remoteProject)
@@ -37,7 +165,7 @@ class ProjectMerger {
         }
 
         return MergeResultData(mergedProject, conflicts)
-    }
+    }*/
 
     @Suppress("UNCHECKED_CAST")
     private fun mergeObject(path: String, merged: Any, base: Any, remote: Any) {
@@ -225,7 +353,7 @@ class ProjectMerger {
     }
 
     // --- ФУНКЦИЯ ПОИСКА ПО ПУТИ ---
-    private val pathPattern = Pattern.compile("(.*)\\[(.*)]")
+    /*private val pathPattern = Pattern.compile("(.*)\\[(.*)]")
 
     private fun findObjectByPath(root: Any, path: String): Any? {
         if (path == "project") return root
@@ -253,7 +381,7 @@ class ProjectMerger {
             }
         }
         return currentObject
-    }
+    }*/
 
 
 

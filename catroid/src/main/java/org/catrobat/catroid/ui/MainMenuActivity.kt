@@ -38,7 +38,11 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.lifecycleScope
 import com.danvexteam.lunoscript_annotations.LunoClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.catrobat.catroid.BuildConfig
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.ProjectManager
@@ -48,6 +52,7 @@ import org.catrobat.catroid.common.Constants
 import org.catrobat.catroid.common.FlavoredConstants
 import org.catrobat.catroid.common.SharedPreferenceKeys
 import org.catrobat.catroid.common.Survey
+import org.catrobat.catroid.databinding.ActivityLoadingBinding
 import org.catrobat.catroid.databinding.ActivityMainMenuBinding
 import org.catrobat.catroid.databinding.ActivityMainMenuSplashscreenBinding
 import org.catrobat.catroid.databinding.DeclinedTermsOfUseAndServiceAlertViewBinding
@@ -71,6 +76,7 @@ import org.catrobat.catroid.utils.setVisibleOrGone
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.IOException
+import kotlin.random.Random
 
 
 private const val SDK_VERSION = 24
@@ -83,13 +89,29 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
     private lateinit var mainMenuBinding: ActivityMainMenuBinding
     private val projectManager: ProjectManager by inject()
     private var oldPrivacyPolicy = 0
+    private lateinit var loadingBinding: ActivityLoadingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         SettingsFragment.setToChosenLanguage(this)
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
+        loadingBinding = ActivityLoadingBinding.inflate(layoutInflater)
+        setContentView(loadingBinding.root)
+
+        lifecycleScope.launch {
+            val factJob = launch { showRandomFacts() }
+
+            withContext(Dispatchers.IO) {
+                heavyInitialization()
+            }
+
+            factJob.cancel()
+
+            loadFinalContent()
+        }
+
+        /*PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
         PreferenceManager.setDefaultValues(this, R.xml.nxt_preferences, true)
         PreferenceManager.setDefaultValues(this, R.xml.ev3_preferences, true)
         ScreenValueHandler.updateScreenWidthAndHeight(this)
@@ -110,7 +132,56 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
             prepareStandaloneProject()
         }
 
+        pythonEngine = PythonEngine(applicationContext)*/
+    }
+
+    private fun showRandomFacts() {
+        val facts = resources.getStringArray(R.array.loading_facts)
+        val randomFact = facts[Random.nextInt(facts.size)]
+        loadingBinding.factTextView.text = randomFact
+    }
+
+    private fun heavyInitialization() {
+        Thread.sleep(2000)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
+        PreferenceManager.setDefaultValues(this, R.xml.nxt_preferences, true)
+        PreferenceManager.setDefaultValues(this, R.xml.ev3_preferences, true)
+        ScreenValueHandler.updateScreenWidthAndHeight(this)
+
         pythonEngine = PythonEngine(applicationContext)
+    }
+
+    private fun loadFinalContent() {
+        if (BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
+            val mainMenuSplashscreenBinding =
+                ActivityMainMenuSplashscreenBinding.inflate(layoutInflater)
+            setContentView(mainMenuSplashscreenBinding.root)
+            oldPrivacyPolicy = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(SharedPreferenceKeys.AGREED_TO_PRIVACY_POLICY_VERSION, 0)
+            if (oldPrivacyPolicy == Constants.CATROBAT_TERMS_OF_USE_ACCEPTED) {
+                prepareStandaloneProject()
+            }
+        } else {
+            mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
+            setContentView(mainMenuBinding.root)
+            setSupportActionBar(findViewById(R.id.toolbar))
+            supportActionBar?.setIcon(R.drawable.pc_toolbar_icon)
+            supportActionBar?.setTitle(R.string.app_name)
+
+            if (SettingsFragment.isCastSharedPreferenceEnabled(this)) {
+                CastManager.getInstance().initializeCast(this)
+            }
+            loadFragment()
+        }
+
+        oldPrivacyPolicy = PreferenceManager.getDefaultSharedPreferences(this)
+            .getInt(SharedPreferenceKeys.AGREED_TO_PRIVACY_POLICY_VERSION, 0)
+        if (oldPrivacyPolicy != Constants.CATROBAT_TERMS_OF_USE_ACCEPTED) {
+            showTermsOfUseDialog()
+        }
+
+        surveyCampaign = Survey(this)
+        surveyCampaign?.showSurvey(this)
     }
 
     /*private fun testPython(): String {

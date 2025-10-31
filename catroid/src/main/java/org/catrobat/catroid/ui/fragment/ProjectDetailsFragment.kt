@@ -32,6 +32,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.danvexteam.lunoscript_annotations.LunoClass
+import io.noties.markwon.Markwon
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.image.file.FileSchemeHandler
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.FlavoredConstants
@@ -62,6 +65,7 @@ class ProjectDetailsFragment : Fragment() {
     private val projectManager: ProjectManager by inject()
     private lateinit var projectData: ProjectData
     private lateinit var project: Project
+    private lateinit var markwon: Markwon
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,6 +98,12 @@ class ProjectDetailsFragment : Fragment() {
         } catch (e: LoadingProjectException) {
             onExceptionThrown(e)
         }
+        markwon = Markwon.builder(requireContext())
+            .usePlugin(ImagesPlugin.create { plugin ->
+                plugin.addSchemeHandler(FileSchemeHandler.create())
+            })
+            .build()
+
         val thumbnailWidth =
             requireContext().resources.getDimensionPixelSize(R.dimen.project_thumbnail_width)
         val thumbnailHeight =
@@ -127,20 +137,44 @@ class ProjectDetailsFragment : Fragment() {
             modeValue.text = getString(modeText)
             remixOfValue.text = remixOf
             descriptionValue.apply {
-                text = header.description
-                setOnClickListener {
+                val descriptionText = header.description ?: ""
+                markwon.setMarkdown(this, resolveImagePaths(descriptionText))
+
+                /*setOnClickListener {
                     handleDescriptionPressed()
-                }
+                }*/
             }
             notesAndCreditsValue.apply {
-                text = header.notesAndCredits
-                setOnClickListener {
+                val notesText = header.notesAndCredits ?: ""
+                markwon.setMarkdown(this, resolveImagePaths(notesText))
+
+                /*setOnClickListener {
                     handleNotesAndCreditsPressed()
-                }
+                }*/
             }
         }
 
         hideBottomBar(requireActivity())
+    }
+
+    /**
+     * ![...](my_image.png) -> ![...](file:///.../image.png)
+     */
+    private fun resolveImagePaths(markdown: String): String {
+        val projectDir = project.filesDir
+        val imageRegex = Regex("!\\[(.*?)]\\((?!file://)(.*?)\\)")
+
+        return imageRegex.replace(markdown) { matchResult ->
+            val altText = matchResult.groupValues[1]
+            val imageName = matchResult.groupValues[2]
+            val imageFile = File(projectDir, imageName)
+
+            if (imageFile.exists()) {
+                "![${altText}](${imageFile.toURI()})"
+            } else {
+                matchResult.value
+            }
+        }
     }
 
     private fun onExceptionThrown(e: Exception) {
@@ -216,7 +250,7 @@ class ProjectDetailsFragment : Fragment() {
     fun setDescription(description: String?) {
         project.description = description
         if (XstreamSerializer.getInstance().saveProject(project)) {
-            binding.descriptionValue.text = description
+            markwon.setMarkdown(binding.descriptionValue, resolveImagePaths(description ?: ""))
         } else {
             ToastUtil.showError(requireContext(), R.string.error_set_description)
         }
@@ -225,7 +259,7 @@ class ProjectDetailsFragment : Fragment() {
     private fun setNotesAndCredits(notesAndCredits: String?) {
         project.notesAndCredits = notesAndCredits
         if (XstreamSerializer.getInstance().saveProject(project)) {
-            binding.notesAndCreditsValue.text = notesAndCredits
+            markwon.setMarkdown(binding.notesAndCreditsValue, resolveImagePaths(notesAndCredits ?: ""))
         } else {
             ToastUtil.showError(requireContext(), R.string.error_set_notes_and_credits)
         }

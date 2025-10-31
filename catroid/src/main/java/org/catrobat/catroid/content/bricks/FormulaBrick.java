@@ -51,7 +51,9 @@ import org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment;
 import org.catrobat.catroid.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import androidx.annotation.CallSuper;
@@ -85,6 +87,27 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 				return new Formula("#000000");
 			}
 		}
+	}
+
+	public Map<BrickField, Formula> getAllFormulaFieldsWithFormulas() {
+		Map<BrickField, Formula> standardMap = new java.util.HashMap<>();
+
+		if (formulaMap == null) {
+			return standardMap;
+		}
+
+		Enumeration<FormulaField> keys = formulaMap.keys();
+
+		while (keys.hasMoreElements()) {
+			FormulaField key = keys.nextElement();
+
+			if (key instanceof BrickField) {
+				BrickField brickFieldKey = (BrickField) key;
+				standardMap.put(brickFieldKey, formulaMap.get(key));
+			}
+		}
+
+		return standardMap;
 	}
 
 	public void setFormulaWithBrickField(FormulaField formulaField, Formula formula) throws IllegalArgumentException {

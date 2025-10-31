@@ -1243,7 +1243,7 @@ void main() {
         threedBrickList.add(StopAnimationBrick("myObject"))
         threedBrickList.add(SetAnisotropicFilterBrick("myObject", 2.0))
         threedBrickList.add(SetPointLightBrick("sun", 100.0, 100.0, 0.0, 255, 255, 230, 5.0, 300.0))
-        threedBrickList.add(SetSpotLightBrick("sun", 100.0, 100.0, 0.0, 0.3, -0.4, 0.2, 255, 255, 230, 5.0, 60.0, 0.4, 300.0))
+        threedBrickList.add(SetSpotLightBrick("sun", 100.0, 100.0, 0.0, 0.3, -0.4, 0.2, 255, 255, 230, 5.0, 60.0, 1.0, 300.0))
         threedBrickList.add(SetDirectionalLight2Brick(0.3, -0.2, -0.3, 5.0))
         threedBrickList.add(SetBackgroundLightBrick(0.3))
         threedBrickList.add(RemovePbrLightBrick("sun"))

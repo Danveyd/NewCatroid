@@ -3224,50 +3224,59 @@ class Interpreter(
         }
 
         defineNative("runInRenderThread", 1..1) { interpreter, args ->
-            val functionToRun = args[0] as? LunoValue.LunoFunction
-                ?: throw LunoRuntimeError("runInRenderThread expects a function as its argument.", -1)
+            val codeToRun = (args[0] as? LunoValue.String)?.value
+                ?: throw LunoRuntimeError("runInRenderThread expects a string of code as its argument.", -1)
 
-            // Проверяем, что у функции нет аргументов, для простоты
-            if (functionToRun.arity().first > 0) {
-                throw LunoRuntimeError("The function passed to runInRenderThread must not require arguments.", -1)
-            }
+            // 1. ЗАХВАТЫВАЕМ ТЕКУЩИЙ SCOPE В МОМЕНТ ВЫЗОВА
+            val capturedScope = interpreter.currentScope
 
-            // Используем Gdx.app.postRunnable для отправки задачи в GL-поток
             Gdx.app.postRunnable {
                 try {
-                    // Вызываем Luno-функцию, но уже в правильном потоке
-                    functionToRun.call(interpreter, emptyList(), Token(TokenType.EOF, "", null, -1, -1))
-                } catch (e: LunoRuntimeError) {
-                    // Ошибки из GL-потока нужно как-то логировать, т.к. мы не можем их
-                    // просто пробросить в Luno-поток.
-                    Log.e("LunoRenderThread", "Error executing task in render thread: ${e.message}")
+                    // 2. Создаем НОВЫЙ интерпретатор, чтобы избежать проблем с потоками,
+                    //    но инициализируем его ЗАХВАЧЕННЫМ scope.
+                    val renderThreadInterpreter = Interpreter(androidContext, projectScope).apply {
+                        this.currentScope = capturedScope
+                    }
+
+                    // 3. Выполняем код из строки
+                    val tokens = Lexer(codeToRun).scanTokens()
+                    val ast = Parser(tokens).parse()
+                    renderThreadInterpreter.interpret(ast)
+
+                } catch (e: Exception) {
+                    Log.e("LunoRenderThread", "Error executing task in render thread: ${e.message}", e)
                 }
             }
 
             LunoValue.Null
         }
 
-        /**
-         * Выполняет переданную Luno-функцию в главном UI-потоке Android.
-         * Используется для всех операций с Android UI (показ Toast, диалогов и т.д.).
-         */
+
         defineNative("runInUIThread", 1..1) { interpreter, args ->
-            val functionToRun = args[0] as? LunoValue.LunoFunction
-                ?: throw LunoRuntimeError("runInUIThread expects a function as its argument.", -1)
+            val codeToRun = (args[0] as? LunoValue.String)?.value
+                ?: throw LunoRuntimeError("runInUIThread expects a string of code as its argument.", -1)
 
-            if (functionToRun.arity().first > 0) {
-                throw LunoRuntimeError("The function passed to runInUIThread must not require arguments.", -1)
-            }
+            // 1. ЗАХВАТЫВАЕМ ТЕКУЩИЙ SCOPE
+            val capturedScope = interpreter.currentScope
 
-            // Используем стандартный Handler для отправки задачи в UI-поток
             val uiHandler = Handler(Looper.getMainLooper())
             uiHandler.post {
                 try {
-                    // Вызываем Luno-функцию в UI-потоке
-                    functionToRun.call(interpreter, emptyList(), Token(TokenType.EOF, "", null, -1, -1))
-                } catch (e: LunoRuntimeError) {
-                    Log.e("LunoUIThread", "Error executing task in UI thread: ${e.message}")
-                    Toast.makeText(androidContext, "LunoScript UI Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    // 2. Создаем НОВЫЙ интерпретатор с ЗАХВАЧЕННЫМ scope
+                    val uiThreadInterpreter = Interpreter(androidContext, projectScope).apply {
+                        // Важно: мы не просто используем globals, а полностью подменяем текущий scope,
+                        // чтобы локальные переменные (как `text` в твоем примере) были доступны.
+                        this.currentScope = capturedScope
+                    }
+
+                    // 3. Выполняем код из строки
+                    val tokens = Lexer(codeToRun).scanTokens()
+                    val ast = Parser(tokens).parse()
+                    uiThreadInterpreter.interpret(ast)
+
+                } catch (e: Exception) {
+                    Log.e("LunoUIThread", "Error executing task in UI thread: ${e.message}", e)
+                    // Можно показать Toast, если нужно
                 }
             }
 

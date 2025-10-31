@@ -1129,6 +1129,11 @@ JNI_VM_FUNCTION(nativeCreateAndRunVM)(JNIEnv *env, jclass, jstring vmName_j, job
     commandVec.push_back("-L");
     commandVec.push_back(romPath);
 
+    commandVec.push_back("-netdev");
+    commandVec.push_back("user,id=net0");
+    commandVec.push_back("-device");
+    commandVec.push_back("e1000,netdev=net0");
+
     for (int i = 1; i < original_argc; i++) {
         jstring string_j = (jstring) env->GetObjectArrayElement(command_j, i);
         const char* string_c = env->GetStringUTFChars(string_j, nullptr);

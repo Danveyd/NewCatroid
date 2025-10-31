@@ -281,7 +281,6 @@ public final class ProjectManager {
 						changesMade = true;
 					}
 
-					// Добавляем миграцию для LookData
 					if (sprite.getLookList() != null) {
 						for (LookData look : sprite.getLookList()) {
 							if (look.getLookId() == null || look.getLookId().isEmpty()) {
@@ -291,7 +290,6 @@ public final class ProjectManager {
 						}
 					}
 
-					// Добавляем миграцию для SoundInfo
 					if (sprite.getSoundList() != null) {
 						for (SoundInfo sound : sprite.getSoundList()) {
 							if (sound.getSoundId() == null || sound.getSoundId().isEmpty()) {

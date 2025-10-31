@@ -24,6 +24,7 @@ package org.catrobat.catroid.ui.fragment
 
 import android.Manifest.permission
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.DialogInterface
@@ -56,6 +57,7 @@ import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.R
 import org.catrobat.catroid.common.Constants
+import org.catrobat.catroid.common.LookData
 import org.catrobat.catroid.common.Nameable
 import org.catrobat.catroid.common.ProjectData
 import org.catrobat.catroid.common.ScreenModes
@@ -140,6 +142,7 @@ class ProjectOptionsFragment : Fragment() {
         setupProjectUpload()
         setupProjectSaveExternal()
         //setupProjectSaveApk()
+        setupRebuildCache()
         setupClearVars()
         setupChangeIcon()
         setupChangeOrientation()
@@ -152,12 +155,78 @@ class ProjectOptionsFragment : Fragment() {
         hideBottomBar(requireActivity())
     }
 
+    private fun setupRebuildCache() {
+        binding.projectOptionsRebuildCache.setOnClickListener {
+            showRebuildConfirmationDialog()
+        }
+    }
+
+    private fun showRebuildConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Обновить кэш физики?")
+            .setMessage("Это может занять некоторое время, но исправит проблемы с хитбоксами в старых проектах. Продолжить?")
+            .setPositiveButton("Да") { _, _ ->
+                startCacheRebuilding()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun startCacheRebuilding() {
+        project ?: return
+
+        val allLooks = mutableListOf<LookData>()
+        project!!.sceneList.forEach { scene ->
+            scene.spriteList.forEach { sprite ->
+                allLooks.addAll(sprite.lookList)
+            }
+        }
+
+        if (allLooks.isEmpty()) {
+            ToastUtil.showInfoLong(requireContext(), "В проекте нет образов для обработки.")
+            return
+        }
+
+        val progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle("Обновление кэша")
+            setMessage("Обработка образов...")
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            max = allLooks.size
+            progress = 0
+            setCancelable(false)
+            show()
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            var successCount = 0
+            allLooks.forEachIndexed { index, lookData ->
+                withContext(Dispatchers.Main) {
+                    progressDialog.setMessage("Обработка: ${lookData.name}")
+                }
+
+                val success = lookData.collisionInformation.forceRecalculateAndSave()
+                if (success) {
+                    successCount++
+                }
+
+                withContext(Dispatchers.Main) {
+                    progressDialog.progress = index + 1
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                progressDialog.dismiss()
+                ToastUtil.showSuccess(requireContext(), "Готово! Обработано $successCount из ${allLooks.size} образов.")
+            }
+        }
+    }
+
     private fun setupGitButtons() {
         updateGitButtonsVisibility()
 
         binding.gitConnectButton.setOnClickListener { handleGitConnect() }
         binding.gitPublishButton.setOnClickListener { showCommitMessageDialog() } // Теперь вызывает диалог
-        binding.gitUpdateButton.setOnClickListener { handleGitUpdate() }
+        //binding.gitUpdateButton.setOnClickListener { handleGitUpdate() }
     }
 
     private fun updateGitButtonsVisibility() {
@@ -166,7 +235,7 @@ class ProjectOptionsFragment : Fragment() {
 
         binding.gitConnectButton.visibility = if (isConnected) View.GONE else View.VISIBLE
         binding.gitPublishButton.visibility = if (isConnected) View.VISIBLE else View.GONE
-        binding.gitUpdateButton.visibility = if (isConnected) View.VISIBLE else View.GONE
+        //binding.gitUpdateButton.visibility = if (isConnected) View.VISIBLE else View.GONE
     }
 
     private fun handleGitConnect() {
@@ -278,9 +347,7 @@ class ProjectOptionsFragment : Fragment() {
                             // 3. *** КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ***
                             // Загружаем только что склонированный проект с диска, чтобы не использовать старые данные из памяти.
                             val clonedProject = XstreamSerializer.getInstance().loadProject(originalProjectDir, requireContext())
-                            if (clonedProject == null) {
-                                throw IOException("Failed to load cloned project from disk.")
-                            }
+                                ?: throw IOException("Failed to load cloned project from disk.")
 
                             // 4. Обновляем URL в новом проекте и сохраняем ТОЛЬКО ЕГО
                             clonedProject.xmlHeader.gitRemoteUrl = repoUrl
@@ -289,6 +356,9 @@ class ProjectOptionsFragment : Fragment() {
                             // Обновляем текущий проект в менеджере
                             projectManager.currentProject = clonedProject
                             project = clonedProject
+
+                            clonedProject.xmlHeader.gitRemoteUrl = repoUrl
+                            XstreamSerializer.getInstance().saveProject(clonedProject)
 
                             finalResult = GitResult.Success(Unit)
                         } catch (e: Exception) {
@@ -305,7 +375,13 @@ class ProjectOptionsFragment : Fragment() {
                         when (finalResult) {
                             is GitResult.Success -> {
                                 ToastUtil.showSuccess(requireContext(), "Проект успешно склонирован!")
-                                shouldSaveOnPause = false // Мы уже все сохранили
+                                projectManager.loadProject(originalProjectDir)
+
+                                // 4. Обновляем URL в новом проекте и сохраняем ТОЛЬКО ЕГО
+                                projectManager.currentProject.xmlHeader.gitRemoteUrl = repoUrl
+
+                                project = projectManager.currentProject
+                                shouldSaveOnPause = true // Мы уже все сохранили
                                 showProjectReloadDialog()
                             }
                             is GitResult.Error -> {
@@ -324,10 +400,10 @@ class ProjectOptionsFragment : Fragment() {
     private fun showCommitMessageDialog() {
         val editText = TextInputEditText(requireContext())
         AlertDialog.Builder(requireContext())
-            .setTitle("Опубликовать изменения")
+            .setTitle("Синхронизировать")
             .setMessage("Введите краткое описание сделанных изменений (коммит):")
             .setView(editText)
-            .setPositiveButton("Опубликовать") { _, _ ->
+            .setPositiveButton("Начать") { _, _ ->
                 val commitMessage = editText.text.toString().ifEmpty { "Update project" }
                 handleGitPublish(commitMessage)
             }
@@ -339,14 +415,14 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun handleGitPublish(commitMessage: String) {
         val token = TokenManager.getToken(requireContext()) ?: return
-        showProgressDialog("Публикация изменений...")
+        showProgressDialog("Синхронизация и публикация...")
         lifecycleScope.launch(Dispatchers.IO) {
             saveProject() // Сохраняем все несохраненные изменения перед пушем
-            val result = gitController.commitAndPush(commitMessage, "User", "user@email.com", token) // Имя и email - заглушки
+            val result = gitController.commitAndPush(commitMessage, "NewCatroid_user", "nc_user@email.com", token) // Имя и email - заглушки
             withContext(Dispatchers.Main) {
                 hideProgressDialog()
                 when (result) {
-                    is GitResult.Success -> ToastUtil.showSuccess(requireContext(), "Изменения опубликованы!")
+                    is GitResult.Success -> ToastUtil.showSuccess(requireContext(), "Синхронизация завершена!")
                     is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
                     else -> {}
                 }
@@ -552,6 +628,41 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun setupDescriptionInputLayout() {
         binding.projectOptionsDescriptionLayout.editText?.setText(project?.description)
+
+        binding.projectOptionsDescriptionLayout.setEndIconOnClickListener {
+            showImagePickerDialog()
+        }
+    }
+
+    private fun showImagePickerDialog() {
+        val projectDir = project?.filesDir ?: return
+        val imageFiles = projectDir.listFiles { file ->
+            file.isFile && file.extension.lowercase() in listOf("png", "jpg", "jpeg", "webp", "gif")
+        }
+
+        if (imageFiles.isNullOrEmpty()) {
+            ToastUtil.showInfoLong(requireContext(), "В проекте нет изображений.")
+            return
+        }
+
+        val imageFileNames = imageFiles.map { it.name }.toTypedArray()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Вставить изображение")
+            .setItems(imageFileNames) { _, which ->
+                val selectedFileName = imageFileNames[which]
+                insertImageMarkdown(selectedFileName)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun insertImageMarkdown(fileName: String) {
+        val editText = binding.projectOptionsDescriptionLayout.editText ?: return
+        val markdownToInsert = "\n![${fileName}]($fileName)\n"
+
+        val cursorPosition = editText.selectionStart
+        editText.text?.insert(cursorPosition, markdownToInsert)
     }
 
     private fun setupNotesAndCreditsInputLayout() {

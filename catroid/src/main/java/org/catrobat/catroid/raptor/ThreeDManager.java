@@ -540,6 +540,10 @@ public class ThreeDManager implements Disposable {
         light.range = range > 0 ? range : null;
     }
 
+    public static float map(float value, float inMin, float inMax, float outMin, float outMax) {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    }
+
     /**
      * Добавляет или обновляет прожектор (конус света) в PBR-сцене.
      * @param lightId ID света.
@@ -562,8 +566,8 @@ public class ThreeDManager implements Disposable {
         light.direction.set(dirX, dirY, dirZ).nor();
         light.color.set(r, g, b, 1);
         light.intensity = intensity;
-        light.cutoffAngle = cutoffAngle;
-        light.exponent = exponent;
+        light.cutoffAngle = map(cutoffAngle, 0, 360, -1000, 1000);
+        light.exponent = exponent * 1000;
         light.range = range > 0 ? range : null;
     }
 
