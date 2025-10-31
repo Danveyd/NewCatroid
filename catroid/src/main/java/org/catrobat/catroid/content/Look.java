@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -57,6 +58,7 @@ import org.catrobat.catroid.physics.ParticleConstants;
 import org.catrobat.catroid.sensing.CollisionInformation;
 import org.catrobat.catroid.utils.NativeLookOptimizer;
 import org.catrobat.catroid.utils.TouchUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,6 +73,11 @@ import static org.catrobat.catroid.physics.ParticleConstants.PARTICLE_SCALE;
 
 @LunoClass
 public class Look extends Image {
+
+	@Nullable
+	public Vector2 getPosition() {
+		return new Vector2(getX(), getY());
+	}
 
 	@Retention(RetentionPolicy.SOURCE)
 	@IntDef({ROTATION_STYLE_LEFT_RIGHT_ONLY, ROTATION_STYLE_ALL_AROUND, ROTATION_STYLE_NONE})

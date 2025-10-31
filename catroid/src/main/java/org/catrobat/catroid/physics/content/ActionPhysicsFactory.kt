@@ -29,6 +29,8 @@ import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.content.ActionFactory
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.content.Sprite
+import org.catrobat.catroid.content.actions.CreateRevoluteJointAction
+import org.catrobat.catroid.content.actions.DestroyJointAction
 import org.catrobat.catroid.content.actions.GlideToPhysicsAction
 import org.catrobat.catroid.content.actions.IfOnEdgeBouncePhysicsAction
 import org.catrobat.catroid.content.actions.SetBounceFactorAction

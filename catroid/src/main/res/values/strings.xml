@@ -84,6 +84,77 @@
     <string formatted="false" name="firebase_value">Value</string>
     <string formatted="false" name="firebase_store">and store in</string>
     <!-- General terms -->
+    <!-- Physics Joints -->
+    <string name="brick_create_revolute_joint">Create Hinge Joint</string>
+    <string name="brick_create_distance_joint">Create Spring/Rod Joint</string>
+    <string name="brick_create_weld_joint">Create Weld Joint</string>
+    <string name="brick_create_prismatic_joint">Create Piston/Slider</string>
+    <string name="brick_destroy_joint">Destroy Joint</string>
+    <string name="brick_joint_id">Joint ID</string>
+    <string name="brick_joint_sprite_b">Sprite B</string>
+    <string name="brick_joint_anchor_x">Anchor X</string>
+    <string name="brick_joint_anchor_y">Anchor Y</string>
+    <string name="brick_joint_length">Length (optional)</string>
+    <string name="brick_joint_frequency">Frequency Hz (optional)</string>
+    <string name="brick_joint_damping">Damping (optional)</string>
+    <string name="brick_joint_axis_x">Movement Axis X</string>
+    <string name="brick_joint_axis_y">Movement Axis Y</string>
+    <string name="brick_create_pulley_joint">Create Pulley Joint</string>
+    <string name="brick_create_gear_joint">Create Gear Joint</string>
+    <string name="brick_joint_sprite_a">Sprite A</string>
+    <string name="brick_joint_ground_anchor_a">Ground Anchor A (X/Y)</string>
+    <string name="brick_joint_ground_anchor_b">Ground Anchor B (X/Y)</string>
+    <string name="brick_joint_ratio">Ratio</string>
+    <string name="brick_joint_a_id">Joint A ID</string>
+    <string name="brick_joint_b_id">Joint B ID</string>
+
+    <!-- Physics Forces & Impulses -->
+    <string name="brick_apply_force">Apply Force</string>
+    <string name="brick_apply_impulse">Apply Impulse</string>
+    <string name="brick_apply_torque">Apply Torque (Spin)</string>
+    <string name="brick_apply_angular_impulse">Apply Angular Impulse (Kick)</string>
+    <string name="brick_force_x">Force X</string>
+    <string name="brick_force_y">Force Y</string>
+    <string name="brick_impulse_x">Impulse X</string>
+    <string name="brick_impulse_y">Impulse Y</string>
+    <string name="brick_torque">Torque</string>
+    <string name="brick_angular_impulse">Angular Impulse</string>
+
+    <!-- Physics Properties -->
+    <string name="brick_set_damping">Set Damping</string>
+    <string name="brick_damping_factor">Damping Factor</string>
+
+    <!-- Physics Raycasting -->
+    <string name="brick_raycast">Perform Ray-Cast</string>
+    <string name="brick_ray_id">Ray ID</string>
+    <string name="brick_ray_start">Start</string>
+    <string name="brick_ray_end">End</string>
+    <string name="formula_ray_did_hit">ray_did_hit</string>
+    <string name="formula_ray_did_hit2">ray_did_hit</string>
+    <string name="formula_ray_did_hit_parameter">("ray_id")</string>
+    <string name="formula_ray_hit_sprite_name">ray_hit_sprite_name</string>
+    <string name="formula_ray_hit_sprite_name_parameter">("ray_id")</string>
+    <string name="formula_ray_hit_x2">ray_hit_x</string>
+    <string name="formula_ray_hit_x_parameter">("ray_id")</string>
+    <string name="formula_ray_hit_y2">ray_hit_y</string>
+    <string name="formula_ray_hit_y">ray_hit_y</string>
+    <string name="formula_ray_hit_x">ray_hit_x</string>
+    <string name="formula_ray_hit_y_parameter">("ray_id")</string>
+    <string name="formula_ray_hit_distance">ray_hit_distance</string>
+    <string name="formula_ray_hit_distance_parameter">("ray_id")</string>
+
+
+    <string name="brick_set_third_person_camera">Set 3rd person camera</string>
+    <string name="brick_camera_target">Target object</string>
+    <string name="brick_camera_distance">Distance</string>
+    <string name="brick_camera_height">Height</string>
+    <string name="brick_camera_pitch">Pitch angle</string>
+    <string name="brick_set_free_camera">Set free camera</string>
+    <string name="brick_save_to_internal">Save project file to internal storage</string>
+    <string name="project_file_name">Project file name</string>
+    <string name="internal_storage_path">Internal storage path</string>
+    <string name="brick_load_from_internal">Load file from internal storage</string>
+
     <string name="loading_fact_placeholder">Loading...</string>
 
     <string-array name="loading_facts">
@@ -189,9 +260,6 @@
     <string name="brick_unpin_from_camera">Unpin sprite from camera</string>
     <string name="brick_zoom_label">zoom</string>
     <string name="brick_rotation_label">degrees</string>
-    <string name="formula_ray_did_hit">ray_did_hit</string>
-    <string name="formula_ray_hit_x">ray_hit_x</string>
-    <string name="formula_ray_hit_y">ray_hit_y</string>
     <string name="formula_ray_hit_z">ray_hit_z</string>
     <string name="formula_ray_normal_x">ray_normal_x</string>
     <string name="formula_ray_normal_y">ray_normal_y</string>

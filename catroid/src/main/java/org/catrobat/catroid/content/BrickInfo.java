@@ -83,6 +83,25 @@ public final class BrickInfo {
         add(PointToBrick.class, "Поворачивает спрайт к другому спрайту");
         add(SetRotationStyleBrick.class, "Задает тип вращения.");
         add(GlideToBrick.class, "Плавно перемещает спрайт к позиции");
+        add(CreateRevoluteJointBrick.class, "Создает шарнир для 2-х спрайтов со смещением");
+        add(CreatePulleyJointBrick.class, "Создает шарнир для 2-х спрайтов, который можно представить как лифт с противовесом\nТочка опоры А             Точка опоры Б\n" +
+                "             (gA)---------------------(gB)\n" +
+                "              |                        |\n" +
+                "              |                        |\n" +
+                "            [Спрайт А]               [Спрайт Б]");
+        add(CreateGearJointBrick.class, "Создает шарнир для 2-х других шарниров, можно представить как шестерни. 1 шарнир будет вращаться в зависимости от другого, и наоборот");
+        add(CreateDistanceJointBrick.class, "Создает мягкий шарнир для 2-х спрайтов со смещением (как пружина)");
+        add(CreateWeldJointBrick.class, "Создает жесткий шарнир для 2-х спрайтов со смещением (как сварка, например скрепили 2 обьекта палкой)");
+        add(CreatePrismaticJointBrick.class, "Создает поршневой шарнир для 2-х спрайтов со смещением (фиксирует по оси)");
+        add(DestroyJointBrick.class, "Удаляет соединение (шарнир)");
+        add(SetThirdPersonCameraBrick.class, "Устанавливает камеру от 3-го лица. Я сам хз как, удачи разобраться");
+        add(SetFreeCameraBrick.class, "Возвращает камеру к свободному состоянию");
+        add(ApplyForceBrick.class, "Применяет силу к спрайту");
+        add(ApplyImpulseBrick.class, "Применяет импульс к спрайту");
+        add(ApplyTorqueBrick.class, "Прилагает вращение к спрайту");
+        add(ApplyAngularImpulseBrick.class, "Придает крутящий импульс спрайту");
+        add(SetDampingBrick.class, "Задает затухание, имитируя воду или сопротивление воздуха");
+        add(PerformRayCastBrick.class, "Пускает луч, может пригодиться для врагов, или стрельбы. ну а так же и др.");
         add(VibrationBrick.class, "Заставляет устройство вибрировать");
         add(SetPhysicsObjectTypeBrick.class, "Задает тип движения обьекта: динамичный - падает и подчиняется законам ньютона. статический - не падает, но от него отталкиваются динамические");
         add(SetHitboxBrick.class, "Оставляет хитбокс текущего образа, но изменяет видимый образ. ВАЖНО: плохо работает");
@@ -224,6 +243,8 @@ public final class BrickInfo {
         add(KeyEventBrick.class, "Эмулирует событие клавиш для VM. ВАЖНО: специальные клавиши обозначаются так: <CTRL_L>, <CTRL_R>, <ALT_L>, <ALT_R>, <WIN_L>, <WIN_R>, <SHIFT_L>, <SHIFT_R>, <DEL>, <BACKSPACE>, <ENTER>, <ESC>, <TAB>, <UP>, <DOWN>, <LEFT>, <RIGHT>, <UP>, <DOWN>");
         add(StopVMBrick.class, "Останавливает VM");
         add(ChooseFileBrick.class, "Открывает меню выбора файла и сохраняет выбранный файл в файлы проекта.");
+        add(SaveToInternalStorageBrick.class, "Сохраняет файл проекта по пути внутрь хранилища приложения (data/data/...)");
+        add(LoadFromInternalStorageBrick.class, "Копирует файл из хранилища приложения (data/data...) в файлы проекта");
         add(ExportProjectFileBrick.class, "Открывает меню сохранения файла и сохраняет выбранный файл проекта туда, куда выбрал пользователь");
         add(Create3dObjectBrick.class, "Создает 3D обьект из файла. ВАЖНО: поддерживаемые форматы: obj, .glb, .gltf и некоторые другие");
         add(CreateCubeBrick.class, "Создает 3D куб ВАЖНО: не работает в рендере версии 2.0 (куб невидимый)");

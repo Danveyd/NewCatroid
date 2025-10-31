@@ -69,6 +69,7 @@ import org.catrobat.catroid.ui.recyclerview.dialog.AboutDialogFragment
 import org.catrobat.catroid.ui.recyclerview.fragment.MainMenuFragment
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import org.catrobat.catroid.utils.FileMetaDataExtractor
+import org.catrobat.catroid.utils.NativeLibraryManager
 import org.catrobat.catroid.utils.ScreenValueHandler
 import org.catrobat.catroid.utils.ToastUtil
 import org.catrobat.catroid.utils.Utils
@@ -142,6 +143,7 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
     }
 
     private fun heavyInitialization() {
+        NativeLibraryManager.initialize()
         Thread.sleep(2000)
         PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
         PreferenceManager.setDefaultValues(this, R.xml.nxt_preferences, true)

@@ -331,6 +331,16 @@ public class InternFormulaKeyboardAdapter {
 				return buildTripleParameterFunction(Functions.JSON_SET, STRING, "{\"id\": 1}", STRING, "id", NUMBER, "2");
 			case R.string.formula_editor_function_json_is_valid:
 				return buildSingleParameterFunction(Functions.JSON_IS_VALID, STRING, "{\"id\": 1}");
+			case R.string.formula_ray_did_hit2:
+				return buildSingleParameterFunction(Functions.RAY_DID_HIT2, STRING, "ray");
+			case R.string.formula_ray_hit_sprite_name:
+				return buildSingleParameterFunction(Functions.RAY_HIT_SPRITE_NAME, STRING, "ray");
+			case R.string.formula_ray_hit_x2:
+				return buildSingleParameterFunction(Functions.RAY_HIT_X, STRING, "ray");
+			case R.string.formula_ray_hit_y2:
+				return buildSingleParameterFunction(Functions.RAY_HIT_Y, STRING, "ray");
+			case R.string.formula_ray_hit_distance:
+				return buildSingleParameterFunction(Functions.RAY_HIT_DISTANCE, STRING, "ray1");
 			case R.string.formula_editor_function_flatten:
 				return buildSingleParameterFunction(Functions.FLATTEN, STRING, "list_name");
 			case R.string.formula_editor_function_connect:

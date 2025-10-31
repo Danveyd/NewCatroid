@@ -10,8 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.catrobat.catroid.utils.NativeBridge
+import org.catrobat.catroid.utils.NativeLibraryManager
 
 object OnnxSessionManager {
+
+    var isWorking = true
 
     private var isModelLoaded = false
     private val executor = Executors.newSingleThreadExecutor()
@@ -44,9 +48,6 @@ object OnnxSessionManager {
     }
 
 
-    /**
-     * Выгружает текущую модель и освобождает ресурсы.
-     */
     fun unloadModel() {
         if (isModelLoaded) {
             unloadModelJNI()
@@ -56,7 +57,7 @@ object OnnxSessionManager {
 
     fun loadModelAsync(modelPath: String): Future<Boolean> {
         return executor.submit<Boolean> {
-            unloadModel() // Выгружаем старую
+            unloadModel()
             val result = loadModelJNI(modelPath)
             isModelLoaded = (result == 0)
             isModelLoaded
@@ -79,14 +80,13 @@ object OnnxSessionManager {
         }
     }
 
-    // --- Мост в C++ (JNI функции) ---
-
     private external fun loadModelJNI(modelPath: String): Int
     private external fun runInferenceJNI(inputData: FloatArray): FloatArray?
     private external fun unloadModelJNI()
 
-    // Загружаем нашу C++ библиотеку
     init {
-        System.loadLibrary("catroid") // Убедитесь, что имя совпадает с вашим
+        if (!NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            OnnxSessionManager.isWorking = false
+        }
     }
 }

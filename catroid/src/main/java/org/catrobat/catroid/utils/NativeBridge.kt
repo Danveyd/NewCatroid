@@ -4,9 +4,12 @@ import android.view.Surface
 import org.catrobat.catroid.ProjectManager
 
 object NativeBridge {
+    var isWorking = true
 
     init {
-        System.loadLibrary("catroid")
+        if (!NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            isWorking = false
+        }
     }
 
     external fun attachSoToView(viewName: String, pathToSo: String)

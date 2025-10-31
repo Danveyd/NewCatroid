@@ -38,29 +38,27 @@ public final class CollisionDetection {
 	}
 
 	public static boolean checkCollisionBetweenLooks(Look firstLook, Look secondLook) {
-		// Этап 1: Быстрые проверки в Java (остаются без изменений)
+		if (!NativeLookOptimizer.isWorking) return false;
+
 		if (firstLook == null || secondLook == null ||
 				!firstLook.isVisible() || !firstLook.isLookVisible() ||
 				!secondLook.isVisible() || !secondLook.isLookVisible()) {
 			return false;
 		}
 
-		// Этап 2: Проверка ограничивающих рамок (AABB) (тоже остается)
 		Rectangle firstHitbox = firstLook.getHitbox();
 		Rectangle secondHitbox = secondLook.getHitbox();
 		if (firstHitbox == null || secondHitbox == null || !firstHitbox.overlaps(secondHitbox)) {
 			return false;
 		}
 
-		// Этап 3: Подготовка данных и вызов C++
 		Polygon[] firstPolygons = firstLook.getCurrentCollisionPolygon();
 		Polygon[] secondPolygons = secondLook.getCurrentCollisionPolygon();
 
 		if (firstPolygons == null || secondPolygons == null || firstPolygons.length == 0 || secondPolygons.length == 0) {
-			return false; // Если у кого-то нет полигонов, столкновения нет
+			return false;
 		}
 
-		// Конвертируем Polygon[] в float[][], который понимает JNI
 		float[][] firstPreparedPolys = new float[firstPolygons.length][];
 		for (int i = 0; i < firstPolygons.length; i++) {
 			firstPreparedPolys[i] = (firstPolygons[i] != null) ? firstPolygons[i].getTransformedVertices() : new float[0];
@@ -71,7 +69,6 @@ public final class CollisionDetection {
 			secondPreparedPolys[i] = (secondPolygons[i] != null) ? secondPolygons[i].getTransformedVertices() : new float[0];
 		}
 
-		// Один-единственный вызов, который делает всю тяжелую работу!
 		return NativeLookOptimizer.checkSingleCollision(firstPreparedPolys, secondPreparedPolys);
 	}
 
@@ -441,7 +438,6 @@ public final class CollisionDetection {
 			}
 		}
 
-		// 2. Один-единственный вызов в C++!
 		int[] collidingPairs = NativeLookOptimizer.checkAllCollisions(allPolygons);
 
 		// 3. Разбираем результат

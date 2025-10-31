@@ -4,15 +4,21 @@ import android.content.Context
 import android.util.Log
 import com.gaurav.avnc.vnc.VncClient
 import org.catrobat.catroid.ProjectManager
+import org.catrobat.catroid.utils.NativeLibraryManager
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
 object VirtualMachineManager {
-    // Загружаем нашу C++ библиотеку
+    var isWorking = true
+
     init {
-        System.loadLibrary("catroid")
-        VncClient.loadLibrary()
+        try {
+            VncClient.loadLibrary()
+        } catch (e: Exception) {
+            Log.e("VMManager", "Failed to load VNC client library", e)
+            isWorking = false
+        }
     }
 
     // Карта для хранения PID запущенных ВМ: Имя ВМ -> PID
@@ -43,6 +49,7 @@ object VirtualMachineManager {
     }
 
     private fun prepareQemuEnvironment(context: Context): String? {
+        if (!isWorking) return null
         val assetDirName = "qemu_x86_64"
         val targetDir = File(context.filesDir, assetDirName)
         val qemuSystem = File(targetDir, "qemu-system-x86_64")
@@ -65,12 +72,20 @@ object VirtualMachineManager {
             return targetDir.absolutePath // <-- Возвращаем путь к папке
         } catch (e: Exception) {
             Log.e("VMManager", "Failed to prepare QEMU environment", e)
+            isWorking = false
             return null
         }
     }
 
     // НОВАЯ ФУНКЦИЯ: Создает или находит qcow2 диск
     fun createDiskIfNotExists(baseDir: String, diskPath: String, diskSize: String): Boolean {
+        if (!isWorking) return false
+        if (!NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            Log.e("VMManager", "Cannot create VM, core library is missing.")
+            isWorking = false
+            return false
+        }
+
         val diskFile = File(diskPath)
         if (diskFile.exists()) {
             Log.i("VMManager", "Disk already exists: $diskPath")
@@ -112,6 +127,13 @@ object VirtualMachineManager {
 
     // ИЗМЕНЕНО: createVM теперь принимает параметры диска
     fun createVM(context: Context, vmName: String, args: String, diskName: String, diskSize: String) {
+        if (!isWorking) return
+        if (!NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            Log.e("VMManager", "Cannot create VM, core library is missing.")
+            isWorking = false
+            return
+        }
+
         if (runningVMs.containsKey(vmName)) {
             Log.w("VMManager", "VM with name '$vmName' is already running.")
             return
@@ -170,6 +192,13 @@ object VirtualMachineManager {
      * Останавливает виртуальную машину.
      */
     fun stopVM(vmName: String) {
+        if (!isWorking) return
+        if (!NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            Log.e("VMManager", "Cannot create VM, core library is missing.")
+            isWorking = false
+            return
+        }
+
         if (!runningVMs.containsKey(vmName)) {
             Log.w("VMManager", "No running VM found with name '$vmName'.")
             return

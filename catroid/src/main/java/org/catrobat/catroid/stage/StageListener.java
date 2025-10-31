@@ -125,6 +125,7 @@ import org.catrobat.catroid.utils.Resolution;
 import org.catrobat.catroid.utils.TouchUtil;
 import org.catrobat.catroid.utils.VibrationManager;
 import org.catrobat.catroid.utils.lunoscript.RenderManager;
+import org.catrobat.catroid.virtualmachine.VirtualMachineManager;
 import org.catrobat.catroid.web.WebConnectionHolder;
 
 import java.io.File;
@@ -1150,6 +1151,7 @@ public class StageListener implements ApplicationListener {
 			StageActivity stageActivity = StageActivity.activeStageActivity.get();
 
 			if (isVmDisplayVisible && stageActivity != null && stageActivity.frameReadyToRender && vmTexture != null) {
+				if(!VirtualMachineManager.INSTANCE.isWorking()) return;
 				VncClient client = stageActivity.vncClients.get("default_vm");
 				if (client != null) {
 					vmTexture.bind();

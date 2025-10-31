@@ -78,6 +78,73 @@
     <string formatted="false" name="firebase_value">Значение</string>
     <string formatted="false" name="firebase_store">и сохранить в</string>
     <!-- General terms -->
+    <!-- Физические Соединения -->
+    <string name="brick_create_revolute_joint">Создать шарнир</string>
+    <string name="brick_create_distance_joint">Создать пружину/стержень</string>
+    <string name="brick_create_weld_joint">Создать сварку</string>
+    <string name="brick_create_prismatic_joint">Создать поршень/слайдер</string>
+    <string name="brick_destroy_joint">Удалить соединение</string>
+    <string name="brick_joint_id">ID соединения</string>
+    <string name="brick_joint_sprite_b">Спрайт Б</string>
+    <string name="brick_joint_anchor_x">Точка X</string>
+    <string name="brick_joint_anchor_y">Точка Y</string>
+    <string name="brick_joint_length">Длина (необяз.)</string>
+    <string name="brick_joint_frequency">Частота Гц (необяз.)</string>
+    <string name="brick_joint_damping">Затухание (необяз.)</string>
+    <string name="brick_joint_axis_x">Ось движения X</string>
+    <string name="brick_joint_axis_y">Ось движения Y</string>
+    <string name="brick_create_pulley_joint">Создать блок/полиспаст</string>
+    <string name="brick_create_gear_joint">Создать шестерню</string>
+    <string name="brick_joint_sprite_a">Спрайт А</string>
+    <string name="brick_joint_ground_anchor_a">Точка опоры А (X/Y)</string>
+    <string name="brick_joint_ground_anchor_b">Точка опоры Б (X/Y)</string>
+    <string name="brick_joint_ratio">Коэфф.</string>
+    <string name="brick_joint_a_id">ID соединения А</string>
+    <string name="brick_joint_b_id">ID соединения Б</string>
+
+    <!-- Физические Силы и Импульсы -->
+    <string name="brick_apply_force">Приложить силу</string>
+    <string name="brick_apply_impulse">Придать импульс</string>
+    <string name="brick_apply_torque">Приложить вращение</string>
+    <string name="brick_apply_angular_impulse">Придать крутящий импульс</string>
+    <string name="brick_force_x">Сила X</string>
+    <string name="brick_force_y">Сила Y</string>
+    <string name="brick_impulse_x">Импульс X</string>
+    <string name="brick_impulse_y">Импульс Y</string>
+    <string name="brick_torque">Момент вращения</string>
+    <string name="brick_angular_impulse">Угловой импульс</string>
+
+    <!-- Физические Свойства -->
+    <string name="brick_set_damping">Установить затухание</string>
+    <string name="brick_damping_factor">Коэфф. затухания</string>
+
+    <!-- Физический Raycasting -->
+    <string name="brick_raycast">Пустить луч</string>
+    <string name="brick_ray_id">ID луча</string>
+    <string name="brick_ray_start">Начало</string>
+    <string name="brick_ray_end">Конец</string>
+    <string name="formula_ray_did_hit2">луч_попал</string>
+    <string name="formula_ray_did_hit_parameter">("id_луча")</string>
+    <string name="formula_ray_hit_sprite_name">луч_имя_спрайта</string>
+    <string name="formula_ray_hit_sprite_name_parameter">("id_луча")</string>
+    <string name="formula_ray_hit_x_parameter">("id_луча")</string>
+    <string name="formula_ray_hit_y_parameter">("id_луча")</string>
+    <string name="formula_ray_hit_y2">луч_точка_y</string>
+    <string name="formula_ray_hit_x2">луч_точка_x</string>
+    <string name="formula_ray_hit_distance">луч_дистанция</string>
+    <string name="formula_ray_hit_distance_parameter">("id_луча")</string>
+
+    <string name="brick_set_third_person_camera">Камера от 3-го лица</string>
+    <string name="brick_camera_target">Цель камеры</string>
+    <string name="brick_camera_distance">Дистанция</string>
+    <string name="brick_camera_height">Высота</string>
+    <string name="brick_camera_pitch">Угол наклона</string>
+    <string name="brick_set_free_camera">Свободная камера</string>
+    <string name="brick_save_to_internal">Сохранить файл проекта во внутреннее хранилище</string>
+    <string name="project_file_name">Имя файла в проекте</string>
+    <string name="internal_storage_path">Путь во внутр. хранилище</string>
+    <string name="brick_load_from_internal">Загрузить файл из внутр. хранилища</string>
+
     <string name="loading_fact_placeholder">Загрузка...</string>
 
     <string-array name="loading_facts">

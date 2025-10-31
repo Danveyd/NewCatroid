@@ -43,6 +43,7 @@ import org.catrobat.catroid.formulaeditor.function.TextBlockFunctionProvider;
 import org.catrobat.catroid.formulaeditor.function.TouchFunctionProvider;
 import org.catrobat.catroid.libraries.LibraryManager;
 import org.catrobat.catroid.libraries.LoadedLibrary;
+import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.raptor.ThreeDManager;
 import org.catrobat.catroid.sensing.CollisionDetection;
 import org.catrobat.catroid.sensing.ColorAtXYDetection;
@@ -734,6 +735,53 @@ public class FormulaElement implements Serializable {
 				String id2 = String.valueOf(arguments.get(1));
 				Float dist = manager.getDistance(id1, id2);
 				return (dist != null) ? dist : 0.0;
+			}
+			case RAY_DID_HIT2: {
+				Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+				if (scene == null) return FALSE;
+				String rayId = String.valueOf(arguments.get(0));
+				PhysicsWorld.RayCastResult result9 = scene.getPhysicsWorld().getRayCastResult(rayId);
+				return booleanToDouble(result9 != null && result9.hasHit);
+			}
+			case RAY_HIT_SPRITE_NAME: {
+				Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+				if (scene == null) return "";
+				String rayId = String.valueOf(arguments.get(0));
+				PhysicsWorld.RayCastResult result9 = scene.getPhysicsWorld().getRayCastResult(rayId);
+				if (result9 != null && result9.hasHit && result9.hitSprite != null) {
+					return result9.hitSprite.getName();
+				}
+				return "";
+			}
+			case RAY_HIT_X: {
+				Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+				if (scene == null) return 0.0;
+				String rayId = String.valueOf(arguments.get(0));
+				PhysicsWorld.RayCastResult result9 = scene.getPhysicsWorld().getRayCastResult(rayId);
+				if (result9 != null && result9.hasHit) {
+					return (double) result9.hitPoint.x;
+				}
+				return 0.0;
+			}
+			case RAY_HIT_Y: {
+				Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+				if (scene == null) return 0.0;
+				String rayId = String.valueOf(arguments.get(0));
+				PhysicsWorld.RayCastResult result9 = scene.getPhysicsWorld().getRayCastResult(rayId);
+				if (result9 != null && result9.hasHit) {
+					return (double) result9.hitPoint.y;
+				}
+				return 0.0;
+			}
+			case RAY_HIT_DISTANCE: {
+				Scene scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+				if (scene == null) return 0.0;
+				String rayId = String.valueOf(arguments.get(0));
+				PhysicsWorld.RayCastResult result9 = scene.getPhysicsWorld().getRayCastResult(rayId);
+				if (result9 != null && result9.hasHit) {
+					return (double) result9.hitPoint.dst(scope.getSprite().look.getX(), scope.getSprite().look.getY());
+				}
+				return 0.0;
 			}
 			case JSON_GET:
 				return interpretFunctionJsonGet(arguments.get(0), arguments.get(1));

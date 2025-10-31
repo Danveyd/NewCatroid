@@ -366,6 +366,11 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.TIME_HOUR.name(), R.string.formula_editor_sensor_time_hour);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.TIME_MINUTE.name(), R.string.formula_editor_sensor_time_minute);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.TIME_SECOND.name(), R.string.formula_editor_sensor_time_second);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAY_DID_HIT2.name(), R.string.formula_ray_did_hit2);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAY_HIT_SPRITE_NAME.name(), R.string.formula_ray_hit_sprite_name);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAY_HIT_X.name(), R.string.formula_ray_hit_x2);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAY_HIT_Y.name(), R.string.formula_ray_hit_y2);
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.RAY_HIT_DISTANCE.name(), R.string.formula_ray_hit_distance);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.OBJECT_X.name(), R.string.formula_editor_object_x);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.OBJECT_Y.name(), R.string.formula_editor_object_y);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.OBJECT_TRANSPARENCY.name(), R.string.formula_editor_object_transparency);

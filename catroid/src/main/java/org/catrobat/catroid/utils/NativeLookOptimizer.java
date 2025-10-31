@@ -5,9 +5,11 @@ import com.danvexteam.lunoscript_annotations.LunoClass;
 
 @LunoClass
 public class NativeLookOptimizer {
+    public static Boolean isWorking = true;
     static {
-        // Имя библиотеки должно совпадать с project() в CMakeLists.txt
-        System.loadLibrary("catroid");
+        if (!NativeLibraryManager.INSTANCE.isLoaded(NativeLibraryManager.Feature.CORE)) {
+            isWorking = false;
+        }
     }
 
     public static native float[] transformPolygon(

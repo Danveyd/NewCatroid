@@ -61,7 +61,7 @@ public class PhysicsObject {
 	private short collisionMaskRecord = 0;
 	private short categoryMaskRecord = PhysicsWorld.CATEGORY_PHYSICSOBJECT;
 
-	private final Body body;
+	final Body body;
 	private final FixtureDef fixtureDef = new FixtureDef();
 	private Shape[] shapes;
 	private Type type;
@@ -128,6 +128,16 @@ public class PhysicsObject {
 
 		setMass(mass);
 		calculateCircumference();
+	}
+
+	public void setLinearDamping(float damping) {
+		if (damping < 0) damping = 0;
+		body.setLinearDamping(damping);
+	}
+
+	public void setAngularDamping(float damping) {
+		if (damping < 0) damping = 0;
+		body.setAngularDamping(damping);
 	}
 
 	private void calculateCircumference() {

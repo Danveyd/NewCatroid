@@ -19,6 +19,7 @@ class PredictNNAction() : TemporalAction() {
     private var hasStarted = false
 
     override fun act(delta: Float): Boolean {
+        if (!OnnxSessionManager.isWorking) return false
         if (hasStarted) return true
         hasStarted = true
 

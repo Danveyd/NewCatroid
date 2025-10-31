@@ -20,7 +20,11 @@ public class SetCameraRotationAction extends TemporalAction {
             float p = pitch.interpretFloat(scope);
             float r = roll.interpretFloat(scope);
 
-            threeDManager.setCameraRotation(y, p, r);
+            if (threeDManager.cameraTargetId != null) {
+                threeDManager.setCameraRotation(y, p);
+            } else {
+                threeDManager.setCameraRotation(y, p, r);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -43,6 +43,7 @@ class UnloadNNAction() : TemporalAction() {
     var scope: Scope? = null
 
     override fun update(percent: Float) {
+        if (!OnnxSessionManager.isWorking) return
         OnnxSessionManager.unloadModel()
     }
 }

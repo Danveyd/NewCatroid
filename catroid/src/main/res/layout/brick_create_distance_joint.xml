@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_distance_joint_layout"
+        style="@style/BrickContainer.Motion.Big">
+
+        <include layout="@layout/icon_brick_category_motion" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_distance_joint" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_joint_id"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_joint_id_edit_text"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_joint_sprite_b"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_sprite_b_edit_text"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_joint_length"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_length_edit_text"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_joint_frequency"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_frequency_edit_text"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_joint_damping"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_damping_edit_text"
+            style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

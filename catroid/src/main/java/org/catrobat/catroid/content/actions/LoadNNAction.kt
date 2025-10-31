@@ -44,6 +44,7 @@ class LoadNNAction() : TemporalAction() {
     var file: Formula? = null
 
     override fun update(percent: Float) {
+        if (!OnnxSessionManager.isWorking) return
         val model_file: File? = scope?.project?.getFile(file?.interpretString(scope))
 
         model_file?.let {

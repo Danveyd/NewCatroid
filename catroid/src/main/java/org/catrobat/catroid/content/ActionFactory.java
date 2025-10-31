@@ -92,6 +92,165 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createRevoluteJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula spriteB, Formula anchorX, Formula anchorY) {
+		CreateRevoluteJointAction action = action(CreateRevoluteJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setSpriteBName(spriteB);
+		action.setAnchorX(anchorX);
+		action.setAnchorY(anchorY);
+		return action;
+	}
+
+	public Action createDestroyJointAction(Sprite sprite, SequenceAction sequence, Formula jointId) {
+		DestroyJointAction action = action(DestroyJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		return action;
+	}
+
+	public Action createDistanceJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula spriteB, Formula length, Formula frequency, Formula damping) {
+		CreateDistanceJointAction action = action(CreateDistanceJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setSpriteBName(spriteB);
+		action.setLength(length);
+		action.setFrequency(frequency);
+		action.setDamping(damping);
+		return action;
+	}
+
+	public Action createWeldJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula spriteB, Formula anchorX, Formula anchorY) {
+		CreateWeldJointAction action = action(CreateWeldJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setSpriteBName(spriteB);
+		action.setAnchorX(anchorX);
+		action.setAnchorY(anchorY);
+		return action;
+	}
+
+	public Action createPulleyJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula spriteA, Formula spriteB, Formula gndAnchorAx, Formula gndAnchorAy, Formula gndAnchorBx, Formula gndAnchorBy, Formula ratio) {
+		CreatePulleyJointAction action = action(CreatePulleyJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setSpriteAName(spriteA);
+		action.setSpriteBName(spriteB);
+		action.setGroundAnchorAx(gndAnchorAx);
+		action.setGroundAnchorAy(gndAnchorAy);
+		action.setGroundAnchorBx(gndAnchorBx);
+		action.setGroundAnchorBy(gndAnchorBy);
+		action.setRatio(ratio);
+		return action;
+	}
+
+	public Action createGearJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula jointAId, Formula jointBId, Formula ratio) {
+		CreateGearJointAction action = action(CreateGearJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setJointAId(jointAId);
+		action.setJointBId(jointBId);
+		action.setRatio(ratio);
+		return action;
+	}
+
+	public Action createSetThirdPersonCameraAction(Sprite sprite, SequenceAction sequence,
+												   Formula objectId, Formula distance, Formula height, Formula pitch) {
+		SetThirdPersonCameraAction action = action(SetThirdPersonCameraAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		action.setObjectId(objectId);
+		action.setDistance(distance);
+		action.setHeight(height);
+		action.setPitch(pitch);
+		return action;
+	}
+
+	public Action createSetFreeCameraAction(Sprite sprite, SequenceAction sequence) {
+		SetFreeCameraAction action = action(SetFreeCameraAction.class);
+		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+		action.setScope(scope);
+		return action;
+	}
+
+	public Action createSaveToInternalStorageAction(Sprite sprite, SequenceAction sequence,
+													Formula projectFileName, Formula internalPath) {
+		SaveToInternalStorageAction action = action(SaveToInternalStorageAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setProjectFileName(projectFileName);
+		action.setInternalStoragePath(internalPath);
+		return action;
+	}
+
+	public Action createLoadFromInternalStorageAction(Sprite sprite, SequenceAction sequence, Formula internalPath) {
+		LoadFromInternalStorageAction action = action(LoadFromInternalStorageAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setInternalStoragePath(internalPath);
+		return action;
+	}
+
+
+	public Action createPrismaticJointAction(Sprite sprite, SequenceAction sequence, Formula jointId, Formula spriteB, Formula anchorX, Formula anchorY, Formula axisX, Formula axisY) {
+		CreatePrismaticJointAction action = action(CreatePrismaticJointAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setJointId(jointId);
+		action.setSpriteBName(spriteB);
+		action.setAnchorX(anchorX);
+		action.setAnchorY(anchorY);
+		action.setAxisX(axisX);
+		action.setAxisY(axisY);
+		return action;
+	}
+
+	public Action createApplyForceAction(Sprite sprite, SequenceAction sequence, Formula forceX, Formula forceY) {
+		ApplyForceAction action = action(ApplyForceAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setForceX(forceX);
+		action.setForceY(forceY);
+		return action;
+	}
+
+	public Action createApplyImpulseAction(Sprite sprite, SequenceAction sequence, Formula impulseX, Formula impulseY) {
+		ApplyImpulseAction action = action(ApplyImpulseAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setImpulseX(impulseX);
+		action.setImpulseY(impulseY);
+		return action;
+	}
+
+	public Action createApplyTorqueAction(Sprite sprite, SequenceAction sequence, Formula torque) {
+		ApplyTorqueAction action = action(ApplyTorqueAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setTorque(torque);
+		return action;
+	}
+
+	public Action createApplyAngularImpulseAction(Sprite sprite, SequenceAction sequence, Formula impulse) {
+		ApplyAngularImpulseAction action = action(ApplyAngularImpulseAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setImpulse(impulse);
+		return action;
+	}
+
+	public Action createSetDampingAction(Sprite sprite, SequenceAction sequence, Formula linear, Formula angular) {
+		SetDampingAction action = action(SetDampingAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setLinearDamping(linear);
+		action.setAngularDamping(angular);
+		return action;
+	}
+
+	public Action createPerformRayCastaction(Sprite sprite, SequenceAction sequence, Formula rayId, Formula startX, Formula startY, Formula endX, Formula endY) {
+		PerformRayCastAction action = action(PerformRayCastAction.class);
+		action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+		action.setRayId(rayId);
+		action.setStartX(startX);
+		action.setStartY(startY);
+		action.setEndX(endX);
+		action.setEndY(endY);
+		return action;
+	}
+
 	public Action createLaunchProjectAction(Sprite sprite, SequenceAction sequence, Formula projectName) {
 		LaunchProjectAction action = action(LaunchProjectAction.class);
 		Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);

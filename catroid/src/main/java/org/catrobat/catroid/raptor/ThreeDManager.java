@@ -177,8 +177,12 @@ public class ThreeDManager implements Disposable {
     private Model wireframeBoxModel;
     private Model wireframeSphereModel;
     private Model wireframeCylinderModel;
-    private Model cameraProxyModel; 
-    private Model frustumLinesModel; 
+    private Model cameraProxyModel;
+    public String cameraTargetId = null;
+    private final Vector3 cameraOffset = new Vector3();
+    private float cameraDistance = 10.0f;
+    private float cameraPitch = 20.0f;
+    private float cameraYaw = 0.0f;
 
     public void init() {
         modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
@@ -690,6 +694,9 @@ public class ThreeDManager implements Disposable {
     private int frameCounter = 0;
 
     public void update(float delta) {
+        if (cameraTargetId != null) {
+            updateThirdPersonCamera();
+        }
         /*frameCounter++;
         if (frameCounter % 60 == 0) { 
             Gdx.app.log("PhysicsDebug", "--- Frame " + frameCounter + " ---");
@@ -755,6 +762,70 @@ public class ThreeDManager implements Disposable {
                 }
             }
         }
+    }
+
+    public void setFreeCamera() {
+        this.cameraTargetId = null;
+    }
+
+    public void setThirdPersonCamera(String targetObjectId, float distance, float height, float pitch) {
+        ModelInstance target = sceneObjects.get(targetObjectId);
+        if (target == null) {
+            Gdx.app.error("3DManager", "Camera target object not found: " + targetObjectId);
+            this.cameraTargetId = null;
+            return;
+        }
+        this.cameraTargetId = targetObjectId;
+        this.cameraDistance = distance;
+        this.cameraOffset.set(0, height, 0);
+        this.cameraPitch = pitch;
+
+        this.cameraYaw = target.transform.getRotation(new Quaternion()).getYaw();
+    }
+
+    private void updateThirdPersonCamera() {
+        ModelInstance target = sceneObjects.get(cameraTargetId);
+        if (target == null) {
+            setFreeCamera();
+            return;
+        }
+
+        Vector3 targetPosition = target.transform.getTranslation(new Vector3());
+        Vector3 lookAtPoint = new Vector3(targetPosition).add(cameraOffset);
+
+        Quaternion rotation = new Quaternion();
+        rotation.set(Vector3.Y, cameraYaw);
+        rotation.mul(new Quaternion(Vector3.X, -cameraPitch));
+
+        Vector3 positionOffset = new Vector3(0, 0, cameraDistance);
+        positionOffset.mul(rotation);
+
+        Vector3 cameraPosition = new Vector3(lookAtPoint).add(positionOffset);
+
+        camera.position.set(cameraPosition);
+        camera.lookAt(lookAtPoint);
+        camera.up.set(Vector3.Y);
+        camera.update();
+    }
+
+    public void addCameraRotation(float yawDelta, float pitchDelta) {
+        if (cameraTargetId == null) return;
+
+        cameraYaw += yawDelta;
+        cameraPitch += pitchDelta;
+
+        if (cameraPitch > 89.0f) cameraPitch = 89.0f;
+        if (cameraPitch < -89.0f) cameraPitch = -89.0f;
+    }
+
+    public void setCameraRotation(float yaw, float pitch) {
+        if (cameraTargetId == null) return;
+
+        cameraYaw = yaw;
+        cameraPitch = pitch;
+
+        if (cameraPitch > 89.0f) cameraPitch = 89.0f;
+        if (cameraPitch < -89.0f) cameraPitch = -89.0f;
     }
 
     public Array<String> getAnimationNames(String objectId) {

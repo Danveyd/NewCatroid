@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import org.catrobat.catroid.content.UserVarsManager
+import org.catrobat.catroid.utils.NativeLibraryManager
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -34,21 +35,11 @@ class PythonEngine(private val context: Context) {
             isSupportedArchitecture = true
             Log.d("PythonEngine", "Architecture is supported ($supportedAbi). Loading native libraries...")
 
-            try {
-                System.loadLibrary("crypto")
-                System.loadLibrary("ssl")
-                System.loadLibrary("z")
-                System.loadLibrary("expat")
-                System.loadLibrary("openblas")
-                System.loadLibrary("jpeg")
-                System.loadLibrary("png")
+            val supportedAbi = "arm64-v8a"
+            isSupportedArchitecture = Build.SUPPORTED_ABIS.contains(supportedAbi)
 
-                System.loadLibrary("python3.12")
-                System.loadLibrary("catroid")
-
-                Log.d("PythonEngine", "All native libraries loaded successfully.")
-            } catch (e: UnsatisfiedLinkError) {
-                Log.e("PythonEngine", "FATAL: Could not load a native library even on a supported architecture.", e)
+            if (!isSupportedArchitecture || !NativeLibraryManager.isLoaded(NativeLibraryManager.Feature.PYTHON)) {
+                Log.e("PythonEngine", "Python feature is not available. Either unsupported architecture or missing libraries.")
                 isSupportedArchitecture = false
             }
         } else {

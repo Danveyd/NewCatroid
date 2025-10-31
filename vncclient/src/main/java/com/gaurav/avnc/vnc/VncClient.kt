@@ -444,7 +444,6 @@ class VncClient(private val observer: Observer) {
         private external fun initLibrary()
 
         init {
-            loadLibrary()
             initLibrary()
         }
     }

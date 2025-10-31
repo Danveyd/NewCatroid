@@ -1,0 +1,55 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        style="@style/BrickContainer.Threed.Big">
+
+        <include layout="@layout/icon_brick_category_threed" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_set_third_person_camera" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_camera_target"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_third_person_camera_object_id"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_camera_distance"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_third_person_camera_distance"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_camera_height"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_third_person_camera_height"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_camera_pitch"
+            app:layout_newLine="true"/>
+        <TextView
+            android:id="@+id/brick_third_person_camera_pitch"
+            style="@style/BrickEditText" />
+    </org.catrobat.catroid.ui.BrickLayout>
+</LinearLayout>

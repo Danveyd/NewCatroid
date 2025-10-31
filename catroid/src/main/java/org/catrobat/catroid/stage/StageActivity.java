@@ -337,7 +337,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		mainThreadHandler = new Handler(Looper.getMainLooper());
 
 		File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-		if (downloadsDir.canWrite()) {
+		if (downloadsDir.canWrite() && NativeBridge.INSTANCE.isWorking()) {
 			File logFile = new File(downloadsDir, "NewCatroid_CPP_CrashLog.txt");
 			NativeBridge.INSTANCE.setCrashLogPath(logFile.getAbsolutePath());
 		}
@@ -453,6 +453,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	// --- Управление вводом ---
 	public void sendVmMouseEvent(float catroidX, float catroidY, int buttonState) {
+		if(!VirtualMachineManager.INSTANCE.isWorking()) return;
 		VncClient client = vncClients.get(DEFAULT_VM_NAME);
 		if (client == null) return;
 		if (stageListener == null) return;
@@ -486,6 +487,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	}
 
 	public void sendVmKeyEvent(int keysym, boolean isDown) {
+		if(!VirtualMachineManager.INSTANCE.isWorking()) return;
 		VncClient client = vncClients.get(DEFAULT_VM_NAME);
 		if (client != null) {
 			client.sendKeyEvent(keysym, 0, isDown);
@@ -527,6 +529,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 * @param viewId ID SurfaceView, который вы ранее создали.
 	 */
 	public void attachVMScreen(String viewId) {
+		if(!VirtualMachineManager.INSTANCE.isWorking()) return;
 		runOnUiThread(() -> {
 			// --- НАЧАЛО: Логика VncClient ---
 
@@ -1124,6 +1127,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 * Создает GLSurfaceView и настраивает колбэки для C++.
 	 */
 	public void createGLSurfaceView(String viewId, int x, int y, int width, int height) {
+		if (!NativeBridge.INSTANCE.isWorking()) return;
 		if (dynamicViews.containsKey(viewId)) {
 			Log.w(TAG, "View with id '" + viewId + "' already exists. Removing old one.");
 			removeView(viewId);
@@ -1176,6 +1180,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 * Связывает .so файл с уже существующим GLSurfaceView.
 	 */
 	public void attachSoToView(String viewId, String soPath) {
+		if (!NativeBridge.INSTANCE.isWorking()) return;
 		if (!dynamicViews.containsKey(viewId)) {
 			Log.e(TAG, "Cannot attach .so: View with id '" + viewId + "' not found.");
 			return;
@@ -1187,6 +1192,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	 * Полностью удаляет View и его C++ часть.
 	 */
 	public void destroyGLView(String viewId) {
+		if (!NativeBridge.INSTANCE.isWorking()) return;
 		removeViewFromStage(viewId); // Это удалит View и вызовет surfaceDestroyed
 		NativeBridge.INSTANCE.cleanupInstance(viewId); // Это выгрузит .so и очистит память
 	}
@@ -1199,7 +1205,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	public void removeAllNativeViews() {
 		// Обязательно выполняем в UI-потоке
 		runOnUiThread(() -> {
-			NativeBridge.INSTANCE.cleanupAllInstances();
+			if (NativeBridge.INSTANCE.isWorking()) NativeBridge.INSTANCE.cleanupAllInstances();
 			// Проходим по всем значениям (View) в нашей карте
 			for (View viewToRemove : dynamicViews.values()) {
 				rootLayout.removeView(viewToRemove);
@@ -1560,7 +1566,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		// Он корректно очистит слушатели и ресурсы LibGDX, пока View еще существуют.
 		super.onDestroy();
 
-		NativeBridge.INSTANCE.cleanupAllInstances();
+		if (NativeBridge.INSTANCE.isWorking()) NativeBridge.INSTANCE.cleanupAllInstances();
 
 		// 2. ТЕПЕРЬ выполняем свою собственную очистку.
 		if (ProjectManager.getInstance().getCurrentProject() != null) {

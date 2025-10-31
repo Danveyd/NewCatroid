@@ -37,6 +37,10 @@ import org.catrobat.catroid.content.bricks.AddEditBrick
 import org.catrobat.catroid.content.bricks.AddItemToUserListBrick
 import org.catrobat.catroid.content.bricks.AddRadioBrick
 import org.catrobat.catroid.content.bricks.Apply3dForceBrick
+import org.catrobat.catroid.content.bricks.ApplyAngularImpulseBrick
+import org.catrobat.catroid.content.bricks.ApplyForceBrick
+import org.catrobat.catroid.content.bricks.ApplyImpulseBrick
+import org.catrobat.catroid.content.bricks.ApplyTorqueBrick
 import org.catrobat.catroid.content.bricks.ArduinoSendDigitalValueBrick
 import org.catrobat.catroid.content.bricks.ArduinoSendPWMValueBrick
 import org.catrobat.catroid.content.bricks.AskBrick
@@ -85,8 +89,13 @@ import org.catrobat.catroid.content.bricks.Create3dObjectBrick
 import org.catrobat.catroid.content.bricks.CreateCubeBrick
 import org.catrobat.catroid.content.bricks.CreateDialogBrick
 import org.catrobat.catroid.content.bricks.CreateDiskBrick
+import org.catrobat.catroid.content.bricks.CreateDistanceJointBrick
 import org.catrobat.catroid.content.bricks.CreateFloatBrick
 import org.catrobat.catroid.content.bricks.CreateGLViewBrick
+import org.catrobat.catroid.content.bricks.CreateGearJointBrick
+import org.catrobat.catroid.content.bricks.CreatePrismaticJointBrick
+import org.catrobat.catroid.content.bricks.CreatePulleyJointBrick
+import org.catrobat.catroid.content.bricks.CreateRevoluteJointBrick
 import org.catrobat.catroid.content.bricks.CreateSphereBrick
 import org.catrobat.catroid.content.bricks.CreateTableBrick
 import org.catrobat.catroid.content.bricks.CreateTextFieldBrick
@@ -94,6 +103,7 @@ import org.catrobat.catroid.content.bricks.CreateVarBrick
 import org.catrobat.catroid.content.bricks.CreateVideoBrick
 import org.catrobat.catroid.content.bricks.CreateWebFileBrick
 import org.catrobat.catroid.content.bricks.CreateWebUrlBrick
+import org.catrobat.catroid.content.bricks.CreateWeldJointBrick
 import org.catrobat.catroid.content.bricks.CustomBrick
 import org.catrobat.catroid.content.bricks.CutLookBrick
 import org.catrobat.catroid.content.bricks.DelSquareBrick
@@ -108,6 +118,7 @@ import org.catrobat.catroid.content.bricks.DeleteThisCloneBrick
 import org.catrobat.catroid.content.bricks.DeleteVarBrick
 import org.catrobat.catroid.content.bricks.DeleteVarsBrick
 import org.catrobat.catroid.content.bricks.DeleteWebBrick
+import org.catrobat.catroid.content.bricks.DestroyJointBrick
 import org.catrobat.catroid.content.bricks.DroneEmergencyBrick
 import org.catrobat.catroid.content.bricks.DroneFlipBrick
 import org.catrobat.catroid.content.bricks.DroneMoveBackwardBrick
@@ -173,6 +184,7 @@ import org.catrobat.catroid.content.bricks.LegoNxtMotorTurnAngleBrick
 import org.catrobat.catroid.content.bricks.LegoNxtPlayToneBrick
 import org.catrobat.catroid.content.bricks.ListenMicroBrick
 import org.catrobat.catroid.content.bricks.ListenServerBrick
+import org.catrobat.catroid.content.bricks.LoadFromInternalStorageBrick
 import org.catrobat.catroid.content.bricks.LoadNNBrick
 import org.catrobat.catroid.content.bricks.LoadNativeModuleBrick
 import org.catrobat.catroid.content.bricks.LoadPythonLibraryBrick
@@ -204,6 +216,7 @@ import org.catrobat.catroid.content.bricks.PauseForBeatsBrick
 import org.catrobat.catroid.content.bricks.PauseVideoBrick
 import org.catrobat.catroid.content.bricks.PenDownBrick
 import org.catrobat.catroid.content.bricks.PenUpBrick
+import org.catrobat.catroid.content.bricks.PerformRayCastBrick
 import org.catrobat.catroid.content.bricks.PhiroIfLogicBeginBrick
 import org.catrobat.catroid.content.bricks.PhiroMotorMoveBackwardBrick
 import org.catrobat.catroid.content.bricks.PhiroMotorMoveForwardBrick
@@ -255,6 +268,7 @@ import org.catrobat.catroid.content.bricks.RunningStitchBrick
 import org.catrobat.catroid.content.bricks.SaveLookBrick
 import org.catrobat.catroid.content.bricks.SaveLookFilesBrick
 import org.catrobat.catroid.content.bricks.SavePlotBrick
+import org.catrobat.catroid.content.bricks.SaveToInternalStorageBrick
 import org.catrobat.catroid.content.bricks.SayBubbleBrick
 import org.catrobat.catroid.content.bricks.SayForBubbleBrick
 import org.catrobat.catroid.content.bricks.SceneIdBrick
@@ -288,10 +302,12 @@ import org.catrobat.catroid.content.bricks.SetCameraRotation2Brick
 import org.catrobat.catroid.content.bricks.SetCameraRotationBrick
 import org.catrobat.catroid.content.bricks.SetCameraZoomBrick
 import org.catrobat.catroid.content.bricks.SetColorBrick
+import org.catrobat.catroid.content.bricks.SetDampingBrick
 import org.catrobat.catroid.content.bricks.SetDirectionalLight2Brick
 import org.catrobat.catroid.content.bricks.SetDirectionalLightBrick
 import org.catrobat.catroid.content.bricks.SetDnsBrick
 import org.catrobat.catroid.content.bricks.SetFogBrick
+import org.catrobat.catroid.content.bricks.SetFreeCameraBrick
 import org.catrobat.catroid.content.bricks.SetFrictionBrick
 import org.catrobat.catroid.content.bricks.SetGeminiKeyBrick
 import org.catrobat.catroid.content.bricks.SetGravityBrick
@@ -328,6 +344,7 @@ import org.catrobat.catroid.content.bricks.SetSoundVolumeBrick
 import org.catrobat.catroid.content.bricks.SetSpotLightBrick
 import org.catrobat.catroid.content.bricks.SetStopSoundsBrick
 import org.catrobat.catroid.content.bricks.SetTempoBrick
+import org.catrobat.catroid.content.bricks.SetThirdPersonCameraBrick
 import org.catrobat.catroid.content.bricks.SetThreadColorBrick
 import org.catrobat.catroid.content.bricks.SetTransparencyBrick
 import org.catrobat.catroid.content.bricks.SetVariableBrick
@@ -626,10 +643,23 @@ open class CategoryBricksFactory {
         if (!isBackgroundSprite) motionBrickList.add(WhenBounceOffBrick(WhenBounceOffScript(null)))
         motionBrickList.add(SetHitboxBrick())
         motionBrickList.add(SetVelocityBrick(BrickValues.PHYSIC_VELOCITY))
+        motionBrickList.add(ApplyForceBrick(10, 100))
+        motionBrickList.add(ApplyImpulseBrick(100, 10))
         motionBrickList.add(TurnLeftSpeedBrick(BrickValues.PHYSIC_TURN_DEGREES))
         motionBrickList.add(TurnRightSpeedBrick(BrickValues.PHYSIC_TURN_DEGREES))
+        motionBrickList.add(ApplyTorqueBrick(15))
+        motionBrickList.add(ApplyAngularImpulseBrick(30))
         motionBrickList.add(SetGravityBrick(BrickValues.PHYSIC_GRAVITY))
         motionBrickList.add(SetMassBrick(BrickValues.PHYSIC_MASS))
+        motionBrickList.add(SetDampingBrick(10f, 10f))
+        motionBrickList.add(CreateRevoluteJointBrick("joint", "sprite2", 10, 200))
+        motionBrickList.add(CreateDistanceJointBrick("joint", "sprite2", "100", "5", "0.3"))
+        motionBrickList.add(CreateWeldJointBrick("joint", "sprite2", 10, 200))
+        motionBrickList.add(CreatePrismaticJointBrick("joint", "sprite2", 10, 100, 20, 30))
+        motionBrickList.add(CreatePulleyJointBrick("joint", "sprite1", "sprite2", 10, 100, 0, 0, 1f))
+        motionBrickList.add(CreateGearJointBrick("joint", "jointA", "jointB", 1f))
+        motionBrickList.add((DestroyJointBrick("joint")))
+        motionBrickList.add(PerformRayCastBrick("ray", 0, 0, 300, 500))
         motionBrickList.add(SetBounceBrick(BrickValues.PHYSIC_BOUNCE_FACTOR * BrickValues.PHYSIC_MULTIPLIER))
         motionBrickList.add(SetFrictionBrick(BrickValues.PHYSIC_FRICTION * BrickValues.PHYSIC_MULTIPLIER))
         if (SettingsFragment.isPhiroSharedPreferenceEnabled(context)) {
@@ -990,6 +1020,8 @@ void main() {
         deviceBrickList.add(HideStatusBarBrick())
         deviceBrickList.add(ChooseFileBrick())
         deviceBrickList.add(ExportProjectFileBrick("file.txt"))
+        deviceBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
+        deviceBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
         deviceBrickList.add(WhenBrick())
         deviceBrickList.add(WhenTouchDownBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {
@@ -1193,6 +1225,8 @@ void main() {
         threedBrickList.add(CameraLookAtBrick(0.0, 0.0, 0.0))
         threedBrickList.add(SetCameraRotationBrick(0.0, 180.0, 0.0))
         threedBrickList.add(SetCameraRangeBrick(0.1, 2500.0))
+        threedBrickList.add(SetThirdPersonCameraBrick("myObject", 10.0, 10.0, -20.0))
+        threedBrickList.add(SetFreeCameraBrick())
         threedBrickList.add(SetAmbientLightBrick(0.8, 0.8, 0.8))
         threedBrickList.add(SetDirectionalLightBrick("sun", 0.8, 0.8, 0.8, -1.0, -0.8, -0.2))
         threedBrickList.add(SetSkyColorBrick(0.5, 0.6, 1.0))
