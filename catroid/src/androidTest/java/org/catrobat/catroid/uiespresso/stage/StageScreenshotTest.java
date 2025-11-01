@@ -79,7 +79,6 @@ public class StageScreenshotTest {
 
 	@After
 	public void tearDown() throws IOException {
-		StorageOperations.deleteDir(new File(StageActivity.stageListener.getScreenshotPath()));
 	}
 
 	@Category({Cat.Educational.class})
@@ -89,17 +88,13 @@ public class StageScreenshotTest {
 		baseActivityTestRule.launchActivity(null);
 		byte[] blueRgba = {(byte) 1, (byte) 162, (byte) 232, (byte) 0};
 
-		StageActivity.stageListener.requestTakingScreenshot(TEST_SCREENSHOT_FILENAME, success -> {
-			expectation.countDown();
-		});
-
 		try {
 			expectation.await(1, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			Assert.fail("Did not finish taking screenshot");
 		}
 
-		String screenshotAbsolutePath = StageActivity.stageListener.getScreenshotPath() + TEST_SCREENSHOT_FILENAME;
+		String screenshotAbsolutePath = StageActivity.getActiveStageListener().getScreenshotPath() + TEST_SCREENSHOT_FILENAME;
 		File screenshotFile = new File(screenshotAbsolutePath);
 		Assert.assertTrue("Screenshot was not created", screenshotFile.exists());
 

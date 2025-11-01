@@ -55,8 +55,6 @@ public class ZigZagRunningStitchTest {
 		spriteLook = Mockito.mock(Look.class);
 		sprite.look = spriteLook;
 		embroideryPatternManager = Mockito.mock(EmbroideryPatternManager.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		StageActivity.stageListener.embroideryPatternManager = embroideryPatternManager;
 		final int length = 5;
 		final int width = 10;
 		zigZagRunningStitch = new ZigZagRunningStitch(sprite, length, width);
@@ -64,7 +62,7 @@ public class ZigZagRunningStitchTest {
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
+
 	}
 
 	@Test

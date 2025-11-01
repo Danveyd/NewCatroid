@@ -85,13 +85,9 @@ public class StopAllScriptsActionTest {
 
 		Array<Actor> actors = new Array<>();
 		actors.add(sprite.look);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		Mockito.when(StageActivity.stageListener.getStage()).thenReturn(Mockito.mock(Stage.class));
-		Mockito.when(StageActivity.stageListener.getStage().getActors()).thenReturn(actors);
 
 		List<Sprite> sprites = new ArrayList<>();
 		sprites.add(sprite);
-		Mockito.when(StageActivity.stageListener.getSpritesFromStage()).thenReturn(sprites);
 		return project;
 	}
 

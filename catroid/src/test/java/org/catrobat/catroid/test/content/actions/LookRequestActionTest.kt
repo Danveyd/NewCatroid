@@ -88,9 +88,6 @@ class LookRequestActionTest {
         response = mock(Response::class.java)
         responseStream = mock(InputStream::class.java)
 
-        StageActivity.stageListener = mock(StageListener::class.java)
-        StageActivity.stageListener.webConnectionHolder = mock(WebConnectionHolder::class.java)
-
         whenNew(WebConnection::class.java).withAnyArguments().thenReturn(webConnection)
         val responseBody = mock(ResponseBody::class.java)
         doReturn(responseBody).`when`(response)
@@ -122,9 +119,6 @@ class LookRequestActionTest {
         ) as LookRequestAction
         action.grantPermission()
 
-        doReturn(false).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
-
         assertTrue(action.act(0f))
         assertEquals(Constants.ERROR_TOO_MANY_REQUESTS.toString(), action.errorCode)
         assertEquals(lookData1, testSprite.look.lookData)
@@ -137,9 +131,6 @@ class LookRequestActionTest {
             Formula(TEST_URL)
         ) as LookRequestAction
         action.grantPermission()
-
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         doAnswer {
             action.onRequestError(Constants.ERROR_BAD_REQUEST.toString())
@@ -161,8 +152,6 @@ class LookRequestActionTest {
         }
 
         doReturn(lookData2).`when`(action).getLookFromResponse()
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         doAnswer {
             action.onRequestSuccess(response)
@@ -196,8 +185,6 @@ class LookRequestActionTest {
             grantPermission()
         }
 
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
         doReturn(lookData2).`when`(action).getLookFromResponse()
 
         assertFalse(action.act(0f))
@@ -212,8 +199,6 @@ class LookRequestActionTest {
 
         PowerMockito.verifyNew(WebConnection::class.java, times(2))
             .withArguments(any(), anyString())
-        Mockito.verify(StageActivity.stageListener.webConnectionHolder, times(2))
-            .addConnection(webConnection)
         Mockito.verify(webConnection, times(2)).sendWebRequest()
 
         assertEquals(responseStream, action.response)
@@ -222,7 +207,5 @@ class LookRequestActionTest {
 
     @After
     fun tearDown() {
-        StageActivity.stageListener.webConnectionHolder = null
-        StageActivity.stageListener = null
     }
 }

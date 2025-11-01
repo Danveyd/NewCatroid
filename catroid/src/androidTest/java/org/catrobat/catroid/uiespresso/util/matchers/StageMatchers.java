@@ -45,7 +45,7 @@ public final class StageMatchers {
 
 			@Override
 			protected boolean matchesSafely(GLSurfaceView20 view) {
-				byte[] testPixels = StageActivity.stageListener.getPixels(x, y, 1, 1);
+				byte[] testPixels = StageActivity.getActiveStageListener().getPixels(x, y, 1, 1);
 				return comparePixelRgbaArrays(testPixels, color, 10);
 			}
 

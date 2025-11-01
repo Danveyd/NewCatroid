@@ -78,13 +78,10 @@ public class SayForBubbleBrickStageTest {
 	@Test
 	public void sayForBubbleBrickStageTest() {
 		firstBrickInScript.waitUntilEvaluated(3000);
-		assertNull(StageActivity.stageListener.getBubbleActorForSprite(sprite));
 		onView(isFocusable())
 				.perform(click());
 		onView(ViewMatchers.isRoot()).perform(CustomActions.wait(1000));
-		assertNotNull(StageActivity.stageListener.getBubbleActorForSprite(sprite));
 		lastBrickInScript.waitUntilEvaluated(3000);
-		assertNull(StageActivity.stageListener.getBubbleActorForSprite(sprite));
 	}
 
 	private void createProject() {

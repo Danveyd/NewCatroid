@@ -2020,7 +2020,11 @@ public class StageListener implements ApplicationListener {
 
 		RenderManager.INSTANCE.dispose();
 
-		MainMenuActivity.pythonEngine.clearEnvironment();
+		try {
+			MainMenuActivity.pythonEngine.clearEnvironment();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		disposeStageButKeepActors();
 		font.dispose();

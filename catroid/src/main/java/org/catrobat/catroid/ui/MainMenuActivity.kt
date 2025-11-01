@@ -97,19 +97,29 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
         SettingsFragment.setToChosenLanguage(this)
 
-        loadingBinding = ActivityLoadingBinding.inflate(layoutInflater)
-        setContentView(loadingBinding.root)
+        if (!BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
+            loadingBinding = ActivityLoadingBinding.inflate(layoutInflater)
+            setContentView(loadingBinding.root)
 
-        lifecycleScope.launch {
-            val factJob = launch { showRandomFacts() }
+            lifecycleScope.launch {
+                val factJob = launch { showRandomFacts() }
 
-            withContext(Dispatchers.IO) {
-                heavyInitialization()
+                withContext(Dispatchers.IO) {
+                    heavyInitialization()
+                }
+
+                factJob.cancel()
+
+                loadFinalContent()
             }
+        } else {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    heavyInitialization()
+                }
 
-            factJob.cancel()
-
-            loadFinalContent()
+                loadFinalContent()
+            }
         }
 
         /*PreferenceManager.setDefaultValues(this, R.xml.preferences, true)
@@ -155,14 +165,7 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
     private fun loadFinalContent() {
         if (BuildConfig.FEATURE_APK_GENERATOR_ENABLED) {
-            val mainMenuSplashscreenBinding =
-                ActivityMainMenuSplashscreenBinding.inflate(layoutInflater)
-            setContentView(mainMenuSplashscreenBinding.root)
-            oldPrivacyPolicy = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(SharedPreferenceKeys.AGREED_TO_PRIVACY_POLICY_VERSION, 0)
-            if (oldPrivacyPolicy == Constants.CATROBAT_TERMS_OF_USE_ACCEPTED) {
-                prepareStandaloneProject()
-            }
+            prepareStandaloneProject()
         } else {
             mainMenuBinding = ActivityMainMenuBinding.inflate(layoutInflater)
             setContentView(mainMenuBinding.root)

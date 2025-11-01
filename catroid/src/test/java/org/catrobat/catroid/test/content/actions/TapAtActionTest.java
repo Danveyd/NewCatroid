@@ -72,9 +72,6 @@ public class TapAtActionTest {
 
 		stageMock = Mockito.mock(Stage.class);
 
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		Mockito.when(StageActivity.stageListener.getStage()).thenReturn(stageMock);
-
 		Project project = new Project(MockUtil.mockContextForProject(), "Project");
 		ProjectManager.getInstance().setCurrentProject(project);
 	}

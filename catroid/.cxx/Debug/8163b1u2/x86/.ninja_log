@@ -2,3 +2,7 @@
 2	1700	7773071294087685	CMakeFiles/catroid.dir/catroid.cpp.o	61c8873a7c8d0377
 1701	1805	7773071295307688	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86/libcatroid.so	1252e72a42e2c2d6
 0	7	0	clean	d60c0ea4c7f1e19
+8	2113	7837212977660787	CMakeFiles/example_core.dir/example_core.cpp.o	1125065121299576
+3	2411	7837212980545232	CMakeFiles/catroid.dir/catroid.cpp.o	61c8873a7c8d0377
+2114	3349	7837212990058644	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86/libexample_core.so	1b83d05100a8f97d
+2412	3352	7837212990078642	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/8163b1u2/obj/x86/libcatroid.so	6e621a91f4849e1c

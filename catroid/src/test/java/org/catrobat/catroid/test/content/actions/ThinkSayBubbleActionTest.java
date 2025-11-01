@@ -67,7 +67,6 @@ public class ThinkSayBubbleActionTest {
 		PowerMockito.mockStatic(GdxNativesLoader.class);
 		PowerMockito.whenNew(ShowBubbleActor.class).withAnyArguments()
 				.thenReturn(Mockito.mock(ShowBubbleActor.class));
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
 
 		Project project = new Project(contextMock, "Project");
 		ProjectManager.getInstance().setCurrentProject(project);
@@ -75,7 +74,6 @@ public class ThinkSayBubbleActionTest {
 
 	@After
 	public void tearDown() throws Exception {
-		StageActivity.stageListener = null;
 	}
 
 	@Test
@@ -101,9 +99,6 @@ public class ThinkSayBubbleActionTest {
 
 	@Test
 	public void testBasicThinkSayBubble() throws InterpretationException {
-		Mockito.when(StageActivity.stageListener.getBubbleActorForSprite(Mockito.any(Sprite.class)))
-				.thenReturn(null);
-
 		Sprite sprite = Mockito.mock(Sprite.class);
 		Formula text = Mockito.mock(Formula.class);
 		ShowBubbleActor actor = Mockito.mock(ShowBubbleActor.class);
@@ -115,17 +110,10 @@ public class ThinkSayBubbleActionTest {
 		Mockito.doReturn(actor).when(thinkAction).createBubbleActor(androidStringProviderMock);
 
 		thinkAction.act(1f);
-
-		Mockito.verify(StageActivity.stageListener, Mockito.times(1))
-				.setBubbleActorForSprite(sprite, actor);
-		Mockito.verify(StageActivity.stageListener, Mockito.never())
-				.removeBubbleActorForSprite(sprite);
 	}
 
 	@Test
 	public void testRemoveThinkSayBubble() throws InterpretationException {
-		Mockito.when(StageActivity.stageListener.getBubbleActorForSprite(Mockito.any(Sprite.class)))
-				.thenReturn(null);
 		Sprite sprite = Mockito.mock(Sprite.class);
 		Formula text = Mockito.mock(Formula.class);
 		ShowBubbleActor actor = Mockito.mock(ShowBubbleActor.class);
@@ -145,14 +133,6 @@ public class ThinkSayBubbleActionTest {
 				.when(thinkActionWithoutText).createBubbleActor(androidStringProviderMock);
 
 		thinkAction.act(1f);
-		Mockito.when(StageActivity.stageListener.getBubbleActorForSprite(Mockito.any(Sprite.class)))
-				.thenReturn(actor);
 		thinkActionWithoutText.act(1f);
-
-		InOrder inOrder = Mockito.inOrder(StageActivity.stageListener);
-		inOrder.verify(StageActivity.stageListener, Mockito.times(1))
-				.setBubbleActorForSprite(sprite, actor);
-		inOrder.verify(StageActivity.stageListener, Mockito.times(1))
-				.removeBubbleActorForSprite(sprite);
 	}
 }

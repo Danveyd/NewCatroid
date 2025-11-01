@@ -95,8 +95,6 @@ public class ZigZagParametrizedTest {
 		when(spriteLook.getMotionDirectionInUserInterfaceDimensionUnit()).thenReturn(degrees);
 		sprite.look = spriteLook;
 		embroideryPatternManager = mock(EmbroideryPatternManager.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		StageActivity.stageListener.embroideryPatternManager = embroideryPatternManager;
 		zigZagRunningStitch = new ZigZagRunningStitch(sprite, length, width);
 		zigZagRunningStitch.setListener((x, y) -> {
 			actualStitchPointsX.add(x);
@@ -108,7 +106,7 @@ public class ZigZagParametrizedTest {
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
+
 	}
 
 	@Test

@@ -5,56 +5,75 @@ import org.catrobat.catroid.formulaeditor.UserVariable
 import android.util.Log
 
 class TryCatchFinallyAction : Action() {
-    var tryAction: Action? = null
-    var catchAction: Action? = null
-    var finallyAction: Action? = null
+    var trySequence: ScriptSequenceAction? = null
+    var catchSequence: ScriptSequenceAction? = null
+    var finallySequence: ScriptSequenceAction? = null
     var errorVariable: UserVariable? = null
 
-    private var tryCompleted = false
-    private var catchCompleted = false
-    private var finallyCompleted = false
-    private var errorOccurred = false
+    private var state: State = State.READY
+
+    private enum class State {
+        READY, TRYING, CATCHING, FINALLY, DONE
+    }
 
     override fun act(delta: Float): Boolean {
-        if (!tryCompleted) {
-            try {
-                if (tryAction?.act(delta) == true) {
-                    tryCompleted = true
+        while (true) {
+            when (state) {
+                State.READY -> {
+                    state = State.TRYING
                 }
-            } catch (e: Exception) {
-                Log.w("TryCatchFinallyAction", "Exception caught in TRY block: ${e.message}")
-                errorOccurred = true
-                tryCompleted = true
-                errorVariable?.value = e.message ?: "An unknown error occurred"
+
+                State.TRYING -> {
+                    try {
+                        if (trySequence?.act(delta) == true) {
+                            state = State.FINALLY
+                            continue
+                        }
+                    } catch (e: Exception) {
+                        Log.w("TryCatchFinallyAction", "Exception caught in TRY block: ${e.message}")
+                        errorVariable?.value = e.message ?: "An unknown error occurred"
+                        state = State.CATCHING
+                        continue
+                    }
+                    return false
+                }
+
+                State.CATCHING -> {
+                    if (catchSequence == null || catchSequence!!.actions.size == 0) {
+                        state = State.FINALLY
+                        continue
+                    }
+                    if (catchSequence?.act(delta) == true) {
+                        state = State.FINALLY
+                        continue
+                    }
+                    return false
+                }
+
+                State.FINALLY -> {
+                    if (finallySequence == null || finallySequence!!.actions.size == 0) {
+                        state = State.DONE
+                        return true
+                    }
+                    if (finallySequence?.act(delta) == true) {
+                        state = State.DONE
+                        return true
+                    }
+                    return false
+                }
+
+                State.DONE -> {
+                    return true
+                }
             }
         }
-
-        if (tryCompleted && errorOccurred && !catchCompleted) {
-            if (catchAction?.act(delta) == true) {
-                catchCompleted = true
-            }
-        }
-
-        val shouldRunFinally = (tryCompleted && !errorOccurred && !finallyCompleted) || (catchCompleted && !finallyCompleted)
-        if (shouldRunFinally) {
-            if (finallyAction?.act(delta) == true) {
-                finallyCompleted = true
-            }
-        }
-
-        return finallyCompleted || (tryCompleted && !errorOccurred && finallyAction == null) || (catchCompleted && finallyAction == null)
     }
 
     override fun restart() {
-        tryCompleted = false
-        catchCompleted = false
-        finallyCompleted = false
-        errorOccurred = false
-
-        tryAction?.restart()
-        catchAction?.restart()
-        finallyAction?.restart()
-
+        state = State.READY
+        trySequence?.restart()
+        catchSequence?.restart()
+        finallySequence?.restart()
         super.restart()
     }
 }

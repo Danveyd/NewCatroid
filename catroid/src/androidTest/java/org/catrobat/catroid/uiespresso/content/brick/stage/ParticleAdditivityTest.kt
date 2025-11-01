@@ -98,7 +98,7 @@ class ParticleAdditivityTest {
     }
 
     fun checkAllCloneHaveAdditivitySetAs(value: Boolean) {
-        val sprites = StageActivity.stageListener.spritesFromStage
+        val sprites = StageActivity.getActiveStageListener().spritesFromStage
         var cloneFound = false
         for (sprite in sprites) {
             if (sprite.isClone) {

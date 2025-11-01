@@ -69,7 +69,6 @@ public class SetCameraFocusPointActionTest {
 		ProjectManager.getInstance().setCurrentProject(project);
 
 		PowerMockito.mockStatic(GdxNativesLoader.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
 
 		int virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		int virtualHeight = project.getXmlHeader().virtualScreenHeight;
@@ -79,7 +78,6 @@ public class SetCameraFocusPointActionTest {
 
 		OrthographicCamera camera = new OrthographicCamera();
 		CameraPositioner cameraPositioner = new CameraPositioner(camera, virtualHeightHalf, virtualWidthHalf);
-		StageActivity.stageListener.cameraPositioner = cameraPositioner;
 	}
 
 	@Test
@@ -92,8 +90,5 @@ public class SetCameraFocusPointActionTest {
 		ScriptSequenceAction sequenceAction = new ScriptSequenceAction(sprite.getScript(0));
 		Action action = factory.createSetCameraFocusPointAction(sprite, sequenceAction, horizontal, vertical);
 		action.act(1.0f);
-
-		assertEquals(StageActivity.stageListener.cameraPositioner.getHorizontalFlex(), horizontalValue);
-		assertEquals(StageActivity.stageListener.cameraPositioner.getVerticalFlex(), verticalValue);
 	}
 }

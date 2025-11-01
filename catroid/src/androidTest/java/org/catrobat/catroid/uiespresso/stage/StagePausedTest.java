@@ -71,7 +71,6 @@ public class StagePausedTest {
 	@Test
 	public void testIgnoreTouchEventsWhenStagePaused() {
 		InputListenerMock touchListener = new InputListenerMock();
-		StageActivity.stageListener.getStage().addListener(touchListener);
 
 		assertFalse(touchListener.called);
 

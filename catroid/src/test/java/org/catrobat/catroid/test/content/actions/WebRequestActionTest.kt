@@ -88,9 +88,6 @@ class WebRequestActionTest {
         webConnection = mock(WebConnection::class.java)
         response = mock(Response::class.java)
 
-        StageActivity.stageListener = mock(StageListener::class.java)
-        StageActivity.stageListener.webConnectionHolder = mock(WebConnectionHolder::class.java)
-
         whenNew(WebConnection::class.java).withAnyArguments().thenReturn(webConnection)
         val responseBody = mock(ResponseBody::class.java)
         doReturn(responseBody).`when`(response)
@@ -119,8 +116,6 @@ class WebRequestActionTest {
             userVariable
         ) as WebRequestAction
         action.grantPermission()
-        doReturn(false).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         assertTrue(action.act(0f))
         assertEquals(Constants.ERROR_TOO_MANY_REQUESTS.toString(), userVariable.value)
@@ -134,8 +129,6 @@ class WebRequestActionTest {
             userVariable
         ) as WebRequestAction
         action.grantPermission()
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         Mockito.doAnswer {
             action.onRequestError(Constants.ERROR_BAD_REQUEST.toString())
@@ -153,8 +146,6 @@ class WebRequestActionTest {
             userVariable
         ) as WebRequestAction
         action.grantPermission()
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         Mockito.doAnswer {
             action.onRequestSuccess(response)
@@ -185,8 +176,6 @@ class WebRequestActionTest {
             userVariable
         ) as WebRequestAction
         action.grantPermission()
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         assertFalse(action.act(0f))
         action.onCancelledCall()
@@ -201,8 +190,6 @@ class WebRequestActionTest {
 
         verifyNew(WebConnection::class.java, times(2))
             .withArguments(any(), anyString())
-        verify(StageActivity.stageListener.webConnectionHolder, times(2))
-            .addConnection(webConnection)
         verify(webConnection, times(2)).sendWebRequest()
     }
 
@@ -226,8 +213,6 @@ class WebRequestActionTest {
             userVariable
         ) as WebRequestAction
         action.grantPermission()
-        doReturn(true).`when`(StageActivity.stageListener.webConnectionHolder)
-            .addConnection(webConnection)
 
         Mockito.doAnswer { invocation: InvocationOnMock ->
             val scope = invocation.getArgument<Scope>(0)
@@ -257,7 +242,5 @@ class WebRequestActionTest {
 
     @After
     fun tearDown() {
-        StageActivity.stageListener.webConnectionHolder = null
-        StageActivity.stageListener = null
     }
 }

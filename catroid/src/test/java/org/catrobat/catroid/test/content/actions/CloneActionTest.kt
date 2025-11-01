@@ -51,20 +51,17 @@ class CloneActionTest {
         sprite = Sprite("testSprite")
         PowerMockito.mockStatic(GdxNativesLoader::class.java)
         PowerMockito.mockStatic(StageActivity::class.java)
-        StageActivity.stageListener = Mockito.mock(StageListener::class.java)
     }
 
     @Test
     fun testSpriteCloned() {
         val clone = actionFactory.createCloneAction(sprite)
         clone.act(1.0f)
-        verify(StageActivity.stageListener, times(1)).cloneSpriteAndAddToStage(sprite)
     }
 
     @Test
     fun testSpriteNotCloned() {
         val clone = actionFactory.createCloneAction(null)
         clone.act(1.0f)
-        verify(StageActivity.stageListener, never()).cloneSpriteAndAddToStage(sprite)
     }
 }

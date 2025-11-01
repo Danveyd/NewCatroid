@@ -263,11 +263,16 @@ public class ActionFactory extends Actions {
 		return action(ReturnToPreviousProjectAction.class);
 	}
 
-	public Action createTryCatchFinallyAction(Action tryAction, Action catchAction, Action finallyAction, UserVariable errorVariable) {
+	public Action createTryCatchFinallyAction(
+			ScriptSequenceAction trySequence,
+			ScriptSequenceAction catchSequence,
+			ScriptSequenceAction finallySequence,
+			UserVariable errorVariable
+	) {
 		TryCatchFinallyAction action = action(TryCatchFinallyAction.class);
-		action.setTryAction(tryAction);
-		action.setCatchAction(catchAction);
-		action.setFinallyAction(finallyAction);
+		action.setTrySequence(trySequence);
+		action.setCatchSequence(catchSequence);
+		action.setFinallySequence(finallySequence);
 		action.setErrorVariable(errorVariable);
 		return action;
 	}

@@ -305,6 +305,18 @@ android {
         danvex {
             applicationId "org.DanVexTeam.NewCatroid"
         }
+        apktemplate {
+            applicationId "org.DanVexTeam.NewCatroidApkTemplate"
+
+            versionCode 1
+            versionName '1.0'
+
+            ext.set("disableGoogleServices", true)
+
+            resValue "string", "FEATURE_APK_GENERATOR_ENABLED", "true"
+            buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "true"
+            manifestPlaceholders = [appName: "NewCatroid (APK Template)"]
+        }
         catroid {
             isDefault.set(true)
         }
@@ -666,5 +678,32 @@ apply plugin: 'com.huawei.agconnect'
 configurations.all {
     resolutionStrategy {
         force 'com.google.android.material:material:1.2.1'
+    }
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        // Проверяем, относится ли текущий вариант сборки к нашим специальным flavor'ам.
+        if (variant.flavorName == 'apktemplate' || variant.flavorName == 'standalone') {
+            println "Disabling Google Services and Kapt for flavor: ${variant.flavorName}"
+
+            // 1. Отключаем задачу Google Services
+            def googleServicesTaskName = "process${variant.name.capitalize()}GoogleServices"
+            Task googleServicesTask = tasks.findByName(googleServicesTaskName)
+            if (googleServicesTask != null) {
+                googleServicesTask.enabled = false
+            }
+
+            // 2. Отключаем ВСЕ задачи, связанные с kapt для этого варианта
+            // Kapt создает несколько задач, например:
+            // - kaptGenerateStubs<Variant>Kotlin
+            // - kapt<Variant>Kotlin
+            // Мы отключаем их все.
+            def variantCapitalized = variant.name.capitalize()
+            tasks.matching { it.name.startsWith("kapt") && it.name.contains(variantCapitalized) }.all { task ->
+                println "  -> Disabling task: ${task.name}"
+                task.enabled = false
+            }
+        }
     }
 }

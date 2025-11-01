@@ -54,13 +54,11 @@ public class SimpleRunningStitchTest {
 		spriteLook = Mockito.mock(Look.class);
 		sprite.look = spriteLook;
 		embroideryPatternManager = Mockito.mock(EmbroideryPatternManager.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		StageActivity.stageListener.embroideryPatternManager = embroideryPatternManager;
 	}
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
+
 	}
 
 	@Test

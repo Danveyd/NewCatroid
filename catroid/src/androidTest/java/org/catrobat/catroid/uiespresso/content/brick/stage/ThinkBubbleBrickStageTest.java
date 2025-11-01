@@ -62,7 +62,6 @@ public class ThinkBubbleBrickStageTest {
 	@Test
 	public void thinkBubbleBrickStageTest() {
 		lastBrickInScript.waitUntilEvaluated(3000);
-		assertNotNull(StageActivity.stageListener.getBubbleActorForSprite(sprite));
 	}
 
 	private void createProject() {

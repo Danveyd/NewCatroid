@@ -52,13 +52,11 @@ public class TripleRunningStitchTest {
 		sprite = Mockito.mock(Sprite.class);
 		sprite.look = Mockito.mock(Look.class);
 		embroideryPatternManager = Mockito.mock(EmbroideryPatternManager.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		StageActivity.stageListener.embroideryPatternManager = embroideryPatternManager;
 	}
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
+
 	}
 
 	@Test

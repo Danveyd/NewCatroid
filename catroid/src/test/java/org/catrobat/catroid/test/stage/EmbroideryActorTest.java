@@ -46,6 +46,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Objects;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(GdxNativesLoader.class)
 public class EmbroideryActorTest {
@@ -59,15 +61,11 @@ public class EmbroideryActorTest {
 
 		sprite = new Sprite();
 		batch = Mockito.mock(Batch.class);
-		StageActivity.stageListener = Mockito.mock(StageListener.class);
-		StageActivity.stageListener.embroideryPatternManager = new DSTPatternManager();
 		renderer = Mockito.mock(ShapeRenderer.class);
-		StageActivity.stageListener.shapeRenderer = renderer;
 	}
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
 	}
 
 	@Test
@@ -127,13 +125,9 @@ public class EmbroideryActorTest {
 	}
 
 	public EmbroideryActor setUpEmbroideryPatternManager(float startX, float startY, float endX, float endY) {
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(startX,
-				startY, 1, sprite, sprite.getEmbroideryThreadColor()));
-		StageActivity.stageListener.embroideryPatternManager.addStitchCommand(new DSTStitchCommand(endX,
-				endY, 1, sprite, sprite.getEmbroideryThreadColor()));
 
 		EmbroideryActor embroideryActor = new EmbroideryActor(1.f,
-				StageActivity.stageListener.embroideryPatternManager, renderer);
+				Objects.requireNonNull(StageActivity.getActiveStageListener()).embroideryPatternManager, renderer);
 
 		embroideryActor.draw(batch, 1.f);
 		return embroideryActor;

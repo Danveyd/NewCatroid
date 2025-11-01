@@ -55,13 +55,11 @@ public class SewUpTest {
 		spriteLook = Mockito.mock(Look.class);
 		sprite.look = spriteLook;
 		embroideryPatternManager = new DSTPatternManager();
-		StageActivity.stageListener = new StageListener();
-		StageActivity.stageListener.embroideryPatternManager = embroideryPatternManager;
 	}
 
 	@After
 	public void tearDown() {
-		StageActivity.stageListener = null;
+
 	}
 
 	@Test
@@ -69,7 +67,7 @@ public class SewUpTest {
 		sprite.getActionFactory().createSewUpAction(sprite).act(1f);
 
 		List<StitchPoint> stitches =
-				StageActivity.stageListener.embroideryPatternManager.getEmbroideryPatternList();
+				StageActivity.getActiveStageListener().embroideryPatternManager.getEmbroideryPatternList();
 
 		ArrayList<Float> expectedStitchesX = new ArrayList<>();
 		ArrayList<Float> expectedStitchesY = new ArrayList<>();
@@ -99,7 +97,7 @@ public class SewUpTest {
 		sprite.getActionFactory().createSewUpAction(sprite).act(1f);
 
 		List<StitchPoint> stitches =
-				StageActivity.stageListener.embroideryPatternManager.getEmbroideryPatternList();
+				StageActivity.getActiveStageListener().embroideryPatternManager.getEmbroideryPatternList();
 
 		ArrayList<Float> expectedStitchesX = new ArrayList<>();
 		ArrayList<Float> expectedStitchesY = new ArrayList<>();
