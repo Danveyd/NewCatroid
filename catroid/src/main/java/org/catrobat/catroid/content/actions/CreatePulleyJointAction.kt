@@ -32,8 +32,8 @@ class CreatePulleyJointAction : TemporalAction() {
 
         val scene = ProjectManager.getInstance().currentlyPlayingScene ?: return
 
-        val spriteA: Sprite = scene.getSprite(nameA)
-        val spriteB: Sprite = scene.getSprite(nameB)
+        val spriteA: Sprite = scene.getSpriteAll(nameA)
+        val spriteB: Sprite = scene.getSpriteAll(nameB)
 
         scene.physicsWorld.createPulleyJoint(
             id,

@@ -1,8 +1,10 @@
 # ninja log v5
-44	4103	7799241212537230	CMakeFiles/catroid.dir/catroid.cpp.o	80db0ed5f7dd9e37
-4104	4623	7799241217683361	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libcatroid.so	aefc63c5991f6934
-4266	4621	7799241217683361	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libexample_core.so	d142a4e88d8c08a5
-0	7	0	clean	d60c0ea4c7f1e19
-49	4265	7799241214144451	CMakeFiles/example_core.dir/example_core.cpp.o	615927a48c831644
 3	4216	7815730655188398	CMakeFiles/catroid.dir/catroid.cpp.o	80db0ed5f7dd9e37
 4217	4770	7815730660929740	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libcatroid.so	aefc63c5991f6934
+0	7	0	clean	d60c0ea4c7f1e19
+4266	4621	7799241217683361	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libexample_core.so	d142a4e88d8c08a5
+49	4265	7799241214144451	CMakeFiles/example_core.dir/example_core.cpp.o	615927a48c831644
+3	3970	7836444548633793	CMakeFiles/catroid.dir/catroid.cpp.o	80db0ed5f7dd9e37
+8	4040	7836444549343756	CMakeFiles/example_core.dir/example_core.cpp.o	615927a48c831644
+4040	5060	7836444559372957	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libexample_core.so	d142a4e88d8c08a5
+3970	5102	7836444560002010	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libcatroid.so	aefc63c5991f6934

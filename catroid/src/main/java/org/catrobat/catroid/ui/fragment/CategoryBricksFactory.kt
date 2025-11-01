@@ -79,6 +79,7 @@ import org.catrobat.catroid.content.bricks.ClearGraphicEffectBrick
 import org.catrobat.catroid.content.bricks.ClearPythonEnvironmentBrick
 import org.catrobat.catroid.content.bricks.ClearSceneBrick
 import org.catrobat.catroid.content.bricks.ClearUserListBrick
+import org.catrobat.catroid.content.bricks.CloneAndNameBrick
 import org.catrobat.catroid.content.bricks.CloneBrick
 import org.catrobat.catroid.content.bricks.ComeToFrontBrick
 import org.catrobat.catroid.content.bricks.ConnectServerBrick
@@ -532,6 +533,7 @@ open class CategoryBricksFactory {
         eventBrickList.add(WhenBackgroundChangesBrick())
         eventBrickList.add(WhenClonedBrick())
         eventBrickList.add(CloneBrick())
+        eventBrickList.add(CloneAndNameBrick("clone"))
         eventBrickList.add(DeleteThisCloneBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {
             eventBrickList.add(WhenNfcBrick())
@@ -579,6 +581,7 @@ open class CategoryBricksFactory {
         controlBrickList.add(TryCatchFinallyBrick());
         controlBrickList.add(WhenClonedBrick())
         controlBrickList.add(CloneBrick())
+        controlBrickList.add(CloneAndNameBrick("clone"))
         controlBrickList.add(DeleteThisCloneBrick())
         if (SettingsFragment.isNfcSharedPreferenceEnabled(context)) {
             controlBrickList.add(SetNfcTagBrick(context.getString(R.string.brick_set_nfc_tag_default_value)))
@@ -1185,7 +1188,7 @@ void main() {
         //neuralBrickList.add(SetDnsBrick("dns.comss.one"))
         neuralBrickList.add(SetGeminiKeyBrick("api_key"))
         neuralBrickList.add(AskGeminiBrick("Hello!"))
-        neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-2.0-flash-exp"))
+        neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-2.5-flash"))
         neuralBrickList.add(AskGPTBrick("Привет!", "Отвечай на все словом \"апельсин\""))
         neuralBrickList.add(CreateFloatBrick("FloatArray"))
         neuralBrickList.add(PutFloatBrick("FloatArray", 1, 0))

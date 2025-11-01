@@ -29,7 +29,7 @@ class CreatePrismaticJointAction : TemporalAction() {
 
         val scene = ProjectManager.getInstance().currentlyPlayingScene ?: return
         val spriteA = scope!!.sprite ?: return
-        val spriteB: Sprite = scene.getSprite(otherSpriteName)
+        val spriteB: Sprite = scene.getSpriteAll(otherSpriteName)
             ?: return
 
         scene.physicsWorld.createPrismaticJoint(

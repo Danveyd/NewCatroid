@@ -78,15 +78,21 @@ class AskGemini2Action() : TemporalAction() {
         val askVal = ask?.interpretObject(scope) ?: ""
         val askReq = askVal.toString().replace("\"", "\\\"")
         val apiKey = GeminiManager.api_key
-        val urlText = "https://generativelanguage.googleapis.com/v1beta/$model_str:generateContent?key=$apiKey"
+        if (apiKey.isNullOrBlank()) return
+        val urlText = "https://generativelanguage.googleapis.com/v1beta/$model_str:generateContent"
 
         val json = """
     {
-  "contents": [{
-    "parts":[{"text": "$askReq"}],
-    "role": "user"
-    }]
-   }
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "$askReq"
+          }
+        ]
+      }
+    ]
+  }
     """.trimIndent()
 
         if (userVariable == null) {
@@ -99,6 +105,7 @@ class AskGemini2Action() : TemporalAction() {
         val request = Request.Builder()
             .url(urlText)
             .post(body)
+            .header("x-goog-api-key", apiKey)
             .build()
 
         Log.d("GeminiAPI", "URL: $urlText")

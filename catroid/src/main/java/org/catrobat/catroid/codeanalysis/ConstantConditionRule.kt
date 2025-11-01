@@ -1,6 +1,9 @@
 package org.catrobat.catroid.codeanalysis
 
 import android.content.Context
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
+import org.catrobat.catroid.ProjectManager
+import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.content.bricks.Brick
 import org.catrobat.catroid.content.bricks.IfLogicBeginBrick
 import org.catrobat.catroid.content.bricks.IfThenLogicBeginBrick
@@ -11,6 +14,11 @@ import org.catrobat.catroid.formulaeditor.InterpretationException
 
 class ConstantConditionRule(private val context: Context) : AnalysisRule {
     override fun analyze(brick: Brick): AnalysisResult? {
+        val project = ProjectManager.getInstance().currentProject ?: return null
+        val sprite = ProjectManager.getInstance().currentSprite ?: return null
+
+        val analysisScope = Scope(project, sprite, SequenceAction())
+
         val formula = when (brick) {
             is IfThenLogicBeginBrick -> brick.getFormulaWithBrickField(Brick.BrickField.IF_CONDITION)
             is IfLogicBeginBrick -> brick.getFormulaWithBrickField(Brick.BrickField.IF_CONDITION)
@@ -23,7 +31,7 @@ class ConstantConditionRule(private val context: Context) : AnalysisRule {
         }
 
         val evaluationResult: Boolean = try {
-            formula.interpretBoolean(null)
+            formula.interpretBoolean(analysisScope)
         } catch (e: InterpretationException) {
             return null
         }

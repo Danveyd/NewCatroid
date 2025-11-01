@@ -43,6 +43,7 @@ import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.controller.BackpackListManager;
 import org.catrobat.catroid.ui.fragment.SpriteFactory;
 import org.catrobat.catroid.ui.recyclerview.util.UniqueNameProvider;
+import org.luaj.vm2.ast.Str;
 
 import java.io.IOException;
 
@@ -104,6 +105,65 @@ public class SpriteController {
 	public Sprite copyForCloneBrick(Sprite spriteToCopy) {
 		Sprite sprite = new Sprite(spriteToCopy.getName() + "-c" + StageActivity
 				.getAndIncrementNumberOfClonedSprites());
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		Scene currentScene = ProjectManager.getInstance().getCurrentlyEditedScene();
+
+		ScriptController scriptController = new ScriptController();
+
+		sprite.isClone = true;
+		sprite.setActionFactory(spriteToCopy.getActionFactory());
+
+		for (LookData look : spriteToCopy.getLookList()) {
+			sprite.getLookList().add(new LookData(look.getName(), look.getFile()));
+		}
+
+		sprite.getSoundList().addAll(spriteToCopy.getSoundList());
+		sprite.getNfcTagList().addAll(spriteToCopy.getNfcTagList());
+
+		for (UserVariable originalVariable : spriteToCopy.getUserVariables()) {
+			UserVariable copyVariable = new UserVariable(originalVariable);
+			copyVariable.setDeviceValueKey(originalVariable.getDeviceKey());
+			sprite.getUserVariables().add(copyVariable);
+		}
+
+		for (UserList originalList : spriteToCopy.getUserLists()) {
+			UserList copyList = new UserList(originalList);
+			copyList.setDeviceListKey(originalList.getDeviceKey());
+			sprite.getUserLists().add(new UserList(originalList));
+		}
+
+		for (Brick userDefinedBrick : spriteToCopy.getUserDefinedBrickList()) {
+			sprite.getUserDefinedBrickList().add(new UserDefinedBrick((UserDefinedBrick) userDefinedBrick));
+		}
+
+		for (Script script : spriteToCopy.getScriptList()) {
+			try {
+				sprite.addScript(scriptController.copy(script, currentProject, currentScene, sprite));
+			} catch (CloneNotSupportedException | IOException exception) {
+				Log.e(TAG, Log.getStackTraceString(exception));
+			}
+		}
+
+		sprite.resetSprite();
+		int currentLookDataIndex = spriteToCopy.getLookList().indexOf(spriteToCopy.look.getLookData());
+		if (currentLookDataIndex != -1) {
+			sprite.look.setLookData(sprite.getLookList().get(currentLookDataIndex));
+		}
+		spriteToCopy.look.copyTo(sprite.look);
+
+		if (spriteToCopy.penConfiguration.isPenDown()) {
+			sprite.penConfiguration.setPenDown(true);
+			sprite.penConfiguration.addQueue();
+		}
+		if(spriteToCopy.plot.isPlotting()){
+			sprite.plot.resume();
+			sprite.plot.startNewPlotLine();
+		}
+		return sprite;
+	}
+
+	public Sprite copyForCloneBrick(Sprite spriteToCopy, String name) {
+		Sprite sprite = new Sprite(name);
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		Scene currentScene = ProjectManager.getInstance().getCurrentlyEditedScene();
 

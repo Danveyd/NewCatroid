@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86_64/libexample_core.so"
+			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/arm64-v8a/libexample_core.so"
 		}
 	],
 	"backtrace" : 1,
@@ -26,19 +26,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 68,
+				"line" : 31,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 86,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 15,
+				"line" : 4,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 13,
 				"parent" : 0
 			}
 		]
@@ -63,6 +69,10 @@
 				{
 					"backtrace" : 3,
 					"path" : "D:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/onnx"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "D:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/include"
 				}
 			],
 			"language" : "CXX",

@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/arm64-v8a/libexample_core.so"
+			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/armeabi-v7a/libexample_core.so"
 		}
 	],
 	"backtrace" : 1,
@@ -26,25 +26,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 68,
+				"line" : 31,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 86,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 15,
-				"parent" : 0
-			},
-			{
-				"command" : 2,
-				"file" : 0,
-				"line" : 27,
+				"line" : 4,
 				"parent" : 0
 			}
 		]
@@ -55,7 +49,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC"
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC"
 				}
 			],
 			"defines" : 
@@ -69,10 +63,6 @@
 				{
 					"backtrace" : 3,
 					"path" : "D:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/onnx"
-				},
-				{
-					"backtrace" : 4,
-					"path" : "D:/Catroid-develop/catroid/src/main/cpp/src/main/cpp/include"
 				}
 			],
 			"language" : "CXX",

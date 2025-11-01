@@ -100,6 +100,7 @@ public class Sprite implements Nameable, Serializable {
 	public transient Plot plot = new Plot();
 	private transient boolean convertToSprite = false;
 	private transient boolean convertToGroupItemSprite = false;
+	private transient String runtimeName;
 	private transient Multimap<EventId, ScriptSequenceAction> idToEventThreadMap = LinkedHashMultimap.create();
 	private transient Set<ConditionScriptTrigger> conditionScriptTriggers = new HashSet<>();
 	private transient List<Integer> usedTouchPointer = new ArrayList<>();
@@ -134,6 +135,7 @@ public class Sprite implements Nameable, Serializable {
 	public Sprite(String name) {
 		this.name = name;
 		this.spriteId = UUID.randomUUID().toString();
+		this.runtimeName = name;
 	}
 
 	public String getSpriteId() {
@@ -234,6 +236,17 @@ public class Sprite implements Nameable, Serializable {
 		}
 
 		return false;
+	}
+
+	public String getRuntimeName() {
+		if (runtimeName != null && !runtimeName.isEmpty()) {
+			return runtimeName;
+		}
+		return name;
+	}
+
+	public void setRuntimeName(String name) {
+		this.runtimeName = name;
 	}
 
 	public <T> boolean checkUserData(T newUserData, List<T> oldUserData) {

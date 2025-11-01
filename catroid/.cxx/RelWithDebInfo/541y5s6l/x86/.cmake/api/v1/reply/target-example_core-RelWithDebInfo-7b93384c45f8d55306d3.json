@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86_64/libcatroid.so"
+			"path" : "D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/541y5s6l/obj/x86/libexample_core.so"
 		}
 	],
 	"backtrace" : 1,
@@ -26,19 +26,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 57,
+				"line" : 31,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 75,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 15,
+				"line" : 4,
 				"parent" : 0
 			}
 		]
@@ -55,7 +55,7 @@
 			"defines" : 
 			[
 				{
-					"define" : "catroid_EXPORTS"
+					"define" : "example_core_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -76,7 +76,7 @@
 			}
 		}
 	],
-	"id" : "catroid::@6890427a1f51a3e7e1df",
+	"id" : "example_core::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -87,27 +87,22 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\Catroid-develop\\catroid\\src\\main\\cpp\\..\\jniLibs\\x86_64\\libonnxruntime.so",
+				"fragment" : "-llog",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\24\\liblog.so",
+				"fragment" : "-landroid",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\24\\libandroid.so",
+				"fragment" : "-lEGL",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "D:\\AppData\\Local\\Android\\Sdk\\ndk\\26.1.10909125\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\x86_64-linux-android\\24\\libdl.so",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-lunwind",
+				"fragment" : "-lGLESv2",
 				"role" : "libraries"
 			},
 			{
@@ -121,8 +116,8 @@
 			"path" : "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
 		}
 	},
-	"name" : "catroid",
-	"nameOnDisk" : "libcatroid.so",
+	"name" : "example_core",
+	"nameOnDisk" : "libexample_core.so",
 	"paths" : 
 	{
 		"build" : ".",
@@ -143,7 +138,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "catroid.cpp",
+			"path" : "example_core.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

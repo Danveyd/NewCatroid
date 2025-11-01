@@ -144,6 +144,8 @@
     <string name="project_file_name">Имя файла в проекте</string>
     <string name="internal_storage_path">Путь во внутр. хранилище</string>
     <string name="brick_load_from_internal">Загрузить файл из внутр. хранилища</string>
+    <string name="brick_clone_and_name">Клонировать и назвать</string>
+    <string name="brick_clone_name_as">Назвать клона</string>
 
     <string name="loading_fact_placeholder">Загрузка...</string>
 
@@ -162,7 +164,8 @@
         <item>NewCatroid вышел под новый год 2024 (31 декабря).</item>
         <item>Я хз как у нас появилось бразильское комьюнити, но я не против :)</item>
         <item>Умный человек в очках скачать обои.</item>
-        <item>Большие города....</item>
+        <item>Большие города...</item>
+        <item>Интересный факт: бета 2.1.1 была только у 7 человек :)</item>
         <item>I\'M A SECRET OF F*** MIMIC, B**H</item>
         <item>#АртемПомурлыкайВМикро</item>
         <item>До сих пор не понимаю как вы делаете ваши майнкрафты без нормальных лучей :/</item>
@@ -699,7 +702,7 @@
     <string formatted="false" name="brick_listen_server">Слушать сервер и хранить значения в</string>
     <string formatted="false" name="brick_connect_server2">с IP</string>
     <string formatted="false" name="brick_connect_server3">и портом</string>
-    <string formatted="false" name="brick_connect_server">Подключится к локальному серверу</string>
+    <string formatted="false" name="brick_connect_server">Подключиться к локальному серверу</string>
     <string formatted="false" name="brick_stop_server">Остановить локальный сервер</string>
     <string formatted="false" name="brick_start_server">Запустить локальный сервер с портом</string>
     <string formatted="false" name="brick_screenshot">Сделать скриншот и использовать как образ</string>
@@ -1527,8 +1530,8 @@
     <string formatted="false" name="dialog_about_title">Об этом приложении</string>
     <string formatted="false" name="dialog_about_license_info">Это приложение предлагает среду
         кодирования и интерпретатор визуального языка программирования Catrobat.\n
-        ДАННОЕ ПРИЛОЖЕНИЕ ЯВЛЯЕТСЯ ФОРКОМ НА Catrobat/Catroid.
-        Исходный код оригинального приложения в основном лицензирован под лицензией GNU AGPL v3.
+        ДАННОЕ ПРИЛОЖЕНИЕ ЯВЛЯЕТСЯ ФОРКОМ НА Catrobat/Catroid, и так же имеет открытый исходный код (Danveyd/NewCatroid)\n
+        Исходный код в основном лицензирован под лицензией GNU AGPL v3. (и у оригинального проекта тоже)\n
         Для подробной информации по лицензии посмотрите ссылку ниже.\n</string>
     <string formatted="false" name="dialog_about_license_link_text">Лицензия исходного кода</string>
     <string formatted="false" name="dialog_about_catrobat_link_text">О проекте Catrobat</string>
@@ -2562,6 +2565,8 @@
     <string formatted="false" name="formula_editor_function_find">найти</string>
     <string formatted="false" name="formula_editor_function_find_parameter">(*название списка*, \'256\')</string>
     <string formatted="false" name="formula_editor_function_collision">касается_объекта</string>
+    <string name="formula_editor_function_touches_object_by_name">касается_объекта_по_имени</string>
+    <string name="formula_editor_function_touches_object_by_name_parameter">("имя объекта")</string>
     <string formatted="false" name="formula_editor_function_collides_with_edge">касается_края_экрана</string>
     <string formatted="false" name="formula_editor_function_touched">касается_пальца</string>
     <string formatted="false" name="formula_editor_function_collides_with_color">касается_цвета</string>

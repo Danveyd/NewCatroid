@@ -49,6 +49,11 @@ public final class TouchUtil {
 	}
 
 	public static void updatePosition(float x, float y, int pointer) {
+		if (currentlyTouchingPointersToTouchIndex.indexOfKey(pointer) < 0) {
+			touchDown(x, y, pointer);
+			return;
+		}
+
 		int index = currentlyTouchingPointersToTouchIndex.get(pointer);
 		touches.set(index, new PointF(x, y));
 	}

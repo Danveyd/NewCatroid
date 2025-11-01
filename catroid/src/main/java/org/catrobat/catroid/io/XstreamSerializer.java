@@ -362,6 +362,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", ClearGraphicEffectBrick.class);
 		xstream.alias("brick", ClearUserListBrick.class);
 		xstream.alias("brick", CloneBrick.class);
+		xstream.alias("brick", CloneAndNameBrick.class);
 		xstream.alias("brick", ComeToFrontBrick.class);
 		xstream.alias("brick", DeleteItemOfUserListBrick.class);
 		xstream.alias("brick", DeleteThisCloneBrick.class);

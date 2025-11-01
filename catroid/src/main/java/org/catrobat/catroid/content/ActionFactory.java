@@ -1214,6 +1214,14 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+	public Action createCloneAndNameAction(Sprite spriteToClone, Scope scope, Formula cloneName) {
+		CloneAndNameAction action = action(CloneAndNameAction.class);
+		action.setScope(scope);
+		action.setSprite(spriteToClone);
+		action.setCloneName(cloneName);
+		return action;
+	}
+
 	public Action createDeleteThisCloneAction(Sprite sprite) {
 		DeleteThisCloneAction action = Actions.action(DeleteThisCloneAction.class);
 		action.setSprite(sprite);

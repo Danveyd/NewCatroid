@@ -154,6 +154,10 @@
     <string name="project_file_name">Project file name</string>
     <string name="internal_storage_path">Internal storage path</string>
     <string name="brick_load_from_internal">Load file from internal storage</string>
+    <string name="brick_clone_and_name">Clone and name</string>
+    <string name="brick_clone_name_as">Name clone as</string>
+    <string name="formula_editor_function_touches_object_by_name">touches_object_by_name</string>
+    <string name="formula_editor_function_touches_object_by_name_parameter">("object name")</string>
 
     <string name="loading_fact_placeholder">Loading...</string>
 
@@ -172,7 +176,8 @@
         <item>NewCatroid вышел под новый год 2024 (31 декабря).</item>
         <item>Я хз как у нас появилось бразильское комьюнити, но я не против :)</item>
         <item>Умный человек в очках скачать обои.</item>
-        <item>Большие города....</item>
+        <item>Большие города...</item>
+        <item>Интересный факт: бета 2.1.1 была только у 7 человек :)</item>
         <item>I\'M A SECRET OF F*** MIMIC, B**H</item>
         <item>#АртемПомурлыкайВМикро</item>
         <item>До сих пор не понимаю как вы делаете ваши майнкрафты без нормальных лучей :/</item>
@@ -1527,10 +1532,10 @@
 
     <!-- About Dialog -->
     <string formatted="false" name="dialog_about_title">About this App</string>
-    <string formatted="false" name="dialog_about_license_info">This app offers a coding
-        environment and interpreter for the visual programming language Catrobat.\n
-        The source code of this app is mainly licensed under the GNU AGPL v3 license.
-        For further details on the license see the link below.\n</string>
+    <string formatted="false" name="dialog_about_license_info">This application offers a coding environment and an interpreter for the visual programming language Catrobat.\n
+THIS APPLICATION IS A FORK OF Catrobat/Catroid, and is also open source (Danveyd/NewCatroid).\n
+The source code is primarily licensed under the GNU AGPL v3. (This is the same as the original project.)\n
+For detailed license information, see the link below.\n</string>
     <string formatted="false" name="dialog_about_license_link_text">Source code license</string>
     <string formatted="false" name="dialog_about_catrobat_link_text">About Catrobat</string>
     <string formatted="false" name="dialog_about_catrobat_language_version">Catrobat language version</string>

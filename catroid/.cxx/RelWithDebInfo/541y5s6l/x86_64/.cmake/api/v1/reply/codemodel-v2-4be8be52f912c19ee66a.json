@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "catroid::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-catroid-RelWithDebInfo-6f87377a5390ea71e794.json",
+					"jsonFile" : "target-catroid-RelWithDebInfo-9ce4721cc88132829049.json",
 					"name" : "catroid",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "example_core::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-example_core-RelWithDebInfo-002639bbb4fe8c7c66ad.json",
+					"jsonFile" : "target-example_core-RelWithDebInfo-2c7d45a85aeafd69a585.json",
 					"name" : "example_core",
 					"projectIndex" : 0
 				}
@@ -58,7 +58,7 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/arm64-v8a",
+		"build" : "D:/Catroid-develop/catroid/.cxx/RelWithDebInfo/541y5s6l/x86_64",
 		"source" : "D:/Catroid-develop/catroid/src/main/cpp"
 	},
 	"version" : 

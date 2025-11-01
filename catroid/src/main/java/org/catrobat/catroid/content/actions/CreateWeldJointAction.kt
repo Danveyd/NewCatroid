@@ -28,7 +28,7 @@ class CreateWeldJointAction : TemporalAction() {
         val scene = ProjectManager.getInstance().currentlyPlayingScene ?: return
 
         val spriteA = scope!!.sprite
-        val spriteB: Sprite = scene.getSprite(otherSpriteName)
+        val spriteB: Sprite = scene.getSpriteAll(otherSpriteName)
             ?: return
 
         scene.physicsWorld.createWeldJoint(id, spriteA, spriteB, Vector2(x, y))

@@ -118,7 +118,7 @@ public class CategoryListFragment extends Fragment implements CategoryListRVAdap
 			R.string.formula_editor_object_layer);
 	private static final List<Integer> OBJECT_PHYSICAL_COLLISION = singletonList(R.string.formula_editor_function_collision);
 	private static final List<Integer> OBJECT_PHYSICAL_2 = asList(R.string.formula_editor_function_collides_with_edge,
-			R.string.formula_editor_function_touched,
+			R.string.formula_editor_function_touched, R.string.formula_editor_function_touches_object_by_name,
 			R.string.formula_editor_object_x_velocity, R.string.formula_editor_object_y_velocity,
 			R.string.formula_editor_object_angular_velocity);
 	private static final List<Integer> MATH_FUNCTIONS = asList(R.string.formula_editor_function_sin,

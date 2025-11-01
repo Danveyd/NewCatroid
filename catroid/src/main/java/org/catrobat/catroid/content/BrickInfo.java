@@ -41,6 +41,7 @@ public final class BrickInfo {
         add(WhenBackgroundChangesBrick.class, "Вызывается, когда фон изменит образ на выбранный.");
         add(WhenClonedBrick.class, "Вызывается ТОЛЬКО для клона, сразу после его клорования.");
         add(CloneBrick.class, "Клонирует текущий спрайт. ВАЖНО: включая все его переменные, трансформации и образы.");
+        add(CloneAndNameBrick.class, "Клонирует текущий спрайт и задает ему имя. ВАЖНО: копирует все его переменные, трансформации и образы.");
         add(DeleteThisCloneBrick.class, "Удаляет текущий клон. ВАЖНО: только для клона, не для оригинального спрайта.");
         add(NoteBrick.class, "Ничего не делает :/ используйте его для своих заметок.");
         add(ForeverBrick.class, "Вечно повторяет блоки внутри, пока его что-нибудь не остановит.");
@@ -61,7 +62,7 @@ public final class BrickInfo {
         add(SceneIdBrick.class, "Запускает сцену под ее номером");
         add(ClearSceneBrick.class, "Очищает кэш сцены ВАЖНО: после этого ее нельзя будет продолжить.");
         add(SetSaveScenesBrick.class, "Определяет сохранять ли сцены.");
-        add(SetStopSoundsBrick.class, "Определяет осноновку звуков, при переходе на другую сцену");
+        add(SetStopSoundsBrick.class, "Определяет остановку звуков, при переходе на другую сцену");
         add(ReturnToPreviousProjectBrick.class, "Возвращается к предыдущему проекту, откуда был запущен этот ВАЖНО: плохо работает");
         add(LaunchProjectBrick.class, "Запускает проект из файлов проекта, останавливает текущий");
         add(FinishStageBrick.class, "Выходит из проекта, или приложения (в APK)");
@@ -153,7 +154,7 @@ public final class BrickInfo {
         add(SetBrightnessBrick.class, "Задает яркость спрайта");
         add(ChangeBrightnessByNBrick.class, "Изменяет яркость спрайта");
         add(SetColorBrick.class, "Задает цвет спрайта (меняет HUE)");
-        add(ChangeColorByNBrick.class, "Изменяет цвет спрайта (меняет HUE");
+        add(ChangeColorByNBrick.class, "Изменяет цвет спрайта (меняет HUE)");
         add(FadeParticleEffectBrick.class, "Включает или выключает эффект частиц");
         add(SetParticleColorBrick.class, "Задает цвет частиц");
         add(ClearGraphicEffectBrick.class, "Очищает все графические эффекты (частицы и др.)");
@@ -195,8 +196,8 @@ public final class BrickInfo {
         add(ShowDialogBrick.class, "Показывает готовый диалог ВАЖНО: не ждет окончания, продолжает выполнять код дальше");
         add(WriteVariableOnDeviceBrick.class, "Записывает переменную в специальный файл в проекте");
         add(ReadVariableFromDeviceBrick.class, "Читает переменную из специального файла в проекте");
-        add(WriteVariableToFileBrick.class, "Записывает переменную в файл в \"загрузки\" пользователя");
-        add(ReadVariableFromFileBrick.class, "Читает переменную в файл в \"Загрузки\" пользователя");
+        add(WriteVariableToFileBrick.class, "Записывает переменную в файл в \"Загрузки\" пользователя");
+        add(ReadVariableFromFileBrick.class, "Читает переменную из файла в \"Загрузках\" пользователя");
         add(WriteToFilesBrick.class, "Сохраняет переменную в файлы проекта");
         add(ReadFromFilesBrick.class, "Читает переменную из файлов проекта");
         add(DeleteFilesBrick.class, "Удаляет файл проекта ВАЖНО: может вызвать фатальную ошибку, если файла нет.");
@@ -236,7 +237,7 @@ public final class BrickInfo {
         add(AttachSOBrick.class, "Подключает .so файл к GL сцене. ВАЖНО: файл должен соответствовать API и быть той же архитектуры, что и устройство.");
         add(CreateGLViewBrick.class, "Создает GL сцену, позволяя создавать высокооптимизированные сцены");
         add(DeleteWebBrick.class, "Удаляет любой View: WebView, VideoPlayer, TextField, GL сцену и др.");
-        add(RunVMBrick.class, "Запускает иртуальную машину с помощью QEMU на архитектуре x86_64 (позволяет запускать Windows, Linux и др) ВАЖНО: обязательно выключайте VM, когда она не нужна");
+        add(RunVMBrick.class, "Запускает виртуальную машину с помощью QEMU на архитектуре x86_64 (позволяет запускать Windows, Linux и др) ВАЖНО: обязательно выключайте VM, когда она не нужна");
         add(CreateDiskBrick.class, "Создает виртуальный жесткий диск для VM");
         add(ToggleDisplayBrick.class, "Определяет: показывать ли изображение VM");
         add(MouseEventBrick.class, "Эмулирует событие мыши для VM");

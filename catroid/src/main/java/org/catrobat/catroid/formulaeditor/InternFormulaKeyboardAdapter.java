@@ -156,6 +156,8 @@ public class InternFormulaKeyboardAdapter {
 				return buildDoubleParameterFunction(Functions.MAX,
 						NUMBER, "5",
 						NUMBER, "4");
+			case R.string.formula_editor_function_touches_object_by_name:
+				return buildSingleParameterFunction(Functions.TOUCHES_OBJECT_BY_NAME, STRING, "object name");
 			case R.string.formula_editor_function_min:
 				return buildDoubleParameterFunction(Functions.MIN,
 						NUMBER, "7",

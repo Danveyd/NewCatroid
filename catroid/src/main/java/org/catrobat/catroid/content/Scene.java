@@ -30,6 +30,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Nameable;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastMessageBrick;
+import org.catrobat.catroid.content.bricks.CloneAndNameBrick;
 import org.catrobat.catroid.content.bricks.CloneBrick;
 import org.catrobat.catroid.formulaeditor.UserData;
 import org.catrobat.catroid.io.XStreamFieldKeyOrder;
@@ -133,6 +134,15 @@ public class Scene implements Nameable, Serializable {
 		return null;
 	}
 
+	public Sprite getSpriteAll(String spriteName) {
+		for (Sprite sprite : project.getSpriteListWithClones()) {
+			if (spriteName.equals(sprite.getName())) {
+				return sprite;
+			}
+		}
+		return null;
+	}
+
 	public Sprite getBackgroundSprite() {
 		if (spriteList.size() > 0) {
 			return spriteList.get(0);
@@ -156,6 +166,19 @@ public class Scene implements Nameable, Serializable {
 			resetPhysicsWorld();
 		}
 		return physicsWorld;
+	}
+
+	public Sprite getSpriteByRuntimeName(String runtimeName) {
+		if (runtimeName == null || runtimeName.isEmpty()) {
+			return null;
+		}
+
+		for (Sprite sprite : project.getSpriteListWithClones()) {
+			if (runtimeName.equals(sprite.getRuntimeName())) {
+				return sprite;
+			}
+		}
+		return null;
 	}
 
 	public synchronized PhysicsWorld resetPhysicsWorld() {
@@ -204,6 +227,12 @@ public class Scene implements Nameable, Serializable {
 					for (Brick currentBrick : flatList) {
 						if (currentBrick instanceof CloneBrick) {
 							CloneBrick cloneBrick = (CloneBrick) currentBrick;
+							if (cloneBrick.getSelectedItem() != null
+									&& cloneBrick.getSelectedItem().equals(spriteToDelete)) {
+								cloneBrick.resetSpinner();
+							}
+						} else if (currentBrick instanceof CloneAndNameBrick) {
+							CloneAndNameBrick cloneBrick = (CloneAndNameBrick) currentBrick;
 							if (cloneBrick.getSelectedItem() != null
 									&& cloneBrick.getSelectedItem().equals(spriteToDelete)) {
 								cloneBrick.resetSpinner();

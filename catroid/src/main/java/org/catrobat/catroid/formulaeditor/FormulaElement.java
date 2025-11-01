@@ -961,6 +961,20 @@ public class FormulaElement implements Serializable {
 			case COLOR_AT_XY:
 				return new ColorAtXYDetection(scope, StageActivity.getActiveStageListener())
 						.tryInterpretFunctionColorAtXY(arguments.get(0), arguments.get(1));
+			case TOUCHES_OBJECT_BY_NAME:
+				StageListener stageListener = StageActivity.getActiveStageListener();
+				if (stageListener == null) {
+					return FALSE;
+				}
+
+				String objectName = String.valueOf(arguments.get(0));
+
+				return tryInterpretCollision(
+						scope.getSprite().look,
+						objectName,
+						ProjectManager.getInstance().getCurrentlyPlayingScene(),
+						stageListener
+				);
 			case TEXT_BLOCK_FROM_CAMERA:
 				return textBlockFunctionProvider.interpretFunctionTextBlock(Double.parseDouble(arguments.get(0).toString()));
 			case TEXT_BLOCK_LANGUAGE_FROM_CAMERA:
