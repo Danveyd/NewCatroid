@@ -340,7 +340,7 @@ class BrickAdapter(private val sprite: Sprite) :
                 }
                 rootView = existingParent
             } else {
-                (existingParent as? ViewGroup)?.removeView(itemView)
+                (existingParent as? ViewGroup)?.takeIf { it !is AdapterView<*> }?.removeView(itemView)
 
                 val indentedLayout = IndentedBrickLayout(parent.context, depth)
                 indentedLayout.layoutParams = ViewGroup.LayoutParams(
@@ -371,6 +371,17 @@ class BrickAdapter(private val sprite: Sprite) :
             if (existingParent is IndentedBrickLayout) {
                 existingParent.removeView(itemView)
             }
+        }
+
+        if (itemView.translationY != 0f || itemView.translationX != 0f) {
+            itemView.animate().cancel()
+            itemView.translationY = 0f
+            itemView.translationX = 0f
+        }
+        if (rootView !== itemView && (rootView.translationY != 0f || rootView.translationX != 0f)) {
+            rootView.animate().cancel()
+            rootView.translationY = 0f
+            rootView.translationX = 0f
         }
 
         itemView.visibility = View.VISIBLE
@@ -517,8 +528,9 @@ class BrickAdapter(private val sprite: Sprite) :
             lastConnectedItem = position + 1
         }
 
+        val positionIndex = buildPositionIndex()
         for (i in flatItems.indices) {
-            adapterPosition = items.indexOf(flatItems[i])
+            adapterPosition = positionIndex[flatItems[i]] ?: items.indexOf(flatItems[i])
             selectionManager.setSelectionTo(selected, adapterPosition)
             if (i > 0) {
                 viewStateManager.setEnabled(!selected, adapterPosition)
@@ -526,7 +538,7 @@ class BrickAdapter(private val sprite: Sprite) :
         }
 
         if (checkBoxMode == CONNECTED_ONLY) {
-            val firstFlatListPosition = items.indexOf(flatItems[0])
+            val firstFlatListPosition = positionIndex[flatItems[0]] ?: items.indexOf(flatItems[0])
             updateConnectedItems(
                 position,
                 firstFlatListPosition,
@@ -535,6 +547,14 @@ class BrickAdapter(private val sprite: Sprite) :
                 scriptSelected
             )
         }
+    }
+
+    private fun buildPositionIndex(): Map<Brick, Int> {
+        val map = HashMap<Brick, Int>(items.size)
+        for (i in items.indices) {
+            map[items[i]] = i
+        }
+        return map
     }
 
     private fun updateConnectedItems(
@@ -562,8 +582,7 @@ class BrickAdapter(private val sprite: Sprite) :
                 clearConnectedItems()
             }
         }
-        for (item in items) {
-            val brickPosition = items.indexOf(item)
+        for (brickPosition in items.indices) {
             viewStateManager.setEnabled(
                 selectableForCopy(brickPosition, scriptSelected),
                 brickPosition

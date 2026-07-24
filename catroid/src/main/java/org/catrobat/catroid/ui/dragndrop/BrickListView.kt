@@ -50,11 +50,10 @@ import androidx.core.graphics.withTranslation
 private const val SMOOTH_SCROLL_BY = 15
 private const val SMOOTH_SCROLL_BY_NEW = 20
 private const val ANIMATION_DURATION = 250
+private const val SWAP_ANIMATION_DURATION = 150
 private const val TRANSLUCENT_BLACK_ALPHA = 128
 private const val OBJECT_ANIMATOR_VALUE = 255
 private const val ANIMATION_REPEAT_COUNT = 5
-private const val UPPER_SCROLL_BOUND_DIVISOR = 8
-private const val LOWER_SCROLL_BOUND_DIVISOR = 48
 private const val Y_TRANSLATION_CONSTANT = 10
 
 enum class DragMode {
@@ -73,6 +72,8 @@ class BrickListView : ListView {
     private var downY = 0f
     private var offsetToCenter = 0
     private var invalidateHoveringItem = false
+    private var isSwapAnimationRunning = false
+    private var runningSwapAnimator: ObjectAnimator? = null
     private var brickAdapterInterface: BrickAdapterInterface? = null
     private val translucentBlack = Color.argb(TRANSLUCENT_BLACK_ALPHA, 0, 0, 0)
     var dragMode: DragMode = DragMode.NEW
@@ -132,16 +133,8 @@ class BrickListView : ListView {
             flatList.removeAt(0)
         }
 
-        when (dragMode) {
-            DragMode.NEW -> {
-                upperScrollBound = height / 4
-                lowerScrollBound = height * 3 / 4
-            }
-            DragMode.LEGACY -> {
-                upperScrollBound = height / UPPER_SCROLL_BOUND_DIVISOR
-                lowerScrollBound = height / LOWER_SCROLL_BOUND_DIVISOR
-            }
-        }
+        upperScrollBound = height / 4
+        lowerScrollBound = height * 3 / 4
         currentPositionOfHoveringBrick = brickAdapterInterface!!.getPosition(this.brickToMove)
         invalidateHoveringItem = true
 
@@ -163,6 +156,7 @@ class BrickListView : ListView {
         brickToMove = null
         hoveringDrawable = null
         motionEventId = -1
+        isSwapAnimationRunning = false
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -249,13 +243,18 @@ class BrickListView : ListView {
 
     @Suppress("ComplexMethod")
     private fun swapListItems() {
+        if (isSwapAnimationRunning) {
+            runningSwapAnimator?.end()
+        }
+
         val itemPositionAbove = currentPositionOfHoveringBrick - 1
         val itemPositionBelow = currentPositionOfHoveringBrick + 1
         val itemBelow: View? = if (isPositionValid(itemPositionBelow)) getChildAtVisiblePosition(itemPositionBelow) else null
         val itemAbove: View? = if (isPositionValid(itemPositionAbove)) getChildAtVisiblePosition(itemPositionAbove) else null
 
-        val isAbove = itemBelow != null && downY > itemBelow.y
-        val isBelow = itemAbove != null && downY < itemAbove.y
+        val hoverCenter = downY + viewBounds.height() / 2f
+        val isAbove = itemBelow != null && hoverCenter > itemBelow.y + itemBelow.height / 2f
+        val isBelow = itemAbove != null && hoverCenter < itemAbove.y + itemAbove.height / 2f
 
         if (isAbove || isBelow) {
             val swapWith = if (isAbove) itemPositionBelow else itemPositionAbove
@@ -274,18 +273,25 @@ class BrickListView : ListView {
 
     private fun startAnimationToSwap(viewToSwapWith: View?, translationY: Int) {
         val animator = ObjectAnimator.ofFloat(viewToSwapWith, TRANSLATION_Y, translationY.toFloat())
-        animator.duration = ANIMATION_DURATION.toLong()
-        animator.start()
+        animator.duration = SWAP_ANIMATION_DURATION.toLong()
+        isSwapAnimationRunning = true
+        runningSwapAnimator = animator
 
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) = Unit
             override fun onAnimationEnd(animation: Animator) {
+                isSwapAnimationRunning = false
+                runningSwapAnimator = null
                 invalidateViews()
             }
 
-            override fun onAnimationCancel(animation: Animator) = Unit
+            override fun onAnimationCancel(animation: Animator) {
+                isSwapAnimationRunning = false
+                runningSwapAnimator = null
+            }
             override fun onAnimationRepeat(animation: Animator) = Unit
         })
+        animator.start()
     }
 
     private fun scrollWhileDragging() {
@@ -297,24 +303,26 @@ class BrickListView : ListView {
             DragMode.LEGACY
         }
 
+        val referenceY = downY + viewBounds.height() / 2f
+
         when (dragMode) {
             DragMode.NEW -> {
                 val scrollZoneSize = height / 5
 
-                if (downY < upperScrollBound) {
-                    val distance = (upperScrollBound - downY) / scrollZoneSize
+                if (referenceY < upperScrollBound) {
+                    val distance = (upperScrollBound - referenceY) / scrollZoneSize
                     scrollSpeed = (-SMOOTH_SCROLL_BY_NEW * distance).toInt()
-                } else if (downY > lowerScrollBound) {
-                    val distance = (downY - lowerScrollBound) / scrollZoneSize
+                } else if (referenceY > lowerScrollBound) {
+                    val distance = (referenceY - lowerScrollBound) / scrollZoneSize
                     scrollSpeed = (SMOOTH_SCROLL_BY_NEW * distance).toInt()
                 } else {
                     scrollSpeed = 0
                 }
             }
             DragMode.LEGACY -> {
-                if (downY > lowerScrollBound) {
+                if (referenceY > lowerScrollBound) {
                     smoothScrollBy(SMOOTH_SCROLL_BY, 0)
-                } else if (downY < upperScrollBound) {
+                } else if (referenceY < upperScrollBound) {
                     smoothScrollBy(-SMOOTH_SCROLL_BY, 0)
                 }
                 scrollSpeed = 0

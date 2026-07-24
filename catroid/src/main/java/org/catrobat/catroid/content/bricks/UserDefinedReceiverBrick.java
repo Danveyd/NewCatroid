@@ -27,6 +27,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
@@ -144,7 +145,10 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 
 	@Override
 	public void onStringOptionSelected(Integer spinnerId, String string) {
-		Context context = view.getContext();
+		Context context = view != null ? view.getContext() : CatroidApplication.getAppContext();
+		if (context == null) {
+			return;
+		}
 
 		if (string.equals(context.getString(R.string.brick_user_defined_with_screen_refreshing))) {
 			spinnerSelection = BrickValues.USER_DEFINED_BRICK_WITH_SCREEN_REFRESH;

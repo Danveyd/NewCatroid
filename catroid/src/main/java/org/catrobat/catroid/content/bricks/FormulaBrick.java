@@ -171,8 +171,14 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 		super.getView(context);
 		for (BiMap.Entry<FormulaField, Integer> entry : brickFieldToTextViewIdMap.entrySet()) {
 			TextView formulaFieldView = view.findViewById(entry.getValue());
-			String text =
-					getFormulaWithBrickField(entry.getKey()).clone().getTrimmedFormulaString(context);
+			if (formulaFieldView == null) {
+				continue;
+			}
+			String text = getFormulaWithBrickField(entry.getKey()).clone().getTrimmedFormulaString(context);
+			CharSequence current = formulaFieldView.getText();
+			if (current != null && text.contentEquals(current)) {
+				continue;
+			}
 			formulaFieldView.setText(
 					FormulaSpannableStringBuilder.buildSpannableFormulaString(view.getContext(), text,
 							formulaFieldView.getTextSize()), TextView.BufferType.SPANNABLE);

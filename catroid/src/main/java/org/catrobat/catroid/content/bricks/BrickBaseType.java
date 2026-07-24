@@ -105,16 +105,34 @@ public abstract class BrickBaseType implements Brick {
 	@CallSuper
 	@Override
 	public View getView(Context context) {
-		view = LayoutInflater.from(context).inflate(getViewResource(), null, false);
-		checkbox = view.findViewById(R.id.brick_checkbox);
+		if (view == null) {
+			view = LayoutInflater.from(context).inflate(getViewResource(), null, false);
+			checkbox = view.findViewById(R.id.brick_checkbox);
+		}
 		return view;
 	}
 
 	@Override
 	public View getPrototypeView(Context context) {
-		View view = getView(context);
-		disableSpinners(view);
-		return view;
+		View cachedView = this.view;
+		CheckBox cachedCheckbox = this.checkbox;
+		this.view = null;
+		this.checkbox = null;
+		View freshView = getView(context);
+		disableSpinners(freshView);
+		removeSpinnerListeners(freshView);
+		this.view = cachedView;
+		this.checkbox = cachedCheckbox;
+		return freshView;
+	}
+
+	public View getFreshDetachedView(Context context) {
+		return getPrototypeView(context);
+	}
+
+	public void invalidateCachedView() {
+		this.view = null;
+		this.checkbox = null;
 	}
 
 	public void disableSpinners() {
@@ -131,6 +149,18 @@ public abstract class BrickBaseType implements Brick {
 			ViewGroup parent = (ViewGroup) view;
 			for (int i = 0; i < parent.getChildCount(); i++) {
 				disableSpinners(parent.getChildAt(i));
+			}
+		}
+	}
+
+	private void removeSpinnerListeners(View view) {
+		if (view instanceof Spinner) {
+			((Spinner) view).setOnItemSelectedListener(null);
+		}
+		if (view instanceof ViewGroup) {
+			ViewGroup parent = (ViewGroup) view;
+			for (int i = 0; i < parent.getChildCount(); i++) {
+				removeSpinnerListeners(parent.getChildAt(i));
 			}
 		}
 	}

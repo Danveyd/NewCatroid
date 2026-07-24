@@ -972,8 +972,8 @@ public class ScriptFragment extends ListFragment implements
 
         View dialogTitleView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_brick_context, null);
 
-        View brickView = brick.getView(getContext());
-        brick.disableSpinners();
+        View brickView = ((org.catrobat.catroid.content.bricks.BrickBaseType) brick)
+                .getFreshDetachedView(getContext());
         ViewGroup brickContainer = dialogTitleView.findViewById(R.id.brick_view_container);
 
         final int maxBrickHeight = (int) (200 * getContext().getResources().getDisplayMetrics().density);

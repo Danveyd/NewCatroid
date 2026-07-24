@@ -302,6 +302,7 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 			formulaEditorEditText.setVisibility(View.VISIBLE);
 			formulaEditorKeyboard.setVisibility(View.VISIBLE);
 
+			formulaBrick.invalidateCachedView();
 			View brickView = formulaBrick.getView(getActivity());
 
 			formulaBrick.setClickListeners();
