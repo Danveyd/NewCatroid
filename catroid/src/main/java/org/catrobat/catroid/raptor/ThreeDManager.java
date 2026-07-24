@@ -207,6 +207,7 @@ public class ThreeDManager implements Disposable {
     public void resize(int width, int height) {
         this.lastScreenWidth = width;
         this.lastScreenHeight = height;
+        if (!initialized) return;
 
         camera.viewportWidth = width;
         camera.viewportHeight = height;
@@ -526,6 +527,18 @@ public class ThreeDManager implements Disposable {
         return disposed;
     }
 
+    private boolean initialized = false;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void ensureInitialized() {
+        if (!initialized && !disposed) {
+            init();
+        }
+    }
+
     public void init() {
         init(new SceneSettings());
     }
@@ -750,6 +763,8 @@ public class ThreeDManager implements Disposable {
         createDefaultParticleTexture();
 
         contactListCallback = new NameAccumulatingContactCallback();
+
+        initialized = true;
     }
 
     public void setObjectCustomShader(String objectId, String vertexCode, String fragmentCode) {
@@ -1179,6 +1194,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean handleTouchDown(int screenX, int screenY, int pointer, Stage uiStage, Stage stage2d) {
+        if (!initialized) return false;
         if (!touchRotationEnabled || activePointerId != -1) return false;
 
         float px = (rotationAreaX / 100f) * Gdx.graphics.getWidth();
@@ -3306,6 +3322,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public void update(float delta) {
+        if (!initialized) return;
         if (LOG_THREED_MANAGER_DEBUG) Log.d("TDM_DEBUG", "--- ThreeDManager.update() START (Delta: " + delta + ") ---");
         if (cameraTargetId != null) {
             updateThirdPersonCamera();
@@ -3926,6 +3943,7 @@ public class ThreeDManager implements Disposable {
     public void setDepthRender(boolean value) {isDepthRenderEnabled = value; }
 
     public void render() {
+        if (!initialized) return;
         try {
             float delta = Gdx.graphics.getDeltaTime();
 
@@ -4578,6 +4596,7 @@ public class ThreeDManager implements Disposable {
 
 
     public boolean createObject(String objectId, String modelPath) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         try {
@@ -5056,6 +5075,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean createCylinder(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
         final String CYL_MODEL_KEY = "__PRIMITIVE_CYLINDER__";
         Model cylModel = loadedModels.get(CYL_MODEL_KEY);
@@ -5097,6 +5117,7 @@ public class ThreeDManager implements Disposable {
 
 
     public boolean createSphere(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         final String SPHERE_MODEL_KEY = "__PRIMITIVE_SPHERE__";
@@ -5964,6 +5985,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean createCube(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         final String CUBE_MODEL_KEY = "__PRIMITIVE_CUBE__";

@@ -278,6 +278,9 @@ public class StageListener implements ApplicationListener {
 
 
 	public ThreeDManager getThreeDManager() {
+		if (threeDManager != null) {
+			threeDManager.ensureInitialized();
+		}
 		return threeDManager;
 	}
 
@@ -346,10 +349,6 @@ public class StageListener implements ApplicationListener {
             brightnessContrastHueShader.dispose();
             brightnessContrastHueShader = null;
         }
-        if (vncSwizzleShader != null) {
-            vncSwizzleShader.dispose();
-            vncSwizzleShader = null;
-        }
         if (threeDManager != null) {
             threeDManager.dispose();
             threeDManager = null;
@@ -372,7 +371,6 @@ public class StageListener implements ApplicationListener {
 		scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
 
 		threeDManager = new ThreeDManager();
-		threeDManager.init();
 
         MLBridge.nativeResetEngine();
 
@@ -404,21 +402,23 @@ public class StageListener implements ApplicationListener {
 
 		RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		Gdx.app.log("CacheWarming", "Starting asset pre-loading...");
-		for (Sprite sprite : sprites) {
-
-			if (sprite.getLookList() != null) {
-				for (LookData lookData : sprite.getLookList()) {
-					if (lookData != null) {
-
-						lookData.getCollisionInformation().loadCollisionPolygon();
+		final List<Sprite> spritesToWarm = new ArrayList<>(sprites);
+		Thread collisionWarmThread = new Thread(() -> {
+			Gdx.app.log("CacheWarming", "Starting asset pre-loading...");
+			for (Sprite sprite : spritesToWarm) {
+				if (sprite.getLookList() != null) {
+					for (LookData lookData : sprite.getLookList()) {
+						if (lookData != null) {
+							lookData.getCollisionInformation().loadCollisionPolygon();
+						}
 					}
 				}
 			}
-
-
-		}
-		Gdx.app.log("CacheWarming", "Pre-loading finished.");
+			Gdx.app.log("CacheWarming", "Pre-loading finished.");
+		}, "CollisionCacheWarming");
+		collisionWarmThread.setPriority(Thread.MIN_PRIORITY);
+		collisionWarmThread.setDaemon(true);
+		collisionWarmThread.start();
 
 		passepartout = new Passepartout(
 				ScreenValues.currentScreenResolution.getWidth(),
@@ -458,7 +458,7 @@ public class StageListener implements ApplicationListener {
 			vmY = -virtualHeightHalf;
 		}
 
-		try {
+		if (vncSwizzleShader == null || !vncSwizzleShader.isCompiled()) try {
 
 
 			String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
@@ -1396,7 +1396,6 @@ public class StageListener implements ApplicationListener {
 		try {
 			RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			threeDManager = new ThreeDManager();
-			threeDManager.init();
 			sceneManager = new SceneManager(threeDManager);
 		} catch (Exception e) {
 			Log.e("StageListener", "INITIALIZE ERROR: " + e);
@@ -1599,7 +1598,6 @@ public class StageListener implements ApplicationListener {
                 if (sceneManager != null) sceneManager.clearScene();
 
 				threeDManager = new ThreeDManager();
-				threeDManager.init();
 				sceneManager = new SceneManager(threeDManager);
 
 				stage.clear();
