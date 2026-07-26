@@ -5594,4 +5594,35 @@ public class ActionFactory extends Actions {
         action.setFormulas(x, y, radius, startAngle, degrees, fill);
         return action;
     }
+
+    public Action createApply3dTorqueAction(Sprite sprite, SequenceAction sequence,
+                                            Formula objectId, Formula x, Formula y, Formula z) {
+        Apply3dTorqueAction action = action(Apply3dTorqueAction.class);
+        Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+        action.setScope(scope);
+        action.setObjectId(objectId);
+        action.setX(x);
+        action.setY(y);
+        action.setZ(z);
+        return action;
+    }
+
+    public Action createSpringConstraintAction(Sprite sprite, SequenceAction sequence,
+                                               Formula constraintId, Formula objectIdA, Formula objectIdB,
+                                               Formula pivotAx, Formula pivotAy, Formula pivotAz,
+                                               Formula pivotBx, Formula pivotBy, Formula pivotBz) {
+        CreateSpringConstraintAction action = action(CreateSpringConstraintAction.class);
+        Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+        action.setScope(scope);
+        action.setConstraintId(constraintId);
+        action.setObjectIdA(objectIdA);
+        action.setObjectIdB(objectIdB);
+        action.setPivotAx(pivotAx);
+        action.setPivotAy(pivotAy);
+        action.setPivotAz(pivotAz);
+        action.setPivotBx(pivotBx);
+        action.setPivotBy(pivotBy);
+        action.setPivotBz(pivotBz);
+        return action;
+    }
 }

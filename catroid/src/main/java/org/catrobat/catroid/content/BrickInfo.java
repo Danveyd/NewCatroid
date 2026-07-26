@@ -457,6 +457,7 @@ public final class BrickInfo {
         add(PenFlushBrick.class, "Мгновенно выводит все нарисованные объектами линии и фигуры на экран");
         add(PenDrawRectBrick.class, "Рисует прямоугольник с заливкой или без прямо на холсте пера");
         add(PenDrawCircleBrick.class, "Рисует круг, полукруг, сектор или конус с настройкой направления и градуса дуги");
+        add(Apply3dTorqueBrick.class, "Прикладывает 3D крутящий момент (Torque) к объекту по осям X, Y, Z.");
     }
 
     private static void initEnglishDescriptions() {
@@ -875,6 +876,7 @@ public final class BrickInfo {
         add(PenFlushBrick.class, "Instantly renders all drawn lines and shapes to the screen");
         add(PenDrawRectBrick.class, "Draws a rectangle with or without fill directly on the pen canvas");
         add(PenDrawCircleBrick.class, "Draws a circle, semicircle, sector, or cone with direction and arc degree settings");
+        add(Apply3dTorqueBrick.class, "Applies 3D torque to a physical object along the X, Y, Z axes.");
     }
 
     private static void initPortugueseDescriptions() {
@@ -1277,7 +1279,9 @@ public final class BrickInfo {
         add(PenFlushBrick.class, "Renderiza instantaneamente todas as linhas e formas desenhadas na tela");
         add(PenDrawRectBrick.class, "Desenha um retângulo com ou sem preenchimento no canvas da caneta");
         add(PenDrawCircleBrick.class, "Desenha um círculo, semicírculo, setor ou cone com configurações de direção e arco");
+        add(Apply3dTorqueBrick.class, "Aplica torque 3D a um objeto físico ao longo dos eixos X, Y, Z.");
     }
+
     private static void initChineseDescriptions() {
         add(SetGeminiKeyBrick.class, "设置个人 Gemini API 密钥。您可以从 Google AI Studio 获取。");
         add(AskGeminiBrick.class, "向 Gemini (gemini-flash-lite-latest) 提问。重要提示：不等待回复，代码继续执行。");

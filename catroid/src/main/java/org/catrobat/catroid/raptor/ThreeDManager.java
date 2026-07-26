@@ -3477,6 +3477,60 @@ public class ThreeDManager implements Disposable {
         }
     }
 
+    public void applyTorque(String objectId, float forceX, float forceY, float forceZ) {
+        btRigidBody body = physicsBodies.get(objectId);
+        if (body != null && body.getInvMass() > 0) {
+            body.activate();
+            body.applyTorque(new Vector3(forceX, forceY, forceZ));
+        }
+    }
+
+    public boolean createConfigurableSpringConstraint(
+            String constraintId, String objectIdA, String objectIdB,
+            Vector3 pivotA, Vector3 pivotB,
+            boolean springX, boolean springY, boolean springZ,
+            Vector3 minLimit, Vector3 maxLimit,
+            float stiffness, float damping) {
+
+        if (physicsConstraints.containsKey(constraintId)) return false;
+
+        btRigidBody bodyA = physicsBodies.get(objectIdA);
+        btRigidBody bodyB = physicsBodies.get(objectIdB);
+
+        if (bodyA == null || bodyB == null) return false;
+
+        bodyA.activate();
+        bodyB.activate();
+
+        Matrix4 frameInA = new Matrix4().setToTranslation(pivotA);
+        Matrix4 frameInB = new Matrix4().setToTranslation(pivotB);
+
+        btGeneric6DofSpringConstraint constraint = new btGeneric6DofSpringConstraint(bodyA, bodyB, frameInA, frameInB, true);
+
+        constraint.setLinearLowerLimit(minLimit);
+        constraint.setLinearUpperLimit(maxLimit);
+
+        if (springX) {
+            constraint.enableSpring(0, true);
+            constraint.setStiffness(0, stiffness);
+            constraint.setDamping(0, damping);
+        }
+        if (springY) {
+            constraint.enableSpring(1, true);
+            constraint.setStiffness(1, stiffness);
+            constraint.setDamping(1, damping);
+        }
+        if (springZ) {
+            constraint.enableSpring(2, true);
+            constraint.setStiffness(2, stiffness);
+            constraint.setDamping(2, damping);
+        }
+
+        dynamicsWorld.addConstraint(constraint, true);
+        physicsConstraints.put(constraintId, constraint);
+        return true;
+    }
+
     public boolean createSpringConstraint(String constraintId, String objectIdA, String objectIdB, Matrix4 frameInA, Matrix4 frameInB) {
         if (physicsConstraints.containsKey(constraintId)) return false;
         btRigidBody bodyA = physicsBodies.get(objectIdA);

@@ -23,6 +23,23 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_create_spring_constraint_title">Criar junta de mola</string>
+    <string formatted="false" name="brick_create_spring_constraint_id">ID da junta</string>
+    <string formatted="false" name="brick_create_spring_constraint_a">Objeto A</string>
+    <string formatted="false" name="brick_create_spring_constraint_b">Objeto B</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_a">Pivô A (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_b">Pivô B (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_spring_axes">Eixos da mola</string>
+    <string formatted="false" name="brick_create_spring_constraint_min_limits">Limites mín (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_max_limits">Limites máx (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_stiffness">Rigidez</string>
+    <string formatted="false" name="brick_create_spring_constraint_damping">Amortecimento</string>
+
+    <string formatted="false" name="brick_apply_3d_torque_1">Aplicar torque em</string>
+    <string formatted="false" name="brick_apply_3d_torque_x">X</string>
+    <string formatted="false" name="brick_apply_3d_torque_y">Y</string>
+    <string formatted="false" name="brick_apply_3d_torque_z">Z</string>
+
     <string name="brick_if_then">então</string>
     <string name="dialog_delete_else_if_title">Excluir ramificação?</string>
     <string name="dialog_delete_else_if_message">Tem certeza de que deseja excluir esta ramificação \'senão se\' e seus blocos?</string>

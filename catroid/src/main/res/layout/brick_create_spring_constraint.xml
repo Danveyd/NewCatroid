@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_create_spring_constraint_layout"
+        style="@style/BrickContainer.Threed.Big">
+
+        <include layout="@layout/icon_brick_category_threed" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_title" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_id"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_id"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_a"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_a"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_b"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_b"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_pivot_a"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_pax"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_pay"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_paz"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_pivot_b"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_pbx"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_pby"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_pbz"
+            style="@style/BrickEditText" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_newLine="true"
+            android:gravity="center_vertical">
+
+            <TextView
+                style="@style/BrickText.SingleLine"
+                android:text="@string/brick_create_spring_constraint_spring_axes" />
+
+            <CheckBox
+                android:id="@+id/brick_spring_axis_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X"
+                android:buttonTint="#FFFFFF"
+                android:textColor="#FFFFFF"/>
+
+            <CheckBox
+                android:id="@+id/brick_spring_axis_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Y"
+                android:buttonTint="#FFFFFF"
+                android:textColor="#FFFFFF"/>
+
+            <CheckBox
+                android:id="@+id/brick_spring_axis_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Z"
+                android:buttonTint="#FFFFFF"
+                android:textColor="#FFFFFF"/>
+        </LinearLayout>
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_min_limits"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_min_x"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_min_y"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_min_z"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_max_limits"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_max_x"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_max_y"
+            style="@style/BrickEditText" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_max_z"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_stiffness"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_stiffness"
+            style="@style/BrickEditText" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_spring_constraint_damping"
+            app:layout_newLine="true" />
+        <TextView
+            android:id="@+id/brick_spring_constraint_edit_damping"
+            style="@style/BrickEditText" />
+
+    </org.catrobat.catroid.ui.BrickLayout>
+
+</LinearLayout>
