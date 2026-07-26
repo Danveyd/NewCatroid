@@ -1,4 +1,0 @@
-D:/Catroid-develop/catroid/.cxx/Debug/6tl2k196/x86_64/CMakeFiles/example_core.dir
-D:/Catroid-develop/catroid/.cxx/Debug/6tl2k196/x86_64/CMakeFiles/catroid.dir
-D:/Catroid-develop/catroid/.cxx/Debug/6tl2k196/x86_64/CMakeFiles/edit_cache.dir
-D:/Catroid-develop/catroid/.cxx/Debug/6tl2k196/x86_64/CMakeFiles/rebuild_cache.dir

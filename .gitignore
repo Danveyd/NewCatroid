@@ -46,6 +46,8 @@ build/
 # generated files
 bin/
 gen/
+target/
+out/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -61,7 +63,9 @@ Thumbs.db
 *~
 
 # Cache for build scripts
-__pycache__
+__pycache__/
+*.py[cod]
+*$py.class
 
 # Crowdin folder
 crowdin/
@@ -73,10 +77,86 @@ fastlane/*
 !fastlane/staticContent/
 Gemfile
 
-
 # Не коммитить личную жизнь (все равно равно нет после этого апдейта)
 *.personal_life
 # Не коммитить здравый смысл, пж
 /sanity_logic/
-/catroid/.cxx/Debug
-/vncclient/.cxx/Debug
+
+# CMake build artifacts
+.cxx/
+**/CMakeLists.txt.user
+**/.cache/
+**/.cmake/
+
+# Native build artifacts (only in build output directories)
+**/.cxx/**/*.o
+**/.cxx/**/*.obj
+**/.cxx/**/*.a
+**/.cxx/**/*.lib
+**/.cxx/**/*.so
+**/.cxx/**/*.dylib
+**/.cxx/**/*.exe
+**/.cxx/**/*.dll
+**/build/**/*.o
+**/build/**/*.obj
+**/build/**/*.a
+**/build/**/*.lib
+**/build/**/*.so
+**/build/**/*.dylib
+**/build/**/*.exe
+**/build/**/*.dll
+**/.externalNativeBuild/**/*.o
+**/.externalNativeBuild/**/*.obj
+**/.externalNativeBuild/**/*.a
+**/.externalNativeBuild/**/*.lib
+**/.externalNativeBuild/**/*.so
+**/.externalNativeBuild/**/*.dylib
+**/.externalNativeBuild/**/*.exe
+**/.externalNativeBuild/**/*.dll
+
+# Log files
+*.log
+hs_err_*.log
+*.out
+*.err
+
+# Trace and profiling files
+*.trace
+*.perfetto*
+*.prof
+*.hprof
+
+# JVM crash logs
+hs_err_pid*.log
+
+# IDE and editor files
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Secrets and credentials
+*.keystore
+*.jks
+*.pem
+*.key
+!*.pub
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build outputs
+captures/
+.externalNativeBuild/
+.cxx/

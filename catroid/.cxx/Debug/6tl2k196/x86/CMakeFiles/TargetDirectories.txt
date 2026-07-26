@@ -1,4 +1,0 @@
-/home/monsler/Документы/NewCatroid/catroid/.cxx/Debug/6tl2k196/x86/CMakeFiles/example_core.dir
-/home/monsler/Документы/NewCatroid/catroid/.cxx/Debug/6tl2k196/x86/CMakeFiles/catroid.dir
-/home/monsler/Документы/NewCatroid/catroid/.cxx/Debug/6tl2k196/x86/CMakeFiles/edit_cache.dir
-/home/monsler/Документы/NewCatroid/catroid/.cxx/Debug/6tl2k196/x86/CMakeFiles/rebuild_cache.dir
