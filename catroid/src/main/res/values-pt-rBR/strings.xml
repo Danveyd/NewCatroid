@@ -23,6 +23,148 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="particle_exit_dialog_title">Alterações não salvas</string>
+    <string name="particle_exit_dialog_msg">Deseja salvar o efeito de partículas antes de sair?</string>
+    <string name="particle_exit_save">Salvar e Sair</string>
+    <string name="particle_exit_discard">Sair sem Salvar</string>
+
+    <!-- Particle Editor Titles & Buttons -->
+    <string name="particle_editor_title">Editor de Partículas</string>
+    <string name="particle_editor_save">Salvar</string>
+    <string name="particle_editor_saved">Efeito de partículas salvo com sucesso!</string>
+
+    <!-- Curves -->
+    <string name="particle_curve_size">Curva de Tamanho</string>
+    <string name="particle_curve_spin">Curva de Rotação</string>
+    <string name="particle_curve_alpha">Curva de Transparência</string>
+
+    <!-- Graph Controls -->
+    <string name="particle_graph_zoom_in">Aumentar Zoom</string>
+    <string name="particle_graph_zoom_out">Diminuir Zoom</string>
+    <string name="particle_graph_reset">Redefinir</string>
+    <string name="particle_graph_add_point">+ Ponto</string>
+    <string name="particle_graph_delete_point">Excluir</string>
+    <string name="particle_graph_easing">Suavização:</string>
+    <string name="particle_graph_variance">Variação (±):</string>
+
+    <!-- Sections -->
+    <string name="particle_section_main">Configurações Principais e Emissão</string>
+    <string name="particle_section_spawn">Área de Emissão (PosVar)</string>
+    <string name="particle_section_physics_gravity">Modo de Física de Gravidade</string>
+    <string name="particle_section_physics_radius">Modo de Física de Raio</string>
+    <string name="particle_section_color">Cor das Partículas</string>
+    <string name="particle_section_texture">Textura e Buffer</string>
+
+    <!-- Emitter Settings -->
+    <string name="particle_emitter_mode">Modo do Emissor:</string>
+    <string name="particle_mode_gravity">Modo Gravidade</string>
+    <string name="particle_mode_radius">Modo Raio</string>
+    <string name="particle_duration">Duração (-1 = ∞):</string>
+    <string name="particle_respawn_delay">Atraso de Reaparecimento:</string>
+    <string name="particle_lifetime_var">Var. de Vida (±):</string>
+    <string name="particle_fade_in">Tempo de Fade In:</string>
+    <string name="particle_fade_out">Tempo de Fade Out:</string>
+
+    <!-- Sliders -->
+    <string name="particle_slider_pos_x">PosVar X</string>
+    <string name="particle_slider_pos_y">PosVar Y</string>
+    <string name="particle_slider_speed">Velocidade</string>
+    <string name="particle_slider_speed_var">Var. de Velocidade (±):</string>
+    <string name="particle_slider_angle">Ângulo</string>
+    <string name="particle_slider_angle_var">Var. de Ângulo (±):</string>
+    <string name="particle_slider_gravity_x">Gravidade X</string>
+    <string name="particle_slider_gravity_y">Gravidade Y</string>
+    <string name="particle_slider_radial_accel">Aceleração Radial</string>
+    <string name="particle_slider_tangential_accel">Aceleração Tangencial</string>
+    <string name="particle_slider_friction">Fricção</string>
+    <string name="particle_slider_start_radius">Raio Inicial</string>
+    <string name="particle_slider_end_radius">Raio Final</string>
+    <string name="particle_slider_rotate_sec">Velocidade de Rotação</string>
+
+    <!-- Colors & Textures -->
+    <string name="particle_start_color">Cor Inicial</string>
+    <string name="particle_end_color">Cor Final</string>
+    <string name="particle_select_color">Escolher Cor</string>
+    <string name="particle_texture_current">Atual: %1$s</string>
+    <string name="particle_texture_default">Círculo Padrão</string>
+    <string name="particle_btn_project_files">Arquivos do Projeto</string>
+    <string name="particle_btn_import_photo">+ Importar Foto</string>
+    <string name="particle_additive_blending">Mistura Aditiva (Brilho / Fogo)</string>
+    <string name="particle_fbo_buffer">Nome do Buffer FBO:</string>
+    <string name="particle_fbo_hint">ex. background_layer</string>
+
+    <!-- Gizmos & Dialogs -->
+    <string name="particle_editor_gizmo_gravity">Gravidade</string>
+    <string name="particle_editor_gizmo_angle">Ângulo</string>
+    <string name="particle_editor_gizmo_posvar">PosVar</string>
+    <string name="particle_slider_bounds_title">Alcance do Controle</string>
+    <string name="particle_slider_bounds_msg">Defina os limites para: %1$s</string>
+    <string name="particle_min_val">Valor Mínimo</string>
+    <string name="particle_max_val">Valor Máximo</string>
+    <string name="particle_ok">OK</string>
+    <string name="particle_cancel">Cancelar</string>
+    <string name="particle_invalid_range">O mínimo deve ser estritamente menor que o máximo!</string>
+
+    <string name="particle_bg_gallery">Fundo da Galeria</string>
+    <string name="particle_texture_picker">Textura da Partícula</string>
+    <string name="particle_graph_reset_zoom">Resetar</string>
+
+    <string name="particle_editor_gizmos">Gizmos:</string>
+    <string name="particle_editor_gizmo_radius">Raio</string>
+
+    <string name="particle_section_physics">Física e Movimento</string>
+
+    <string name="category_2d_particles" formatted="false">Partículas 2D</string>
+
+    <string name="brick_create_particle" formatted="false">Criar partículas do arquivo:</string>
+    <string name="brick_edit_particles" formatted="false">Editor de partículas</string>
+
+    <string name="brick_spawn_particle_effect" formatted="false">Gerar partículas do arquivo:</string>
+    <string name="brick_spawn_particle_instance" formatted="false">instância:</string>
+
+    <string name="brick_particle_buffer_for" formatted="false">Partículas instância:</string>
+    <string name="brick_particle_buffer_target" formatted="false">renderizar para buffer:</string>
+    <string name="brick_particle_buffer_mode" formatted="false">modo:</string>
+
+    <string name="brick_set_particle_transform" formatted="false">Transformar partículas:</string>
+    <string name="brick_particle_scale_x" formatted="false">Largura (Scale X):</string>
+    <string name="brick_particle_scale_y" formatted="false">Altura (Scale Y):</string>
+    <string name="brick_particle_rotation_2d" formatted="false">Rotação:</string>
+
+    <string name="brick_set_particle_property" formatted="false">Definir propriedade de partícula:</string>
+    <string name="brick_particle_property_label" formatted="false">propriedade:</string>
+
+    <string name="brick_emit_particle_burst" formatted="false">Emitir pulso de partículas:</string>
+    <string name="brick_particle_burst_count" formatted="false">quantidade:</string>
+
+    <string name="brick_stop_particle_instance" formatted="false">Parar partículas:</string>
+
+    <string-array name="particle_buffer_modes">
+        <item>Tela e Buffer</item>
+        <item>Apenas Buffer</item>
+        <item>Apenas Tela</item>
+    </string-array>
+
+    <string-array name="particle_properties_array">
+        <item>Taxa de Emissão</item>
+        <item>Velocidade</item>
+        <item>Ângulo</item>
+        <item>Gravidade X</item>
+        <item>Gravidade Y</item>
+        <item>Aceleração Radial</item>
+        <item>Aceleração Tangencial</item>
+        <item>Fricção</item>
+        <item>Transparência (Alpha)</item>
+        <item>Cor R</item>
+        <item>Cor G</item>
+        <item>Cor B</item>
+    </string-array>
+
+    <string-array name="particle_stop_modes">
+        <item>Suavemente</item>
+        <item>Imediatamente</item>
+    </string-array>
+
     <string formatted="false" name="brick_create_spring_constraint_title">Criar junta de mola</string>
     <string formatted="false" name="brick_create_spring_constraint_id">ID da junta</string>
     <string formatted="false" name="brick_create_spring_constraint_a">Objeto A</string>
@@ -1165,7 +1307,6 @@
     <string name="particle_main">Configurações principais</string>
     <string name="particle_looping">Repetir</string>
     <string name="particle_prewarm">Pré-aquecimento</string>
-    <string name="particle_duration">Duração</string>
     <string name="particle_max_particles">Limite de partículas</string>
     <string name="particle_start_lifetime">Tempo de vida</string>
     <string name="particle_start_speed">Velocidade inicial</string>

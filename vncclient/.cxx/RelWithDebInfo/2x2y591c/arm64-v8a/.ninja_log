@@ -1559,3 +1559,4 @@
 93325	93493	8053054462286725	libvncserver/test/wstest	5175ca6b27e6d574
 93292	93538	8053054462666700	libvncserver/CMakeFiles/test_encodingstest.dir/test/encodingstest.c.o	e7a23979d5fc3e5d
 93539	93626	8053054463686742	libvncserver/test/encodingstest	567bba9d39ea82c
+0	78	0	clean	d60c0ea4c7f1e19

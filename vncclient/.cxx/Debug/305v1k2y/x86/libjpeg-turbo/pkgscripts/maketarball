@@ -32,7 +32,7 @@ rm -f $PKGNAME-$VERSION-$OS-$ARCH.tar.bz2
 TMPDIR=`mktemp -d /tmp/$PKGNAME-build.XXXXXX`
 mkdir -p $TMPDIR/install
 
-DESTDIR=$TMPDIR/install /home/monsler/Android/Sdk/cmake/3.22.1/bin/ninja install
+DESTDIR=$TMPDIR/install D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe install
 echo tartest >$TMPDIR/tartest
 GNUTAR=0
 BSDTAR=0

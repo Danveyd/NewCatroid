@@ -1,1 +1,1 @@
-/home/monsler/Документы/NewCatroid/catroid/src/main/cpp/CMakeLists.txt
+D:\Catroid-develop\catroid\src\main\cpp\CMakeLists.txt

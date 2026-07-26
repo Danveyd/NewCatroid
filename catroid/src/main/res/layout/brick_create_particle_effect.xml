@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/brick_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
+    <org.catrobat.catroid.ui.BrickLayout
+        android:id="@+id/brick_create_particle_layout"
+        style="@style/BrickContainer.Look.Medium">
+
+        <include layout="@layout/icon_brick_category_look" />
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_create_particle" />
+
+        <TextView
+            android:id="@+id/brick_particle_file_edit_text"
+            style="@style/BrickEditText" />
+
+        <TextView
+            android:id="@+id/brick_open_particle_editor_button"
+            style="@style/BrickText.SingleLine"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_else_if_btn"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/brick_edit_particles" />
+    </org.catrobat.catroid.ui.BrickLayout>
+
+</LinearLayout>

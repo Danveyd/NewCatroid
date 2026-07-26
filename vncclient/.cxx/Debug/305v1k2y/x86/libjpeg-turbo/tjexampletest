@@ -20,9 +20,9 @@ runme()
 }
 
 IMAGES="vgl_5674_0098.bmp vgl_6434_0018a.bmp vgl_6548_0026a.bmp nightshot_iso_100.bmp"
-IMGDIR=/home/monsler/Документы/NewCatroid/vncclient/src/main/cpp/libjpeg-turbo/testimages
+IMGDIR=D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo/testimages
 OUTDIR=`mktemp -d /tmp/__tjexampletest_output.XXXXXX`
-EXEDIR=/home/monsler/Документы/NewCatroid/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo
+EXEDIR=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo
 
 if [ -d $OUTDIR ]; then
 	rm -rf $OUTDIR

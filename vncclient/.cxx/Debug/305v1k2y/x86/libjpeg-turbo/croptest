@@ -22,9 +22,9 @@ runme()
 IMAGE=vgl_6548_0026a.bmp
 WIDTH=128
 HEIGHT=95
-IMGDIR=/home/monsler/Документы/NewCatroid/vncclient/src/main/cpp/libjpeg-turbo/testimages
+IMGDIR=D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo/testimages
 OUTDIR=`mktemp -d /tmp/__croptest_output.XXXXXX`
-EXEDIR=/home/monsler/Документы/NewCatroid/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo
+EXEDIR=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo
 
 if [ -d $OUTDIR ]; then
 	rm -rf $OUTDIR

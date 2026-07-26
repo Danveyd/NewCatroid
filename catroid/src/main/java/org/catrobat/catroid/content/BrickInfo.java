@@ -458,6 +458,13 @@ public final class BrickInfo {
         add(PenDrawRectBrick.class, "Рисует прямоугольник с заливкой или без прямо на холсте пера");
         add(PenDrawCircleBrick.class, "Рисует круг, полукруг, сектор или конус с настройкой направления и градуса дуги");
         add(Apply3dTorqueBrick.class, "Прикладывает 3D крутящий момент (Torque) к объекту по осям X, Y, Z.");
+        add(CreateParticleEffectBrick.class, "Создает эффект частиц из файла проекта");
+        add(SpawnParticleInstanceBrick.class, "Запускает экземпляр частиц с указанным ID в позицию X, Y");
+        add(SetParticleBufferRenderBrick.class, "Настраивает буфер и режим рендеринга для частиц");
+        add(SetParticleTransformBrick.class, "Устанавливает позицию, размер и поворот экземпляра частиц");
+        add(SetParticlePropertyBrick.class, "Изменяет физический или визуальный параметр частиц");
+        add(EmitParticleBurstBrick.class, "Производит мгновенный импульсный выброс частиц");
+        add(StopParticleInstanceBrick.class, "Останавливает или мгновенно удаляет экземпляр частиц");
     }
 
     private static void initEnglishDescriptions() {
@@ -877,6 +884,13 @@ public final class BrickInfo {
         add(PenDrawRectBrick.class, "Draws a rectangle with or without fill directly on the pen canvas");
         add(PenDrawCircleBrick.class, "Draws a circle, semicircle, sector, or cone with direction and arc degree settings");
         add(Apply3dTorqueBrick.class, "Applies 3D torque to a physical object along the X, Y, Z axes.");
+        add(CreateParticleEffectBrick.class, "Creates particle effect from project file");
+        add(SpawnParticleInstanceBrick.class, "Spawns particle instance with ID at position X, Y");
+        add(SetParticleBufferRenderBrick.class, "Configures render buffer and mode for particles");
+        add(SetParticleTransformBrick.class, "Sets position, size and rotation of particle instance");
+        add(SetParticlePropertyBrick.class, "Changes a physical or visual property of particles");
+        add(EmitParticleBurstBrick.class, "Triggers an instant particle burst");
+        add(StopParticleInstanceBrick.class, "Stops or immediately deletes particle instance");
     }
 
     private static void initPortugueseDescriptions() {
@@ -1280,6 +1294,13 @@ public final class BrickInfo {
         add(PenDrawRectBrick.class, "Desenha um retângulo com ou sem preenchimento no canvas da caneta");
         add(PenDrawCircleBrick.class, "Desenha um círculo, semicírculo, setor ou cone com configurações de direção e arco");
         add(Apply3dTorqueBrick.class, "Aplica torque 3D a um objeto físico ao longo dos eixos X, Y, Z.");
+        add(CreateParticleEffectBrick.class, "Cria efeito de partículas a partir de um arquivo do projeto");
+        add(SpawnParticleInstanceBrick.class, "Gera instância de partículas com ID na posição X, Y");
+        add(SetParticleBufferRenderBrick.class, "Configura o buffer de renderização e o modo das partículas");
+        add(SetParticleTransformBrick.class, "Define posição, tamanho e rotação da instância de partículas");
+        add(SetParticlePropertyBrick.class, "Altera uma propriedade física ou visual das partículas");
+        add(EmitParticleBurstBrick.class, "Dispara um pulso instantâneo de partículas");
+        add(StopParticleInstanceBrick.class, "Para ou exclui imediatamente a instância de partículas");
     }
 
     private static void initChineseDescriptions() {

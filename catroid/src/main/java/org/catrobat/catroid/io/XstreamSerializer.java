@@ -872,6 +872,13 @@ public final class XstreamSerializer {
         xstream.alias("brick", PlaySpritesheetBrick.class);
         xstream.alias("brick", StopSpritesheetBrick.class);
         xstream.alias("brick", Replace3DModelBrick.class);
+        xstream.alias("brick", CreateParticleEffectBrick.class);
+        xstream.alias("brick", SpawnParticleInstanceBrick.class);
+        xstream.alias("brick", SetParticleBufferRenderBrick.class);
+        xstream.alias("brick", SetParticleTransformBrick.class);
+        xstream.alias("brick", SetParticlePropertyBrick.class);
+        xstream.alias("brick", EmitParticleBurstBrick.class);
+        xstream.alias("brick", StopParticleInstanceBrick.class);
 
 
         xstream.alias("brick", org.catrobat.catroid.content.bricks.UnknownBrick.class);

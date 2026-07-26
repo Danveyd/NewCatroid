@@ -126,6 +126,7 @@ import org.catrobat.catroid.content.bricks.CreateFloatBrick
 import org.catrobat.catroid.content.bricks.CreateGLViewBrick
 import org.catrobat.catroid.content.bricks.CreateGearJointBrick
 import org.catrobat.catroid.content.bricks.CreateImageViewBrick
+import org.catrobat.catroid.content.bricks.CreateParticleEffectBrick
 import org.catrobat.catroid.content.bricks.CreateParticlesBrick
 import org.catrobat.catroid.content.bricks.CreatePointJointBrick
 import org.catrobat.catroid.content.bricks.CreatePrismaticJointBrick
@@ -179,6 +180,7 @@ import org.catrobat.catroid.content.bricks.DroneTurnRightBrick
 import org.catrobat.catroid.content.bricks.Ease3DPropertyBrick
 import org.catrobat.catroid.content.bricks.EasePropertyBrick
 import org.catrobat.catroid.content.bricks.EditLookBrick
+import org.catrobat.catroid.content.bricks.EmitParticleBurstBrick
 import org.catrobat.catroid.content.bricks.EnableBackgroundModeBrick
 import org.catrobat.catroid.content.bricks.EnablePbrRenderBrick
 import org.catrobat.catroid.content.bricks.EvalWebBrick
@@ -489,8 +491,11 @@ import org.catrobat.catroid.content.bricks.SetObjectShaderBrick
 import org.catrobat.catroid.content.bricks.SetObjectShaderUniformBrick
 import org.catrobat.catroid.content.bricks.SetObjectTextureBrick
 import org.catrobat.catroid.content.bricks.SetParentBrick
+import org.catrobat.catroid.content.bricks.SetParticleBufferRenderBrick
 import org.catrobat.catroid.content.bricks.SetParticleColorBrick
 import org.catrobat.catroid.content.bricks.SetParticleEmissionBrick
+import org.catrobat.catroid.content.bricks.SetParticlePropertyBrick
+import org.catrobat.catroid.content.bricks.SetParticleTransformBrick
 import org.catrobat.catroid.content.bricks.SetPenColorBrick
 import org.catrobat.catroid.content.bricks.SetPenPropertyBrick
 import org.catrobat.catroid.content.bricks.SetPenSizeBrick
@@ -552,6 +557,7 @@ import org.catrobat.catroid.content.bricks.ShowVarFontBrick
 import org.catrobat.catroid.content.bricks.SignApkBrick
 import org.catrobat.catroid.content.bricks.SoundFileBrick
 import org.catrobat.catroid.content.bricks.SoundFilesBrick
+import org.catrobat.catroid.content.bricks.SpawnParticleInstanceBrick
 import org.catrobat.catroid.content.bricks.SpawnThreadBrick
 import org.catrobat.catroid.content.bricks.SpeakAndWaitBrick
 import org.catrobat.catroid.content.bricks.SpeakBrick
@@ -568,6 +574,7 @@ import org.catrobat.catroid.content.bricks.StopAllSoundsBrick
 import org.catrobat.catroid.content.bricks.StopAnimationBrick
 import org.catrobat.catroid.content.bricks.StopBufferRecordingBrick
 import org.catrobat.catroid.content.bricks.StopGifBrick
+import org.catrobat.catroid.content.bricks.StopParticleInstanceBrick
 import org.catrobat.catroid.content.bricks.StopPlotBrick
 import org.catrobat.catroid.content.bricks.StopRecordingBrick
 import org.catrobat.catroid.content.bricks.StopRunningStitchBrick
@@ -1436,6 +1443,14 @@ void main() {
                 looksBrickList.add(SetMainRenderLoopsBrick(1f, 1f, 1f))
                 looksBrickList.add(SetBufferEffectsBrick("Map", 1f, 1f))
 
+                looksBrickList.add(CreateParticleEffectBrick("fire.particle"))
+                looksBrickList.add(SpawnParticleInstanceBrick("fire.particle", "fire1", 0.0, 0.0))
+                looksBrickList.add(SetParticleBufferRenderBrick("fire1", "myBuffer", 0))
+                looksBrickList.add(SetParticleTransformBrick("fire1", 0.0, 0.0, 1.0, 1.0, 0.0))
+                looksBrickList.add(SetParticlePropertyBrick("fire1", 0, 50.0))
+                looksBrickList.add(EmitParticleBurstBrick("fire1", 20.0))
+                looksBrickList.add(StopParticleInstanceBrick("fire1", 0))
+
                 looksBrickList.add(OpenUrlBrick(BrickValues.OPEN_IN_BROWSER))
                 looksBrickList.add(OpenAppBrick(Formula("com.android.settings")))
                 return looksBrickList
@@ -1596,6 +1611,15 @@ void main() {
         looksBrickList.add(StopBufferRecordingBrick())
         looksBrickList.add(SetMainRenderLoopsBrick(1f, 1f, 1f))
         looksBrickList.add(SetBufferEffectsBrick("Map", 1f, 1f))
+
+        looksBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.category_2d_particles), template))
+        looksBrickList.add(CreateParticleEffectBrick("fire.particle"))
+        looksBrickList.add(SpawnParticleInstanceBrick("fire.particle", "fire1", 0.0, 0.0))
+        looksBrickList.add(SetParticleBufferRenderBrick("fire1", "myBuffer", 0))
+        looksBrickList.add(SetParticleTransformBrick("fire1", 0.0, 0.0, 1.0, 1.0, 0.0))
+        looksBrickList.add(SetParticlePropertyBrick("fire1", 0, 50.0))
+        looksBrickList.add(EmitParticleBurstBrick("fire1", 20.0))
+        looksBrickList.add(StopParticleInstanceBrick("fire1", 0))
 
         return looksBrickList
     }

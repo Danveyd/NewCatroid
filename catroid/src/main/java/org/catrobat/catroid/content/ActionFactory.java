@@ -5625,4 +5625,67 @@ public class ActionFactory extends Actions {
         action.setPivotBz(pivotBz);
         return action;
     }
+
+    public Action createCreateParticleEffectAction(Sprite sprite, SequenceAction sequence, Formula fileFormula) {
+        CreateParticleEffectAction action = action(CreateParticleEffectAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setFileFormula(fileFormula);
+        return action;
+    }
+
+    public Action createSpawnParticleInstanceAction(Sprite sprite, SequenceAction sequence, Formula file, Formula name, Formula x, Formula y) {
+        SpawnParticleInstanceAction action = action(SpawnParticleInstanceAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setEffectFileFormula(file);
+        action.setInstanceIdFormula(name);
+        action.setXFormula(x);
+        action.setYFormula(y);
+        return action;
+    }
+
+    public Action createSetParticleBufferRenderAction(Sprite sprite, SequenceAction sequence, Formula name, Formula text, int mode) {
+        SetParticleBufferRenderAction action = action(SetParticleBufferRenderAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setInstanceIdFormula(name);
+        action.setBufferNameFormula(text);
+        action.setModeSelection(mode);
+        return action;
+    }
+
+    public Action createSetParticleTransformAction(Sprite sprite, SequenceAction sequence, Formula name, Formula x, Formula y, Formula scaleX, Formula scaleY, Formula rotation) {
+        SetParticleTransformAction action = action(SetParticleTransformAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setInstanceIdFormula(name);
+        action.setXFormula(x);
+        action.setYFormula(y);
+        action.setScaleXFormula(scaleX);
+        action.setScaleYFormula(scaleY);
+        action.setRotationFormula(rotation);
+        return action;
+    }
+
+    public Action createSetParticlePropertyAction(Sprite sprite, SequenceAction sequence, Formula name, int propertyIndex, Formula value) {
+        SetParticlePropertyAction action = action(SetParticlePropertyAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setInstanceIdFormula(name);
+        action.setPropertyIndex(propertyIndex);
+        action.setValueFormula(value);
+        return action;
+    }
+
+    public Action createEmitParticleBurstAction(Sprite sprite, SequenceAction sequence, Formula name, Formula count) {
+        EmitParticleBurstAction action = action(EmitParticleBurstAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setInstanceIdFormula(name);
+        action.setCountFormula(count);
+        return action;
+    }
+
+    public Action createStopParticleInstanceAction(Sprite sprite, SequenceAction sequence, Formula name, int modeSelection) {
+        StopParticleInstanceAction action = action(StopParticleInstanceAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setInstanceIdFormula(name);
+        action.setModeSelection(modeSelection);
+        return action;
+    }
 }

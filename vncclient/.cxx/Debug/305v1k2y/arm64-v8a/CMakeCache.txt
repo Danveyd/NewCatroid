@@ -23,8 +23,8 @@ ANDROID_NDK:UNINITIALIZED=D:\AppData\Local\Android\Sdk\ndk\26.1.10909125
 //No help, variable specified on the command line.
 ANDROID_PLATFORM:UNINITIALIZED=android-24
 
-//Build string (default: 20250918)
-BUILD:STRING=20250918
+//Build string (default: 20260726)
+BUILD:STRING=20260726
 
 //Build shared libraries
 BUILD_SHARED_LIBS:BOOL=ON
@@ -41,29 +41,14 @@ CMAKE_ANDROID_NDK:UNINITIALIZED=D:\AppData\Local\Android\Sdk\ndk\26.1.10909125
 //Archiver
 CMAKE_AR:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe
 
-//ASM compiler
-CMAKE_ASM_COMPILER:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe
-
-//LLVM archiver
-CMAKE_ASM_COMPILER_AR:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ar.exe
-
-//Generate index for LLVM archive
-CMAKE_ASM_COMPILER_RANLIB:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-ranlib.exe
-
 //Flags used by the compiler during all build types.
 CMAKE_ASM_FLAGS:STRING=
 
 //Flags used by the compiler during debug builds.
 CMAKE_ASM_FLAGS_DEBUG:STRING=
 
-//Flags used by the ASM compiler during MINSIZEREL builds.
-CMAKE_ASM_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG
-
 //Flags used by the compiler during release builds.
 CMAKE_ASM_FLAGS_RELEASE:STRING=
-
-//Flags used by the ASM compiler during RELWITHDEBINFO builds.
-CMAKE_ASM_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 
 //Choose the type of build, options are: None Debug Release RelWithDebInfo
 // MinSizeRel ...
@@ -138,40 +123,51 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 //No help, variable specified on the command line.
 CMAKE_EXPORT_COMPILE_COMMANDS:UNINITIALIZED=ON
 
-//User executables (bin)
+//Directory into which user executables should be installed (Default:
+// bin)
 CMAKE_INSTALL_BINDIR:PATH=bin
 
-//Read-only architecture-independent data (DATAROOTDIR)
-CMAKE_INSTALL_DATADIR:PATH=
+//The directory under which read-only architecture-independent
+// data files should be installed (Default: <CMAKE_INSTALL_DATAROOTDIR>)
+CMAKE_INSTALL_DATADIR:PATH=<CMAKE_INSTALL_DATAROOTDIR>
 
-//Read-only architecture-independent data root (share)
-CMAKE_INSTALL_DATAROOTDIR:PATH=share
+//The root of the directory tree for read-only architecture-independent
+// data files (Default: )
+CMAKE_INSTALL_DATAROOTDIR:PATH=
 
-//Documentation root (DATAROOTDIR/doc/PROJECT_NAME)
-CMAKE_INSTALL_DOCDIR:PATH=
+//The directory into which documentation files (other than info
+// files) should be installed (Default: <CMAKE_INSTALL_DATAROOTDIR>/doc)
+CMAKE_INSTALL_DOCDIR:PATH=<CMAKE_INSTALL_DATAROOTDIR>/doc
 
-//C header files (include)
+//Directory into which C header files should be installed (Default:
+// include)
 CMAKE_INSTALL_INCLUDEDIR:PATH=include
 
-//Info documentation (DATAROOTDIR/info)
-CMAKE_INSTALL_INFODIR:PATH=
+//The directory into which info documentation files should be installed
+// (Default: <CMAKE_INSTALL_DATAROOTDIR>/info)
+CMAKE_INSTALL_INFODIR:PATH=<CMAKE_INSTALL_DATAROOTDIR>/info
 
-//Object code libraries (lib)
-CMAKE_INSTALL_LIBDIR:PATH=lib
+//Directory into which object files and object code libraries should
+// be installed (Default: lib64)
+CMAKE_INSTALL_LIBDIR:PATH=lib64
 
-//Program executables (libexec)
+//Directory under which executables run by other programs should
+// be installed (Default: libexec)
 CMAKE_INSTALL_LIBEXECDIR:PATH=libexec
 
-//Locale-dependent data (DATAROOTDIR/locale)
-CMAKE_INSTALL_LOCALEDIR:PATH=
+//The directory under which locale-specific message catalogs should
+// be installed (Default: <CMAKE_INSTALL_DATAROOTDIR>/locale)
+CMAKE_INSTALL_LOCALEDIR:PATH=<CMAKE_INSTALL_DATAROOTDIR>/locale
 
-//Modifiable single-machine data (var)
+//Directory into which machine-specific run-time-modifiable data
+// files should be installed (Default: var)
 CMAKE_INSTALL_LOCALSTATEDIR:PATH=var
 
-//Man documentation (DATAROOTDIR/man)
-CMAKE_INSTALL_MANDIR:PATH=
+//The directory under which man pages should be installed (Default:
+// <CMAKE_INSTALL_DATAROOTDIR>/man)
+CMAKE_INSTALL_MANDIR:PATH=<CMAKE_INSTALL_DATAROOTDIR>/man
 
-//C header files for non-gcc (/usr/include)
+//PATH (Default: /usr/include)
 CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
 
 //Directory into which to install VncClientBridge (default: /opt/VncClientBridge)
@@ -180,13 +176,16 @@ CMAKE_INSTALL_PREFIX:PATH=/opt/VncClientBridge
 //Run-time variable data (LOCALSTATEDIR/run)
 CMAKE_INSTALL_RUNSTATEDIR:PATH=
 
-//System admin executables (sbin)
+//Directory into which system admin executables should be installed
+// (Default: sbin)
 CMAKE_INSTALL_SBINDIR:PATH=sbin
 
-//Modifiable architecture-independent data (com)
+//Directory into which architecture-independent run-time-modifiable
+// data files should be installed (Default: com)
 CMAKE_INSTALL_SHAREDSTATEDIR:PATH=com
 
-//Read-only single-machine data (etc)
+//Directory into which machine-specific read-only ASCII data and
+// configuration files should be installed (Default: etc)
 CMAKE_INSTALL_SYSCONFDIR:PATH=etc
 
 //No help, variable specified on the command line.
@@ -236,16 +235,16 @@ CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 CMAKE_PROJECT_NAME:STATIC=VncClientBridge
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION:STATIC=5.8.2
+CMAKE_PROJECT_VERSION:STATIC=0.9.15
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION_MAJOR:STATIC=5
+CMAKE_PROJECT_VERSION_MAJOR:STATIC=0
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION_MINOR:STATIC=8
+CMAKE_PROJECT_VERSION_MINOR:STATIC=9
 
 //Value Computed by CMake
-CMAKE_PROJECT_VERSION_PATCH:STATIC=2
+CMAKE_PROJECT_VERSION_PATCH:STATIC=15
 
 //Value Computed by CMake
 CMAKE_PROJECT_VERSION_TWEAK:STATIC=
@@ -314,17 +313,14 @@ CMAKE_SYSTEM_NAME:UNINITIALIZED=Android
 //No help, variable specified on the command line.
 CMAKE_SYSTEM_VERSION:UNINITIALIZED=24
 
-//No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=D:\AppData\Local\Android\Sdk\ndk\26.1.10909125\build\cmake\android.toolchain.cmake
+//The CMake toolchain file
+CMAKE_TOOLCHAIN_FILE:FILEPATH=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
-
-//Enable sccache (default: disabled)
-ENABLE_SCCACHE:BOOL=no
 
 //Build shared libraries
 ENABLE_SHARED:BOOL=OFF
@@ -776,412 +772,6 @@ WITH_XCB:BOOL=ON
 // encodings
 WITH_ZLIB:BOOL=ON
 
-//Enables 16-bit support (default: disabled)
-WOLFSSL_16BIT:BOOL=no
-
-//Enables 32-bit support (default: disabled)
-WOLFSSL_32BIT:BOOL=no
-
-//Enable AES (default: enabled)
-WOLFSSL_AES:BOOL=yes
-
-//Enable wolfSSL AES-CBC support (default: enabled)
-WOLFSSL_AESCBC:BOOL=yes
-
-//Enable wolfSSL AES-CCM support (default: disabled)
-WOLFSSL_AESCCM:BOOL=no
-
-//Enable wolfSSL AES-CFB support (default: disabled)
-WOLFSSL_AESCFB:BOOL=no
-
-//Enable wolfSSL AES-CTR support (default: disabled)
-WOLFSSL_AESCTR:BOOL=no
-
-//Enable wolfSSL AES-GCM support (default: enabled)
-WOLFSSL_AESGCM:STRING=yes
-
-//Enable AES key wrap support (default: disabled)
-WOLFSSL_AESKEYWRAP:BOOL=no
-
-//Enable wolfSSL AES-OFB support (default: disabled)
-WOLFSSL_AESOFB:BOOL=no
-
-//Enable wolfSSL AES-SIV support (default: disabled)
-WOLFSSL_AESSIV:BOOL=no
-
-//Align data for ciphers (default: enabled)
-WOLFSSL_ALIGN_DATA:BOOL=yes
-
-//Enable ALPN support (default: disabled)
-WOLFSSL_ALPN:BOOL=no
-
-//Enable support for Alternate certification chains (default: disabled)
-WOLFSSL_ALT_CERT_CHAINS:BOOL=no
-
-//Enable ARC4 (default: disabled)
-WOLFSSL_ARC4:BOOL=no
-
-//Enable wolfSSL ARIA support (default: disabled)
-WOLFSSL_ARIA:BOOL=no
-
-//Enable asio support (default: disabled)
-WOLFSSL_ASIO:BOOL=no
-
-//Enables option for assembly (default: enabled)
-WOLFSSL_ASM:BOOL=yes
-
-//Enable ASN (default: enabled)
-WOLFSSL_ASN:BOOL=yes
-
-//Enable Asynchronous Threading (default: enabled)
-WOLFSSL_ASYNC_THREADS:BOOL=no
-
-//Enable Base64 encoding (default: enabled on x86_64)
-WOLFSSL_BASE64_ENCODE:BOOL=no
-
-//Don't generate files in the source tree (default: yes)
-WOLFSSL_BUILD_OUT_OF_TREE:BOOL=yes
-
-//Enable use of CAAM with NXP (default: disabled)
-WOLFSSL_CAAM:BOOL=no
-
-//Enable cert request extensions (default: disabled)
-WOLFSSL_CERTEXT:BOOL=no
-
-//Enable cert generation (default: disabled)
-WOLFSSL_CERTGEN:BOOL=no
-
-//Enable decoded cert caching (default: disabled)
-WOLFSSL_CERTGENCACHE:BOOL=no
-
-//Enable cert request generation (default: disabled)
-WOLFSSL_CERTREQ:BOOL=no
-
-//Enable CHACHA (default: enabled). Use `=noasm` to disable ASM
-// AVX/AVX2 speedups
-WOLFSSL_CHACHA:STRING=yes
-
-//Enable wolfCLU options (default: disabled)
-WOLFSSL_CLU:BOOL=no
-
-//Enable CMAC (default: disabled)
-WOLFSSL_CMAC:BOOL=no
-
-//Enable coding base 16/64 (default: enabled)
-WOLFSSL_CODING:BOOL=yes
-
-//Enable generation of config.h and define HAVE_CONFIG_H (default:
-// enabled)
-WOLFSSL_CONFIG_H:BOOL=yes
-
-//Enable CRL (Use =io for inline CRL HTTP GET) (default: disabled)
-WOLFSSL_CRL:STRING=no
-
-//Enable crypto callbacks (default: disabled)
-WOLFSSL_CRYPTOCB:BOOL=no
-
-//Disable crypto callback SW testing (default: disabled)
-WOLFSSL_CRYPTOCB_NO_SW_TEST:BOOL=no
-
-//Enable Crypt Bench/Test (default: enabled)
-WOLFSSL_CRYPT_TESTS:BOOL=yes
-
-//Add help text to wolfCrypt test (default: disabled)
-WOLFSSL_CRYPT_TESTS_HELP:BOOL=no
-
-//Build static libraries from the wolfCrypt test and benchmark
-// sources (default: disabled)
-WOLFSSL_CRYPT_TESTS_LIBS:BOOL=no
-
-//Enable CURL support (default: disabled)
-WOLFSSL_CURL:BOOL=no
-
-//Enable Curve25519 (default: disabled)
-WOLFSSL_CURVE25519:STRING=no
-
-//Enable Curve448 (default: disabled)
-WOLFSSL_CURVE448:STRING=no
-
-//Enables option for debug (default: disabled)
-WOLFSSL_DEBUG:BOOL=no
-
-//Enable DES3 (default: disabled)
-WOLFSSL_DES3:BOOL=no
-
-//Enable DES3 TLS cipher suites (default: disabled)
-WOLFSSL_DES3_TLS_SUITES:BOOL=no
-
-//Enable DH (default: enabled)
-WOLFSSL_DH:STRING=yes
-
-//Enables option for default dh parameters (default: disabled)
-WOLFSSL_DH_DEFAULT_PARAMS:BOOL=yes
-
-//Enable DSA (default: disabled)
-WOLFSSL_DSA:BOOL=no
-
-//Enables wolfSSL DTLS (default: disabled)
-WOLFSSL_DTLS:BOOL=no
-
-//Enable wolfSSL DTLS v1.3 (default: disabled)
-WOLFSSL_DTLS13:BOOL=no
-
-//Enables wolfSSL DTLS CID (default: disabled)
-WOLFSSL_DTLS_CID:BOOL=no
-
-//Enable ECC (default: enabled)
-WOLFSSL_ECC:STRING=yes
-
-//Enable ECC Custom Curves (default: disabled)
-WOLFSSL_ECCCUSTCURVES:STRING=no
-
-//Enable ECC Shamir (default: enabled)
-WOLFSSL_ECCSHAMIR:BOOL=yes
-
-//Enable wolfSSL encrypted client hello (default: disabled)
-WOLFSSL_ECH:BOOL=no
-
-//Enable ED25519 (default: disabled)
-WOLFSSL_ED25519:BOOL=no
-
-//Enable ED448 (default: disabled)
-WOLFSSL_ED448:STRING=no
-
-//Enable PEM encrypted key support (default: disabled)
-WOLFSSL_ENCKEYS:BOOL=no
-
-//Enable Encryptr-Then-Mac extension (default: enabled)
-WOLFSSL_ENC_THEN_MAC:BOOL=yes
-
-//Enables adding nodes to error queue when compiled with OPENSSL_EXTRA
-// (default: enabled)
-WOLFSSL_ERROR_QUEUE:BOOL=yes
-
-//Enable error strings table (default: enabled)
-WOLFSSL_ERROR_STRINGS:BOOL=yes
-
-//Build wolfssl examples
-WOLFSSL_EXAMPLES:BOOL=no
-
-//Enable experimental features (default: disabled)
-WOLFSSL_EXPERIMENTAL:BOOL=no
-
-//Enable Extended Master Secret (default: enabled)
-WOLFSSL_EXTENDED_MASTER:BOOL=yes
-
-//Enable app data (default: disabled)
-WOLFSSL_EX_DATA:BOOL=no
-
-//Enable fast math ops (default: disabled)
-WOLFSSL_FAST_MATH:BOOL=no
-
-//Enable Filesystem support (default: enabled)
-WOLFSSL_FILESYSTEM:BOOL=yes
-
-//Enable Hardened build, Enables Timing Resistance and Blinding
-// (default: enabled)
-WOLFSSL_HARDEN:BOOL=yes
-
-//Enable Hash DRBG support (default: enabled)
-WOLFSSL_HASH_DRBG:BOOL=yes
-
-//Enable HKDF (HMAC-KDF) support (default: disabled)
-WOLFSSL_HKDF:BOOL=yes
-
-//Enable wolfSSL hybrid public key encryption (default: disabled)
-WOLFSSL_HPKE:BOOL=no
-
-//Enable the server to send Cookie Extension in HRR with state
-// (default: disabled)
-WOLFSSL_HRR_COOKIE:STRING=undefined
-
-//Enable inline functions (default: enabled)
-WOLFSSL_INLINE:BOOL=yes
-
-//Create install target for WolfSSL project
-WOLFSSL_INSTALL:BOOL=yes
-
-//Enable support for IP alternative name (default: disabled)
-WOLFSSL_IP_ALT_NAME:BOOL=no
-
-//Enable key generation (default: disabled)
-WOLFSSL_KEYGEN:BOOL=no
-
-//Enable wolfSSL keying material export (default: disabled)
-WOLFSSL_KEYING_MATERIAL:BOOL=no
-
-//Enable insecure export of TLS secrets to an NSS keylog file (default:
-// disabled)
-WOLFSSL_KEYLOG_EXPORT:BOOL=no
-
-//Enable the PQ LMS Stateful Hash-based Signature Scheme (default:
-// disabled)
-WOLFSSL_LMS:BOOL=no
-
-//Enable the LMS SHA_256_192 truncated variant (default: disabled)
-WOLFSSL_LMSSHA256192:BOOL=no
-
-//Enable MD4 (default: disabled)
-WOLFSSL_MD4:BOOL=no
-
-//Enable MD5 (default: disabled)
-WOLFSSL_MD5:BOOL=no
-
-//Enable memory callbacks (default: enabled)
-WOLFSSL_MEMORY:BOOL=yes
-
-//Enable the wolfSSL PQ ML-KEM library (default: disabled)
-WOLFSSL_MLKEM:BOOL=no
-
-//Removes OpenSSL compatibility stub functions (default: disabled)
-WOLFSSL_NO_STUB:BOOL=no
-
-//Enable RSA OAEP (default: enabled)
-WOLFSSL_OAEP:BOOL=yes
-
-//Enable OCSP (default: disabled)
-WOLFSSL_OCSP:BOOL=no
-
-//Enable OCSP Stapling (default: disabled)
-WOLFSSL_OCSPSTAPLING:BOOL=no
-
-//Enable OCSP Stapling v2 (default: disabled)
-WOLFSSL_OCSPSTAPLING_V2:BOOL=no
-
-//Keep backwards compat with old names (default: enabled)
-WOLFSSL_OLD_NAMES:BOOL=yes
-
-//Enable old TLS versions < 1.2 (default: disabled)
-WOLFSSL_OLD_TLS:BOOL=no
-
-//Enable all OpenSSL API, size++ (default: disabled)
-WOLFSSL_OPENSSLALL:BOOL=no
-
-//Enable extra OpenSSL API, size+ (default: disabled)
-WOLFSSL_OPENSSLEXTRA:BOOL=no
-
-//Enable default optimization CFLAGS for the compiler (default:
-// enabled)
-WOLFSSL_OPTFLAGS:BOOL=yes
-
-//Enable integration with the OQS (Open Quantum Safe) liboqs library
-// (default: disabled)
-WOLFSSL_OQS:BOOL=no
-
-//Enable public key callbacks (default: disabled)
-WOLFSSL_PKCALLBACKS:BOOL=no
-
-//Enable pkcs12 (default: enabled)
-WOLFSSL_PKCS12:BOOL=yes
-
-//Enable PKCS7 (default: disabled)
-WOLFSSL_PKCS7:BOOL=no
-
-//Enable wolfSSL POLY1305 support (default: enabled)
-WOLFSSL_POLY1305:BOOL=yes
-
-//Enable wolfSSL Post-handshake Authentication (default: disabled)
-WOLFSSL_POSTAUTH:BOOL=no
-
-//Enable PWDBASED (default: disabled)
-WOLFSSL_PWDBASED:BOOL=yes
-
-//Enable QUIC support (default: disabled)
-WOLFSSL_QUIC:BOOL=no
-
-//Enable maximally reproducible build (default: disabled)
-WOLFSSL_REPRODUCIBLE_BUILD:BOOL=no
-
-//Enable compiling and using RNG (default: enabled)
-WOLFSSL_RNG:BOOL=yes
-
-//Enable RSA (default: enabled)
-WOLFSSL_RSA:BOOL=yes
-
-//Enable RSA-PSS (default: disabled)
-WOLFSSL_RSA_PSS:BOOL=yes
-
-//Enable Session Ticket (default: disabled)
-WOLFSSL_SESSION_TICKET:BOOL=no
-
-//Enable SHA (default: enabled)
-WOLFSSL_SHA:BOOL=yes
-
-//Enable wolfSSL SHA-224 support (default: enabled on x86_64/aarch64)
-WOLFSSL_SHA224:BOOL=yes
-
-//Enable wolfSSL SHA-3 support (default: enabled on x86_64/aarch64)
-WOLFSSL_SHA3:STRING=yes
-
-//Enable wolfSSL SHA-384 support (default: enabled)
-WOLFSSL_SHA384:BOOL=yes
-
-//Enable wolfSSL SHA-512 support (default: enabled)
-WOLFSSL_SHA512:BOOL=yes
-
-//Enable wolfSSL SHAKE128 support (default: enabled on x86_64/aarch64)
-WOLFSSL_SHAKE128:STRING=no
-
-//Enable wolfSSL SHAKE256 support (default: enabled on x86_64/aarch64)
-WOLFSSL_SHAKE256:STRING=no
-
-//Enable wolfSSL single threaded (default: disabled)
-WOLFSSL_SINGLE_THREADED:BOOL=no
-
-//Enable SNI (default: disabled)
-WOLFSSL_SNI:BOOL=yes
-
-//Enable Single Precision math implementation for full algorithm
-// suite (default: enabled)
-WOLFSSL_SP_MATH_ALL:BOOL=yes
-
-//Enables wolfSSL DTLS-SRTP (default: disabled)
-WOLFSSL_SRTP:BOOL=no
-
-//Enable stunnel (default: disabled)
-WOLFSSL_STUNNEL:BOOL=no
-
-//Enable Supported Elliptic Curves (default: enabled)
-WOLFSSL_SUPPORTED_CURVES:BOOL=yes
-
-//Enable ability to load CA certs from OS (default: enabled)
-WOLFSSL_SYS_CA_CERTS:BOOL=yes
-
-//Build wolfssl tests
-WOLFSSL_TESTS:BOOL=OFF
-
-//Enable dynamic allocation of ticket nonces (default: disabled)
-WOLFSSL_TICKET_NONCE_MALLOC:BOOL=no
-
-//Enable wolfSSL TLS v1.3 (default: enabled)
-WOLFSSL_TLS13:BOOL=yes
-
-//Enable TLS versions 1.2 (default: enabled)
-WOLFSSL_TLSV12:BOOL=yes
-
-//Enable all TLS Extensions (default: disabled)
-WOLFSSL_TLSX:BOOL=no
-
-//Enable wolfTPM options (default: disabled)
-WOLFSSL_TPM:BOOL=no
-
-//Use your own user_settings.h and do not add Makefile CFLAGS (default:
-// disabled)
-WOLFSSL_USER_SETTINGS:BOOL=no
-
-//Enable use of user_settings_asm.h in assembly files (default:
-// disabled)
-WOLFSSL_USER_SETTINGS_ASM:BOOL=no
-
-//Enable support for wolfSSH (default: disabled)
-WOLFSSL_WOLFSSH:BOOL=no
-
-//Enable X9.63 KDF support (default: disabled)
-WOLFSSL_X963KDF:BOOL=no
-
-//Enable the wolfSSL XMSS implementation (default: disabled)
-WOLFSSL_XMSS:BOOL=no
-
 //Path to a file.
 X11_ICE_INCLUDE_PATH:PATH=X11_ICE_INCLUDE_PATH-NOTFOUND
 
@@ -1443,15 +1033,6 @@ vncclient_LIB_DEPENDS:STATIC=general;-pthread;general;D:/AppData/Local/Android/S
 //Dependencies for the target
 vncserver_LIB_DEPENDS:STATIC=general;-pthread;general;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/24/libz.so;
 
-//Value Computed by CMake
-wolfssl_BINARY_DIR:STATIC=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a/wolfssl
-
-//Value Computed by CMake
-wolfssl_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-wolfssl_SOURCE_DIR:STATIC=D:/Catroid-develop/vncclient/src/main/cpp/wolfssl
-
 
 ########################
 # INTERNAL cache entries
@@ -1461,23 +1042,6 @@ wolfssl_SOURCE_DIR:STATIC=D:/Catroid-develop/vncclient/src/main/cpp/wolfssl
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER
-CMAKE_ASM_COMPILER-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER_AR
-CMAKE_ASM_COMPILER_AR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_COMPILER_RANLIB
-CMAKE_ASM_COMPILER_RANLIB-ADVANCED:INTERNAL=1
-CMAKE_ASM_COMPILER_WORKS:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS
-CMAKE_ASM_FLAGS-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_DEBUG
-CMAKE_ASM_FLAGS_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_MINSIZEREL
-CMAKE_ASM_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_RELEASE
-CMAKE_ASM_FLAGS_RELEASE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: CMAKE_ASM_FLAGS_RELWITHDEBINFO
-CMAKE_ASM_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
 CMAKE_CACHEFILE_DIR:INTERNAL=d:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a
 //Major version of cmake used to create the current loaded cache
@@ -1787,32 +1351,6 @@ GTK2_X11_INCLUDE_DIR-ADVANCED:INTERNAL=1
 HAVE_ARPA_INET_H:INTERNAL=1
 //Test HAVE_BUILTIN_CTZL
 HAVE_BUILTIN_CTZL:INTERNAL=1
-//Have function __atomic_fetch_add
-HAVE_C___ATOMIC:INTERNAL=
-//Have include dlfcn.h
-HAVE_DLFCN_H:INTERNAL=1
-//Have include errno.h
-HAVE_ERRNO_H:INTERNAL=1
-//Have include fcntl.h
-HAVE_FCNTL_H:INTERNAL=1
-//Have function getaddrinfo
-HAVE_GETADDRINFO:INTERNAL=1
-//Have function gethostbyname
-HAVE_GETHOSTBYNAME:INTERNAL=1
-//Have function getpid
-HAVE_GETPID:INTERNAL=1
-//Have function gettimeofday
-HAVE_GETTIMEOFDAY:INTERNAL=1
-//Have function gmtime_r
-HAVE_GMTIME_R:INTERNAL=1
-//Result of TRY_COMPILE
-HAVE_HAVE_UINTPTR_T:INTERNAL=TRUE
-//Have function inet_ntoa
-HAVE_INET_NTOA:INTERNAL=1
-//Have include inttypes.h
-HAVE_INTTYPES_H:INTERNAL=1
-//Have symbol isascii
-HAVE_ISASCII:INTERNAL=1
 //Result of TRY_COMPILE
 HAVE_LIBVNCSERVER_IN_ADDR_T:INTERNAL=TRUE
 //Result of TRY_COMPILE
@@ -1821,56 +1359,16 @@ HAVE_LIBVNCSERVER_PID_T:INTERNAL=TRUE
 HAVE_LIBVNCSERVER_SIZE_T:INTERNAL=TRUE
 //Result of TRY_COMPILE
 HAVE_LIBVNCSERVER_SOCKLEN_T:INTERNAL=TRUE
-//Have include limits.h
-HAVE_LIMITS_H:INTERNAL=1
-//Have include memory.h
-HAVE_MEMORY_H:INTERNAL=1
-//Have function memset
-HAVE_MEMSET:INTERNAL=1
-//Have include netdb.h
-HAVE_NETDB_H:INTERNAL=1
-//Have include netinet/in.h
-HAVE_NETINET_IN_H:INTERNAL=1
-//Result of TRY_COMPILE
-HAVE_SIZEOF_LONG:INTERNAL=TRUE
-//Result of TRY_COMPILE
-HAVE_SIZEOF_LONG_LONG:INTERNAL=TRUE
-//Result of TRY_COMPILE
-HAVE_SIZEOF_TIME_T:INTERNAL=TRUE
 //Result of TRY_COMPILE
 HAVE_SIZE_T:INTERNAL=TRUE
-//Have function socket
-HAVE_SOCKET:INTERNAL=1
 //Have include stddef.h
 HAVE_STDDEF_H:INTERNAL=1
 //Have include stdint.h
 HAVE_STDINT_H:INTERNAL=1
-//Have include stdlib.h
-HAVE_STDLIB_H:INTERNAL=1
-//Have function strftime
-HAVE_STRFTIME:INTERNAL=1
-//Have include strings.h
-HAVE_STRINGS_H:INTERNAL=1
-//Have include string.h
-HAVE_STRING_H:INTERNAL=1
-//Have include sys/ioctl.h
-HAVE_SYS_IOCTL_H:INTERNAL=1
-//Have include sys/socket.h
-HAVE_SYS_SOCKET_H:INTERNAL=1
-//Have include sys/stat.h
-HAVE_SYS_STAT_H:INTERNAL=1
-//Have include sys/time.h
-HAVE_SYS_TIME_H:INTERNAL=1
 //Have include sys/types.h
 HAVE_SYS_TYPES_H:INTERNAL=1
 //Test HAVE_THREAD_LOCAL
 HAVE_THREAD_LOCAL:INTERNAL=1
-//Have include time.h
-HAVE_TIME_H:INTERNAL=1
-//CHECK_TYPE_SIZE: sizeof(uintptr_t)
-HAVE_UINTPTR_T:INTERNAL=8
-//Have include unistd.h
-HAVE_UNISTD_H:INTERNAL=1
 //Result of TRY_COMPILE
 HAVE_UNSIGNED_LONG:INTERNAL=TRUE
 //Test HAVE_VERSION_SCRIPT
@@ -1881,8 +1379,6 @@ HAVE_VLD1Q_U8_X4:INTERNAL=1
 HAVE_VLD1_S16_X3:INTERNAL=1
 //Test HAVE_VLD1_U16_X2
 HAVE_VLD1_U16_X2:INTERNAL=1
-//Result of TRY_COMPILE
-HAVE___UINT128_T:INTERNAL=1
 //Test INLINE_WORKS
 INLINE_WORKS:INTERNAL=1
 //ADVANCED property for variable: JPEG_INCLUDE_DIR
@@ -2010,49 +1506,15 @@ PNG_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 PNG_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PNG_PNG_INCLUDE_DIR
 PNG_PNG_INCLUDE_DIR-ADVANCED:INTERNAL=1
-//CHECK_TYPE_SIZE: sizeof(long)
-SIZEOF_LONG:INTERNAL=8
-//CHECK_TYPE_SIZE: sizeof(long long)
-SIZEOF_LONG_LONG:INTERNAL=8
-//CHECK_TYPE_SIZE: sizeof(time_t)
-SIZEOF_TIME_T:INTERNAL=8
 //CHECK_TYPE_SIZE: sizeof(size_t)
 SIZE_T:INTERNAL=8
 //Result of TRY_COMPILE
 THREADS_HAVE_PTHREAD_ARG:INTERNAL=TRUE
-//Test THREAD_LS_ON
-THREAD_LS_ON:INTERNAL=1
 //CHECK_TYPE_SIZE: sizeof(unsigned long)
 UNSIGNED_LONG:INTERNAL=8
 WITH_JPEG7_INT:INTERNAL=0
 WITH_JPEG8_INT:INTERNAL=1
 WITH_SIMD_INT:INTERNAL=1
-//STRINGS property for variable: WOLFSSL_AESGCM
-WOLFSSL_AESGCM-STRINGS:INTERNAL=yes;no;table;small;word32;4bit
-//STRINGS property for variable: WOLFSSL_CHACHA
-WOLFSSL_CHACHA-STRINGS:INTERNAL=yes;no;noasm
-//STRINGS property for variable: WOLFSSL_CRL
-WOLFSSL_CRL-STRINGS:INTERNAL=yes;no;io
-//STRINGS property for variable: WOLFSSL_CURVE25519
-WOLFSSL_CURVE25519-STRINGS:INTERNAL=yes;no;small;no128bit
-//STRINGS property for variable: WOLFSSL_CURVE448
-WOLFSSL_CURVE448-STRINGS:INTERNAL=yes;no;small
-//STRINGS property for variable: WOLFSSL_DH
-WOLFSSL_DH-STRINGS:INTERNAL=yes;no;const
-//STRINGS property for variable: WOLFSSL_ECC
-WOLFSSL_ECC-STRINGS:INTERNAL=yes;no;nonblock
-//STRINGS property for variable: WOLFSSL_ECCCUSTCURVES
-WOLFSSL_ECCCUSTCURVES-STRINGS:INTERNAL=yes;no;all
-//STRINGS property for variable: WOLFSSL_ED448
-WOLFSSL_ED448-STRINGS:INTERNAL=yes;no;small
-//STRINGS property for variable: WOLFSSL_HRR_COOKIE
-WOLFSSL_HRR_COOKIE-STRINGS:INTERNAL=yes;no;undefined
-//STRINGS property for variable: WOLFSSL_SHA3
-WOLFSSL_SHA3-STRINGS:INTERNAL=yes;no;small
-//STRINGS property for variable: WOLFSSL_SHAKE128
-WOLFSSL_SHAKE128-STRINGS:INTERNAL=yes;no;small
-//STRINGS property for variable: WOLFSSL_SHAKE256
-WOLFSSL_SHAKE256-STRINGS:INTERNAL=yes;no;small
 //ADVANCED property for variable: X11_ICE_INCLUDE_PATH
 X11_ICE_INCLUDE_PATH-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: X11_ICE_LIB
@@ -2211,12 +1673,42 @@ ZLIB_INCLUDE_DIR-ADVANCED:INTERNAL=1
 ZLIB_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: ZLIB_LIBRARY_RELEASE
 ZLIB_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
+//CMAKE_INSTALL_BINDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_BINDIR:INTERNAL=1
+//CMAKE_INSTALL_DATADIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_DATADIR:INTERNAL=1
+//CMAKE_INSTALL_DATAROOTDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_DATAROOTDIR:INTERNAL=1
+//CMAKE_INSTALL_DOCDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_DOCDIR:INTERNAL=1
+//CMAKE_INSTALL_INCLUDEDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_INCLUDEDIR:INTERNAL=1
+//CMAKE_INSTALL_INFODIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_INFODIR:INTERNAL=1
+//CMAKE_INSTALL_LIBDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_LIBDIR:INTERNAL=1
+//CMAKE_INSTALL_LIBEXECDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_LIBEXECDIR:INTERNAL=1
+//CMAKE_INSTALL_LOCALEDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_LOCALEDIR:INTERNAL=1
+//CMAKE_INSTALL_LOCALSTATEDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_LOCALSTATEDIR:INTERNAL=1
+//CMAKE_INSTALL_MANDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_MANDIR:INTERNAL=1
+//CMAKE_INSTALL_OLDINCLUDEDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_OLDINCLUDEDIR:INTERNAL=1
+//CMAKE_INSTALL_SBINDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_SBINDIR:INTERNAL=1
+//CMAKE_INSTALL_SHAREDSTATEDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_SHAREDSTATEDIR:INTERNAL=1
+//CMAKE_INSTALL_SYSCONFDIR has default value
+_GNUInstallDirs_CMAKE_INSTALL_DEFAULT_SYSCONFDIR:INTERNAL=1
 //CMAKE_INSTALL_BINDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_BINDIR:INTERNAL=bin
 //CMAKE_INSTALL_DATADIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_DATADIR:INTERNAL=
+_GNUInstallDirs_CMAKE_INSTALL_LAST_DATADIR:INTERNAL=<CMAKE_INSTALL_DATAROOTDIR>
 //CMAKE_INSTALL_DATAROOTDIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_DATAROOTDIR:INTERNAL=share
+_GNUInstallDirs_CMAKE_INSTALL_LAST_DATAROOTDIR:INTERNAL=
 //CMAKE_INSTALL_DEFAULT_BINDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_DEFAULT_BINDIR:INTERNAL=bin
 //CMAKE_INSTALL_DEFAULT_DATADIR during last run
@@ -2248,21 +1740,21 @@ _GNUInstallDirs_CMAKE_INSTALL_LAST_DEFAULT_SHAREDSTATEDIR:INTERNAL=com
 //CMAKE_INSTALL_DEFAULT_SYSCONFDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_DEFAULT_SYSCONFDIR:INTERNAL=etc
 //CMAKE_INSTALL_DOCDIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_DOCDIR:INTERNAL=
+_GNUInstallDirs_CMAKE_INSTALL_LAST_DOCDIR:INTERNAL=<CMAKE_INSTALL_DATAROOTDIR>/doc
 //CMAKE_INSTALL_INCLUDEDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_INCLUDEDIR:INTERNAL=include
 //CMAKE_INSTALL_INFODIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_INFODIR:INTERNAL=
+_GNUInstallDirs_CMAKE_INSTALL_LAST_INFODIR:INTERNAL=<CMAKE_INSTALL_DATAROOTDIR>/info
 //CMAKE_INSTALL_LIBDIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_LIBDIR:INTERNAL=lib
+_GNUInstallDirs_CMAKE_INSTALL_LAST_LIBDIR:INTERNAL=lib64
 //CMAKE_INSTALL_LIBEXECDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_LIBEXECDIR:INTERNAL=libexec
 //CMAKE_INSTALL_LOCALEDIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_LOCALEDIR:INTERNAL=
+_GNUInstallDirs_CMAKE_INSTALL_LAST_LOCALEDIR:INTERNAL=<CMAKE_INSTALL_DATAROOTDIR>/locale
 //CMAKE_INSTALL_LOCALSTATEDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_LOCALSTATEDIR:INTERNAL=var
 //CMAKE_INSTALL_MANDIR during last run
-_GNUInstallDirs_CMAKE_INSTALL_LAST_MANDIR:INTERNAL=
+_GNUInstallDirs_CMAKE_INSTALL_LAST_MANDIR:INTERNAL=<CMAKE_INSTALL_DATAROOTDIR>/man
 //CMAKE_INSTALL_OLDINCLUDEDIR during last run
 _GNUInstallDirs_CMAKE_INSTALL_LAST_OLDINCLUDEDIR:INTERNAL=/usr/include
 //CMAKE_INSTALL_SBINDIR during last run
@@ -2308,8 +1800,6 @@ _OPENSSL_openssl_INCLUDEDIR:INTERNAL=
 _OPENSSL_openssl_LIBDIR:INTERNAL=
 _OPENSSL_openssl_PREFIX:INTERNAL=
 _OPENSSL_openssl_VERSION:INTERNAL=
-//CHECK_TYPE_SIZE: sizeof(__uint128_t)
-__UINT128_T:INTERNAL=16
 __pkg_config_arguments__OPENSSL:INTERNAL=QUIET;openssl
 __pkg_config_checked_PC_GNUTLS:INTERNAL=1
 __pkg_config_checked__OPENSSL:INTERNAL=1

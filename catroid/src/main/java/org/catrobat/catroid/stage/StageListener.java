@@ -513,6 +513,8 @@ public class StageListener implements ApplicationListener {
             onNotificationActionTriggered(idToTrigger);
             onNotificationClicked(idToTrigger);
         }
+
+        org.catrobat.catroid.particles.ParticleManager.getInstance().resetForNewScene();
 	}
 
     public boolean isFinished() {
@@ -1404,6 +1406,8 @@ public class StageListener implements ApplicationListener {
 
         org.catrobat.catroid.utils.ActionThreadRegistry.clear();
 
+        org.catrobat.catroid.particles.ParticleManager.getInstance().resetForNewScene();
+
 		reloadProject = true;
 	}
 
@@ -1726,6 +1730,14 @@ public class StageListener implements ApplicationListener {
                     if (org.catrobat.catroid.content.RenderTextureManager.isMain2DRenderEnabled()) {
                         stage.draw();
                         uiStage.draw();
+
+                        if (!paused) {
+                            batch.setProjectionMatrix(camera.combined);
+                            batch.begin();
+                            org.catrobat.catroid.particles.ParticleManager.getInstance()
+                                    .updateAndRenderAll(Gdx.graphics.getDeltaTime(), batch);
+                            batch.end();
+                        }
                     }
                 } catch (Exception e) {
                     Log.e("RENDER", "FATAL ERROR: " + e);

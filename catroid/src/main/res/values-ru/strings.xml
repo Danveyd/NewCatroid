@@ -23,6 +23,148 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="particle_exit_dialog_title">Несохраненные изменения</string>
+    <string name="particle_exit_dialog_msg">Сохранить изменения в эффекте частиц перед выходом?</string>
+    <string name="particle_exit_save">Сохранить и выйти</string>
+    <string name="particle_exit_discard">Выйти без сохранения</string>
+
+    <!-- Particle Editor Titles & Buttons -->
+    <string name="particle_editor_title">Редактор частиц</string>
+    <string name="particle_editor_save">Сохранить</string>
+    <string name="particle_editor_saved">Эффект частиц успешно сохранен!</string>
+
+    <!-- Curves -->
+    <string name="particle_curve_size">Кривая размера</string>
+    <string name="particle_curve_spin">Кривая вращения</string>
+    <string name="particle_curve_alpha">Кривая прозрачности</string>
+
+    <!-- Graph Controls -->
+    <string name="particle_graph_zoom_in">Приблизить</string>
+    <string name="particle_graph_zoom_out">Отдалить</string>
+    <string name="particle_graph_reset">Сброс</string>
+    <string name="particle_graph_add_point">+ Точка</string>
+    <string name="particle_graph_delete_point">Удалить</string>
+    <string name="particle_graph_easing">Сглаживание:</string>
+    <string name="particle_graph_variance">Разброс (±):</string>
+
+    <!-- Sections -->
+    <string name="particle_section_main">Основные настройки и спавн</string>
+    <string name="particle_section_spawn">Зона спавна (PosVar)</string>
+    <string name="particle_section_physics_gravity">Физика гравитации (Gravity Mode)</string>
+    <string name="particle_section_physics_radius">Физика радиуса (Radius Mode)</string>
+    <string name="particle_section_color">Цвет частиц</string>
+    <string name="particle_section_texture">Текстура и буфер</string>
+
+    <!-- Emitter Settings -->
+    <string name="particle_emitter_mode">Режим эмиттера:</string>
+    <string name="particle_mode_gravity">Gravity Mode (Гравитация)</string>
+    <string name="particle_mode_radius">Radius Mode (Радиус)</string>
+    <string name="particle_duration">Длительность (-1 = ∞):</string>
+    <string name="particle_respawn_delay">Задержка спавна:</string>
+    <string name="particle_lifetime_var">Разброс жизни (±):</string>
+    <string name="particle_fade_in">Fade In время:</string>
+    <string name="particle_fade_out">Fade Out время:</string>
+
+    <!-- Sliders -->
+    <string name="particle_slider_pos_x">Разброс X</string>
+    <string name="particle_slider_pos_y">Разброс Y</string>
+    <string name="particle_slider_speed">Скорость</string>
+    <string name="particle_slider_speed_var">Разброс скорости (±):</string>
+    <string name="particle_slider_angle">Угол спавна</string>
+    <string name="particle_slider_angle_var">Разброс угла (±):</string>
+    <string name="particle_slider_gravity_x">Гравитация X</string>
+    <string name="particle_slider_gravity_y">Гравитация Y</string>
+    <string name="particle_slider_radial_accel">Радиальное уск.</string>
+    <string name="particle_slider_tangential_accel">Тангенц. уск.</string>
+    <string name="particle_slider_friction">Трение (Friction)</string>
+    <string name="particle_slider_start_radius">Начальный радиус</string>
+    <string name="particle_slider_end_radius">Конечный радиус</string>
+    <string name="particle_slider_rotate_sec">Скорость вращения</string>
+
+    <!-- Colors & Textures -->
+    <string name="particle_start_color">Начальный цвет</string>
+    <string name="particle_end_color">Конечный цвет</string>
+    <string name="particle_select_color">Выбрать цвет</string>
+    <string name="particle_texture_current">Текущая: %1$s</string>
+    <string name="particle_texture_default">Стандартный кружок</string>
+    <string name="particle_btn_project_files">Из файлов проекта</string>
+    <string name="particle_btn_import_photo">+ Импортировать фото</string>
+    <string name="particle_additive_blending">Additive Blending (Свечение / Огонь)</string>
+    <string name="particle_fbo_buffer">Имя FBO Буфера:</string>
+    <string name="particle_fbo_hint">например, background_layer</string>
+
+    <!-- Gizmos & Dialogs -->
+    <string name="particle_editor_gizmo_gravity">Гравитация</string>
+    <string name="particle_editor_gizmo_angle">Угол</string>
+    <string name="particle_editor_gizmo_posvar">Зона спавна</string>
+    <string name="particle_slider_bounds_title">Границы слайдера</string>
+    <string name="particle_slider_bounds_msg">Настройка диапазона для: %1$s</string>
+    <string name="particle_min_val">Мин. значение</string>
+    <string name="particle_max_val">Макс. значение</string>
+    <string name="particle_ok">ОК</string>
+    <string name="particle_cancel">Отмена</string>
+    <string name="particle_invalid_range">Мин. значение должно быть меньше Макс.!</string>
+
+    <string name="particle_bg_gallery">Фон из галереи</string>
+    <string name="particle_texture_picker">Текстура частицы</string>
+    <string name="particle_graph_reset_zoom">Сброс</string>
+
+    <string name="particle_editor_gizmos">Гизмо:</string>
+    <string name="particle_editor_gizmo_radius">Радиус</string>
+
+    <string name="particle_section_physics">Физика и Движение</string>
+
+    <string name="category_2d_particles" formatted="false">2D Частицы</string>
+
+    <string name="brick_create_particle" formatted="false">Создать частицы</string>
+    <string name="brick_edit_particles" formatted="false">Редактор частиц</string>
+
+    <string name="brick_spawn_particle_effect" formatted="false">Запустить частицы из файла:</string>
+    <string name="brick_spawn_particle_instance" formatted="false">экземпляр:</string>
+
+    <string name="brick_particle_buffer_for" formatted="false">Частицы экземпляра:</string>
+    <string name="brick_particle_buffer_target" formatted="false">рендерить в буфер:</string>
+    <string name="brick_particle_buffer_mode" formatted="false">режим:</string>
+
+    <string name="brick_set_particle_transform" formatted="false">Трансформировать частицы:</string>
+    <string name="brick_particle_scale_x" formatted="false">Ширина (Scale X):</string>
+    <string name="brick_particle_scale_y" formatted="false">Высота (Scale Y):</string>
+    <string name="brick_particle_rotation_2d" formatted="false">Поворот:</string>
+
+    <string name="brick_set_particle_property" formatted="false">Установить параметр частиц:</string>
+    <string name="brick_particle_property_label" formatted="false">параметр:</string>
+
+    <string name="brick_emit_particle_burst" formatted="false">Импульс частиц:</string>
+    <string name="brick_particle_burst_count" formatted="false">количество:</string>
+
+    <string name="brick_stop_particle_instance" formatted="false">Остановить частицы:</string>
+
+    <string-array name="particle_buffer_modes">
+        <item>Экран и Буфер</item>
+        <item>Только Буфер</item>
+        <item>Только Экран</item>
+    </string-array>
+
+    <string-array name="particle_properties_array">
+        <item>Скорость спавна (Rate)</item>
+        <item>Скорость полета (Speed)</item>
+        <item>Угол (Angle)</item>
+        <item>Гравитация X</item>
+        <item>Гравитация Y</item>
+        <item>Радиальное ускорение</item>
+        <item>Тангенциальное ускорение</item>
+        <item>Трение (Friction)</item>
+        <item>Прозрачность (Alpha)</item>
+        <item>Цвет R</item>
+        <item>Цвет G</item>
+        <item>Цвет B</item>
+    </string-array>
+
+    <string-array name="particle_stop_modes">
+        <item>Плавно</item>
+        <item>Мгновенно</item>
+    </string-array>
+
     <string formatted="false" name="brick_create_spring_constraint_title">Создать пружинный шарнир</string>
     <string formatted="false" name="brick_create_spring_constraint_id">ID шарнира</string>
     <string formatted="false" name="brick_create_spring_constraint_a">Объект А</string>
@@ -1193,7 +1335,6 @@
     <string name="particle_main">Основные настройки</string>
     <string name="particle_looping">Зациклить</string>
     <string name="particle_prewarm">Предварительный прогрев</string>
-    <string name="particle_duration">Длительность</string>
     <string name="particle_max_particles">Лимит частиц</string>
     <string name="particle_start_lifetime">Время жизни</string>
     <string name="particle_start_speed">Начальная скорость</string>
