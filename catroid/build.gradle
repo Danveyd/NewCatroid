@@ -860,100 +860,108 @@ afterEvaluate {
 android.applicationVariants.all { variant ->
     if (variant.buildType.name == "debug") {
         def variantName = variant.name.capitalize()
-        def taskName = "packageAppClasses${variantName}"
 
-        tasks.register(taskName, Jar) {
-            archiveFileName = 'app-classes.jar'
-            destinationDirectory = file("${projectDir}/src/main/assets")
+        if (variant.flavorName == "danvex") {
+            def taskName = "packageAppClasses${variantName}"
 
-            if (variant.hasProperty('javaCompileProvider')) {
-                from(variant.javaCompileProvider.flatMap { it.destinationDirectory })
-            } else {
-                from("${layout.buildDirectory.get().asFile}/intermediates/javac/${variant.name}/classes")
+            tasks.register(taskName, Jar) {
+                archiveFileName = 'app-classes.jar'
+                destinationDirectory = file("${projectDir}/src/main/assets")
+
+                if (variant.hasProperty('javaCompileProvider')) {
+                    from(variant.javaCompileProvider.flatMap { it.destinationDirectory })
+                } else {
+                    from("${layout.buildDirectory.get().asFile}/intermediates/javac/${variant.name}/classes")
+                }
+
+                def kotlinTask = tasks.findByName("compile${variantName}Kotlin")
+                if (kotlinTask != null) {
+                    from(kotlinTask.destinationDirectory)
+                } else {
+                    from("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/${variant.name}")
+                }
+
+                exclude 'META-INF/**'
+                exclude '**/R.class'
+                exclude '**/R$*.class'
+                exclude '**/BuildConfig.class'
             }
 
-            def kotlinTask = tasks.findByName("compile${variantName}Kotlin")
-            if (kotlinTask != null) {
-                from(kotlinTask.destinationDirectory)
-            } else {
-                from("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/${variant.name}")
+            tasks.named("merge${variantName}Assets").configure {
+                dependsOn taskName
+                dependsOn 'copyPluginLibsShared'
             }
-
-            exclude 'META-INF/**'
-            exclude '**/R.class'
-            exclude '**/R$*.class'
-            exclude '**/BuildConfig.class'
-        }
-
-        tasks.named("merge${variantName}Assets").configure {
-            dependsOn taskName
+        } else {
+            tasks.named("merge${variantName}Assets").configure {
+                mustRunAfter 'packageAppClassesDanvexDebug'
+                mustRunAfter 'copyPluginLibsShared'
+            }
         }
     }
 }
-android.applicationVariants.all { variant ->
-    if (variant.buildType.name == "debug") {
-        def variantName = variant.name.capitalize()
-        def copyLibsTaskName = "copyPluginLibs${variantName}"
 
-        tasks.register(copyLibsTaskName) {
-            inputs.files(configurations.pluginLibs)
-            outputs.dir("${projectDir}/src/main/assets")
+tasks.register('copyPluginLibsShared') {
+    inputs.files(configurations.pluginLibs)
+    outputs.dir("${projectDir}/src/main/assets")
 
-            doLast {
-                configurations.pluginLibs.each { File depFile ->
-                    def fileName = depFile.name
-                    def destName = ""
+    doLast {
+        configurations.pluginLibs.each { File depFile ->
+            def fileName = depFile.name
+            def destName = ""
 
-                    if (fileName.contains('gdx-')) {
-                        destName = 'gdx.jar'
-                    } else if (fileName.contains('xstream')) {
-                        destName = 'xstream.jar'
-                    } else if (fileName.contains('koin-core')) {
-                        destName = 'koin-core.jar'
-                    } else if (fileName.contains('fragment-')) {
-                        destName = 'fragment.jar'
-                    } else if (fileName.contains('activity-')) {
-                        destName = 'activity.jar'
-                    } else if (fileName.contains('core-')) {
-                        destName = 'core.jar'
+            if (fileName.contains('gdx-')) {
+                destName = 'gdx.jar'
+            } else if (fileName.contains('xstream')) {
+                destName = 'xstream.jar'
+            } else if (fileName.contains('koin-core')) {
+                destName = 'koin-core.jar'
+            } else if (fileName.contains('fragment-')) {
+                destName = 'fragment.jar'
+            } else if (fileName.contains('activity-')) {
+                destName = 'activity.jar'
+            } else if (fileName.contains('core-')) {
+                destName = 'core.jar'
+            }
+
+            if (destName != "") {
+                println "[PluginLibs] Копирование: ${fileName} (${depFile.length()} байт) -> ${destName}"
+
+                File destFile = file("${projectDir}/src/main/assets/${destName}")
+
+                if (fileName.endsWith('.aar')) {
+                    def tempExtractDir = file("${buildDir}/tmp/aar_extract_${destName}")
+                    delete(tempExtractDir)
+                    tempExtractDir.mkdirs()
+
+                    copy {
+                        from zipTree(depFile)
+                        into tempExtractDir
+                        include "classes.jar"
                     }
 
-                    if (destName != "") {
-                        println "[PluginLibs] Копирование: ${fileName} (${depFile.length()} байт) -> ${destName}"
-
-                        File destFile = file("${projectDir}/src/main/assets/${destName}")
-
-                        if (fileName.endsWith('.aar')) {
-                            def tempExtractDir = file("${buildDir}/tmp/aar_extract_${destName}")
-                            delete(tempExtractDir)
-                            tempExtractDir.mkdirs()
-
-                            copy {
-                                from zipTree(depFile)
-                                into tempExtractDir
-                                include "classes.jar"
-                            }
-
-                            copy {
-                                from "${tempExtractDir}/classes.jar"
-                                into "${projectDir}/src/main/assets"
-                                rename { destName }
-                            }
-                            delete(tempExtractDir)
-                        } else {
-                            copy {
-                                from depFile
-                                into "${projectDir}/src/main/assets"
-                                rename { destName }
-                            }
-                        }
+                    copy {
+                        from "${tempExtractDir}/classes.jar"
+                        into "${projectDir}/src/main/assets"
+                        rename { destName }
+                    }
+                    delete(tempExtractDir)
+                } else {
+                    copy {
+                        from depFile
+                        into "${projectDir}/src/main/assets"
+                        rename { destName }
                     }
                 }
             }
         }
+    }
+}
 
+android.applicationVariants.all { variant ->
+    if (variant.buildType.name == "debug") {
+        def variantName = variant.name.capitalize()
         tasks.named("merge${variantName}Assets").configure {
-            dependsOn copyLibsTaskName
+            dependsOn 'copyPluginLibsShared'
         }
     }
 }
