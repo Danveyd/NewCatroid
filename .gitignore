@@ -40,6 +40,10 @@ build/
 # files for the dex VM
 *.dex
 
+catroid/.cxx
+.claude
+
+
 # Java class files
 *.class
 
