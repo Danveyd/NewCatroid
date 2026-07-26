@@ -435,6 +435,7 @@ public final class XstreamSerializer {
 		xstream.alias("brick", ResizeImgBrick.class);
 		xstream.alias("brick", Set3dGravityBrick.class);
 		xstream.alias("brick", Apply3dForceBrick.class);
+        xstream.alias("brick", Apply3dTorqueBrick.class);
 		xstream.alias("brick", GrayscaleImgBrick.class);
 		xstream.alias("brick", NormalizeImgBrick.class);
 		xstream.alias("brick", LoadNNBrick.class);

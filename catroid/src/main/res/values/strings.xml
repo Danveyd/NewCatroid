@@ -23,6 +23,23 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_create_spring_constraint_title">Create spring constraint</string>
+    <string formatted="false" name="brick_create_spring_constraint_id">Constraint ID</string>
+    <string formatted="false" name="brick_create_spring_constraint_a">Object A</string>
+    <string formatted="false" name="brick_create_spring_constraint_b">Object B</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_a">Pivot A (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_b">Pivot B (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_spring_axes">Spring axes</string>
+    <string formatted="false" name="brick_create_spring_constraint_min_limits">Min limits (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_max_limits">Max limits (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_stiffness">Stiffness</string>
+    <string formatted="false" name="brick_create_spring_constraint_damping">Damping</string>
+
+    <string formatted="false" name="brick_apply_3d_torque_1">Apply torque to</string>
+    <string formatted="false" name="brick_apply_3d_torque_x">X</string>
+    <string formatted="false" name="brick_apply_3d_torque_y">Y</string>
+    <string formatted="false" name="brick_apply_3d_torque_z">Z</string>
+
     <string name="brick_if_then">then</string>
     <string name="dialog_delete_else_if_title">Delete branch?</string>
     <string name="dialog_delete_else_if_message">Are you sure you want to delete this \'else if\' branch and its bricks?</string>

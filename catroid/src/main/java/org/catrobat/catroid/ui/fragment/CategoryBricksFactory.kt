@@ -48,6 +48,7 @@ import org.catrobat.catroid.content.bricks.AddRadioBrick
 import org.catrobat.catroid.content.bricks.AddTextToBufferBrick
 import org.catrobat.catroid.content.bricks.AddToBufferBrick
 import org.catrobat.catroid.content.bricks.Apply3dForceBrick
+import org.catrobat.catroid.content.bricks.Apply3dTorqueBrick
 import org.catrobat.catroid.content.bricks.ApplyAngularImpulseBrick
 import org.catrobat.catroid.content.bricks.ApplyBufferLookBrick
 import org.catrobat.catroid.content.bricks.ApplyForceBrick
@@ -133,6 +134,7 @@ import org.catrobat.catroid.content.bricks.CreateRevoluteJointBrick
 import org.catrobat.catroid.content.bricks.CreateScrollViewBrick
 import org.catrobat.catroid.content.bricks.CreateSliderBrick
 import org.catrobat.catroid.content.bricks.CreateSphereBrick
+import org.catrobat.catroid.content.bricks.CreateSpringConstraintBrick
 import org.catrobat.catroid.content.bricks.CreateSwitchBrick
 import org.catrobat.catroid.content.bricks.CreateTableBrick
 import org.catrobat.catroid.content.bricks.CreateTextFieldBrick
@@ -2730,6 +2732,7 @@ void main() {
         threedBrickList.add(Set3dGravityBrick(0.0, -9.81, 0.0))
         threedBrickList.add(Set3dVelocityBrick("myObject", 0.0, 25.0, 0.0))
         threedBrickList.add(Apply3dForceBrick("myObject", 5.0, 0.0, 0.0))
+        threedBrickList.add(Apply3dTorqueBrick("myObject", 0.0, 5.0, 0.0))
         threedBrickList.add(Set3dFrictionBrick("myObject", 0.7))
         threedBrickList.add(SetRestitutionBrick("myObject", 0.5))
         threedBrickList.add(SetCCDBrick("myObject", true))
@@ -2738,6 +2741,17 @@ void main() {
         threedBrickList.add(CreatePointJointBrick("joint", "objA", "objB"))
         threedBrickList.add(ThreedCreateFixedConstraintBrick("joint", "objA", "objB"))
         threedBrickList.add(AddHingeBrick())
+        threedBrickList.add(
+            CreateSpringConstraintBrick(
+                "spring1", "car", "wheel_fl",
+                0.23, -0.1, 0.57,
+                0.0, 0.0, 0.0,
+                false, true, false,
+                0.0, -0.3, 0.0,
+                0.0, 0.3, 0.0,
+                15000.0, 300.0
+            )
+        )
         threedBrickList.add(SetHingeMotorBrick("joint", 45.0, 10.0))
         threedBrickList.add(RemoveJointBrick("joint"))
 

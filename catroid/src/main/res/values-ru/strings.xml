@@ -23,6 +23,23 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_create_spring_constraint_title">Создать пружинный шарнир</string>
+    <string formatted="false" name="brick_create_spring_constraint_id">ID шарнира</string>
+    <string formatted="false" name="brick_create_spring_constraint_a">Объект А</string>
+    <string formatted="false" name="brick_create_spring_constraint_b">Объект Б</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_a">Точка A (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_pivot_b">Точка B (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_spring_axes">Пружина по осям</string>
+    <string formatted="false" name="brick_create_spring_constraint_min_limits">Мин. лимит (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_max_limits">Макс. лимит (X,Y,Z)</string>
+    <string formatted="false" name="brick_create_spring_constraint_stiffness">Жесткость</string>
+    <string formatted="false" name="brick_create_spring_constraint_damping">Затухание</string>
+
+    <string formatted="false" name="brick_apply_3d_torque_1">Приложить момент к</string>
+    <string formatted="false" name="brick_apply_3d_torque_x">X</string>
+    <string formatted="false" name="brick_apply_3d_torque_y">Y</string>
+    <string formatted="false" name="brick_apply_3d_torque_z">Z</string>
+
     <string name="brick_if_then">то</string>
     <string name="dialog_delete_else_if_title">Удалить ветку?</string>
     <string name="dialog_delete_else_if_message">Вы уверены, что хотите удалить ветку \'иначе если\' и её содержимое?</string>
