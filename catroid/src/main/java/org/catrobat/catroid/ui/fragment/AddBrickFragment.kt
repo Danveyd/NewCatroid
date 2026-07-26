@@ -301,8 +301,7 @@ class AddBrickFragment : ListFragment() {
         val context = requireContext()
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_brick_context, null)
 
-        val brickView =
-            (brick as org.catrobat.catroid.content.bricks.BrickBaseType).getFreshDetachedView(context)
+        val brickView = brick.getPrototypeView(context)
 
         val maxBrickHeight = (200 * context.resources.displayMetrics.density).toInt()
         val wrapperScrollView = object : android.widget.ScrollView(context) {

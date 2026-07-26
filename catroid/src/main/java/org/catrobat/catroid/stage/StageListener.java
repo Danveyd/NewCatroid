@@ -181,6 +181,7 @@ public class StageListener implements ApplicationListener {
 	private boolean paused = true;
 	private boolean finished = false;
 	private boolean reloadProject = false;
+	private volatile Thread collisionWarmThread;
 	public boolean firstFrameDrawn = false;
 
 	private static final int MAX_SKIPPED_FRAMES_AFTER_SCENE_START = 4;
@@ -417,10 +418,17 @@ public class StageListener implements ApplicationListener {
 		RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		final List<Sprite> spritesToWarm = new ArrayList<>(sprites);
+		stopCollisionCacheWarming();
 		Thread collisionWarmThread = new Thread(() -> {
 			for (Sprite sprite : spritesToWarm) {
+				if (Thread.currentThread().isInterrupted()) {
+					return;
+				}
 				if (sprite.getLookList() != null) {
 					for (LookData lookData : sprite.getLookList()) {
+						if (Thread.currentThread().isInterrupted()) {
+							return;
+						}
 						if (lookData != null) {
 							lookData.getCollisionInformation().loadCollisionPolygon();
 						}
@@ -428,6 +436,7 @@ public class StageListener implements ApplicationListener {
 				}
 			}
 		}, "CollisionCacheWarming");
+		this.collisionWarmThread = collisionWarmThread;
 		collisionWarmThread.setPriority(Thread.MIN_PRIORITY);
 		collisionWarmThread.setDaemon(true);
 		collisionWarmThread.start();
@@ -2100,8 +2109,18 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
+	private void stopCollisionCacheWarming() {
+		Thread runningWarmThread = collisionWarmThread;
+		if (runningWarmThread != null) {
+			runningWarmThread.interrupt();
+			collisionWarmThread = null;
+		}
+	}
+
 	@Override
 	public void dispose() {
+		stopCollisionCacheWarming();
+
         if (isBackgroundModeEnabled) {
             isBackgroundModeEnabled = false;
             Context context = CatroidApplication.getAppContext();

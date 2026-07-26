@@ -67,9 +67,13 @@ public class CollisionInformation {
     }
 
     public int getNumberOfVertices() {
+        return countVertices(collisionPolygons);
+    }
+
+    private static int countVertices(Polygon[] polygons) {
         int size = 0;
-        if (collisionPolygons != null) {
-            for (Polygon polygon : collisionPolygons) {
+        if (polygons != null) {
+            for (Polygon polygon : polygons) {
                 size += polygon.getVertices().length / 2;
             }
         }
@@ -193,7 +197,7 @@ public class CollisionInformation {
         }
 
         float epsilon = 1.0f;
-        collisionPolygons = new Polygon[0];
+        Polygon[] polygons = new Polygon[0];
 
         do {
             if (isCalculationThreadCancelled) {
@@ -218,38 +222,40 @@ public class CollisionInformation {
             }
 
             try {
-                collisionPolygons = PolygonDecomposer.decompose(simplifiedPolygons);
+                polygons = PolygonDecomposer.decompose(simplifiedPolygons);
             } catch (Exception e) {
                 Log.e(TAG, "PolygonDecomposer error: " + e.getMessage());
-                collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+                polygons = createCollisionPolygonByHitbox(bitmap);
                 break;
             }
 
             epsilon *= 1.2f;
 
-        } while (getNumberOfVertices() > Constants.COLLISION_VERTEX_LIMIT);
+        } while (countVertices(polygons) > Constants.COLLISION_VERTEX_LIMIT);
 
-        if (collisionPolygons == null || collisionPolygons.length == 0) {
-            collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+        if (polygons == null || polygons.length == 0) {
+            polygons = createCollisionPolygonByHitbox(bitmap);
         }
 
         if (isCalculationThreadCancelled || lookData == null || !lookData.isValid()) {
             return;
         }
 
-        if (this.collisionPolygons != null) {
+        collisionPolygons = polygons;
+
+        if (polygons != null) {
             this.lastLoadedTime = currentModified;
-            ramCache.put(cacheKey, this.collisionPolygons);
+            ramCache.put(cacheKey, polygons);
         }
 
         try {
-            writeCollisionVerticesToPNGMeta(collisionPolygons, path);
+            writeCollisionVerticesToPNGMeta(polygons, path);
         } catch (Exception e) {
             Log.e(TAG, "Failed to write collision metadata to PNG on disk: " + e.getMessage());
         }
 
         Log.i(TAG_COLLISION_POLYGON, "Polygon size of look " + (lookData != null ? lookData.getName() : "") + ": "
-                + getNumberOfVertices() + " vertices in " + collisionPolygons.length + " convex polygons.");
+                + countVertices(polygons) + " vertices in " + polygons.length + " convex polygons.");
     }
 
     public static ArrayList<ArrayList<CollisionPolygonVertex>> createBoundingPolygonVertices(String absolutePath,

@@ -91,7 +91,7 @@ class AddUserDefinedBrickFragment : Fragment() {
                 arguments.getSerializable(UserDefinedBrick.USER_BRICK_BUNDLE_ARGUMENT)
                     as UserDefinedBrick
             if (userDefinedBrick != null) {
-                userBrickView = userDefinedBrick?.getView(activity)
+                userBrickView = userDefinedBrick?.getPrototypeView(activity)
                 userBrickSpace?.addView(userBrickView)
             }
         }
@@ -225,7 +225,7 @@ class AddUserDefinedBrickFragment : Fragment() {
 
     private fun updateBrickView() {
         userBrickSpace?.removeView(userBrickView)
-        userBrickView = userDefinedBrick?.getView(activity)
+        userBrickView = userDefinedBrick?.getPrototypeView(activity)
         userBrickSpace?.addView(userBrickView)
     }
 }

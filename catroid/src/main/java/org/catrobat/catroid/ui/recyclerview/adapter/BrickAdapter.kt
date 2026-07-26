@@ -315,8 +315,7 @@ class BrickAdapter(private val sprite: Sprite) :
                 }
 
                 if (holder.lastIsCollapsed != isCollapsed) {
-                    toggleBtn?.text = if (isCollapsed) "[＋]" else "[－]"
-                    itemView.alpha = if (isCollapsed) baseAlpha * 0.82f else baseAlpha
+                    toggleBtn?.text = if (isCollapsed) "[ + ]" else "[ - ]"
                     holder.lastIsCollapsed = isCollapsed
                 }
             }

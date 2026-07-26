@@ -105,31 +105,33 @@ public abstract class BrickBaseType implements Brick {
 	@CallSuper
 	@Override
 	public View getView(Context context) {
-		if (view == null) {
-			view = LayoutInflater.from(context).inflate(getViewResource(), null, false);
-			checkbox = view.findViewById(R.id.brick_checkbox);
+		View cachedView = view;
+		if (cachedView != null && cachedView.getContext() == context) {
+			return cachedView;
 		}
+		view = LayoutInflater.from(context).inflate(getViewResource(), null, false);
+		checkbox = view.findViewById(R.id.brick_checkbox);
 		return view;
 	}
 
 	@Override
 	public View getPrototypeView(Context context) {
-		View cachedView = this.view;
-		CheckBox cachedCheckbox = this.checkbox;
+		View attachedView = this.view;
+		CheckBox attachedCheckbox = this.checkbox;
 		this.view = null;
 		this.checkbox = null;
-		View freshView = getView(context);
-		disableSpinners(freshView);
-		removeSpinnerListeners(freshView);
-		this.view = cachedView;
-		this.checkbox = cachedCheckbox;
-		return freshView;
+		try {
+			View freshView = getView(context);
+			disableSpinners(freshView);
+			removeSpinnerListeners(freshView);
+			return freshView;
+		} finally {
+			this.view = attachedView;
+			this.checkbox = attachedCheckbox;
+		}
 	}
 
-	public View getFreshDetachedView(Context context) {
-		return getPrototypeView(context);
-	}
-
+	@Override
 	public void invalidateCachedView() {
 		this.view = null;
 		this.checkbox = null;

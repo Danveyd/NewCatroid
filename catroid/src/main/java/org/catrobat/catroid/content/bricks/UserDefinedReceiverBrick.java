@@ -38,6 +38,7 @@ import org.catrobat.catroid.content.UserDefinedScript;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.bricks.brickspinner.BrickSpinner;
 import org.catrobat.catroid.content.bricks.brickspinner.StringOption;
+import org.catrobat.catroid.userbrick.UserDefinedBrickData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 	private UserDefinedScript userDefinedScript;
 	private LinearLayout userBrickSpace;
 	private Brick userDefinedBrick;
+	private transient String lastEmbeddedBrickState;
 
 	public int spinnerSelection;
 
@@ -101,10 +103,27 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 			userDefinedBrick = currentSprite.getUserDefinedBrickByID(userDefinedScript.getUserDefinedBrickID());
 		}
 		if (userDefinedBrick != null) {
-			userBrickSpace.addView(userDefinedBrick.getView(context));
+			String embeddedBrickState = describeUserDefinedBrick(userDefinedBrick);
+			if (userBrickSpace.getChildCount() == 0
+					|| !embeddedBrickState.equals(lastEmbeddedBrickState)) {
+				userBrickSpace.removeAllViews();
+				userBrickSpace.addView(userDefinedBrick.getPrototypeView(context));
+				lastEmbeddedBrickState = embeddedBrickState;
+			}
 		}
 		setUpSpinner(context);
 		return view;
+	}
+
+	private static String describeUserDefinedBrick(Brick brick) {
+		if (!(brick instanceof UserDefinedBrick)) {
+			return String.valueOf(brick);
+		}
+		StringBuilder description = new StringBuilder();
+		for (UserDefinedBrickData userData : ((UserDefinedBrick) brick).getUserDefinedBrickDataList()) {
+			description.append(userData.getType()).append(':').append(userData.getName()).append('\n');
+		}
+		return description.toString();
 	}
 
 	private void setUpSpinner(Context context) {

@@ -1317,12 +1317,14 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
             }
         }
 
+        onUserDismiss();
+
+        clearFormulaFieldHighlight();
+
         ScriptFragment scriptFragment = (ScriptFragment) getActivity().getSupportFragmentManager().findFragmentByTag(ScriptFragment.TAG);
         if (scriptFragment != null) {
             scriptFragment.notifyDataSetChanged();
         }
-
-        onUserDismiss();
 
         if (!(getActivity() instanceof org.catrobat.catroid.ui.dialogs.RuntimeConsoleActivity)) {
             XstreamSerializer.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
@@ -1338,6 +1340,12 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
             }
         }
     }
+
+	private void clearFormulaFieldHighlight() {
+		if (formulaBrick != null) {
+			formulaBrick.invalidateCachedView();
+		}
+	}
 
 	@VisibleForTesting
 	public void endFormulaEditor() {
@@ -1589,6 +1597,7 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 
 	@Override
 	public void onDetach() {
+		clearFormulaFieldHighlight();
 		addTabLayout(getActivity(), FRAGMENT_SCRIPTS);
 		super.onDetach();
 	}

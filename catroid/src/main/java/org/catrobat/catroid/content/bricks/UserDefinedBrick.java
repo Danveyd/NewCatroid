@@ -24,6 +24,7 @@
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -216,6 +218,12 @@ public class UserDefinedBrick extends FormulaBrick {
 	public View getView(Context context) {
 		super.getView(context);
 		userDefinedBrickLayout = view.findViewById(R.id.brick_user_brick);
+
+		while (userDefinedBrickLayout.getChildCount() > 1) {
+			userDefinedBrickLayout.removeViewAt(userDefinedBrickLayout.getChildCount() - 1);
+		}
+		formulaFieldToTextViewMap.clear();
+
 		horizontalSpacing =
 				context.getResources().getDimensionPixelOffset(R.dimen.material_design_spacing_small);
 
@@ -239,13 +247,28 @@ public class UserDefinedBrick extends FormulaBrick {
 			((BrickLayout.LayoutParams) textView.getLayoutParams()).setHorizontalSpacing(horizontalSpacing);
 		}
 
-		Fragment currentFragment = ((FragmentActivity) context).getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-		if (currentFragment instanceof AddUserDataToUserDefinedBrickFragment) {
-			UserDefinedBrickDataType dataTypeToAdd = ((AddUserDataToUserDefinedBrickFragment) currentFragment).getDataTypeToAdd();
-			addTextViewForUserData(context, textView, dataTypeToAdd);
+		FragmentActivity activity = findFragmentActivity(context);
+		if (activity != null) {
+			Fragment currentFragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+			if (currentFragment instanceof AddUserDataToUserDefinedBrickFragment) {
+				UserDefinedBrickDataType dataTypeToAdd = ((AddUserDataToUserDefinedBrickFragment) currentFragment).getDataTypeToAdd();
+				addTextViewForUserData(context, textView, dataTypeToAdd);
+			}
 		}
 
 		return view;
+	}
+
+	@Nullable
+	private FragmentActivity findFragmentActivity(Context context) {
+		Context currentContext = context;
+		while (currentContext instanceof ContextWrapper) {
+			if (currentContext instanceof FragmentActivity) {
+				return (FragmentActivity) currentContext;
+			}
+			currentContext = ((ContextWrapper) currentContext).getBaseContext();
+		}
+		return null;
 	}
 
 	private void addTextViewForUserData(Context context, TextView textView, UserDefinedBrickDataType dataType) {

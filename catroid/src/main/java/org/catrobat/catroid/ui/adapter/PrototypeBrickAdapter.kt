@@ -51,11 +51,7 @@ class PrototypeBrickAdapter(private var brickList: List<Brick>) : BaseAdapter() 
 
         var cachedView = viewCache[cacheKey]
         if (cachedView == null) {
-            cachedView = if (brick is org.catrobat.catroid.content.bricks.BrickBaseType && parent != null) {
-                brick.getFreshDetachedView(parent.context)
-            } else {
-                brick.getPrototypeView(parent?.context)
-            }
+            cachedView = brick.getPrototypeView(parent?.context)
             if (cachedView != null) {
                 viewCache[cacheKey] = cachedView
             }

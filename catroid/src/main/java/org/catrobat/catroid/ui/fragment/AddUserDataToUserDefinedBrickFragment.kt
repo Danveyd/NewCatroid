@@ -85,9 +85,8 @@ class AddUserDataToUserDefinedBrickFragment : Fragment() {
                     as UserDefinedBrickDataType
         }
         userDefinedBrick?.let {
-            val userBrickView = userDefinedBrick?.getView(requireActivity())
-            userBrickSpace.addView(userBrickView)
-            userBrickTextView = userDefinedBrick?.currentUserDefinedDataTextView
+            userBrickSpace.addView(it.getPrototypeView(requireActivity()))
+            userBrickTextView = it.currentUserDefinedDataTextView
         }
         addUserDataUserBrickEditText = view.findViewById(R.id.user_data_user_brick_edit_field)
         addUserDataUserBrickTextLayout = view.findViewById(R.id.user_data_user_brick_text_layout)
