@@ -373,12 +373,14 @@ class BrickAdapter(private val sprite: Sprite) :
             }
         }
 
-        if (itemView.translationY != 0f || itemView.translationX != 0f) {
+        if (!itemView.hasTransientState() &&
+            (itemView.translationY != 0f || itemView.translationX != 0f)) {
             itemView.animate().cancel()
             itemView.translationY = 0f
             itemView.translationX = 0f
         }
-        if (rootView !== itemView && (rootView.translationY != 0f || rootView.translationX != 0f)) {
+        if (rootView !== itemView && !rootView.hasTransientState() &&
+            (rootView.translationY != 0f || rootView.translationX != 0f)) {
             rootView.animate().cancel()
             rootView.translationY = 0f
             rootView.translationX = 0f

@@ -34,15 +34,18 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ListAdapter
 import android.widget.ListView
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.OneShotPreDrawListener
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.bricks.Brick
 import org.catrobat.catroid.content.bricks.CompositeBrick
 import org.catrobat.catroid.content.bricks.EndBrick
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import java.util.ArrayList
+import kotlin.math.abs
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.withTranslation
@@ -54,7 +57,7 @@ private const val SWAP_ANIMATION_DURATION = 150
 private const val TRANSLUCENT_BLACK_ALPHA = 128
 private const val OBJECT_ANIMATOR_VALUE = 255
 private const val ANIMATION_REPEAT_COUNT = 5
-private const val Y_TRANSLATION_CONSTANT = 10
+private const val MINIMUM_ANIMATED_OFFSET = 1f
 
 enum class DragMode {
     NEW,
@@ -72,8 +75,9 @@ class BrickListView : ListView {
     private var downY = 0f
     private var offsetToCenter = 0
     private var invalidateHoveringItem = false
-    private var isSwapAnimationRunning = false
-    private var runningSwapAnimator: ObjectAnimator? = null
+    private val runningSwapAnimators = HashMap<View, ObjectAnimator>()
+    private val itemPositionsBeforeSwap = HashMap<Any, Float>()
+    private val swapInterpolator = DecelerateInterpolator()
     private var brickAdapterInterface: BrickAdapterInterface? = null
     private val translucentBlack = Color.argb(TRANSLUCENT_BLACK_ALPHA, 0, 0, 0)
     var dragMode: DragMode = DragMode.NEW
@@ -156,7 +160,7 @@ class BrickListView : ListView {
         brickToMove = null
         hoveringDrawable = null
         motionEventId = -1
-        isSwapAnimationRunning = false
+        finishRunningSwapAnimations()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -243,55 +247,106 @@ class BrickListView : ListView {
 
     @Suppress("ComplexMethod")
     private fun swapListItems() {
-        if (isSwapAnimationRunning) {
-            runningSwapAnimator?.end()
-        }
-
         val itemPositionAbove = currentPositionOfHoveringBrick - 1
         val itemPositionBelow = currentPositionOfHoveringBrick + 1
         val itemBelow: View? = if (isPositionValid(itemPositionBelow)) getChildAtVisiblePosition(itemPositionBelow) else null
         val itemAbove: View? = if (isPositionValid(itemPositionAbove)) getChildAtVisiblePosition(itemPositionAbove) else null
 
         val hoverCenter = downY + viewBounds.height() / 2f
-        val isAbove = itemBelow != null && hoverCenter > itemBelow.y + itemBelow.height / 2f
-        val isBelow = itemAbove != null && hoverCenter < itemAbove.y + itemAbove.height / 2f
+        val isAbove = itemBelow != null && hoverCenter > itemBelow.top + itemBelow.height / 2f
+        val isBelow = itemAbove != null && hoverCenter < itemAbove.top + itemAbove.height / 2f
 
         if (isAbove || isBelow) {
             val swapWith = if (isAbove) itemPositionBelow else itemPositionAbove
-            val translationY = if (isAbove) Y_TRANSLATION_CONSTANT - viewBounds.height() else viewBounds.height() - Y_TRANSLATION_CONSTANT
 
+            snapshotVisibleItemPositions()
             if (brickAdapterInterface?.onItemMove(currentPositionOfHoveringBrick, swapWith) == true) {
                 brickAdapterInterface?.setItemVisible(currentPositionOfHoveringBrick, true)
                 currentPositionOfHoveringBrick = swapWith
                 brickAdapterInterface?.setItemVisible(currentPositionOfHoveringBrick, false)
 
-                val viewToSwapWith = if (isAbove) itemBelow else itemAbove
-                startAnimationToSwap(viewToSwapWith, translationY)
+                invalidateViews()
+                animateItemsToTheirNewPositions()
+            } else {
+                itemPositionsBeforeSwap.clear()
             }
         }
     }
 
-    private fun startAnimationToSwap(viewToSwapWith: View?, translationY: Int) {
-        val animator = ObjectAnimator.ofFloat(viewToSwapWith, TRANSLATION_Y, translationY.toFloat())
-        animator.duration = SWAP_ANIMATION_DURATION.toLong()
-        isSwapAnimationRunning = true
-        runningSwapAnimator = animator
+    private fun snapshotVisibleItemPositions() {
+        itemPositionsBeforeSwap.clear()
+        val listAdapter = adapter ?: return
+        for (childIndex in 0 until childCount) {
+            val position = firstVisiblePosition + childIndex
+            if (position < 0 || position >= listAdapter.count) {
+                continue
+            }
+            val child = getChildAt(childIndex) ?: continue
+            val item = listAdapter.getItem(position) ?: continue
+            itemPositionsBeforeSwap[item] = child.top + child.translationY
+        }
+    }
 
+    private fun animateItemsToTheirNewPositions() {
+        if (itemPositionsBeforeSwap.isEmpty()) {
+            return
+        }
+        OneShotPreDrawListener.add(this) {
+            val listAdapter = adapter
+            if (listAdapter != null) {
+                for (childIndex in 0 until childCount) {
+                    val position = firstVisiblePosition + childIndex
+                    if (position < 0 || position >= listAdapter.count) {
+                        continue
+                    }
+                    val child = getChildAt(childIndex) ?: continue
+                    val item = listAdapter.getItem(position) ?: continue
+                    val positionBeforeSwap = itemPositionsBeforeSwap[item] ?: continue
+                    val offset = positionBeforeSwap - child.top
+                    if (abs(offset) >= MINIMUM_ANIMATED_OFFSET) {
+                        animateChildFromOffset(child, offset)
+                    }
+                }
+            }
+            itemPositionsBeforeSwap.clear()
+        }
+    }
+
+    private fun animateChildFromOffset(child: View, offset: Float) {
+        runningSwapAnimators.remove(child)?.cancel()
+
+        child.translationY = offset
+        child.setHasTransientState(true)
+
+        val animator = ObjectAnimator.ofFloat(child, TRANSLATION_Y, 0f)
+        animator.duration = SWAP_ANIMATION_DURATION.toLong()
+        animator.interpolator = swapInterpolator
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) = Unit
             override fun onAnimationEnd(animation: Animator) {
-                isSwapAnimationRunning = false
-                runningSwapAnimator = null
-                invalidateViews()
+                if (runningSwapAnimators[child] === animation) {
+                    runningSwapAnimators.remove(child)
+                    child.translationY = 0f
+                    child.setHasTransientState(false)
+                }
             }
 
-            override fun onAnimationCancel(animation: Animator) {
-                isSwapAnimationRunning = false
-                runningSwapAnimator = null
-            }
+            override fun onAnimationCancel(animation: Animator) = Unit
             override fun onAnimationRepeat(animation: Animator) = Unit
         })
+        runningSwapAnimators[child] = animator
         animator.start()
+    }
+
+    private fun finishRunningSwapAnimations() {
+        if (runningSwapAnimators.isEmpty()) {
+            return
+        }
+        for (animator in ArrayList(runningSwapAnimators.values)) {
+            animator.end()
+        }
+        runningSwapAnimators.clear()
+        itemPositionsBeforeSwap.clear()
     }
 
     private fun scrollWhileDragging() {

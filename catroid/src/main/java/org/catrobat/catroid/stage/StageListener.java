@@ -183,6 +183,14 @@ public class StageListener implements ApplicationListener {
 	private boolean reloadProject = false;
 	public boolean firstFrameDrawn = false;
 
+	private static final int MAX_SKIPPED_FRAMES_AFTER_SCENE_START = 4;
+	private boolean drawSuppressedAfterSceneStart = false;
+	private int framesSkippedAfterSceneStart = 0;
+
+	private String pendingSceneName = null;
+	private boolean pendingSceneStopSounds = true;
+	private boolean pendingSceneSave = true;
+
 	private boolean makeScreenshot = false;
 	private int screenshotWidth;
 	private int screenshotHeight;
@@ -329,6 +337,8 @@ public class StageListener implements ApplicationListener {
 
     public void create() {
         isFirstResize = true;
+        drawSuppressedAfterSceneStart = true;
+        framesSkippedAfterSceneStart = 0;
         org.catrobat.catroid.utils.ActionThreadRegistry.clear();
 
         deltaActionTimeDivisor = 10f;
@@ -348,6 +358,10 @@ public class StageListener implements ApplicationListener {
         if (brightnessContrastHueShader != null) {
             brightnessContrastHueShader.dispose();
             brightnessContrastHueShader = null;
+        }
+        if (vncSwizzleShader != null) {
+            vncSwizzleShader.dispose();
+            vncSwizzleShader = null;
         }
         if (threeDManager != null) {
             threeDManager.dispose();
@@ -404,7 +418,6 @@ public class StageListener implements ApplicationListener {
 
 		final List<Sprite> spritesToWarm = new ArrayList<>(sprites);
 		Thread collisionWarmThread = new Thread(() -> {
-			Gdx.app.log("CacheWarming", "Starting asset pre-loading...");
 			for (Sprite sprite : spritesToWarm) {
 				if (sprite.getLookList() != null) {
 					for (LookData lookData : sprite.getLookList()) {
@@ -414,7 +427,6 @@ public class StageListener implements ApplicationListener {
 					}
 				}
 			}
-			Gdx.app.log("CacheWarming", "Pre-loading finished.");
 		}, "CollisionCacheWarming");
 		collisionWarmThread.setPriority(Thread.MIN_PRIORITY);
 		collisionWarmThread.setDaemon(true);
@@ -458,7 +470,7 @@ public class StageListener implements ApplicationListener {
 			vmY = -virtualHeightHalf;
 		}
 
-		if (vncSwizzleShader == null || !vncSwizzleShader.isCompiled()) try {
+		try {
 
 
 			String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
@@ -523,6 +535,7 @@ public class StageListener implements ApplicationListener {
 
     public void backgroundTick(float delta) {
         processPendingNotificationActions();
+        processPendingSceneStart();
 
         if (paused && isBackgroundModeEnabled && !finished) {
             try {
@@ -1223,6 +1236,27 @@ public class StageListener implements ApplicationListener {
 		create();
 	}
 
+	public void requestStartScene(String sceneName, Boolean stopSound, Boolean save) {
+		pendingSceneName = sceneName;
+		pendingSceneStopSounds = stopSound == null || stopSound;
+		pendingSceneSave = save == null || save;
+	}
+
+	private void processPendingSceneStart() {
+		if (pendingSceneName == null) {
+			return;
+		}
+		String sceneName = pendingSceneName;
+		boolean stopSound = pendingSceneStopSounds;
+		boolean save = pendingSceneSave;
+		pendingSceneName = null;
+		try {
+			startScene(sceneName, stopSound, save);
+		} catch (Exception e) {
+			Log.e("StageListener", "Failed to start scene " + sceneName, e);
+		}
+	}
+
 	public void startScene(String sceneName, Boolean stopSound, Boolean save) {
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
@@ -1562,6 +1596,8 @@ public class StageListener implements ApplicationListener {
         long frameLogicTime = 0;
         long endLogic = 0;
 		try {
+			processPendingSceneStart();
+
 			Look.tickGlobalFrame();
 
             org.catrobat.catroid.common.NativeViewBindingManager.updateBindings(camera, viewPort);
@@ -1697,7 +1733,7 @@ public class StageListener implements ApplicationListener {
 				batch.end();
 				batch.setShader(null);
             }
-            if (!finished) {
+            if (!finished && !drawSuppressedAfterSceneStart) {
                 try {
                     if (!paused) {
                         if (threeDManager != null) {
@@ -1729,6 +1765,13 @@ public class StageListener implements ApplicationListener {
                     Log.e("RENDER", "FATAL ERROR: " + e);
                 }
                 firstFrameDrawn = true;
+            }
+
+            if (drawSuppressedAfterSceneStart) {
+                framesSkippedAfterSceneStart++;
+                if (!paused || framesSkippedAfterSceneStart >= MAX_SKIPPED_FRAMES_AFTER_SCENE_START) {
+                    drawSuppressedAfterSceneStart = false;
+                }
             }
 
             if (makeScreenshot) {
