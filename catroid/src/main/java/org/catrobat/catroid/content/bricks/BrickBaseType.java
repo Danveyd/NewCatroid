@@ -31,11 +31,14 @@ import android.widget.Spinner;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.bricks.brickspinner.BrickSpinner;
 import org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import androidx.annotation.CallSuper;
@@ -49,6 +52,7 @@ public abstract class BrickBaseType implements Brick {
 
 	public transient View view;
 	private transient CheckBox checkbox;
+	private transient Map<Integer, BrickSpinner<?>> attachedSpinners;
 
 	protected transient Brick parent;
 
@@ -131,10 +135,23 @@ public abstract class BrickBaseType implements Brick {
 		}
 	}
 
+	public void attachSpinner(Integer spinnerId, BrickSpinner<?> spinner) {
+		if (attachedSpinners == null) {
+			attachedSpinners = new HashMap<>();
+		}
+		attachedSpinners.put(spinnerId, spinner);
+	}
+
 	@Override
 	public void invalidateCachedView() {
 		this.view = null;
 		this.checkbox = null;
+		if (attachedSpinners != null) {
+			for (BrickSpinner<?> attachedSpinner : attachedSpinners.values()) {
+				attachedSpinner.release();
+			}
+			attachedSpinners.clear();
+		}
 	}
 
 	public void disableSpinners() {

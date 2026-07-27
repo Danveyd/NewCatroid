@@ -95,6 +95,14 @@ public class UserDefinedBrick extends FormulaBrick {
 	}
 
 	@Override
+	public void invalidateCachedView() {
+		super.invalidateCachedView();
+		userDefinedBrickLayout = null;
+		currentUserDefinedDataTextView = null;
+		formulaFieldToTextViewMap.clear();
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserDefinedBrick clone = (UserDefinedBrick) super.clone();
 		clone.userDefinedBrickID = this.getUserDefinedBrickID();

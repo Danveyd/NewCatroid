@@ -435,23 +435,8 @@ public class ScriptFragment extends ListFragment implements
 	}
 
     private static void releaseBrickViews(Brick brick) {
-        if (brick == null) return;
-
-        brick.invalidateCachedView();
-
-        Class<?> clazz = brick.getClass();
-        while (clazz != null && clazz != Object.class) {
-            java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
-            for (java.lang.reflect.Field field : fields) {
-                try {
-                    if (android.view.View.class.isAssignableFrom(field.getType())) {
-                        field.setAccessible(true);
-                        field.set(brick, null);
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-            clazz = clazz.getSuperclass();
+        if (brick != null) {
+            brick.invalidateCachedView();
         }
     }
 

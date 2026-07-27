@@ -37,9 +37,11 @@ import android.widget.TextView;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Nameable;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.ui.UiUtils;
 import org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -71,12 +73,32 @@ public class BrickSpinner<T extends Nameable> implements AdapterView.OnItemSelec
 		this(spinnerId, parent, android.R.layout.simple_spinner_item, items);
 	}
 
+	public void release() {
+		if (spinner != null) {
+			spinner.setOnItemSelectedListener(null);
+			spinner.setAdapter(null);
+			spinner = null;
+		}
+		adapter = null;
+		previousItem = null;
+	}
+
+	public boolean isReleased() {
+		return spinner == null;
+	}
+
 	public void setOnItemSelectedListener(OnItemSelectedListener<T> onItemSelectedListener) {
 		this.onItemSelectedListener = onItemSelectedListener;
+		if (onItemSelectedListener instanceof BrickBaseType) {
+			((BrickBaseType) onItemSelectedListener).attachSpinner(spinnerid, this);
+		}
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		if (adapter == null) {
+			return;
+		}
 		Nameable item = adapter.getItem(position);
 
 		if (onItemSelectedListener == null || item == null) {
@@ -108,18 +130,29 @@ public class BrickSpinner<T extends Nameable> implements AdapterView.OnItemSelec
 	}
 
 	public void add(@NonNull T item) {
-		adapter.add(item);
+		if (adapter != null) {
+			adapter.add(item);
+		}
 	}
 
 	public List<T> getItems() {
+		if (adapter == null) {
+			return new ArrayList<>();
+		}
 		return (List<T>) adapter.getItems();
 	}
 
 	public void setSelection(int position) {
+		if (spinner == null) {
+			return;
+		}
 		spinner.setSelection(position);
 	}
 
 	public void setSelection(@Nullable String itemName) {
+		if (spinner == null) {
+			return;
+		}
 		spinner.setOnItemSelectedListener(null);
 
 		int position = adapter.getPosition(itemName);
@@ -131,6 +164,9 @@ public class BrickSpinner<T extends Nameable> implements AdapterView.OnItemSelec
 	}
 
 	public void setSelection(@Nullable T item) {
+		if (spinner == null) {
+			return;
+		}
 		spinner.setOnItemSelectedListener(null);
 
 		int position = adapter.getPosition(item);
@@ -144,7 +180,7 @@ public class BrickSpinner<T extends Nameable> implements AdapterView.OnItemSelec
 	}
 
 	public Object getSelection() {
-		return spinner.getSelectedItem();
+		return spinner == null ? null : spinner.getSelectedItem();
 	}
 
 	private int consolidateSpinnerSelection(int position) {
@@ -208,6 +244,9 @@ public class BrickSpinner<T extends Nameable> implements AdapterView.OnItemSelec
 	}
 
 	public void setSpinnerFontColor(Context context, int color) {
+		if (spinner == null) {
+			return;
+		}
 		spinner.getBackground().setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_ATOP);
 	}
 

@@ -84,6 +84,16 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 	}
 
 	@Override
+	public void invalidateCachedView() {
+		super.invalidateCachedView();
+		userBrickSpace = null;
+		lastEmbeddedBrickState = null;
+		if (userDefinedBrick != null) {
+			userDefinedBrick.invalidateCachedView();
+		}
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserDefinedReceiverBrick clone = (UserDefinedReceiverBrick) super.clone();
 		clone.userDefinedScript = (UserDefinedScript) userDefinedScript.clone();

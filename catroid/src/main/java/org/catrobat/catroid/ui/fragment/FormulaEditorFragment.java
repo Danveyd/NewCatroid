@@ -261,10 +261,59 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 
 			BottomBar.hideBottomBar(activity);
 		} else {
-			formulaEditorFragment.showCustomView = false;
-			formulaEditorFragment.updateBrickView();
-			formulaEditorFragment.setInputFormula(formulaField, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
+			formulaEditorFragment.switchToFormula(formulaBrick, formulaField);
 		}
+	}
+
+	public boolean switchToFormula(FormulaBrick newFormulaBrick, Brick.FormulaField newFormulaField) {
+		return switchToFormula(newFormulaBrick, newFormulaField, false);
+	}
+
+	public boolean switchToFormula(FormulaBrick newFormulaBrick, Brick.FormulaField newFormulaField,
+			boolean showCustomView) {
+		if (newFormulaBrick == null || newFormulaField == null) {
+			return false;
+		}
+
+		if (newFormulaBrick == formulaBrick) {
+			this.showCustomView = showCustomView;
+			updateBrickView();
+			setInputFormula(newFormulaField, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
+			return true;
+		}
+
+		Formula newFormula;
+		try {
+			newFormula = newFormulaBrick.getFormulaWithBrickField(newFormulaField);
+		} catch (IllegalArgumentException e) {
+			Log.e(TAG, "Cannot switch the formula editor to " + newFormulaField, e);
+			return false;
+		}
+
+		if (formulaEditorEditText != null && formulaEditorEditText.hasChanges() && !saveFormulaIfPossible()) {
+			return false;
+		}
+
+		formulaBrick = newFormulaBrick;
+		currentFormulaField = newFormulaField;
+		currentFormula = newFormula;
+		this.showCustomView = showCustomView;
+
+		Bundle arguments = getArguments();
+		if (arguments != null) {
+			arguments.putSerializable(FORMULA_BRICK_BUNDLE_ARGUMENT, newFormulaBrick);
+			arguments.putSerializable(FORMULA_FIELD_BUNDLE_ARGUMENT, newFormulaField);
+		}
+
+		if (formulaEditorEditText == null) {
+			return true;
+		}
+
+		formulaEditorEditText.endEdit();
+		updateBrickView();
+		setInputFormula(newFormulaField, SET_FORMULA_ON_CREATE_VIEW);
+		updateButtonsOnKeyboardAndInvalidateOptionsMenu();
+		return true;
 	}
 
 	@Override
@@ -1201,7 +1250,7 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
                     //formulaEditorEditText.getInternFormula().setCursorAndSelection(0, false);
                     break;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Could not set the input formula for " + formulaField, e);
                 }
 			default:
 				break;
