@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,7 +42,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -131,8 +129,7 @@ import org.catrobat.catroid.formulaeditor.InternToken;
 import static androidx.fragment.app.DialogFragment.STYLE_NORMAL;
 
 @LunoClass
-public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener,
-		DataListFragment.FormulaEditorDataInterface {
+public class FormulaEditorFragment extends Fragment implements DataListFragment.FormulaEditorDataInterface {
 
 	public static final String TAG = FormulaEditorFragment.class.getSimpleName();
 
@@ -411,7 +408,6 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 
 		updateBrickView();
 
-		fragmentView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 		setInputFormula(currentFormulaField, SET_FORMULA_ON_CREATE_VIEW);
 
 		formulaEditorEditText.init(this);
@@ -1473,16 +1469,6 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
 	@Override
 	public void onListRenamed(String previousName, String newName) {
 		formulaEditorEditText.updateListReferences(previousName, newName);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onGlobalLayout() {
-		getView().getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		Rect brickRect = new Rect();
-		Rect keyboardRec = new Rect();
-		formulaEditorBrick.getGlobalVisibleRect(brickRect);
-		formulaEditorKeyboard.getGlobalVisibleRect(keyboardRec);
 	}
 
 	public void addResourceToActiveFormula(int resource) {

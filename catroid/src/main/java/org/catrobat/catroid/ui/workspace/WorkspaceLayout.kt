@@ -734,6 +734,15 @@ class WorkspaceLayout @JvmOverloads constructor(
             removeWindow(tag, force = true)
         }
 
+        val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager
+        if (fragmentManager != null && !fragmentManager.isStateSaved) {
+            fragmentManager.executePendingTransactions()
+            val leftover = fragmentManager.findFragmentByTag(tag)
+            if (leftover != null) {
+                fragmentManager.beginTransaction().remove(leftover).commitNowAllowingStateLoss()
+            }
+        }
+
         openWindow(tag, title) {
             org.catrobat.catroid.ui.fragment.FormulaEditorFragment().apply {
                 val bundle = android.os.Bundle().apply {
