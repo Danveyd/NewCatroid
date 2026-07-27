@@ -103,6 +103,26 @@ public class UserDefinedBrick extends FormulaBrick {
 	}
 
 	@Override
+	protected DetachedViewState beginDetachedView() {
+		DetachedViewState state = super.beginDetachedView();
+		state.extra = new Object[] {userDefinedBrickLayout, currentUserDefinedDataTextView,
+				formulaFieldToTextViewMap};
+		userDefinedBrickLayout = null;
+		currentUserDefinedDataTextView = null;
+		formulaFieldToTextViewMap = HashBiMap.create(2);
+		return state;
+	}
+
+	@Override
+	protected void endDetachedView(DetachedViewState state) {
+		Object[] saved = (Object[]) state.extra;
+		userDefinedBrickLayout = (BrickLayout) saved[0];
+		currentUserDefinedDataTextView = (TextView) saved[1];
+		formulaFieldToTextViewMap = (BiMap<FormulaField, TextView>) saved[2];
+		super.endDetachedView(state);
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserDefinedBrick clone = (UserDefinedBrick) super.clone();
 		clone.userDefinedBrickID = this.getUserDefinedBrickID();

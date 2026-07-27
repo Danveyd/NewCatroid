@@ -348,14 +348,7 @@ public class FormulaEditorFragment extends Fragment implements DataListFragment.
 			formulaEditorEditText.setVisibility(View.VISIBLE);
 			formulaEditorKeyboard.setVisibility(View.VISIBLE);
 
-			formulaBrick.invalidateCachedView();
-			View brickView = formulaBrick.getView(getActivity());
-
-			formulaBrick.setClickListeners();
-			formulaBrick.disableSpinners();
-			formulaBrick.highlightTextView(currentFormulaField);
-
-			formulaEditorBrick.addView(brickView);
+			formulaEditorBrick.addView(formulaBrick.createEditorView(getActivity(), currentFormulaField));
 		}
 	}
 

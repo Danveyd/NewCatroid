@@ -226,6 +226,21 @@ public abstract class FormulaBrick extends BrickBaseType implements View.OnClick
 		}
 	}
 
+	public View createEditorView(Context context, FormulaField highlightedField) {
+		DetachedViewState state = beginDetachedView();
+		try {
+			View editorView = getView(context);
+			setClickListeners();
+			disableSpinners();
+			if (highlightedField != null && brickFieldToTextViewIdMap.containsKey(highlightedField)) {
+				highlightTextView(highlightedField);
+			}
+			return editorView;
+		} finally {
+			endDetachedView(state);
+		}
+	}
+
 	public List<Formula> getFormulas() {
 		return new ArrayList<>(formulaMap.values());
 	}

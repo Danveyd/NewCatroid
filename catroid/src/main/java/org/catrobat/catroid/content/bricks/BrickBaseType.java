@@ -54,6 +54,8 @@ public abstract class BrickBaseType implements Brick {
 	private transient CheckBox checkbox;
 	private transient Map<Integer, BrickSpinner<?>> attachedSpinners;
 
+	private transient boolean buildingDetachedView;
+
 	protected transient Brick parent;
 
 	protected boolean commentedOut;
@@ -120,22 +122,45 @@ public abstract class BrickBaseType implements Brick {
 
 	@Override
 	public View getPrototypeView(Context context) {
-		View attachedView = this.view;
-		CheckBox attachedCheckbox = this.checkbox;
-		this.view = null;
-		this.checkbox = null;
+		DetachedViewState state = beginDetachedView();
 		try {
 			View freshView = getView(context);
 			disableSpinners(freshView);
 			removeSpinnerListeners(freshView);
 			return freshView;
 		} finally {
-			this.view = attachedView;
-			this.checkbox = attachedCheckbox;
+			endDetachedView(state);
 		}
 	}
 
+	public static class DetachedViewState {
+		private View view;
+		private CheckBox checkbox;
+		protected Object extra;
+	}
+
+	@CallSuper
+	protected DetachedViewState beginDetachedView() {
+		DetachedViewState state = new DetachedViewState();
+		state.view = this.view;
+		state.checkbox = this.checkbox;
+		this.view = null;
+		this.checkbox = null;
+		this.buildingDetachedView = true;
+		return state;
+	}
+
+	@CallSuper
+	protected void endDetachedView(DetachedViewState state) {
+		this.view = state.view;
+		this.checkbox = state.checkbox;
+		this.buildingDetachedView = false;
+	}
+
 	public void attachSpinner(Integer spinnerId, BrickSpinner<?> spinner) {
+		if (buildingDetachedView) {
+			return;
+		}
 		if (attachedSpinners == null) {
 			attachedSpinners = new HashMap<>();
 		}

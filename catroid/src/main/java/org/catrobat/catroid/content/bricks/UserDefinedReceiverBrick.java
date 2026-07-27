@@ -94,6 +94,23 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 	}
 
 	@Override
+	protected DetachedViewState beginDetachedView() {
+		DetachedViewState state = super.beginDetachedView();
+		state.extra = new Object[] {userBrickSpace, lastEmbeddedBrickState};
+		userBrickSpace = null;
+		lastEmbeddedBrickState = null;
+		return state;
+	}
+
+	@Override
+	protected void endDetachedView(DetachedViewState state) {
+		Object[] saved = (Object[]) state.extra;
+		userBrickSpace = (LinearLayout) saved[0];
+		lastEmbeddedBrickState = (String) saved[1];
+		super.endDetachedView(state);
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserDefinedReceiverBrick clone = (UserDefinedReceiverBrick) super.clone();
 		clone.userDefinedScript = (UserDefinedScript) userDefinedScript.clone();
