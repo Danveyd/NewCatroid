@@ -23,6 +23,8 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_update_screen">Update screen</string>
+
     <string name="particle_exit_dialog_title">Unsaved Changes</string>
     <string name="particle_exit_dialog_msg">Do you want to save your particle effect before leaving?</string>
     <string name="particle_exit_save">Save &amp; Exit</string>

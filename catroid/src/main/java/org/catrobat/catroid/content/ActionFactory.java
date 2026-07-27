@@ -5688,4 +5688,11 @@ public class ActionFactory extends Actions {
         action.setModeSelection(modeSelection);
         return action;
     }
+
+    public Action createUpdateScreenAction(Sprite sprite, SequenceAction sequence) {
+        UpdateScreenAction action = action(UpdateScreenAction.class);
+        Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+        action.setScope(scope);
+        return action;
+    }
 }

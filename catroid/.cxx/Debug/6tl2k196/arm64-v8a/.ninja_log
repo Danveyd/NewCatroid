@@ -1,19 +1,5 @@
 # ninja log v5
-0	1609	8067703871218510	CMakeFiles/example_core.dir/example_core.cpp.o	6c2f705a608dbb3e
-1614	1726	8067703872468504	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libexample_core.so	60eb82bf7dc86e2a
-6	4197	8067703896924466	CMakeFiles/catroid.dir/catroid.cpp.o	87ffe73651f455f9
-4198	4315	8067703898344583	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libcatroid.so	ef004a772074e439
-0	62	0	clean	d60c0ea4c7f1e19
-0	10	0	clean	d60c0ea4c7f1e19
-0	8	0	clean	d60c0ea4c7f1e19
-0	12	0	clean	d60c0ea4c7f1e19
-0	8	0	clean	d60c0ea4c7f1e19
-0	8	0	clean	d60c0ea4c7f1e19
-0	8	0	clean	d60c0ea4c7f1e19
-1	8	0	clean	d60c0ea4c7f1e19
-1	9	0	clean	d60c0ea4c7f1e19
-0	8	0	clean	d60c0ea4c7f1e19
-6	3528	8067728520252160	CMakeFiles/example_core.dir/example_core.cpp.o	6c2f705a608dbb3e
-3528	3860	8067728523612169	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libexample_core.so	60eb82bf7dc86e2a
-43	9979	8067728583627746	CMakeFiles/catroid.dir/catroid.cpp.o	87ffe73651f455f9
-9980	10573	8067728589647765	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libcatroid.so	ef004a772074e439
+0	1272	8068425496928620	CMakeFiles/example_core.dir/example_core.cpp.o	6c2f705a608dbb3e
+1277	1366	8068425497948619	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libexample_core.so	60eb82bf7dc86e2a
+5	3901	8068425523034686	CMakeFiles/catroid.dir/catroid.cpp.o	87ffe73651f455f9
+3903	3995	8068425524204715	D:/Catroid-develop/catroid/build/intermediates/cxx/Debug/6tl2k196/obj/arm64-v8a/libcatroid.so	ef004a772074e439

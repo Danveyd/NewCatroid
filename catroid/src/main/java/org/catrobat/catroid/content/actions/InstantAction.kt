@@ -10,7 +10,13 @@ class InstantAction : Action() {
         val innerAction = action ?: return true
 
         while (true) {
-            if (innerAction.act(delta)) {
+            val finished = innerAction.act(delta)
+
+            if (UpdateScreenSignal.checkAndResetYield()) {
+                return false
+            }
+
+            if (finished) {
                 return true
             }
         }

@@ -23,6 +23,8 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_update_screen">Обновить экран</string>
+
     <string name="particle_exit_dialog_title">Несохраненные изменения</string>
     <string name="particle_exit_dialog_msg">Сохранить изменения в эффекте частиц перед выходом?</string>
     <string name="particle_exit_save">Сохранить и выйти</string>

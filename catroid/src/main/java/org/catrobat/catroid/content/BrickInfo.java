@@ -465,6 +465,7 @@ public final class BrickInfo {
         add(SetParticlePropertyBrick.class, "Изменяет физический или визуальный параметр частиц");
         add(EmitParticleBurstBrick.class, "Производит мгновенный импульсный выброс частиц");
         add(StopParticleInstanceBrick.class, "Останавливает или мгновенно удаляет экземпляр частиц");
+        add(UpdateScreenBrick.class, "Принудительно отрисовывает 1 кадр экрана во время моментального цикла");
     }
 
     private static void initEnglishDescriptions() {
@@ -891,6 +892,7 @@ public final class BrickInfo {
         add(SetParticlePropertyBrick.class, "Changes a physical or visual property of particles");
         add(EmitParticleBurstBrick.class, "Triggers an instant particle burst");
         add(StopParticleInstanceBrick.class, "Stops or immediately deletes particle instance");
+        add(UpdateScreenBrick.class, "Forces a single frame render during instant loops");
     }
 
     private static void initPortugueseDescriptions() {
@@ -1301,6 +1303,7 @@ public final class BrickInfo {
         add(SetParticlePropertyBrick.class, "Altera uma propriedade física ou visual das partículas");
         add(EmitParticleBurstBrick.class, "Dispara um pulso instantâneo de partículas");
         add(StopParticleInstanceBrick.class, "Para ou exclui imediatamente a instância de partículas");
+        add(UpdateScreenBrick.class, "Força a renderização de 1 quadro durante loops instantâneos");
     }
 
     private static void initChineseDescriptions() {

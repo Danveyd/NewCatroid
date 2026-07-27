@@ -613,6 +613,7 @@ import org.catrobat.catroid.content.bricks.UnpinFromCameraBrick
 import org.catrobat.catroid.content.bricks.UnzipBrick
 import org.catrobat.catroid.content.bricks.UnzipProjectFilesBrick
 import org.catrobat.catroid.content.bricks.UpdateManifestBrick
+import org.catrobat.catroid.content.bricks.UpdateScreenBrick
 import org.catrobat.catroid.content.bricks.UploadFileBrick
 import org.catrobat.catroid.content.bricks.UserDefinedBrick
 import org.catrobat.catroid.content.bricks.UserDefinedReceiverBrick
@@ -925,6 +926,7 @@ open class CategoryBricksFactory {
                 controlBrickList.add(ForItemInUserListBrick())
                 controlBrickList.add(RunAsSpriteBrick(Formula("Sprite")))
                 controlBrickList.add(InstantBrick())
+                controlBrickList.add(UpdateScreenBrick())
                 controlBrickList.add(SpawnThreadBrick(Formula("thread1")))
                 controlBrickList.add(WaitThreadBrick(Formula("thread1")))
                 controlBrickList.add(StopThreadBrick(Formula("thread1")))
@@ -992,6 +994,7 @@ open class CategoryBricksFactory {
         controlBrickList.add(ForVariableFromToBrick(Formula(BrickValues.FOR_LOOP_FROM), Formula(BrickValues.FOR_LOOP_TO)))
         controlBrickList.add(ForItemInUserListBrick())
         controlBrickList.add(InstantBrick())
+        controlBrickList.add(UpdateScreenBrick())
         controlBrickList.add(SpawnThreadBrick(Formula("thread1")))
 
         controlBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_control_conditions), template))

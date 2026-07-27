@@ -23,8 +23,8 @@ ANDROID_NDK:UNINITIALIZED=D:\AppData\Local\Android\Sdk\ndk\26.1.10909125
 //No help, variable specified on the command line.
 ANDROID_PLATFORM:UNINITIALIZED=android-24
 
-//Build string (default: 20260726)
-BUILD:STRING=20260726
+//Build string (default: 20260727)
+BUILD:STRING=20260727
 
 //Build shared libraries
 BUILD_SHARED_LIBS:BOOL=ON

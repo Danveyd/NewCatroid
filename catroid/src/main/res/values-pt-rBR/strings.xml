@@ -23,6 +23,8 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string formatted="false" name="brick_update_screen">Atualizar tela</string>
+
     <string name="particle_exit_dialog_title">Alterações não salvas</string>
     <string name="particle_exit_dialog_msg">Deseja salvar o efeito de partículas antes de sair?</string>
     <string name="particle_exit_save">Salvar e Sair</string>
