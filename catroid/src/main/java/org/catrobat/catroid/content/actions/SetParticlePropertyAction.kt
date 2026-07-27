@@ -33,6 +33,9 @@ class SetParticlePropertyAction : TemporalAction() {
                 9 -> pInstance.model.startR = valFloat
                 10 -> pInstance.model.startG = valFloat
                 11 -> pInstance.model.startB = valFloat
+                12 -> ParticleManager.getInstance().setZIndex(instanceId, valFloat.toInt())
+                13 -> pInstance.particleScaleX = valFloat
+                14 -> pInstance.particleScaleY = valFloat
             }
         } catch (e: Exception) {
             Log.e("SetParticleProperty", "Error in update()", e)

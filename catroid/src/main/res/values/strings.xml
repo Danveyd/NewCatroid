@@ -156,6 +156,9 @@
         <item>Color R</item>
         <item>Color G</item>
         <item>Color B</item>
+        <item>Layer (Z-index)</item>
+        <item>Particle width (Scale X)</item>
+        <item>Particle height (Scale Y)</item>
     </string-array>
 
     <string-array name="particle_stop_modes">

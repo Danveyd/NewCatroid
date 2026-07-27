@@ -268,6 +268,15 @@ public class ParticleEditorActivity extends AppCompatActivity implements Android
         if (btnUndo != null) btnUndo.setOnClickListener(v -> undo());
         if (btnRedo != null) btnRedo.setOnClickListener(v -> redo());
 
+        View replayBtn = findViewById(R.id.btn_replay_particle);
+        if (replayBtn != null) {
+            replayBtn.setOnClickListener(v -> {
+                if (previewListener != null) {
+                    previewListener.resetPreview();
+                }
+            });
+        }
+
         View saveBtn = findViewById(R.id.btn_save_particle);
         if (saveBtn != null) saveBtn.setOnClickListener(v -> saveParticleModel());
 

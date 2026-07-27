@@ -12,8 +12,8 @@ import com.google.gson.Gson;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.RenderTexture;
-import org.catrobat.catroid.content.RenderTextureManager;
+import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.stage.StageListener;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +26,7 @@ public class ParticleManager {
 
     private final Map<String, ParticleEffectModel> effectTemplates = new ConcurrentHashMap<>();
     private final Map<String, ParticleInstance> activeInstances = new ConcurrentHashMap<>();
+    private final Map<String, ParticleActor> activeActors = new ConcurrentHashMap<>();
 
     private final Map<String, Texture> textureCache = new ConcurrentHashMap<>();
     private final Map<String, TextureRegion> textureRegionCache = new ConcurrentHashMap<>();
@@ -100,7 +101,6 @@ public class ParticleManager {
         }
 
         ParticleEffectModel instanceModel = cloneModel(model);
-
         TextureRegion region = getTextureRegionForModel(instanceModel);
 
         ParticleInstance particleInstance = new ParticleInstance(cleanInstanceId, instanceModel, region);
@@ -109,6 +109,51 @@ public class ParticleManager {
         particleInstance.reset();
 
         activeInstances.put(cleanInstanceId, particleInstance);
+
+        Gdx.app.postRunnable(() -> {
+            ParticleActor actor = new ParticleActor(particleInstance);
+            activeActors.put(cleanInstanceId, actor);
+
+            StageListener stageListener = StageActivity.getActiveStageListener();
+            if (stageListener != null && stageListener.getStage() != null) {
+                stageListener.getStage().addActor(actor);
+            }
+        });
+    }
+
+
+    public void setZIndex(String instanceId, int zIndex) {
+        if (instanceId == null) return;
+        String cleanId = instanceId.trim().replace("'", "").replace("\"", "");
+        ParticleActor actor = activeActors.get(cleanId);
+        if (actor != null) {
+            Gdx.app.postRunnable(() -> {
+                StageListener stageListener = StageActivity.getActiveStageListener();
+                if (stageListener != null) {
+                    stageListener.setActorZIndexSafely(actor, zIndex);
+                } else {
+                    actor.setZIndex(zIndex);
+                }
+            });
+        }
+    }
+
+    public void bringToFront(String instanceId) {
+        if (instanceId == null) return;
+        String cleanId = instanceId.trim().replace("'", "").replace("\"", "");
+        ParticleActor actor = activeActors.get(cleanId);
+        if (actor != null) {
+            Gdx.app.postRunnable(actor::toFront);
+        }
+    }
+
+    public void sendToBack(String instanceId) {
+        if (instanceId == null) return;
+        String cleanId = instanceId.trim().replace("'", "").replace("\"", "");
+        ParticleActor actor = activeActors.get(cleanId);
+        if (actor != null) {
+            Gdx.app.postRunnable(actor::toBack);
+        }
     }
 
     public synchronized TextureRegion getTextureRegionForModel(ParticleEffectModel model) {
@@ -148,8 +193,6 @@ public class ParticleManager {
                     textureRegionCache.put(cleanName, region);
 
                     return region;
-                } else {
-                    Log.w(TAG, "File not found: " + cleanName);
                 }
             }
         } catch (Exception e) {
@@ -180,16 +223,10 @@ public class ParticleManager {
                 }
             }
 
-            if (!targetFile.exists() || targetFile.length() == 0) {
-                return null;
-            }
+            if (!targetFile.exists() || targetFile.length() == 0) return null;
 
             String json = com.google.common.io.Files.toString(targetFile, StandardCharsets.UTF_8);
-            ParticleEffectModel loadedModel = gson.fromJson(json, ParticleEffectModel.class);
-            if (loadedModel != null) {
-                return loadedModel;
-            }
-
+            return gson.fromJson(json, ParticleEffectModel.class);
         } catch (Exception e) {
             Log.e(TAG, "Error reading file: " + fileName, e);
         }
@@ -211,32 +248,24 @@ public class ParticleManager {
         return activeInstances.get(cleanId);
     }
 
-    public void updateAndRenderAll(float delta, Batch batch) {
+    public void updateAll(float delta) {
         validateGLContext();
-
-        for (Map.Entry<String, ParticleInstance> entry : activeInstances.entrySet()) {
-            ParticleInstance pInstance = entry.getValue();
+        for (ParticleInstance pInstance : activeInstances.values()) {
             pInstance.update(delta);
+        }
+    }
 
+    public void renderForBuffer(String bufferName, Batch batch) {
+        if (bufferName == null || bufferName.trim().isEmpty()) return;
+        String cleanBufferName = bufferName.trim();
+
+        for (ParticleInstance pInstance : activeInstances.values()) {
             String targetBuffer = pInstance.targetBufferName;
-            boolean hasValidBuffer = targetBuffer != null
-                    && !targetBuffer.trim().isEmpty()
-                    && RenderTextureManager.INSTANCE.getRenderTextures().containsKey(targetBuffer);
-
-            if (hasValidBuffer && pInstance.bufferMode != ParticleInstance.BufferRenderMode.SCREEN_ONLY) {
-                RenderTexture target = RenderTextureManager.INSTANCE.getRenderTextures().get(targetBuffer);
-                if (target != null && target.getFbo() != null) {
-                    target.getFbo().begin();
+            if (targetBuffer != null && targetBuffer.trim().equalsIgnoreCase(cleanBufferName)) {
+                if (pInstance.bufferMode != ParticleInstance.BufferRenderMode.SCREEN_ONLY) {
                     pInstance.draw(batch);
-                    target.getFbo().end();
                 }
             }
-
-            if (hasValidBuffer && pInstance.bufferMode == ParticleInstance.BufferRenderMode.BUFFER_ONLY) {
-                continue;
-            }
-
-            pInstance.draw(batch);
         }
     }
 
@@ -248,6 +277,10 @@ public class ParticleManager {
             pInstance.stop(immediate);
             if (immediate) {
                 activeInstances.remove(cleanId);
+                ParticleActor actor = activeActors.remove(cleanId);
+                if (actor != null) {
+                    Gdx.app.postRunnable(actor::remove);
+                }
             }
         }
     }
@@ -263,15 +296,17 @@ public class ParticleManager {
     }
 
     public void resetForNewScene() {
+        for (ParticleActor actor : activeActors.values()) {
+            if (actor != null) actor.remove();
+        }
+        activeActors.clear();
         activeInstances.clear();
         effectTemplates.clear();
         clearCustomTextures();
     }
 
     public void clearAll() {
-        activeInstances.clear();
-        effectTemplates.clear();
-        clearCustomTextures();
+        resetForNewScene();
     }
 
     public void dispose() {

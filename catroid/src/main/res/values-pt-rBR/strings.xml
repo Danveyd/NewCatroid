@@ -158,6 +158,9 @@
         <item>Cor R</item>
         <item>Cor G</item>
         <item>Cor B</item>
+        <item>Camada (Z-index)</item>
+        <item>Largura dos partículas (Scale X)</item>
+        <item>Altura dos partículas (Scale Y)</item>
     </string-array>
 
     <string-array name="particle_stop_modes">

@@ -1709,6 +1709,7 @@ public class StageListener implements ApplicationListener {
                         if (threeDManager != null) {
                             threeDManager.update(Gdx.graphics.getDeltaTime());
                         }
+                        org.catrobat.catroid.particles.ParticleManager.getInstance().updateAll(Gdx.graphics.getDeltaTime());
                     }
                     updatePinnedSprites();
 
@@ -1730,14 +1731,6 @@ public class StageListener implements ApplicationListener {
                     if (org.catrobat.catroid.content.RenderTextureManager.isMain2DRenderEnabled()) {
                         stage.draw();
                         uiStage.draw();
-
-                        if (!paused) {
-                            batch.setProjectionMatrix(camera.combined);
-                            batch.begin();
-                            org.catrobat.catroid.particles.ParticleManager.getInstance()
-                                    .updateAndRenderAll(Gdx.graphics.getDeltaTime(), batch);
-                            batch.end();
-                        }
                     }
                 } catch (Exception e) {
                     Log.e("RENDER", "FATAL ERROR: " + e);

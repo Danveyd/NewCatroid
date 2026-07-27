@@ -298,6 +298,12 @@ object RenderTextureManager {
                     target.actorsToRender[i].draw(batch, 1.0f)
                 }
 
+                val targetName = renderTextures.entries.firstOrNull { it.value == target }?.key ?: ""
+                if (targetName.isNotEmpty()) {
+                    org.catrobat.catroid.particles.ParticleManager.getInstance()
+                        .renderForBuffer(targetName, batch)
+                }
+
                 batch.end()
                 target.fbo.end()
             }

@@ -26,6 +26,18 @@
             android:orientation="horizontal">
 
             <ImageButton
+                android:id="@+id/btn_replay_particle"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_material_button"
+                android:padding="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/stage_dialog_button_restart"
+                app:backgroundTint="@null"
+                app:tint="@color/accent" />
+
+            <ImageButton
                 android:id="@+id/btn_pick_gallery_bg"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -116,7 +128,7 @@
                 android:contentDescription="Redo"
                 android:padding="6dp"
                 android:rotationY="180"
-                android:src="@drawable/icon_redo"
+                android:src="@drawable/icon_undo"
                 app:tint="@color/accent" />
 
             <com.google.android.material.button.MaterialButton

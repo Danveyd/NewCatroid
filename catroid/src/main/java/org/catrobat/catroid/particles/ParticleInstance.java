@@ -8,9 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ParticleInstance {
 
     public static class SingleParticle {
@@ -18,8 +15,8 @@ public class ParticleInstance {
         public float time = 0f;
         public float lifeTime = 1f;
 
-        public Vector2 position = new Vector2();
-        public Vector2 velocity = new Vector2();
+        public final Vector2 position = new Vector2();
+        public final Vector2 velocity = new Vector2();
 
         public float radialAccel = 0f;
         public float tangentialAccel = 0f;
@@ -34,9 +31,10 @@ public class ParticleInstance {
         public float startSpinVar = 0f;
         public float endSpinVar = 0f;
 
-        public Color startColor = new Color();
-        public Color endColor = new Color();
-        public Color currentColor = new Color();
+        public final Color startColor = new Color();
+        public final Color endColor = new Color();
+        public final Color currentColor = new Color();
+
         public float currentSize = 10f;
         public float currentRotation = 0f;
     }
@@ -49,6 +47,11 @@ public class ParticleInstance {
     public float scaleX = 1f;
     public float scaleY = 1f;
     public float rotation = 0f;
+
+    public float particleScaleX = 1f;
+    public float particleScaleY = 1f;
+
+    public boolean visible = true;
 
     private SingleParticle[] particles;
     private int activeCount = 0;
@@ -66,6 +69,10 @@ public class ParticleInstance {
 
     public BufferRenderMode bufferMode = BufferRenderMode.SCREEN_AND_BUFFER;
     public String targetBufferName = "";
+
+    private static final Vector2 tmpRadial = new Vector2();
+    private static final Vector2 tmpTangential = new Vector2();
+    private final float[] vertices = new float[20];
 
     public ParticleInstance(String instanceId, ParticleEffectModel model, TextureRegion textureRegion) {
         this.instanceId = instanceId;
@@ -101,12 +108,34 @@ public class ParticleInstance {
     public void update(float delta) {
         systemTime += delta;
 
-        if (!isStopped && (model.duration < 0 || systemTime <= model.duration)) {
-            float rate = 1.0f / Math.max(0.001f, model.emissionRate);
-            emissionTimer += delta;
-            while (emissionTimer >= rate && activeCount < particles.length) {
-                spawnParticle();
-                emissionTimer -= rate;
+        if (!isStopped) {
+            boolean shouldEmit = false;
+
+            if (model.duration < 0) {
+                shouldEmit = true;
+            } else if (model.respawnDelay > 0) {
+                float totalCycleTime = model.duration + model.respawnDelay;
+                if (totalCycleTime > 0) {
+                    float currentCycleTime = systemTime % totalCycleTime;
+                    if (currentCycleTime <= model.duration) {
+                        shouldEmit = true;
+                    }
+                }
+            } else {
+                if (systemTime <= model.duration) {
+                    shouldEmit = true;
+                }
+            }
+
+            if (shouldEmit) {
+                float rate = 1.0f / Math.max(0.001f, model.emissionRate);
+                emissionTimer += delta;
+                while (emissionTimer >= rate && activeCount < particles.length) {
+                    spawnParticle();
+                    emissionTimer -= rate;
+                }
+            } else {
+                emissionTimer = 0f;
             }
         }
 
@@ -124,11 +153,13 @@ public class ParticleInstance {
             float normalizedLife = p.time / p.lifeTime;
 
             if (model.mode == ParticleEffectModel.EmitterMode.GRAVITY) {
-                Vector2 tmpRadial = new Vector2();
-                Vector2 tmpTangential = new Vector2();
+                float len = p.position.len();
+                if (len > 0.0001f) {
+                    tmpRadial.set(p.position.x / len, p.position.y / len);
+                } else {
+                    tmpRadial.set(0f, 0f);
+                }
 
-                Vector2 posOffset = new Vector2(p.position).sub(x, y);
-                if (posOffset.len() > 0) tmpRadial.set(posOffset).nor();
                 tmpTangential.set(-tmpRadial.y, tmpRadial.x);
 
                 tmpRadial.scl(p.radialAccel);
@@ -147,8 +178,8 @@ public class ParticleInstance {
                 p.angle += p.degreesPerSecond * delta;
                 p.radius += p.deltaRadius * delta;
 
-                p.position.x = x + (float) Math.cos(Math.toRadians(p.angle)) * p.radius;
-                p.position.y = y + (float) Math.sin(Math.toRadians(p.angle)) * p.radius;
+                p.position.x = MathUtils.cosDeg(p.angle) * p.radius;
+                p.position.y = MathUtils.sinDeg(p.angle) * p.radius;
             }
 
             p.currentSize = model.sizeCurve.evaluate(normalizedLife, p.startSizeVar, p.endSizeVar);
@@ -175,8 +206,8 @@ public class ParticleInstance {
             p.lifeTime = Math.max(0.01f, model.lifetime + randomVariance(model.lifetimeVariance));
 
             p.position.set(
-                    x + randomVariance(model.posVarX),
-                    y + randomVariance(model.posVarY)
+                    randomVariance(model.posVarX),
+                    randomVariance(model.posVarY)
             );
 
             if (model.mode == ParticleEffectModel.EmitterMode.GRAVITY) {
@@ -184,8 +215,8 @@ public class ParticleInstance {
                 float spd = model.speed + randomVariance(model.speedVariance);
 
                 p.velocity.set(
-                        (float) Math.cos(Math.toRadians(a)) * spd,
-                        (float) Math.sin(Math.toRadians(a)) * spd
+                        MathUtils.cosDeg(a) * spd,
+                        MathUtils.sinDeg(a) * spd
                 );
 
                 p.radialAccel = model.radialAccel + randomVariance(model.radialAccelVariance);
@@ -199,6 +230,9 @@ public class ParticleInstance {
 
                 p.radius = sRad;
                 p.deltaRadius = (eRad - sRad) / p.lifeTime;
+
+                p.position.x = MathUtils.cosDeg(p.angle) * p.radius;
+                p.position.y = MathUtils.sinDeg(p.angle) * p.radius;
             }
 
             p.startSizeVar = randomVariance(5f);
@@ -225,7 +259,7 @@ public class ParticleInstance {
     }
 
     public void draw(Batch batch) {
-        if (particleTextureRegion == null || activeCount == 0) return;
+        if (particleTextureRegion == null || activeCount == 0 || !visible) return;
 
         int oldSrcFunc = batch.getBlendSrcFunc();
         int oldDstFunc = batch.getBlendDstFunc();
@@ -236,26 +270,63 @@ public class ParticleInstance {
             batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
 
+        float sysCos = MathUtils.cosDeg(rotation);
+        float sysSin = MathUtils.sinDeg(rotation);
+
+        float u = particleTextureRegion.getU();
+        float v = particleTextureRegion.getV2();
+        float u2 = particleTextureRegion.getU2();
+        float v2 = particleTextureRegion.getV();
+
+        Texture texture = particleTextureRegion.getTexture();
+
         for (int i = 0; i < particles.length; i++) {
             SingleParticle p = particles[i];
             if (!p.active || p.currentColor.a <= 0.001f) continue;
 
-            batch.setColor(p.currentColor);
+            float colorBits = p.currentColor.toFloatBits();
 
-            float drawWidth = p.currentSize * scaleX;
-            float drawHeight = p.currentSize * scaleY;
-            float originX = drawWidth / 2f;
-            float originY = drawHeight / 2f;
+            float scaledLocalX = p.position.x * scaleX;
+            float scaledLocalY = p.position.y * scaleY;
 
-            batch.draw(
-                    particleTextureRegion,
-                    p.position.x - originX,
-                    p.position.y - originY,
-                    originX, originY,
-                    drawWidth, drawHeight,
-                    1f, 1f,
-                    p.currentRotation + rotation
-            );
+            float rotatedX = scaledLocalX * sysCos - scaledLocalY * sysSin;
+            float rotatedY = scaledLocalX * sysSin + scaledLocalY * sysCos;
+
+            float worldX = x + rotatedX;
+            float worldY = y + rotatedY;
+
+            float hw = (p.currentSize * particleScaleX) / 2f;
+            float hh = (p.currentSize * particleScaleY) / 2f;
+
+            float spinCos = MathUtils.cosDeg(p.currentRotation);
+            float spinSin = MathUtils.sinDeg(p.currentRotation);
+
+            float xA0 = -hw * spinCos + hh * spinSin;
+            float yA0 = -hw * spinSin - hh * spinCos;
+            float xB0 = xA0 * scaleX;
+            float yB0 = yA0 * scaleY;
+            float rx0 = worldX + (xB0 * sysCos - yB0 * sysSin);
+            float ry0 = worldY + (xB0 * sysSin + yB0 * sysCos);
+
+            float xA1 = -hw * spinCos - hh * spinSin;
+            float yA1 = -hw * spinSin + hh * spinCos;
+            float xB1 = xA1 * scaleX;
+            float yB1 = yA1 * scaleY;
+            float rx1 = worldX + (xB1 * sysCos - yB1 * sysSin);
+            float ry1 = worldY + (xB1 * sysSin + yB1 * sysCos);
+
+            float rx2 = 2f * worldX - rx0;
+            float ry2 = 2f * worldY - ry0;
+
+            float rx3 = 2f * worldX - rx1;
+            float ry3 = 2f * worldY - ry1;
+
+            vertices[0] = rx0;  vertices[1] = ry0;  vertices[2] = colorBits; vertices[3] = u;   vertices[4] = v;
+            vertices[5] = rx1;  vertices[6] = ry1;  vertices[7] = colorBits; vertices[8] = u;   vertices[9] = v2;
+            vertices[10] = rx2; vertices[11] = ry2; vertices[12] = colorBits; vertices[13] = u2; vertices[14] = v2;
+            vertices[15] = rx3; vertices[16] = ry3; vertices[17] = colorBits; vertices[18] = u2; vertices[19] = v;
+
+            batch.draw(texture, vertices, 0, 20);
         }
 
         batch.setBlendFunction(oldSrcFunc, oldDstFunc);
@@ -280,7 +351,7 @@ public class ParticleInstance {
 
     private float randomVariance(float variance) {
         if (variance == 0f) return 0f;
-        return (float) ((Math.random() * 2.0 - 1.0) * variance);
+        return MathUtils.random(-variance, variance);
     }
 
     private float clamp(float v) {

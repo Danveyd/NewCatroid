@@ -158,6 +158,9 @@
         <item>Цвет R</item>
         <item>Цвет G</item>
         <item>Цвет B</item>
+        <item>Слой (Z-index)</item>
+        <item>Ширина партиклов (Scale X)</item>
+        <item>Высота партиклов (Scale Y)</item>
     </string-array>
 
     <string-array name="particle_stop_modes">
