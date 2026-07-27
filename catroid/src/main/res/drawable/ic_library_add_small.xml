@@ -1,36 +1,9 @@
-<!--
-  ~ Catroid: An on-device visual programming system for Android devices
-  ~ Copyright (C) 2010-2022 The Catrobat Team
-  ~ (<http://developer.catrobat.org/credits>)
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ An additional term exception under section 7 of the GNU Affero
-  ~ General Public License, version 3, is available at
-  ~ http://developer.catrobat.org/license_additional_term
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="56dp"
+    android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="56"
+    android:viewportWidth="24"
     android:viewportHeight="24">
-  <group>
-    <clip-path
-        android:pathData="M0,0h56v24h-56z"/>
-    <path
-        android:pathData="M20,6L18,6L18,20C18,21.1 18.9,22 20,22L34,22L34,20L20,20L20,6ZM36,2L24,2C22.9,2 22,2.9 22,4L22,16C22,17.1 22.9,18 24,18L36,18C37.1,18 38,17.1 38,16L38,4C38,2.9 37.1,2 36,2ZM35,11L31,11L31,15L29,15L29,11L25,11L25,9L29,9L29,5L31,5L31,9L35,9L35,11Z"
-        android:fillColor="#FFFFFF"/>
-  </group>
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M2,5L0,5L0,22C0,23 1,24 2,24L19,24L19,22L2,22L2,5zM22,0L7,0C6,0 5,1 5,2L5,17C5,18 6,19 7,19L22,19C23,19 24,18 24,17L24,2C24,1 23,0 22,0zM20,11L16,11L16,16L13,16L13,11L8,11L8,8L13,8L13,4L16,4L16,8L20,8L20,11z"/>
 </vector>
