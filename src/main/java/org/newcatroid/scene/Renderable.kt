@@ -1,18 +1,18 @@
 package org.newcatroid.scene
 
 /**
- * Interface for renderable scene objects. Currently only exposes shaderIds: a list
- * of shader ids that should be applied to this object in the render pipeline.
+ * Interface for renderable scene objects. Exposes:
+ * - layerId: the id of the Layer this object belongs to (default 0 = no layer)
+ * - shaderIds: list of shader ids applied to this object specifically
+ * - render(renderer): draw using the provided renderer object (backend-specific)
  *
- * NOTE: layer support will be added later when confirmed by the project owner.
+ * Notes:
+ * - Layers are managed by LayerManager. During render, group objects by layer id
+ *   and iterate layers in zOrder. Skip layers with visible == false.
+ * - Keep Renderable lightweight: do not store heavy references to render resources.
  */
 interface Renderable {
+    var layerId: Int
     val shaderIds: MutableList<String>
-    /**
-     * Render the object using the provided renderer (backend-specific).
-     * The renderer parameter is intentionally typed as Any to avoid coupling to a specific
-     * rendering backend in this initial change. Integrations can cast it to the project
-     * renderer type (Canvas, OpenGL, etc.) as needed.
-     */
     fun render(renderer: Any)
 }
