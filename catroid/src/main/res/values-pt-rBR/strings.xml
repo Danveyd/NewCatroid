@@ -1444,7 +1444,7 @@
     <string name="subcategory_event_messages">Mensagens</string>
     <string name="subcategory_event_conditions">Condições e mudanças</string>
     <string name="subcategory_event_cloning">Clonagem</string>
-    <string name="subcategory_event_sistemas">Sistemas</string>
+    <string name="subcategory_event_system">Sistema</string>
     <string name="subcategory_control_waiting">Espera e atrasos</string>
     <string name="subcategory_control_loops">Loops</string>
     <string name="subcategory_control_conditions">Condições</string>
@@ -4880,4 +4880,72 @@ precisa de acesso de leitura e escrita a ele. Você sempre pode alterar as permi
     <string formatted="false" name="undo_sort">Desfazer ordenação</string>
     <string formatted="false" name="sort">Ordenar</string>
     <string formatted="false" name="checkbox">checkbox</string>
+    <!-- Missing translations (added for parity with the default English file) -->
+    <string formatted="false" name="actor_object_title">Atores e Objetos</string>
+    <string formatted="false" name="brick_ask_label2">Definir dica</string>
+    <string formatted="false" name="brick_ask_label3">Definir texto "Ok"</string>
+    <string formatted="false" name="brick_ask_label4">Definir texto "Cancelar"</string>
+    <string formatted="false" name="brick_ask_label5">Valor padrão</string>
+    <string formatted="false" name="brick_show_name">com nome</string>
+    <string formatted="false" name="brick_show_text">Mostrar texto</string>
+    <string formatted="false" name="brick_show_text_font">fonte (arquivos do projeto)</string>
+    <string formatted="false" name="brick_show_text_rotation">rotação</string>
+    <string formatted="false" name="brick_show_toast_long">Longo</string>
+    <string formatted="false" name="brick_show_toast_short">Curto</string>
+    <string formatted="false" name="editor3d">Editor 3D</string>
+    <string formatted="false" name="error_plot_data_not_found">Gráfico ausente.</string>
+    <string formatted="false" name="error_plot_file_write">Algo deu errado ao gravar o arquivo svg do gráfico.</string>
+    <string formatted="false" name="formula_3d_intersects">objeto_intersecciona_objeto</string>
+    <string formatted="false" name="formula_3d_intersects_param">(\'ID do Objeto 1\', \'ID do Objeto 2\')</string>
+    <string formatted="false" name="formula_collision_list">lista_colisoes_objeto</string>
+    <string formatted="false" name="formula_delta">delta-tempo</string>
+    <string formatted="false" name="formula_editor_function_all_files">todos_arquivos_projeto</string>
+    <string formatted="false" name="formula_editor_function_collides_with_color_parameter">(\'#ff0000\')</string>
+    <string formatted="false" name="formula_editor_function_color_touches_color_parameter">(\'#ff0000\',\'#00ff00\')</string>
+    <string formatted="false" name="formula_editor_function_connect">conectar_elementos</string>
+    <string formatted="false" name="formula_editor_function_connect_parameter">(*nome da lista*, \',\')</string>
+    <string formatted="false" name="formula_editor_function_file_size">tamanho_arquivo_projeto</string>
+    <string formatted="false" name="formula_editor_function_files_path">caminho_arquivos_projeto</string>
+    <string formatted="false" name="formula_editor_function_find">encontrar</string>
+    <string formatted="false" name="formula_editor_function_find_parameter">(*nome da lista*, 256)</string>
+    <string formatted="false" name="formula_editor_function_roundto">arredondar_para</string>
+    <string formatted="false" name="formula_editor_function_roundto_parameter">(123.456, 1)</string>
+    <string formatted="false" name="formula_editor_operator_concat">..</string>
+    <string formatted="false" name="formula_editor_sensor_color_at_x_y_parameter">(100,200)</string>
+    <string formatted="false" name="formula_editor_sensor_color_equals_color_parameter">(\'#ff0000 \',\'#fe0000 \',1)</string>
+    <string formatted="false" name="formula_editor_sensor_fps">FPS</string>
+    <string formatted="false" name="formula_f2d_id_param">(\'id\')</string>
+    <string formatted="false" name="formula_f2d_no_param">()</string>
+    <string formatted="false" name="formula_intersect_list">lista_interseccoes_objeto</string>
+    <string formatted="false" name="formula_pt_argmax">PT_argmax</string>
+    <string formatted="false" name="formula_pt_argmax_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_dump">PT_para_string</string>
+    <string formatted="false" name="formula_pt_dump_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_shape">PT_forma</string>
+    <string formatted="false" name="formula_pt_shape_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_totalsize">PT_tamanho</string>
+    <string formatted="false" name="formula_pt_totalsize_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_value">PT_valor</string>
+    <string formatted="false" name="formula_pt_value_param">(\'tensor\', index)</string>
+    <string formatted="false" name="formula_pt_valuend">PT_valor_ND</string>
+    <string formatted="false" name="formula_pt_valuennd_param">(\'tensor\', \'10,2\')</string>
+    <string formatted="false" name="inspector_title">Inspetor</string>
+    <string formatted="false" name="main_menu_community">Site NewCatroid</string>
+    <string formatted="false" name="main_menu_play">Jogar projeto</string>
+    <string formatted="false" name="menu_load_scene">Carregar cena</string>
+    <string formatted="false" name="menu_save_scene">Salvar cena</string>
+    <string formatted="false" name="navigation_drawer_close">Fechar gaveta de navegação</string>
+    <string formatted="false" name="navigation_drawer_open">Abrir gaveta de navegação</string>
+    <string formatted="false" name="ogurec">Você gosta de pepinos?</string>
+    <string formatted="false" name="plus">+</string>
+    <string formatted="false" name="preference_dialog_appgallery">AppGallery</string>
+    <string formatted="false" name="preference_dialog_google_play">Google Play</string>
+    <string formatted="false" name="preference_dialog_use_full_features">Usar todos os recursos</string>
+    <string formatted="false" name="preference_embroidery_dialog_text">Para aproveitar todos os recursos da extensão de bordado, use o aplicativo Embroidery Designer da Catrobat.</string>
+    <string formatted="false" name="preference_lego_dialog_text">Para aproveitar todos os recursos das extensões Lego Mindstorms, use o aplicativo Mindstorms Code EV3 NXT da Catrobat.</string>
+    <string formatted="false" name="preference_phiro_dialog_text">Para aproveitar todos os recursos da extensão de robótica Phiro, use o aplicativo Phiro Code da Catrobat.</string>
+    <string formatted="false" name="project_options_custom_resolution">Resolução personalizada</string>
+    <string formatted="false" name="sans_serif_font" translatable="false">sans_serif</string>
+    <string formatted="false" name="serif_font" translatable="false">serif</string>
+    <string formatted="false" name="title_activity_editor">Editor de cena</string>
 </resources>

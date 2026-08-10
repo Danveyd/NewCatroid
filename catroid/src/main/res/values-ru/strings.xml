@@ -5093,4 +5093,41 @@
     <string formatted="false" name="undo_sort">Отменить сортировку</string>
     <string formatted="false" name="sort">Сортировка</string>
     <string formatted="false" name="checkbox">флажок</string>
+    <!-- Missing translations (added for parity with the default English file) -->
+    <string formatted="false" name="actor_object_title">Актеры и объекты</string>
+    <string formatted="false" name="brick_show_toast_long">Долго</string>
+    <string formatted="false" name="brick_show_toast_short">Коротко</string>
+    <string formatted="false" name="error_plot_data_not_found">График не найден.</string>
+    <string formatted="false" name="error_plot_file_write">Не удалось записать svg-файл графика.</string>
+    <string formatted="false" name="formula_editor_function_collides_with_color_parameter">(\'#ff0000\')</string>
+    <string formatted="false" name="formula_editor_function_color_touches_color_parameter">(\'#ff0000\',\'#00ff00\')</string>
+    <string formatted="false" name="formula_editor_operator_concat">..</string>
+    <string formatted="false" name="formula_editor_sensor_color_at_x_y_parameter">(100,200)</string>
+    <string formatted="false" name="formula_editor_sensor_color_equals_color_parameter">(\'#ff0000 \',\'#fe0000 \',1)</string>
+    <string formatted="false" name="formula_editor_sensor_fps">FPS</string>
+    <string formatted="false" name="formula_f2d_id_param">(\'id\')</string>
+    <string formatted="false" name="formula_f2d_no_param">()</string>
+    <string formatted="false" name="formula_pt_argmax_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_dump_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_shape_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_totalsize_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_value_param">(\'tensor\', index)</string>
+    <string formatted="false" name="formula_pt_valuennd_param">(\'tensor\', \'10,2\')</string>
+    <string formatted="false" name="inspector_title">Инспектор</string>
+    <string formatted="false" name="main_menu_play">Играть проект</string>
+    <string formatted="false" name="menu_load_scene">Загрузить сцену</string>
+    <string formatted="false" name="menu_save_scene">Сохранить сцену</string>
+    <string formatted="false" name="navigation_drawer_close">Закрыть навигационное меню</string>
+    <string formatted="false" name="navigation_drawer_open">Открыть навигационное меню</string>
+    <string formatted="false" name="ogurec">А ты любишь огурцы?</string>
+    <string formatted="false" name="plus">+</string>
+    <string formatted="false" name="preference_dialog_appgallery">AppGallery</string>
+    <string formatted="false" name="preference_dialog_google_play">Google Play</string>
+    <string formatted="false" name="preference_dialog_use_full_features">Использовать все функции</string>
+    <string formatted="false" name="preference_embroidery_dialog_text">Чтобы использовать все возможности расширения для вышивки, воспользуйтесь приложением Embroidery Designer от Catrobat.</string>
+    <string formatted="false" name="preference_lego_dialog_text">Чтобы использовать все возможности расширений Lego Mindstorms, воспользуйтесь приложением Mindstorms Code EV3 NXT от Catrobat.</string>
+    <string formatted="false" name="preference_phiro_dialog_text">Чтобы использовать все возможности робототехнического расширения Phiro, воспользуйтесь приложением Phiro Code от Catrobat.</string>
+    <string formatted="false" name="sans_serif_font" translatable="false">sans_serif</string>
+    <string formatted="false" name="serif_font" translatable="false">serif</string>
+    <string formatted="false" name="title_activity_editor">Редактор сцен</string>
 </resources>
