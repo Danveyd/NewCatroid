@@ -8,7 +8,7 @@
         android:id="@+id/repo_url_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="URL репозитория (HTTPS)">
+        android:hint="@string/clone_repo_url_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/repo_url_edit_text"

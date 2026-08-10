@@ -4948,4 +4948,35 @@ precisa de acesso de leitura e escrita a ele. Você sempre pode alterar as permi
     <string formatted="false" name="sans_serif_font" translatable="false">sans_serif</string>
     <string formatted="false" name="serif_font" translatable="false">serif</string>
     <string formatted="false" name="title_activity_editor">Editor de cena</string>
+    <!-- Hardcoded layout strings moved to resources -->
+    <string formatted="false" name="ide_my_projects">Meus projetos</string>
+    <string formatted="false" name="ide_create_new_fork">+ Criar novo (Fork)</string>
+    <string formatted="false" name="ide_connect_existing_fork">Conectar Fork existente</string>
+    <string formatted="false" name="ide_local_projects">Projetos locais:</string>
+    <string formatted="false" name="create_repo_private_repo">Repositório privado</string>
+    <string formatted="false" name="nano_editor_save">^O Salvar</string>
+    <string formatted="false" name="nano_editor_exit">^X Sair</string>
+    <string formatted="false" name="ide_chat_ai">Chat de IA</string>
+    <string formatted="false" name="ide_check_locally">Verificar (Local)</string>
+    <string formatted="false" name="ide_build_cloud">Build (Nuvem)</string>
+    <string formatted="false" name="ide_send_pr">Enviar PR</string>
+    <string formatted="false" name="ide_ai_assistant_console">Assistente de IA / Console</string>
+    <string formatted="false" name="copying">Copiando...</string>
+    <string formatted="false" name="brick_run_chip8_label">Executar CHIP-8:</string>
+    <string formatted="false" name="project_options_bake_project">Assar projeto (Bake)</string>
+    <string formatted="false" name="project_options_publishing">Publicando projeto</string>
+    <string formatted="false" name="new_project_orientation">Orientação do projeto</string>
+    <string formatted="false" name="new_project_clone_git">Clonar repositório Git</string>
+    <!-- More hardcoded strings moved to resources (menus, hints, plugin preferences) -->
+    <string formatted="false" name="import">Importar</string>
+    <string formatted="false" name="export">Exportar</string>
+    <string formatted="false" name="clear">Limpar</string>
+    <string formatted="false" name="plugins_installed">Plugins instalados</string>
+    <string formatted="false" name="plugins_actions">Ações</string>
+    <string formatted="false" name="plugins_import">Importar plugin</string>
+    <string formatted="false" name="plugins_import_summary">Instalar um plugin a partir de um arquivo .nplug</string>
+    <string formatted="false" name="clone_repo_url_hint">URL do repositório (HTTPS)</string>
+    <string formatted="false" name="command_prompt_hint">Comando...</string>
+    <string formatted="false" name="create_repo_name_hint">Nome do repositório</string>
+    <string formatted="false" name="ide_feature_request_hint">Peça para adicionar um recurso...</string>
 </resources>

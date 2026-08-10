@@ -5304,4 +5304,35 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="undo_sort">Undo sort</string>
     <string formatted="false" name="sort">Sort</string>
     <string formatted="false" name="checkbox">checkbox</string>
+    <!-- Hardcoded layout strings moved to resources -->
+    <string formatted="false" name="ide_my_projects">My projects</string>
+    <string formatted="false" name="ide_create_new_fork">+ Create new (Fork)</string>
+    <string formatted="false" name="ide_connect_existing_fork">Connect existing Fork</string>
+    <string formatted="false" name="ide_local_projects">Local projects:</string>
+    <string formatted="false" name="create_repo_private_repo">Private repository</string>
+    <string formatted="false" name="nano_editor_save">^O Save</string>
+    <string formatted="false" name="nano_editor_exit">^X Exit</string>
+    <string formatted="false" name="ide_chat_ai">AI Chat</string>
+    <string formatted="false" name="ide_check_locally">Check (Local)</string>
+    <string formatted="false" name="ide_build_cloud">Build (Cloud)</string>
+    <string formatted="false" name="ide_send_pr">Send PR</string>
+    <string formatted="false" name="ide_ai_assistant_console">AI Assistant / Console</string>
+    <string formatted="false" name="copying">Copying...</string>
+    <string formatted="false" name="brick_run_chip8_label">Run CHIP-8:</string>
+    <string formatted="false" name="project_options_bake_project">Bake project</string>
+    <string formatted="false" name="project_options_publishing">Publishing project</string>
+    <string formatted="false" name="new_project_orientation">Project orientation</string>
+    <string formatted="false" name="new_project_clone_git">Clone Git repository</string>
+    <!-- More hardcoded strings moved to resources (menus, hints, plugin preferences) -->
+    <string formatted="false" name="import">Import</string>
+    <string formatted="false" name="export">Export</string>
+    <string formatted="false" name="clear">Clear</string>
+    <string formatted="false" name="plugins_installed">Installed plugins</string>
+    <string formatted="false" name="plugins_actions">Actions</string>
+    <string formatted="false" name="plugins_import">Import plugin</string>
+    <string formatted="false" name="plugins_import_summary">Install a plugin from a .nplug file</string>
+    <string formatted="false" name="clone_repo_url_hint">Repository URL (HTTPS)</string>
+    <string formatted="false" name="command_prompt_hint">Command...</string>
+    <string formatted="false" name="create_repo_name_hint">Repository name</string>
+    <string formatted="false" name="ide_feature_request_hint">Ask to add a feature...</string>
 </resources>

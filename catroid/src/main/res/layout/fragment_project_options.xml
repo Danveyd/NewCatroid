@@ -393,7 +393,7 @@
                     android:paddingStart="@dimen/material_design_spacing_x_large"
                     android:paddingTop="@dimen/material_design_spacing_x_large"
                     android:background="@drawable/button_background_selector_dark"
-                    android:text="Запечь проект (Bake)" />
+                    android:text="@string/project_options_bake_project" />
             </LinearLayout>
 
             <LinearLayout
@@ -531,7 +531,7 @@
                     android:id="@+id/tvPublishProgressTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Публикация проекта"
+                    android:text="@string/project_options_publishing"
                     android:textColor="@color/view_holder_item_title"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -540,7 +540,7 @@
                     android:id="@+id/tvPublishProgressStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Пожалуйста, подождите..."
+                    android:text="@string/please_wait"
                     android:textColor="@color/solid_white"
                     android:textSize="12sp"
                     android:ellipsize="end"
