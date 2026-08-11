@@ -1002,7 +1002,7 @@ public class ScriptFragment extends ListFragment implements
             TextView warningTitle = dialogTitleView.findViewById(R.id.warning_title);
             TextView warningMessage = dialogTitleView.findViewById(R.id.warning_message);
 
-            String title = (result.getSeverity() == Severity.ERROR) ? "Ошибка:" : "Предупреждение:";
+            String title = (result.getSeverity() == Severity.ERROR) ? getString(R.string.scr_error) : getString(R.string.scr_warning);
             int color = (result.getSeverity() == Severity.ERROR) ? 0xFFFF4444 : 0xFFFFBB33;
 
             warningTitle.setText(title);
@@ -1340,7 +1340,7 @@ public class ScriptFragment extends ListFragment implements
             org.catrobat.catroid.ui.workspace.WorkspaceLayout workspaceLayout =
                     (org.catrobat.catroid.ui.workspace.WorkspaceLayout) workspace;
 
-            workspaceLayout.openWindow("Backpack_Scripts", "Рюкзак: Скрипты",
+            workspaceLayout.openWindow("Backpack_Scripts", getString(R.string.scr_backpack_scripts),
                     org.catrobat.catroid.ui.recyclerview.backpack.BackpackScriptFragment::new);
             return;
         }

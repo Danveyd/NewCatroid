@@ -5150,7 +5150,7 @@
     <string formatted="false" name="new_project_orientation">Ориентация проекта</string>
     <string formatted="false" name="new_project_clone_git">Клонировать репозиторий Git</string>
     <!-- More hardcoded strings moved to resources (menus, hints, plugin preferences) -->
-    <string formatted="false" name="import">Импорт</string>
+    <string formatted="false" name="import_library">Импорт</string>
     <string formatted="false" name="export">Экспорт</string>
     <string formatted="false" name="clear">Очистить</string>
     <string formatted="false" name="plugins_installed">Установленные плагины</string>
@@ -5161,4 +5161,358 @@
     <string formatted="false" name="command_prompt_hint">Команда...</string>
     <string formatted="false" name="create_repo_name_hint">Имя репозитория</string>
     <string formatted="false" name="ide_feature_request_hint">Попроси добавить фичу...</string>
+    <!-- NewCatroid: externalized from Java/Kotlin sources -->
+    <string formatted="false" name="po_unknown_server_error">Неизвестная ошибка сервера</string>
+    <string formatted="false" name="po_server_error">Ошибка сервера</string>
+    <string formatted="false" name="po_server_parse_error">Ошибка разбора ответа сервера</string>
+    <string formatted="false" name="po_title_empty">Название проекта не может быть пустым</string>
+    <string formatted="false" name="po_title_too_long">Название проекта слишком длинное (макс. 30 символов)</string>
+    <string formatted="false" name="po_desc_empty">Описание проекта не может быть пустым</string>
+    <string formatted="false" name="po_desc_too_long">Описание слишком длинное (макс. 400 символов)</string>
+    <string formatted="false" name="po_packaging_error">Ошибка упаковки: %1$s</string>
+    <string formatted="false" name="po_chunk_error">Чанк №%1$d: %2$s</string>
+    <string formatted="false" name="po_zero_byte_archive">Размер файла проекта равен 0 байт. Ошибка архивации.</string>
+    <string formatted="false" name="po_publishing_project">Публикация проекта</string>
+    <string formatted="false" name="po_baking_project">Запекание проекта...</string>
+    <string formatted="false" name="po_save_baked">Сохранить запеченный проект</string>
+    <string formatted="false" name="po_rebuild_physics_title">Обновить кэш физики?</string>
+    <string formatted="false" name="po_rebuild_physics_msg">Это может занять некоторое время, но исправит проблемы с хитбоксами в старых проектах. Продолжить?</string>
+    <string formatted="false" name="po_no_looks_to_process">В проекте нет образов для обработки.</string>
+    <string formatted="false" name="po_cache_update_title">Обновление кэша</string>
+    <string formatted="false" name="po_processing_images">Обработка образов...</string>
+    <string formatted="false" name="po_processing_look">Обработка: %1$s</string>
+    <string formatted="false" name="po_processing_done">Готово! Обработано %1$d из %2$d образов.</string>
+    <string formatted="false" name="po_login_required">Требуется вход</string>
+    <string formatted="false" name="po_login_required_msg">Для подключения проекта к Git необходимо войти в свой аккаунт GitHub в настройках приложения.</string>
+    <string formatted="false" name="po_go_to_settings">В настройки</string>
+    <string formatted="false" name="po_create_new_repo">Создать новый репозиторий</string>
+    <string formatted="false" name="po_connect_existing_repo">Подключиться к существующему</string>
+    <string formatted="false" name="po_connect_git_title">Подключение к Git</string>
+    <string formatted="false" name="po_create_repo_title">Создание нового репозитория</string>
+    <string formatted="false" name="po_repo_name_empty">Имя репозитория не может быть пустым</string>
+    <string formatted="false" name="po_creating_repo">Создание репозитория...</string>
+    <string formatted="false" name="po_project_published">Проект успешно опубликован!</string>
+    <string formatted="false" name="po_connect_repo_title">Подключение к репозиторию</string>
+    <string formatted="false" name="po_connect_repo_warning">Внимание! Текущие файлы проекта будут ЗАМЕНЕНЫ файлами из удаленного репозитория. Это действие необратимо.</string>
+    <string formatted="false" name="po_connect">Подключить</string>
+    <string formatted="false" name="po_invalid_repo_url">Введите корректный HTTPS URL репозитория</string>
+    <string formatted="false" name="po_cloning_project">Клонирование проекта...</string>
+    <string formatted="false" name="po_project_cloned">Проект успешно склонирован!</string>
+    <string formatted="false" name="po_sync_title">Синхронизировать</string>
+    <string formatted="false" name="po_commit_msg_hint">Введите краткое описание сделанных изменений (коммит):</string>
+    <string formatted="false" name="po_sync_and_publish">Синхронизация и публикация...</string>
+    <string formatted="false" name="po_sync_done">Синхронизация завершена!</string>
+    <string formatted="false" name="po_updating_project">Обновление проекта...</string>
+    <string formatted="false" name="po_project_updated">Проект обновлен!</string>
+    <string formatted="false" name="po_conflicts_detected_title">Обнаружены конфликты</string>
+    <string formatted="false" name="po_conflicts_detected_msg">Система обнаружила конфликты, думайте сами какой вариант оставить. Конфликты:\n%1$s</string>
+    <string formatted="false" name="po_merge_conflicts_title">Конфликты слияния!</string>
+    <string formatted="false" name="po_merge_conflicts_msg">Не удалось автоматически обновить проект. Конфликты:\n%1$s</string>
+    <string formatted="false" name="po_restart_required_title">Требуется перезагрузка</string>
+    <string formatted="false" name="po_restart_required_msg">Проект был изменен. Чтобы увидеть изменения, необходимо его перезапустить.</string>
+    <string formatted="false" name="po_restart">Перезапустить</string>
+    <string formatted="false" name="po_no_images_in_project">В проекте нет изображений.</string>
+    <string formatted="false" name="po_insert_image">Вставить изображение</string>
+    <string formatted="false" name="po_build_matryoshka">Сборка матрешки для сервера...</string>
+    <string formatted="false" name="po_matryoshka_done">Матрешка собрана!</string>
+    <string formatted="false" name="stage_window_title">Игровой экран</string>
+    <string formatted="false" name="stage_press_again_for_menu">Нажмите еще раз для вызова меню</string>
+    <string formatted="false" name="stage_export_error">Ошибка при экспорте: %1$s</string>
+    <string formatted="false" name="stage_warning_title">Проект может содержать вредоносный код</string>
+    <string formatted="false" name="stage_warning_msg">В проекте используется Java компиляция, LunoScript, Python или Библиотеки, это может быть опасно. Запускайте его только если проверили код или доверяете источнику.</string>
+    <string formatted="false" name="stage_run">Запуск</string>
+    <string formatted="false" name="stage_dont_remind_again">Больше не напоминать</string>
+    <string formatted="false" name="sf_logged_in_as">Вы вошли как @%1$s (Нажмите, чтобы выйти)</string>
+    <string formatted="false" name="sf_log_in_or_register">Войдите или зарегистрируйтесь, чтобы выкладывать свои проекты</string>
+    <string formatted="false" name="sf_logout_confirm_title">Выйти из сообщества?</string>
+    <string formatted="false" name="sf_logout_confirm_msg">Вы уверены, что хотите выйти из своего аккаунта сообщества NewCatroid?</string>
+    <string formatted="false" name="sf_logout">Выйти</string>
+    <string formatted="false" name="sf_loading_user_data">Загрузка данных пользователя...</string>
+    <string formatted="false" name="sf_failed_to_fetch_data">Не удалось получить данные</string>
+    <string formatted="false" name="sf_no_lost_projects">Потерянных проектов не найдено</string>
+    <string formatted="false" name="sf_found_projects_title">Найденные проекты (%1$d)</string>
+    <string formatted="false" name="sf_restore">Восстановить</string>
+    <string formatted="false" name="sf_projects_processed">Обработано проектов: %1$d. Приложение будет перезапущено для обновления списка.</string>
+    <string formatted="false" name="sf_done_title">Готово</string>
+    <string formatted="false" name="plugin_installed_toast">Плагин успешно установлен! (не забудьте перезапустить приложение)</string>
+    <string formatted="false" name="plugin_install_error">Ошибка установки. Убедитесь, что вы выбрали корректный .nplug файл и он не поврежден.</string>
+    <string formatted="false" name="plugin_none_installed">Нет установленных плагинов</string>
+    <string formatted="false" name="plugin_enabled_badge">[ВКЛ]</string>
+    <string formatted="false" name="plugin_disabled_badge">[ВЫКЛ]</string>
+    <string formatted="false" name="plugin_enable">Включить</string>
+    <string formatted="false" name="plugin_disable">Отключить</string>
+    <string formatted="false" name="plugin_configure">Настроить</string>
+    <string formatted="false" name="plugin_actions_title">Действия для: %1$s</string>
+    <string formatted="false" name="plugin_delete_confirm_title">Удаление плагина</string>
+    <string formatted="false" name="plugin_delete_confirm_msg">Вы уверены, что хотите навсегда удалить \'%1$s\'?</string>
+    <string formatted="false" name="plugin_deleted_toast">Плагин удален! (не забудьте перезапустить приложение)</string>
+    <string formatted="false" name="plugin_title">Плагины</string>
+    <string formatted="false" name="common_error_with_message">Ошибка: %1$s</string>
+    <string formatted="false" name="common_file_not_found">Файл не найден</string>
+    <string formatted="false" name="common_unknown_file">неизвестный_файл</string>
+    <string formatted="false" name="common_choose_file">Выберите файл</string>
+    <string formatted="false" name="pf_dir_not_found">Ошибка: директория проекта не найдена</string>
+    <string formatted="false" name="pf_no_app_to_open">Нечем открыть этот файл</string>
+    <string formatted="false" name="pf_open_error">Ошибка открытия: %1$s</string>
+    <string formatted="false" name="pf_name_copied">Имя файла скопировано в буфер</string>
+    <string formatted="false" name="pf_deleted">Удалено</string>
+    <string formatted="false" name="pf_delete_error">Ошибка при удалении</string>
+    <string formatted="false" name="pf_open_failed">Не удалось открыть файл</string>
+    <string formatted="false" name="pf_save_error">Ошибка при сохранении: %1$s</string>
+    <string formatted="false" name="lib_no_app_to_open">Не найдено приложений для открытия</string>
+    <string formatted="false" name="lib_name_copied">Имя скопировано</string>
+    <string formatted="false" name="lib_deleted">Библиотека удалена</string>
+    <string formatted="false" name="lib_delete_error">Ошибка при удалении библиотеки</string>
+    <string formatted="false" name="lib_choose_newlib_file">Выберите файл .newlib</string>
+    <string formatted="false" name="ide_dash_preparing_env">Подготовка окружения...\nСкачивание Android SDK %1$s</string>
+    <string formatted="false" name="ide_dash_sdk_error">Ошибка SDK: %1$s</string>
+    <string formatted="false" name="ide_dash_github_api_error">Ошибка GitHub API: %1$s</string>
+    <string formatted="false" name="ide_dash_fork_link_error">Не удалось получить ссылку на форк</string>
+    <string formatted="false" name="ide_dash_sdk_installed">SDK успешно установлен!</string>
+    <string formatted="false" name="ide_dash_github_login_first">Сначала авторизуйтесь в GitHub!</string>
+    <string formatted="false" name="ide_dash_coming_soon">Функция подключения появится чуть позже</string>
+    <string formatted="false" name="ide_dash_delete_feature_title">Удалить фичу?</string>
+    <string formatted="false" name="ide_dash_delete_feature_msg">Вы точно хотите удалить %1$s? Локальные изменения будут потеряны.</string>
+    <string formatted="false" name="ide_dash_project_deleted">Проект удален</string>
+    <string formatted="false" name="ide_dash_creating_fork">Создание форка на GitHub...\nЭто может занять пару минут.</string>
+    <string formatted="false" name="ide_dash_cloning_source">Клонирование исходного кода...</string>
+    <string formatted="false" name="ide_dash_project_ready">Проект готов к работе!</string>
+    <string formatted="false" name="ide_dash_error">Ошибка!</string>
+    <string formatted="false" name="ide_choose_file_hint">// Выберите файл слева в меню для редактирования</string>
+    <string formatted="false" name="ide_build_started">Сборка запущена! 🚀</string>
+    <string formatted="false" name="ide_build_error_code">Код %1$s</string>
+    <string formatted="false" name="ide_no_base_branch">Не удалось найти базовую ветку (main/master) для создания форка.</string>
+    <string formatted="false" name="ide_branch_create_error">Не удалось создать ветку на GitHub: %1$s</string>
+    <string formatted="false" name="ide_code_saved_ecj">Код сохранен. Вызов ECJ...</string>
+    <string formatted="false" name="build_connecting">Связь с сервером...</string>
+    <string formatted="false" name="build_failed_title">Ошибка сборки</string>
+    <string formatted="false" name="build_unknown_error">Неизвестная ошибка</string>
+    <string formatted="false" name="build_github_timeout">GitHub не запустил сборку вовремя. Попробуй еще раз.</string>
+    <string formatted="false" name="build_on_github">Сборка на GitHub...</string>
+    <string formatted="false" name="build_status_prefix">Статус: %1$s</string>
+    <string formatted="false" name="build_check_syntax">Проверьте синтаксис в редакторе.</string>
+    <string formatted="false" name="build_success">Сборка успешна!</string>
+    <string formatted="false" name="build_looking_for_artifact">Ищем готовый файл...</string>
+    <string formatted="false" name="build_artifact_not_found">Артефакт не найден.</string>
+    <string formatted="false" name="build_downloading_apk">Скачивание APK...</string>
+    <string formatted="false" name="build_unpacking">Распаковка...</string>
+    <string formatted="false" name="build_ready_title">Билд готов!</string>
+    <string formatted="false" name="build_tap_to_send">Нажмите, чтобы отправить или установить APK</string>
+    <string formatted="false" name="build_save_to_downloads_failed">Не удалось сохранить файл в Загрузки</string>
+    <string formatted="false" name="build_open_apk">Открыть APK</string>
+    <string formatted="false" name="apk_preparing_template">Подготовка шаблона...</string>
+    <string formatted="false" name="apk_injecting_code">Внедрение кода...</string>
+    <string formatted="false" name="apk_configuring_manifest">Настройка манифеста...</string>
+    <string formatted="false" name="apk_configuring_sdk">Настройка SDK версий...</string>
+    <string formatted="false" name="apk_optimizing_manifest">Оптимизация манифеста...</string>
+    <string formatted="false" name="apk_updating_graphics">Обновление графики...</string>
+    <string formatted="false" name="apk_packing_resources">Упаковка ресурсов...</string>
+    <string formatted="false" name="apk_packing_native_libs">Упаковка библиотек (Native)...</string>
+    <string formatted="false" name="apk_building">Сборка APK...</string>
+    <string formatted="false" name="apk_signing">Подпись...</string>
+    <string formatted="false" name="apk_keystore_required">Для Target SDK 30+ нужна настройка Keystore!</string>
+    <string formatted="false" name="apk_done_v2">Готово! V2 Signature OK.</string>
+    <string formatted="false" name="apk_signing_error">Ошибка подписи: %1$s</string>
+    <string formatted="false" name="se_protection_preparing">Защита: Подготовка...</string>
+    <string formatted="false" name="se_compiling">Компиляция...</string>
+    <string formatted="false" name="se_no_compiled_classes">Нет скомпилированных классов</string>
+    <string formatted="false" name="se_generating_dex">Генерация DEX (D8)...</string>
+    <string formatted="false" name="se_obfuscating">Обфускация (R8)...</string>
+    <string formatted="false" name="se_proguard_created">Создан proguard-rules.pro</string>
+    <string formatted="false" name="se_processing_libs">Обработка библиотек...</string>
+    <string formatted="false" name="se_sdk_not_found">Android SDK (android.jar) не найден! Скачайте API %1$s в настройках.</string>
+    <string formatted="false" name="se_stubs_not_found">Ошибка: core-lambda-stubs.jar не найден в assets!</string>
+    <string formatted="false" name="sdk_searching_api">Поиск API %1$s...</string>
+    <string formatted="false" name="sdk_api_not_found">Версия API %1$s не найдена</string>
+    <string formatted="false" name="sdk_unpacking">Распаковка архива...</string>
+    <string formatted="false" name="sdk_install_done">Установка завершена!</string>
+    <string formatted="false" name="sdk_no_android_jar">Ошибка: в архиве нет android.jar</string>
+    <string formatted="false" name="sdk_server_error">Ошибка сервера: %1$s</string>
+    <string formatted="false" name="sdk_downloading_mb">Загрузка: %1$.1f / %2$.1f MB</string>
+    <string formatted="false" name="sdk_downloaded_mb">Загружено: %1$.1f MB</string>
+    <string formatted="false" name="sdk_download_failed">Сбой загрузки: %1$s</string>
+    <string formatted="false" name="ipm_creating_structure">Создание структуры проекта...</string>
+    <string formatted="false" name="ipm_project_exists_error">Ошибка: Проект уже существует</string>
+    <string formatted="false" name="ipm_downloading">Скачивание: %1$s...</string>
+    <string formatted="false" name="ipm_download_error">Ошибка загрузки: %1$s</string>
+    <string formatted="false" name="ipm_generating_code">Генерация кода...</string>
+    <string formatted="false" name="dm_invalid_id_format">Неверный формат ID</string>
+    <string formatted="false" name="dm_aar_unpack_error">Ошибка распаковки AAR</string>
+    <string formatted="false" name="tab_scripts">Скрипты</string>
+    <string formatted="false" name="tab_looks">Образы</string>
+    <string formatted="false" name="tab_sounds">Звуки</string>
+    <string formatted="false" name="tab_scenes">Сцены</string>
+    <string formatted="false" name="tab_sprites">Спрайты</string>
+    <string formatted="false" name="tab_project_options">Опции проекта</string>
+    <string formatted="false" name="tab_project_files">Файлы проекта</string>
+    <string formatted="false" name="tab_libraries">Библиотеки</string>
+    <string formatted="false" name="crash_dialog_title">Аварийное завершение / Crash Log</string>
+    <string formatted="false" name="crash_dialog_msg">В прошлый раз приложение закрылось с ошибкой. Пожалуйста, отправьте этот текст разработчику:\n\n%1$s</string>
+    <string formatted="false" name="crash_no_active_project">Нет активного проекта для запуска</string>
+    <string formatted="false" name="ws_tools">ИНСТРУМЕНТЫ</string>
+    <string formatted="false" name="ws_categories">Категории блоков</string>
+    <string formatted="false" name="ws_add_brick">Добавить блок</string>
+    <string formatted="false" name="ws_data_selection">Выбор данных</string>
+    <string formatted="false" name="ws_formula_editor">Редактор формул</string>
+    <string formatted="false" name="scr_error">Ошибка:</string>
+    <string formatted="false" name="scr_warning">Предупреждение:</string>
+    <string formatted="false" name="scr_backpack_scripts">Рюкзак: Скрипты</string>
+    <string formatted="false" name="scr_no_scripts"> (Скрипты отсутствуют)\n</string>
+    <string formatted="false" name="scr_disabled">// [ОТКЛЮЧЕН] </string>
+    <string formatted="false" name="scr_start_script">При запуске сцены:</string>
+    <string formatted="false" name="scr_when_script">При нажатии на спрайт:</string>
+    <string formatted="false" name="scr_touch_script">При касании экрана:</string>
+    <string formatted="false" name="scr_broadcast_script">Когда я получу вещание:</string>
+    <string formatted="false" name="scr_condition_script">Когда условие становится истинным:</string>
+    <string formatted="false" name="scr_cloned_script">Когда я начинаю как клон:</string>
+    <string formatted="false" name="scr_background_script">Когда фон меняется:</string>
+    <string formatted="false" name="scr_default_script">Скрипт [%1$s]:</string>
+    <string formatted="false" name="ste_path_not_passed">Ошибка: путь не передан</string>
+    <string formatted="false" name="ste_file_too_large">// Файл слишком большой (%1$d KB).\n// Редактирование недоступно во избежание зависаний.</string>
+    <string formatted="false" name="ste_read_error">Ошибка чтения</string>
+    <string formatted="false" name="ste_saved">Сохранено</string>
+    <string formatted="false" name="npd_clone_success">Проект успешно клонирован!</string>
+    <string formatted="false" name="npd_clone_not_readable">Клонирование успешно, но проект не читается: %1$s</string>
+    <string formatted="false" name="npd_clone_error">Ошибка клонирования: %1$s</string>
+    <string formatted="false" name="libm_sync_success">Синхронизация прошла успешно!</string>
+    <string formatted="false" name="libm_sync_errors">Синхронизация завершилась со счетчиком ошибок: %1$d</string>
+    <string formatted="false" name="fu_download_error_code">Ошибка: %1$s</string>
+    <string formatted="false" name="ask_default_placeholder">Введите ответ:</string>
+    <string formatted="false" name="ask_default_ok">OK</string>
+    <string formatted="false" name="ask_default_cancel">Отмена</string>
+    <string formatted="false" name="cbf_dialog_title">Фижма</string>
+    <string formatted="false" name="cbf_dialog_answer">введите ваш ответ</string>
+    <string formatted="false" name="cbf_dialog_yes">Да</string>
+    <string formatted="false" name="cbf_dialog_later">Позже</string>
+    <string formatted="false" name="cbf_dialog_no">Нет</string>
+    <string formatted="false" name="cbf_dialog_edit_hint">это текстовое поле</string>
+    <string formatted="false" name="cbf_dialog_radio_hint">это выбор</string>
+    <string formatted="false" name="cbf_copy_example">Котлета</string>
+    <string formatted="false" name="cbf_notif_title">Привееет</string>
+    <string formatted="false" name="cbf_notif_text">Это уведомление (точнее, его текст)</string>
+    <string formatted="false" name="cbf_notif2_title">Привееет опять</string>
+    <string formatted="false" name="cbf_notif2_text">Это уже сложное уведомление</string>
+    <string formatted="false" name="cbf_bg_title">Приложение работает в фоне</string>
+    <string formatted="false" name="cbf_bg_text">без уведомления в Android 14+ нельзя к сожалению(</string>
+    <string formatted="false" name="cbf_lua_example">return \'Привет из Lua!\'</string>
+    <string formatted="false" name="cbf_web_html_simple">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Привет!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_web_html_full">&lt;html&gt;&lt;body style=\'background-color:lightyellow;\'&gt;&lt;h1&gt;Привет, мир!&lt;/h1&gt;&lt;p&gt;Это WebView, созданный прямо из кода.&lt;/p&gt;&lt;button onclick=\'alert(&quot;JavaScript работает!&quot;)\'&gt;Нажми меня&lt;/button&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_textfield_hint">Напишите значение...</string>
+    <string formatted="false" name="cbf_textfield_default">если файла не существует - по умолчанию</string>
+    <string formatted="false" name="cbf_label_html">&lt;b&gt;Привет&lt;/b&gt; Это HTML текст.</string>
+    <string formatted="false" name="cbf_button_text">Нажми меня!</string>
+    <string formatted="false" name="cbf_switch_text">Включить</string>
+    <string formatted="false" name="cbf_share_text">Привет из NewCatroid!</string>
+    <string formatted="false" name="cbf_gpt_prompt">Привет!</string>
+    <string formatted="false" name="cbf_gpt_system">Отвечай на все словом &quot;апельсин&quot;</string>
+    <string formatted="false" name="cpf_empty_names">Имена файлов не могут быть пустыми</string>
+    <string formatted="false" name="cpf_source_not_found">Исходный файл не найден: %1$s</string>
+    <string formatted="false" name="cpf_copy_error">Ошибка копирования файла</string>
+    <string formatted="false" name="epf_activity_unavailable">Ошибка: не удалось получить доступ к Activity</string>
+    <string formatted="false" name="cpd_file_saved">Файл %1$s сохранен</string>
+    <string formatted="false" name="cpd_save_error">Ошибка сохранения</string>
+    <string formatted="false" name="bgs_default_title">Работа в фоне</string>
+    <string formatted="false" name="bgs_default_text">Выполняются скрипты...</string>
+    <string formatted="false" name="bgs_channel_name">Фоновый режим игры</string>
+    <string formatted="false" name="psf_action_done">Действие выполнено</string>
+    <string formatted="false" name="lmm_focus_success">FOCUS: УСПЕХ</string>
+    <string formatted="false" name="backpack_scenes">Рюкзак: Сцены</string>
+    <string formatted="false" name="backpack_sprites">Рюкзак: Спрайты</string>
+    <string formatted="false" name="cfb_type_image">Изображение</string>
+    <string formatted="false" name="cfb_type_video">Видео</string>
+    <string formatted="false" name="cfb_type_audio">Аудио</string>
+    <string formatted="false" name="cfb_type_document">Документ</string>
+    <string formatted="false" name="cfb_type_other">Другое</string>
+    <string formatted="false" name="ccd_on">Вкл.</string>
+    <string formatted="false" name="ccd_off">Выкл</string>
+    <string formatted="false" name="nlb_in_front_of_scene">Перед сценой</string>
+    <string formatted="false" name="nlb_behind_scene">За сценой</string>
+    <string formatted="false" name="chip8_file_not_found">Ошибка: Файл %1$s не найден!</string>
+    <string formatted="false" name="chip8_loading">Запуск...</string>
+    <string formatted="false" name="chip8_loaded">Игра загружена. Инициализация завершена!</string>
+    <string formatted="false" name="bgm_default_title">Работа в фоне</string>
+    <string formatted="false" name="bgm_default_text">Скрипты активны</string>
+    <string formatted="false" name="formula_repeat_example">повторение - признак безумия </string>
+    <string formatted="false" name="library_author_default">Автор</string>
+    <string formatted="false" name="merger_conflict_your_version_below">--- КОНФЛИКТ: ВАША ВЕРСИЯ НИЖЕ ---</string>
+    <string formatted="false" name="merger_conflict_end">--- КОНЕЦ КОНФЛИКТА ---</string>
+    <string formatted="false" name="merger_conflict_header">--- КОНФЛИКТ --- (Ниже версия с сервера)</string>
+    <string formatted="false" name="merger_your_version">--- ВАША ВЕРСИЯ ---</string>
+    <string formatted="false" name="ask_default_answer_name">Ваш ответ</string>
+    <string formatted="false" name="plf_launching_baked_project">Запуск запеченного проекта...</string>
+    <string formatted="false" name="plf_project_info">Сведения о проекте: %1$s</string>
+    <string formatted="false" name="ub_unknown_block">Неизвестный блок: %1$s</string>
+    <string formatted="false" name="psf_settings_for">Настройки: %1$s</string>
+    <string formatted="false" name="fu_download_error">Ошибка при загрузке файла: %1$s</string>
+    <string formatted="false" name="libm_load_error">Ошибка загрузки \'%1$s\'</string>
+    <string-array name="pf_success_messages">
+        <item>Готово!</item>
+        <item>Сделано!</item>
+        <item>Успех!</item>
+        <item>Завершено!</item>
+        <item>Отличная работа!</item>
+        <item>Все готово!</item>
+    </string-array>
+    <string-array name="pf_error_messages">
+        <item>Произошла ошибка!</item>
+        <item>Упс! Что-то пошло не так.</item>
+    </string-array>
+    <string formatted="false" name="common_create">Создать</string>
+    <string formatted="false" name="common_start">Начать</string>
+    <string formatted="false" name="po_image_save_error">Ошибка при сохранении изображения: %1$s</string>
+    <string formatted="false" name="po_apk_signing_error">Ошибка при подписании APK: %1$s</string>
+    <string-array name="po_success_messages">
+        <item>Готово!</item>
+        <item>Сделано!</item>
+        <item>Успех!</item>
+        <item>Завершено!</item>
+        <item>Готово к использованию!</item>
+        <item>Задача выполнена!</item>
+        <item>Отличная работа!</item>
+        <item>Все готово!</item>
+        <item>Яйцо или курица..?</item>
+        <item>Готово! Проверяй!</item>
+        <item>Поехали!</item>
+        <item>Вроде сделано..</item>
+        <item>Проверяй, начальник э!</item>
+        <item>Готово. Удачи с проектом!</item>
+        <item>Работа завершена, как кофе на утро!</item>
+        <item>Готово! Как будто я маг, а не программист!</item>
+        <item>Все сделано! Как раз вовремя перед обедом.</item>
+        <item>Все завершено! Можно идти за пирожками!</item>
+        <item>Задача выполнена! Теперь можно отдохнуть и посмотреть котиков.</item>
+        <item>Готово! Даже не успел заметить, как это произошло.</item>
+        <item>Сделано! Осталось только отпраздновать с танцами.</item>
+        <item>Готово! Минутка успокоения перед новыми приключениями.</item>
+        <item>Отличная работа! Ты как супергерой, только без плаща.</item>
+        <item>Готово! Наконец-то смогу отвлечься на онлайн-шопинг.</item>
+        <item>Как сказать: «Сделай это» и получить: «Сделано!»? Вот так!</item>
+        <item>Все готово! Теперь можем заниматься более важными делами.</item>
+        <item>Задача выполнена! Как хорошая книга – не отпускает до последней страницы.</item>
+        <item>Готово! Можно отдыхать, как будто мы все это сделали за пятюню.</item>
+        <item>Сделано! Готовы к новым подвигам?</item>
+    </string-array>
+    <string-array name="po_error_messages">
+        <item>Произошла ошибка! Кажется, я не тот алгоритм заказывал.</item>
+        <item>Упс! Что-то пошло не так. Как будто кошка пробежала по клавиатуре.</item>
+        <item>Произошла ошибка! Может, система решила немного отдохнуть?</item>
+        <item>Ой! Похоже, произошла ошибка. Возможно, это программистская шутка?</item>
+        <item>Произошла ошибка! Да кто придумал обновлять программу перед дедлайном?</item>
+        <item>Упс! Ошибка. Наверное, мой код тоже решил поспать.</item>
+        <item>Произошла ошибка! Как бы я ни старался, выводы не совпали.</item>
+        <item>Ой-ой! Ошибка! Это как раз то, что нам нужно было избежать.</item>
+        <item>Произошла ошибка! По всей видимости, сервер тоже устал.</item>
+        <item>Упс! Ошибка. Это как забыть о важной встрече.</item>
+        <item>Произошла ошибка! Может, стоит заказывать пиццу вместо кода?</item>
+        <item>Ой! Ошибка. Обычно говорят, что все дороги ведут к Риму, но не сегодня.</item>
+        <item>Произошла ошибка! Это не то, что я хотел об этом напомнить.</item>
+        <item>Упс! Ошибка! Возможно, машина решила, что у нее выходной.</item>
+        <item>Произошла ошибка! Я попытался угостить код печеньками и вот что вышло!</item>
+        <item>Ой-ой! Ошибка. Наверное, в коде слишком много любопытных переменных.</item>
+        <item>Произошла ошибка! Извините, не я такой - жизнь такая!</item>
+        <item>Упс! Произошла ошибка. Код сам по себе иногда делает капризы.</item>
+        <item>Ой! Произошла ошибка! Как будто интернет пошел на пикник без меня.</item>
+        <item>Произошла ошибка! И тут, конечно, глюк всегда оказывается виноват.</item>
+        <item>Упс! Ошибка. Вы знаете, прощать - это тоже искусство.</item>
+    </string-array>
 </resources>

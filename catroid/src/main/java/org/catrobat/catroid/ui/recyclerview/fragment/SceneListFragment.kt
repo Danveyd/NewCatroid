@@ -113,7 +113,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
     override fun switchToBackpack() {
         val workspace = activity?.findViewById<View>(R.id.workspace_layout) as? org.catrobat.catroid.ui.workspace.WorkspaceLayout
         if (workspace != null && workspace.visibility == View.VISIBLE) {
-            workspace.openWindow("BackpackScenes", "Рюкзак: Сцены") { org.catrobat.catroid.ui.recyclerview.backpack.BackpackSceneFragment() }
+            workspace.openWindow("BackpackScenes", getString(R.string.backpack_scenes)) { org.catrobat.catroid.ui.recyclerview.backpack.BackpackSceneFragment() }
             return
         }
         val intent = Intent(activity, BackpackActivity::class.java)
@@ -220,7 +220,7 @@ class SceneListFragment : RecyclerViewFragment<Scene?>(),
 
                 val workspace = activity?.findViewById<View>(R.id.workspace_layout) as? org.catrobat.catroid.ui.workspace.WorkspaceLayout
                 if (workspace != null && workspace.visibility == View.VISIBLE) {
-                    workspace.openWindow(SpriteListFragment.TAG, "Спрайты") { SpriteListFragment() }
+                    workspace.openWindow(SpriteListFragment.TAG, getString(R.string.tab_sprites)) { SpriteListFragment() }
 
                     workspace.removeWindow(SceneListFragment.TAG, force = false)
 

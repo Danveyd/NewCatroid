@@ -54,13 +54,13 @@ class IdeDashboardActivity : AppCompatActivity() {
     private fun checkAndInstallSdk() {
         val sdkJar = IdeSettings.getAndroidJar(this, TARGET_SDK)
         if (!sdkJar.exists()) {
-            showLoading("Подготовка окружения...\nСкачивание Android SDK $TARGET_SDK")
+            showLoading(getString(R.string.ide_dash_preparing_env, TARGET_SDK))
             lifecycleScope.launch(Dispatchers.IO) {
                 val success = SdkManager.downloadPlatform(this@IdeDashboardActivity, TARGET_SDK) { msg, status ->
                     runOnUiThread {
                         tvLoadingText.text = msg
                         if (status is DownloadStatus.Error) {
-                            Toast.makeText(this@IdeDashboardActivity, "Ошибка SDK: ${status.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@IdeDashboardActivity, getString(R.string.ide_dash_sdk_error, status.message), Toast.LENGTH_LONG).show()
                             hideLoading()
                         }
                     }
@@ -69,7 +69,7 @@ class IdeDashboardActivity : AppCompatActivity() {
                 runOnUiThread {
                     hideLoading()
                     if (success) {
-                        Toast.makeText(this@IdeDashboardActivity, "SDK успешно установлен!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@IdeDashboardActivity, getString(R.string.ide_dash_sdk_installed), Toast.LENGTH_SHORT).show()
                         refreshProjectsList()
                     }
                 }
@@ -84,14 +84,14 @@ class IdeDashboardActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_create_fork).setOnClickListener {
             val token = TokenManager.getToken(this)
             if (token == null) {
-                Toast.makeText(this, "Сначала авторизуйтесь в GitHub!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ide_dash_github_login_first), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             createForkAndClone(token)
         }
 
         findViewById<Button>(R.id.btn_clone_existing).setOnClickListener {
-            Toast.makeText(this, "Функция подключения появится чуть позже", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.ide_dash_coming_soon), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -109,20 +109,20 @@ class IdeDashboardActivity : AppCompatActivity() {
         projectsList.setOnItemLongClickListener { _, _, position, _ ->
             val projectName = projects[position]
             androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Удалить фичу?")
-                .setMessage("Вы точно хотите удалить $projectName? Локальные изменения будут потеряны.")
-                .setPositiveButton("Удалить") { _, _ ->
+                .setTitle(getString(R.string.ide_dash_delete_feature_title))
+                .setMessage(getString(R.string.ide_dash_delete_feature_msg, projectName))
+                .setPositiveButton(getString(R.string.delete)) { _, _ ->
                     File(workspaceDir, projectName).deleteRecursively()
-                    Toast.makeText(this, "Проект удален", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.ide_dash_project_deleted), Toast.LENGTH_SHORT).show()
                     refreshProjectsList()
                 }
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(getString(R.string.cancel), null)
                 .show()
             true
         }
     }
     private fun createForkAndClone(token: String) {
-        showLoading("Создание форка на GitHub...\nЭто может занять пару минут.")
+        showLoading(getString(R.string.ide_dash_creating_fork))
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -133,17 +133,17 @@ class IdeDashboardActivity : AppCompatActivity() {
                 val response = api.createFork("Bearer $token", owner = UPSTREAM_OWNER, repo = UPSTREAM_REPO)
 
                 if (!response.isSuccessful && response.code() != 202) {
-                    throw Exception("Ошибка GitHub API: ${response.code()}")
+                    throw Exception(getString(R.string.ide_dash_github_api_error, response.code()))
                 }
 
                 val responseBody = response.body()?.string() ?: response.errorBody()?.string() ?: ""
                 val cloneUrl = if (responseBody.isNotEmpty()) {
                     JSONObject(responseBody).optString("clone_url")
                 } else {
-                    throw Exception("Не удалось получить ссылку на форк")
+                    throw Exception(getString(R.string.ide_dash_fork_link_error))
                 }
 
-                runOnUiThread { tvLoadingText.text = "Клонирование исходного кода..." }
+                runOnUiThread { tvLoadingText.text = getString(R.string.ide_dash_cloning_source) }
                 kotlinx.coroutines.delay(3000)
 
                 // Генерируем уникальное имя для ветки и папки
@@ -158,13 +158,13 @@ class IdeDashboardActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (result is org.catrobat.catroid.utils.git.GitResult.Success) {
                         hideLoading()
-                        Toast.makeText(this@IdeDashboardActivity, "Проект готов к работе!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@IdeDashboardActivity, getString(R.string.ide_dash_project_ready), Toast.LENGTH_SHORT).show()
                         refreshProjectsList()
                         openIde(projectName)
                     } else {
                         targetDir.deleteRecursively()
                         hideLoading()
-                        tvLoadingText.text = "Ошибка!"
+                        tvLoadingText.text = getString(R.string.ide_dash_error)
                         Toast.makeText(this@IdeDashboardActivity, "Error", Toast.LENGTH_LONG).show()
                         refreshProjectsList()
                     }
@@ -174,7 +174,7 @@ class IdeDashboardActivity : AppCompatActivity() {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
                     hideLoading()
-                    Toast.makeText(this@IdeDashboardActivity, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@IdeDashboardActivity, getString(R.string.common_error_with_message, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }

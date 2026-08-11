@@ -5324,7 +5324,7 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="new_project_orientation">Project orientation</string>
     <string formatted="false" name="new_project_clone_git">Clone Git repository</string>
     <!-- More hardcoded strings moved to resources (menus, hints, plugin preferences) -->
-    <string formatted="false" name="import">Import</string>
+    <string formatted="false" name="import_library">Import</string>
     <string formatted="false" name="export">Export</string>
     <string formatted="false" name="clear">Clear</string>
     <string formatted="false" name="plugins_installed">Installed plugins</string>
@@ -5335,4 +5335,358 @@ needs read and write access to it. You can always change permissions through you
     <string formatted="false" name="command_prompt_hint">Command...</string>
     <string formatted="false" name="create_repo_name_hint">Repository name</string>
     <string formatted="false" name="ide_feature_request_hint">Ask to add a feature...</string>
+    <!-- NewCatroid: externalized from Java/Kotlin sources -->
+    <string formatted="false" name="po_unknown_server_error">Unknown server error</string>
+    <string formatted="false" name="po_server_error">Server error</string>
+    <string formatted="false" name="po_server_parse_error">Failed to parse server response</string>
+    <string formatted="false" name="po_title_empty">Project name cannot be empty</string>
+    <string formatted="false" name="po_title_too_long">Project name is too long (max. 30 characters)</string>
+    <string formatted="false" name="po_desc_empty">Project description cannot be empty</string>
+    <string formatted="false" name="po_desc_too_long">Description is too long (max. 400 characters)</string>
+    <string formatted="false" name="po_packaging_error">Packaging error: %1$s</string>
+    <string formatted="false" name="po_chunk_error">Chunk #%1$d: %2$s</string>
+    <string formatted="false" name="po_zero_byte_archive">The project file size is 0 bytes. Archiving error.</string>
+    <string formatted="false" name="po_publishing_project">Publishing project</string>
+    <string formatted="false" name="po_baking_project">Baking project...</string>
+    <string formatted="false" name="po_save_baked">Save baked project</string>
+    <string formatted="false" name="po_rebuild_physics_title">Rebuild physics cache?</string>
+    <string formatted="false" name="po_rebuild_physics_msg">This may take some time, but it will fix hitbox issues in old projects. Continue?</string>
+    <string formatted="false" name="po_no_looks_to_process">The project has no images to process.</string>
+    <string formatted="false" name="po_cache_update_title">Cache update</string>
+    <string formatted="false" name="po_processing_images">Processing images...</string>
+    <string formatted="false" name="po_processing_look">Processing: %1$s</string>
+    <string formatted="false" name="po_processing_done">Done! Processed %1$d of %2$d images.</string>
+    <string formatted="false" name="po_login_required">Login required</string>
+    <string formatted="false" name="po_login_required_msg">To connect the project to Git, log in to your GitHub account in the app settings.</string>
+    <string formatted="false" name="po_go_to_settings">Go to settings</string>
+    <string formatted="false" name="po_create_new_repo">Create new repository</string>
+    <string formatted="false" name="po_connect_existing_repo">Connect to an existing one</string>
+    <string formatted="false" name="po_connect_git_title">Connect to Git</string>
+    <string formatted="false" name="po_create_repo_title">New repository</string>
+    <string formatted="false" name="po_repo_name_empty">Repository name cannot be empty</string>
+    <string formatted="false" name="po_creating_repo">Creating repository...</string>
+    <string formatted="false" name="po_project_published">Project published successfully!</string>
+    <string formatted="false" name="po_connect_repo_title">Connect to repository</string>
+    <string formatted="false" name="po_connect_repo_warning">Warning! The current project files will be REPLACED by files from the remote repository. This action is irreversible.</string>
+    <string formatted="false" name="po_connect">Connect</string>
+    <string formatted="false" name="po_invalid_repo_url">Enter a valid HTTPS repository URL</string>
+    <string formatted="false" name="po_cloning_project">Cloning project...</string>
+    <string formatted="false" name="po_project_cloned">Project cloned successfully!</string>
+    <string formatted="false" name="po_sync_title">Synchronize</string>
+    <string formatted="false" name="po_commit_msg_hint">Enter a short description of the changes (commit):</string>
+    <string formatted="false" name="po_sync_and_publish">Synchronizing and publishing...</string>
+    <string formatted="false" name="po_sync_done">Synchronization complete!</string>
+    <string formatted="false" name="po_updating_project">Updating project...</string>
+    <string formatted="false" name="po_project_updated">Project updated!</string>
+    <string formatted="false" name="po_conflicts_detected_title">Conflicts detected</string>
+    <string formatted="false" name="po_conflicts_detected_msg">The system detected conflicts; decide which version to keep yourself. Conflicts:\n%1$s</string>
+    <string formatted="false" name="po_merge_conflicts_title">Merge conflicts!</string>
+    <string formatted="false" name="po_merge_conflicts_msg">Failed to update the project automatically. Conflicts:\n%1$s</string>
+    <string formatted="false" name="po_restart_required_title">Restart required</string>
+    <string formatted="false" name="po_restart_required_msg">The project has been modified. Restart it to see the changes.</string>
+    <string formatted="false" name="po_restart">Restart</string>
+    <string formatted="false" name="po_no_images_in_project">The project has no images.</string>
+    <string formatted="false" name="po_insert_image">Insert image</string>
+    <string formatted="false" name="po_build_matryoshka">Building matryoshka for the server...</string>
+    <string formatted="false" name="po_matryoshka_done">Matryoshka built!</string>
+    <string formatted="false" name="stage_window_title">Stage</string>
+    <string formatted="false" name="stage_press_again_for_menu">Press again to open the menu</string>
+    <string formatted="false" name="stage_export_error">Export error: %1$s</string>
+    <string formatted="false" name="stage_warning_title">The project may contain malicious code</string>
+    <string formatted="false" name="stage_warning_msg">This project uses Java compilation, LunoScript, Python or Libraries, which may be dangerous. Run it only if you have checked the code or trust the source.</string>
+    <string formatted="false" name="stage_run">Run</string>
+    <string formatted="false" name="stage_dont_remind_again">Don\'t remind me again</string>
+    <string formatted="false" name="sf_logged_in_as">Logged in as @%1$s (Tap to log out)</string>
+    <string formatted="false" name="sf_log_in_or_register">Log in or register to upload your projects</string>
+    <string formatted="false" name="sf_logout_confirm_title">Log out of the community?</string>
+    <string formatted="false" name="sf_logout_confirm_msg">Are you sure you want to log out of your NewCatroid community account?</string>
+    <string formatted="false" name="sf_logout">Log out</string>
+    <string formatted="false" name="sf_loading_user_data">Loading user data...</string>
+    <string formatted="false" name="sf_failed_to_fetch_data">Failed to fetch data</string>
+    <string formatted="false" name="sf_no_lost_projects">No lost projects found</string>
+    <string formatted="false" name="sf_found_projects_title">Found projects (%1$d)</string>
+    <string formatted="false" name="sf_restore">Restore</string>
+    <string formatted="false" name="sf_projects_processed">Processed projects: %1$d. The app will restart to refresh the list.</string>
+    <string formatted="false" name="sf_done_title">Done</string>
+    <string formatted="false" name="plugin_installed_toast">Plugin installed successfully! (don\'t forget to restart the app)</string>
+    <string formatted="false" name="plugin_install_error">Installation error. Make sure you selected a valid .nplug file and it is not corrupted.</string>
+    <string formatted="false" name="plugin_none_installed">No plugins installed</string>
+    <string formatted="false" name="plugin_enabled_badge">[ON]</string>
+    <string formatted="false" name="plugin_disabled_badge">[OFF]</string>
+    <string formatted="false" name="plugin_enable">Enable</string>
+    <string formatted="false" name="plugin_disable">Disable</string>
+    <string formatted="false" name="plugin_configure">Configure</string>
+    <string formatted="false" name="plugin_actions_title">Actions for: %1$s</string>
+    <string formatted="false" name="plugin_delete_confirm_title">Delete plugin</string>
+    <string formatted="false" name="plugin_delete_confirm_msg">Are you sure you want to permanently delete \'%1$s\'?</string>
+    <string formatted="false" name="plugin_deleted_toast">Plugin deleted! (don\'t forget to restart the app)</string>
+    <string formatted="false" name="plugin_title">Plugins</string>
+    <string formatted="false" name="common_error_with_message">Error: %1$s</string>
+    <string formatted="false" name="common_file_not_found">File not found</string>
+    <string formatted="false" name="common_unknown_file">unknown_file</string>
+    <string formatted="false" name="common_choose_file">Choose file</string>
+    <string formatted="false" name="pf_dir_not_found">Error: project directory not found</string>
+    <string formatted="false" name="pf_no_app_to_open">No app can open this file</string>
+    <string formatted="false" name="pf_open_error">Open error: %1$s</string>
+    <string formatted="false" name="pf_name_copied">File name copied to clipboard</string>
+    <string formatted="false" name="pf_deleted">Deleted</string>
+    <string formatted="false" name="pf_delete_error">Error while deleting</string>
+    <string formatted="false" name="pf_open_failed">Failed to open file</string>
+    <string formatted="false" name="pf_save_error">Error while saving: %1$s</string>
+    <string formatted="false" name="lib_no_app_to_open">No apps found to open this file</string>
+    <string formatted="false" name="lib_name_copied">Name copied</string>
+    <string formatted="false" name="lib_deleted">Library deleted</string>
+    <string formatted="false" name="lib_delete_error">Error while deleting the library</string>
+    <string formatted="false" name="lib_choose_newlib_file">Select .newlib file</string>
+    <string formatted="false" name="ide_dash_preparing_env">Preparing environment...\nDownloading Android SDK %1$s</string>
+    <string formatted="false" name="ide_dash_sdk_error">SDK error: %1$s</string>
+    <string formatted="false" name="ide_dash_github_api_error">GitHub API error: %1$s</string>
+    <string formatted="false" name="ide_dash_fork_link_error">Failed to get the fork link</string>
+    <string formatted="false" name="ide_dash_sdk_installed">SDK installed successfully!</string>
+    <string formatted="false" name="ide_dash_github_login_first">Log in to GitHub first!</string>
+    <string formatted="false" name="ide_dash_coming_soon">The connection feature will be available soon</string>
+    <string formatted="false" name="ide_dash_delete_feature_title">Delete this feature?</string>
+    <string formatted="false" name="ide_dash_delete_feature_msg">Are you sure you want to delete %1$s? Local changes will be lost.</string>
+    <string formatted="false" name="ide_dash_project_deleted">Project deleted</string>
+    <string formatted="false" name="ide_dash_creating_fork">Creating a fork on GitHub...\nThis may take a couple of minutes.</string>
+    <string formatted="false" name="ide_dash_cloning_source">Cloning the source code...</string>
+    <string formatted="false" name="ide_dash_project_ready">The project is ready to work!</string>
+    <string formatted="false" name="ide_dash_error">Error!</string>
+    <string formatted="false" name="ide_choose_file_hint">// Select a file from the menu on the left to edit</string>
+    <string formatted="false" name="ide_build_started">Build started! 🚀</string>
+    <string formatted="false" name="ide_build_error_code">Code %1$s</string>
+    <string formatted="false" name="ide_no_base_branch">Failed to find the base branch (main/master) to create the fork.</string>
+    <string formatted="false" name="ide_branch_create_error">Failed to create a branch on GitHub: %1$s</string>
+    <string formatted="false" name="ide_code_saved_ecj">Code saved. Calling ECJ...</string>
+    <string formatted="false" name="build_connecting">Connecting to the server...</string>
+    <string formatted="false" name="build_failed_title">Build failed</string>
+    <string formatted="false" name="build_unknown_error">Unknown error</string>
+    <string formatted="false" name="build_github_timeout">GitHub did not start the build in time. Try again.</string>
+    <string formatted="false" name="build_on_github">Building on GitHub...</string>
+    <string formatted="false" name="build_status_prefix">Status: %1$s</string>
+    <string formatted="false" name="build_check_syntax">Check the syntax in the editor.</string>
+    <string formatted="false" name="build_success">Build succeeded!</string>
+    <string formatted="false" name="build_looking_for_artifact">Looking for the built file...</string>
+    <string formatted="false" name="build_artifact_not_found">Artifact not found.</string>
+    <string formatted="false" name="build_downloading_apk">Downloading APK...</string>
+    <string formatted="false" name="build_unpacking">Unpacking...</string>
+    <string formatted="false" name="build_ready_title">Build ready!</string>
+    <string formatted="false" name="build_tap_to_send">Tap to send or install the APK</string>
+    <string formatted="false" name="build_save_to_downloads_failed">Failed to save the file to Downloads</string>
+    <string formatted="false" name="build_open_apk">Open APK</string>
+    <string formatted="false" name="apk_preparing_template">Preparing template...</string>
+    <string formatted="false" name="apk_injecting_code">Injecting code...</string>
+    <string formatted="false" name="apk_configuring_manifest">Configuring manifest...</string>
+    <string formatted="false" name="apk_configuring_sdk">Configuring SDK versions...</string>
+    <string formatted="false" name="apk_optimizing_manifest">Optimizing manifest...</string>
+    <string formatted="false" name="apk_updating_graphics">Updating graphics...</string>
+    <string formatted="false" name="apk_packing_resources">Packing resources...</string>
+    <string formatted="false" name="apk_packing_native_libs">Packing libraries (Native)...</string>
+    <string formatted="false" name="apk_building">Building APK...</string>
+    <string formatted="false" name="apk_signing">Signing...</string>
+    <string formatted="false" name="apk_keystore_required">Target SDK 30+ requires Keystore configuration!</string>
+    <string formatted="false" name="apk_done_v2">Done! V2 Signature OK.</string>
+    <string formatted="false" name="apk_signing_error">Signing error: %1$s</string>
+    <string formatted="false" name="se_protection_preparing">Protection: Preparing...</string>
+    <string formatted="false" name="se_compiling">Compiling...</string>
+    <string formatted="false" name="se_no_compiled_classes">No compiled classes</string>
+    <string formatted="false" name="se_generating_dex">Generating DEX (D8)...</string>
+    <string formatted="false" name="se_obfuscating">Obfuscating (R8)...</string>
+    <string formatted="false" name="se_proguard_created">proguard-rules.pro created</string>
+    <string formatted="false" name="se_processing_libs">Processing libraries...</string>
+    <string formatted="false" name="se_sdk_not_found">Android SDK (android.jar) not found! Download API %1$s in the settings.</string>
+    <string formatted="false" name="se_stubs_not_found">Error: core-lambda-stubs.jar not found in assets!</string>
+    <string formatted="false" name="sdk_searching_api">Searching API %1$s...</string>
+    <string formatted="false" name="sdk_api_not_found">API %1$s not found</string>
+    <string formatted="false" name="sdk_unpacking">Unpacking archive...</string>
+    <string formatted="false" name="sdk_install_done">Installation complete!</string>
+    <string formatted="false" name="sdk_no_android_jar">Error: the archive does not contain android.jar</string>
+    <string formatted="false" name="sdk_server_error">Server error: %1$s</string>
+    <string formatted="false" name="sdk_downloading_mb">Downloading: %1$.1f / %2$.1f MB</string>
+    <string formatted="false" name="sdk_downloaded_mb">Downloaded: %1$.1f MB</string>
+    <string formatted="false" name="sdk_download_failed">Download failed: %1$s</string>
+    <string formatted="false" name="ipm_creating_structure">Creating project structure...</string>
+    <string formatted="false" name="ipm_project_exists_error">Error: Project already exists</string>
+    <string formatted="false" name="ipm_downloading">Downloading: %1$s...</string>
+    <string formatted="false" name="ipm_download_error">Download error: %1$s</string>
+    <string formatted="false" name="ipm_generating_code">Generating code...</string>
+    <string formatted="false" name="dm_invalid_id_format">Invalid ID format</string>
+    <string formatted="false" name="dm_aar_unpack_error">Error unpacking AAR</string>
+    <string formatted="false" name="tab_scripts">Scripts</string>
+    <string formatted="false" name="tab_looks">Looks</string>
+    <string formatted="false" name="tab_sounds">Sounds</string>
+    <string formatted="false" name="tab_scenes">Scenes</string>
+    <string formatted="false" name="tab_sprites">Sprites</string>
+    <string formatted="false" name="tab_project_options">Project options</string>
+    <string formatted="false" name="tab_project_files">Project files</string>
+    <string formatted="false" name="tab_libraries">Libraries</string>
+    <string formatted="false" name="crash_dialog_title">Crash / Crash Log</string>
+    <string formatted="false" name="crash_dialog_msg">The app closed with an error last time. Please send this text to the developer:\n\n%1$s</string>
+    <string formatted="false" name="crash_no_active_project">No active project to run</string>
+    <string formatted="false" name="ws_tools">WORKSPACE TOOLS</string>
+    <string formatted="false" name="ws_categories">Block Categories</string>
+    <string formatted="false" name="ws_add_brick">Add Block</string>
+    <string formatted="false" name="ws_data_selection">Select Data</string>
+    <string formatted="false" name="ws_formula_editor">Formula Editor</string>
+    <string formatted="false" name="scr_error">Error:</string>
+    <string formatted="false" name="scr_warning">Warning:</string>
+    <string formatted="false" name="scr_backpack_scripts">Backpack: Scripts</string>
+    <string formatted="false" name="scr_no_scripts"> (No scripts)\n</string>
+    <string formatted="false" name="scr_disabled">// [DISABLED] </string>
+    <string formatted="false" name="scr_start_script">When scene starts:</string>
+    <string formatted="false" name="scr_when_script">When sprite tapped:</string>
+    <string formatted="false" name="scr_touch_script">When screen touched:</string>
+    <string formatted="false" name="scr_broadcast_script">When I receive a broadcast:</string>
+    <string formatted="false" name="scr_condition_script">When the condition becomes true:</string>
+    <string formatted="false" name="scr_cloned_script">When I start as a clone:</string>
+    <string formatted="false" name="scr_background_script">When the background changes:</string>
+    <string formatted="false" name="scr_default_script">Script [%1$s]:</string>
+    <string formatted="false" name="ste_path_not_passed">Error: no path provided</string>
+    <string formatted="false" name="ste_file_too_large">// File is too large (%1$d KB).\n// Editing is disabled to prevent freezes.</string>
+    <string formatted="false" name="ste_read_error">Read error</string>
+    <string formatted="false" name="ste_saved">Saved</string>
+    <string formatted="false" name="npd_clone_success">Project cloned successfully!</string>
+    <string formatted="false" name="npd_clone_not_readable">Clone succeeded, but the project could not be read: %1$s</string>
+    <string formatted="false" name="npd_clone_error">Clone error: %1$s</string>
+    <string formatted="false" name="libm_sync_success">Synchronization succeeded!</string>
+    <string formatted="false" name="libm_sync_errors">Synchronization finished with an error count: %1$d</string>
+    <string formatted="false" name="fu_download_error_code">Download error: %1$s</string>
+    <string formatted="false" name="ask_default_placeholder">Enter answer:</string>
+    <string formatted="false" name="ask_default_ok">OK</string>
+    <string formatted="false" name="ask_default_cancel">Cancel</string>
+    <string formatted="false" name="cbf_dialog_title">My dialog</string>
+    <string formatted="false" name="cbf_dialog_answer">enter your answer</string>
+    <string formatted="false" name="cbf_dialog_yes">Yes</string>
+    <string formatted="false" name="cbf_dialog_later">Later</string>
+    <string formatted="false" name="cbf_dialog_no">No</string>
+    <string formatted="false" name="cbf_dialog_edit_hint">this is a text field</string>
+    <string formatted="false" name="cbf_dialog_radio_hint">this is a choice</string>
+    <string formatted="false" name="cbf_copy_example">Cutlet</string>
+    <string formatted="false" name="cbf_notif_title">Heeeey</string>
+    <string formatted="false" name="cbf_notif_text">This is the notification (more precisely, its text)</string>
+    <string formatted="false" name="cbf_notif2_title">Heeeey again</string>
+    <string formatted="false" name="cbf_notif2_text">This is a more complex notification</string>
+    <string formatted="false" name="cbf_bg_title">The app is running in the background</string>
+    <string formatted="false" name="cbf_bg_text">without a notification on Android 14+ it\'s unfortunately impossible</string>
+    <string formatted="false" name="cbf_lua_example">return \'Hello from Lua!\'</string>
+    <string formatted="false" name="cbf_web_html_simple">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_web_html_full">&lt;html&gt;&lt;body style=\'background-color:lightyellow;\'&gt;&lt;h1&gt;Hello, world!&lt;/h1&gt;&lt;p&gt;This is a WebView created right from code.&lt;/p&gt;&lt;button onclick=\'alert(&quot;JavaScript works!&quot;)\'&gt;Press me&lt;/button&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_textfield_hint">Enter a value...</string>
+    <string formatted="false" name="cbf_textfield_default">if the file doesn\'t exist - default</string>
+    <string formatted="false" name="cbf_label_html">&lt;b&gt;Hello&lt;/b&gt; This is HTML text.</string>
+    <string formatted="false" name="cbf_button_text">Press me!</string>
+    <string formatted="false" name="cbf_switch_text">Enable</string>
+    <string formatted="false" name="cbf_share_text">Hello from NewCatroid!</string>
+    <string formatted="false" name="cbf_gpt_prompt">Hello!</string>
+    <string formatted="false" name="cbf_gpt_system">Answer everything with the word &quot;orange&quot;</string>
+    <string formatted="false" name="cpf_empty_names">File names cannot be empty</string>
+    <string formatted="false" name="cpf_source_not_found">Source file not found: %1$s</string>
+    <string formatted="false" name="cpf_copy_error">Error copying file</string>
+    <string formatted="false" name="epf_activity_unavailable">Error: unable to access the Activity</string>
+    <string formatted="false" name="cpd_file_saved">File %1$s saved</string>
+    <string formatted="false" name="cpd_save_error">Save error</string>
+    <string formatted="false" name="bgs_default_title">Running in background</string>
+    <string formatted="false" name="bgs_default_text">Executing scripts...</string>
+    <string formatted="false" name="bgs_channel_name">Game background mode</string>
+    <string formatted="false" name="psf_action_done">Action completed</string>
+    <string formatted="false" name="lmm_focus_success">FOCUS: SUCCESS</string>
+    <string formatted="false" name="backpack_scenes">Backpack: Scenes</string>
+    <string formatted="false" name="backpack_sprites">Backpack: Sprites</string>
+    <string formatted="false" name="cfb_type_image">Image</string>
+    <string formatted="false" name="cfb_type_video">Video</string>
+    <string formatted="false" name="cfb_type_audio">Audio</string>
+    <string formatted="false" name="cfb_type_document">Document</string>
+    <string formatted="false" name="cfb_type_other">Other</string>
+    <string formatted="false" name="ccd_on">On</string>
+    <string formatted="false" name="ccd_off">Off</string>
+    <string formatted="false" name="nlb_in_front_of_scene">In front of the scene</string>
+    <string formatted="false" name="nlb_behind_scene">Behind the scene</string>
+    <string formatted="false" name="chip8_file_not_found">Error: file %1$s not found!</string>
+    <string formatted="false" name="chip8_loading">Loading...</string>
+    <string formatted="false" name="chip8_loaded">Game loaded. Initialization completed!</string>
+    <string formatted="false" name="bgm_default_title">Running in background</string>
+    <string formatted="false" name="bgm_default_text">Scripts are active</string>
+    <string formatted="false" name="formula_repeat_example">repetition is a sign of madness </string>
+    <string formatted="false" name="library_author_default">Author</string>
+    <string formatted="false" name="merger_conflict_your_version_below">--- CONFLICT: YOUR VERSION BELOW ---</string>
+    <string formatted="false" name="merger_conflict_end">--- END OF CONFLICT ---</string>
+    <string formatted="false" name="merger_conflict_header">--- CONFLICT --- (Below is the server version)</string>
+    <string formatted="false" name="merger_your_version">--- YOUR VERSION ---</string>
+    <string formatted="false" name="ask_default_answer_name">Your answer</string>
+    <string formatted="false" name="plf_launching_baked_project">Launching baked project...</string>
+    <string formatted="false" name="plf_project_info">Project info: %1$s</string>
+    <string formatted="false" name="ub_unknown_block">Unknown block: %1$s</string>
+    <string formatted="false" name="psf_settings_for">Settings: %1$s</string>
+    <string formatted="false" name="fu_download_error">Error downloading file: %1$s</string>
+    <string formatted="false" name="libm_load_error">Error loading \'%1$s\'</string>
+    <string-array name="pf_success_messages">
+        <item>Done!</item>
+        <item>Done!</item>
+        <item>Success!</item>
+        <item>Completed!</item>
+        <item>Great job!</item>
+        <item>All done!</item>
+    </string-array>
+    <string-array name="pf_error_messages">
+        <item>An error occurred!</item>
+        <item>Oops! Something went wrong.</item>
+    </string-array>
+    <string formatted="false" name="common_create">Create</string>
+    <string formatted="false" name="common_start">Start</string>
+    <string formatted="false" name="po_image_save_error">Error while saving the image: %1$s</string>
+    <string formatted="false" name="po_apk_signing_error">APK signing error: %1$s</string>
+    <string-array name="po_success_messages">
+        <item>Done!</item>
+        <item>Done!</item>
+        <item>Success!</item>
+        <item>Completed!</item>
+        <item>Ready to use!</item>
+        <item>Task completed!</item>
+        <item>Great job!</item>
+        <item>All done!</item>
+        <item>The chicken or the egg...?</item>
+        <item>Done! Check it out!</item>
+        <item>Let\'s go!</item>
+        <item>Looks done...</item>
+        <item>Check it, boss!</item>
+        <item>Done. Good luck with your project!</item>
+        <item>Work finished, like morning coffee!</item>
+        <item>Done! Like I\'m a magician, not a programmer!</item>
+        <item>All done! Just in time for lunch.</item>
+        <item>All done! Time to grab some snacks!</item>
+        <item>Task completed! Now you can rest and watch cats.</item>
+        <item>Done! It happened before I even noticed.</item>
+        <item>Done! Now let\'s celebrate with some dancing.</item>
+        <item>Done! A moment of calm before new adventures.</item>
+        <item>Great job! You\'re like a superhero, just without a cape.</item>
+        <item>Done! Finally I can get back to online shopping.</item>
+        <item>How do you say \'do it\' and get \'done!\'? Like this!</item>
+        <item>All done! Now we can focus on more important things.</item>
+        <item>Task completed! Like a good book - you can\'t put it down until the last page.</item>
+        <item>Done! We can rest now, as if we did it all with a high-five.</item>
+        <item>Done! Ready for new adventures?</item>
+    </string-array>
+    <string-array name="po_error_messages">
+        <item>An error occurred! I think I ordered the wrong algorithm.</item>
+        <item>Oops! Something went wrong. Like a cat ran across the keyboard.</item>
+        <item>An error occurred! Maybe the system decided to take a break?</item>
+        <item>Oops! It seems an error occurred. Maybe it\'s a programmer\'s joke?</item>
+        <item>An error occurred! Who decided to update the program before the deadline?</item>
+        <item>Oops! An error. I guess my code decided to take a nap too.</item>
+        <item>An error occurred! No matter how hard I tried, the results didn\'t match.</item>
+        <item>Oh-oh! An error! That\'s exactly what we needed to avoid.</item>
+        <item>An error occurred! Apparently the server is tired too.</item>
+        <item>Oops! An error. Like forgetting an important meeting.</item>
+        <item>An error occurred! Maybe we should order pizza instead of code?</item>
+        <item>Oops! An error. They say all roads lead to Rome, but not today.</item>
+        <item>An error occurred! That\'s not what I wanted to remind you about.</item>
+        <item>Oops! An error! Maybe the machine decided it was its day off.</item>
+        <item>An error occurred! I tried to treat the code with cookies and look what happened!</item>
+        <item>Oh-oh! An error. Maybe there are too many curious variables in the code.</item>
+        <item>An error occurred! Sorry, it\'s not me - it\'s life!</item>
+        <item>Oops! An error occurred. Code sometimes acts up on its own.</item>
+        <item>Oops! An error occurred! As if the internet went on a picnic without me.</item>
+        <item>An error occurred! And of course, the glitch is always the one to blame.</item>
+        <item>Oops! An error. You know, forgiving is also an art.</item>
+    </string-array>
 </resources>

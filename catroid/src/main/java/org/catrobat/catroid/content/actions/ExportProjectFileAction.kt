@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import com.badlogic.gdx.scenes.scene2d.Action
 import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.stage.StageActivity
@@ -36,7 +37,7 @@ class ExportProjectFileAction : Action() {
         val activity = StageActivity.activeStageActivity?.get()
 
         if (activity == null) {
-            Toast.makeText(context, "Ошибка: не удалось получить доступ к Activity", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.epf_activity_unavailable), Toast.LENGTH_SHORT).show()
             finished = true
             return
         }

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_import_library"
-        android:title="@string/import"
+        android:title="@string/import_library"
         android:icon="@drawable/baseline_save_alt_24_w"
         app:showAsAction="ifRoom" />
 
