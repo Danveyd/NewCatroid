@@ -1444,7 +1444,7 @@
     <string name="subcategory_event_messages">Mensagens</string>
     <string name="subcategory_event_conditions">Condições e mudanças</string>
     <string name="subcategory_event_cloning">Clonagem</string>
-    <string name="subcategory_event_sistemas">Sistemas</string>
+    <string name="subcategory_event_system">Sistema</string>
     <string name="subcategory_control_waiting">Espera e atrasos</string>
     <string name="subcategory_control_loops">Loops</string>
     <string name="subcategory_control_conditions">Condições</string>
@@ -4880,4 +4880,457 @@ precisa de acesso de leitura e escrita a ele. Você sempre pode alterar as permi
     <string formatted="false" name="undo_sort">Desfazer ordenação</string>
     <string formatted="false" name="sort">Ordenar</string>
     <string formatted="false" name="checkbox">checkbox</string>
+    <!-- Missing translations (added for parity with the default English file) -->
+    <string formatted="false" name="actor_object_title">Atores e Objetos</string>
+    <string formatted="false" name="brick_ask_label2">Definir dica</string>
+    <string formatted="false" name="brick_ask_label3">Definir texto "Ok"</string>
+    <string formatted="false" name="brick_ask_label4">Definir texto "Cancelar"</string>
+    <string formatted="false" name="brick_ask_label5">Valor padrão</string>
+    <string formatted="false" name="brick_show_name">com nome</string>
+    <string formatted="false" name="brick_show_text">Mostrar texto</string>
+    <string formatted="false" name="brick_show_text_font">fonte (arquivos do projeto)</string>
+    <string formatted="false" name="brick_show_text_rotation">rotação</string>
+    <string formatted="false" name="brick_show_toast_long">Longo</string>
+    <string formatted="false" name="brick_show_toast_short">Curto</string>
+    <string formatted="false" name="editor3d">Editor 3D</string>
+    <string formatted="false" name="error_plot_data_not_found">Gráfico ausente.</string>
+    <string formatted="false" name="error_plot_file_write">Algo deu errado ao gravar o arquivo svg do gráfico.</string>
+    <string formatted="false" name="formula_3d_intersects">objeto_intersecciona_objeto</string>
+    <string formatted="false" name="formula_3d_intersects_param">(\'ID do Objeto 1\', \'ID do Objeto 2\')</string>
+    <string formatted="false" name="formula_collision_list">lista_colisoes_objeto</string>
+    <string formatted="false" name="formula_delta">delta-tempo</string>
+    <string formatted="false" name="formula_editor_function_all_files">todos_arquivos_projeto</string>
+    <string formatted="false" name="formula_editor_function_collides_with_color_parameter">(\'#ff0000\')</string>
+    <string formatted="false" name="formula_editor_function_color_touches_color_parameter">(\'#ff0000\',\'#00ff00\')</string>
+    <string formatted="false" name="formula_editor_function_connect">conectar_elementos</string>
+    <string formatted="false" name="formula_editor_function_connect_parameter">(*nome da lista*, \',\')</string>
+    <string formatted="false" name="formula_editor_function_file_size">tamanho_arquivo_projeto</string>
+    <string formatted="false" name="formula_editor_function_files_path">caminho_arquivos_projeto</string>
+    <string formatted="false" name="formula_editor_function_find">encontrar</string>
+    <string formatted="false" name="formula_editor_function_find_parameter">(*nome da lista*, 256)</string>
+    <string formatted="false" name="formula_editor_function_roundto">arredondar_para</string>
+    <string formatted="false" name="formula_editor_function_roundto_parameter">(123.456, 1)</string>
+    <string formatted="false" name="formula_editor_operator_concat">..</string>
+    <string formatted="false" name="formula_editor_sensor_color_at_x_y_parameter">(100,200)</string>
+    <string formatted="false" name="formula_editor_sensor_color_equals_color_parameter">(\'#ff0000 \',\'#fe0000 \',1)</string>
+    <string formatted="false" name="formula_editor_sensor_fps">FPS</string>
+    <string formatted="false" name="formula_f2d_id_param">(\'id\')</string>
+    <string formatted="false" name="formula_f2d_no_param">()</string>
+    <string formatted="false" name="formula_intersect_list">lista_interseccoes_objeto</string>
+    <string formatted="false" name="formula_pt_argmax">PT_argmax</string>
+    <string formatted="false" name="formula_pt_argmax_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_dump">PT_para_string</string>
+    <string formatted="false" name="formula_pt_dump_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_shape">PT_forma</string>
+    <string formatted="false" name="formula_pt_shape_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_totalsize">PT_tamanho</string>
+    <string formatted="false" name="formula_pt_totalsize_param">(\'tensor\')</string>
+    <string formatted="false" name="formula_pt_value">PT_valor</string>
+    <string formatted="false" name="formula_pt_value_param">(\'tensor\', index)</string>
+    <string formatted="false" name="formula_pt_valuend">PT_valor_ND</string>
+    <string formatted="false" name="formula_pt_valuennd_param">(\'tensor\', \'10,2\')</string>
+    <string formatted="false" name="inspector_title">Inspetor</string>
+    <string formatted="false" name="main_menu_community">Site NewCatroid</string>
+    <string formatted="false" name="main_menu_play">Jogar projeto</string>
+    <string formatted="false" name="menu_load_scene">Carregar cena</string>
+    <string formatted="false" name="menu_save_scene">Salvar cena</string>
+    <string formatted="false" name="navigation_drawer_close">Fechar gaveta de navegação</string>
+    <string formatted="false" name="navigation_drawer_open">Abrir gaveta de navegação</string>
+    <string formatted="false" name="ogurec">Você gosta de pepinos?</string>
+    <string formatted="false" name="plus">+</string>
+    <string formatted="false" name="preference_dialog_appgallery">AppGallery</string>
+    <string formatted="false" name="preference_dialog_google_play">Google Play</string>
+    <string formatted="false" name="preference_dialog_use_full_features">Usar todos os recursos</string>
+    <string formatted="false" name="preference_embroidery_dialog_text">Para aproveitar todos os recursos da extensão de bordado, use o aplicativo Embroidery Designer da Catrobat.</string>
+    <string formatted="false" name="preference_lego_dialog_text">Para aproveitar todos os recursos das extensões Lego Mindstorms, use o aplicativo Mindstorms Code EV3 NXT da Catrobat.</string>
+    <string formatted="false" name="preference_phiro_dialog_text">Para aproveitar todos os recursos da extensão de robótica Phiro, use o aplicativo Phiro Code da Catrobat.</string>
+    <string formatted="false" name="project_options_custom_resolution">Resolução personalizada</string>
+    <string formatted="false" name="sans_serif_font" translatable="false">sans_serif</string>
+    <string formatted="false" name="serif_font" translatable="false">serif</string>
+    <string formatted="false" name="title_activity_editor">Editor de cena</string>
+    <!-- Hardcoded layout strings moved to resources -->
+    <string formatted="false" name="ide_my_projects">Meus projetos</string>
+    <string formatted="false" name="ide_create_new_fork">+ Criar novo (Fork)</string>
+    <string formatted="false" name="ide_connect_existing_fork">Conectar Fork existente</string>
+    <string formatted="false" name="ide_local_projects">Projetos locais:</string>
+    <string formatted="false" name="create_repo_private_repo">Repositório privado</string>
+    <string formatted="false" name="nano_editor_save">^O Salvar</string>
+    <string formatted="false" name="nano_editor_exit">^X Sair</string>
+    <string formatted="false" name="ide_chat_ai">Chat de IA</string>
+    <string formatted="false" name="ide_check_locally">Verificar (Local)</string>
+    <string formatted="false" name="ide_build_cloud">Build (Nuvem)</string>
+    <string formatted="false" name="ide_send_pr">Enviar PR</string>
+    <string formatted="false" name="ide_ai_assistant_console">Assistente de IA / Console</string>
+    <string formatted="false" name="copying">Copiando...</string>
+    <string formatted="false" name="brick_run_chip8_label">Executar CHIP-8:</string>
+    <string formatted="false" name="project_options_bake_project">Assar projeto (Bake)</string>
+    <string formatted="false" name="project_options_publishing">Publicando projeto</string>
+    <string formatted="false" name="new_project_orientation">Orientação do projeto</string>
+    <string formatted="false" name="new_project_clone_git">Clonar repositório Git</string>
+    <!-- More hardcoded strings moved to resources (menus, hints, plugin preferences) -->
+    <string formatted="false" name="import_library">Importar</string>
+    <string formatted="false" name="export">Exportar</string>
+    <string formatted="false" name="clear">Limpar</string>
+    <string formatted="false" name="plugins_installed">Plugins instalados</string>
+    <string formatted="false" name="plugins_actions">Ações</string>
+    <string formatted="false" name="plugins_import">Importar plugin</string>
+    <string formatted="false" name="plugins_import_summary">Instalar um plugin a partir de um arquivo .nplug</string>
+    <string formatted="false" name="clone_repo_url_hint">URL do repositório (HTTPS)</string>
+    <string formatted="false" name="command_prompt_hint">Comando...</string>
+    <string formatted="false" name="create_repo_name_hint">Nome do repositório</string>
+    <string formatted="false" name="ide_feature_request_hint">Peça para adicionar um recurso...</string>
+    <!-- NewCatroid: externalized from Java/Kotlin sources -->
+    <string formatted="false" name="po_unknown_server_error">Erro de servidor desconhecido</string>
+    <string formatted="false" name="po_server_error">Erro de servidor</string>
+    <string formatted="false" name="po_server_parse_error">Falha ao analisar a resposta do servidor</string>
+    <string formatted="false" name="po_title_empty">O nome do projeto não pode estar vazio</string>
+    <string formatted="false" name="po_title_too_long">O nome do projeto é muito longo (máx. 30 caracteres)</string>
+    <string formatted="false" name="po_desc_empty">A descrição do projeto não pode estar vazia</string>
+    <string formatted="false" name="po_desc_too_long">A descrição é muito longa (máx. 400 caracteres)</string>
+    <string formatted="false" name="po_packaging_error">Erro de empacotamento: %1$s</string>
+    <string formatted="false" name="po_chunk_error">Bloco nº%1$d: %2$s</string>
+    <string formatted="false" name="po_zero_byte_archive">O tamanho do arquivo do projeto é 0 bytes. Erro de arquivamento.</string>
+    <string formatted="false" name="po_publishing_project">Publicando projeto</string>
+    <string formatted="false" name="po_baking_project">Assando projeto...</string>
+    <string formatted="false" name="po_save_baked">Salvar projeto assado</string>
+    <string formatted="false" name="po_rebuild_physics_title">Atualizar o cache de física?</string>
+    <string formatted="false" name="po_rebuild_physics_msg">Isso pode levar algum tempo, mas corrigirá problemas de hitbox em projetos antigos. Continuar?</string>
+    <string formatted="false" name="po_no_looks_to_process">O projeto não tem imagens para processar.</string>
+    <string formatted="false" name="po_cache_update_title">Atualização de cache</string>
+    <string formatted="false" name="po_processing_images">Processando imagens...</string>
+    <string formatted="false" name="po_processing_look">Processando: %1$s</string>
+    <string formatted="false" name="po_processing_done">Concluído! Processadas %1$d de %2$d imagens.</string>
+    <string formatted="false" name="po_login_required">Login necessário</string>
+    <string formatted="false" name="po_login_required_msg">Para conectar o projeto ao Git, faça login na sua conta do GitHub nas configurações do aplicativo.</string>
+    <string formatted="false" name="po_go_to_settings">Ir para as configurações</string>
+    <string formatted="false" name="po_create_new_repo">Criar novo repositório</string>
+    <string formatted="false" name="po_connect_existing_repo">Conectar a um existente</string>
+    <string formatted="false" name="po_connect_git_title">Conectar ao Git</string>
+    <string formatted="false" name="po_create_repo_title">Novo repositório</string>
+    <string formatted="false" name="po_repo_name_empty">O nome do repositório não pode estar vazio</string>
+    <string formatted="false" name="po_creating_repo">Criando repositório...</string>
+    <string formatted="false" name="po_project_published">Projeto publicado com sucesso!</string>
+    <string formatted="false" name="po_connect_repo_title">Conectar ao repositório</string>
+    <string formatted="false" name="po_connect_repo_warning">Atenção! Os arquivos atuais do projeto serão SUBSTITUÍDOS pelos arquivos do repositório remoto. Esta ação é irreversível.</string>
+    <string formatted="false" name="po_connect">Conectar</string>
+    <string formatted="false" name="po_invalid_repo_url">Digite um URL HTTPS de repositório válido</string>
+    <string formatted="false" name="po_cloning_project">Clonando projeto...</string>
+    <string formatted="false" name="po_project_cloned">Projeto clonado com sucesso!</string>
+    <string formatted="false" name="po_sync_title">Sincronizar</string>
+    <string formatted="false" name="po_commit_msg_hint">Digite uma breve descrição das alterações (commit):</string>
+    <string formatted="false" name="po_sync_and_publish">Sincronizando e publicando...</string>
+    <string formatted="false" name="po_sync_done">Sincronização concluída!</string>
+    <string formatted="false" name="po_updating_project">Atualizando projeto...</string>
+    <string formatted="false" name="po_project_updated">Projeto atualizado!</string>
+    <string formatted="false" name="po_conflicts_detected_title">Conflitos detectados</string>
+    <string formatted="false" name="po_conflicts_detected_msg">O sistema detectou conflitos; decida qual versão manter. Conflitos:\n%1$s</string>
+    <string formatted="false" name="po_merge_conflicts_title">Conflitos de merge!</string>
+    <string formatted="false" name="po_merge_conflicts_msg">Falha ao atualizar o projeto automaticamente. Conflitos:\n%1$s</string>
+    <string formatted="false" name="po_restart_required_title">Reinicialização necessária</string>
+    <string formatted="false" name="po_restart_required_msg">O projeto foi modificado. Reinicie-o para ver as alterações.</string>
+    <string formatted="false" name="po_restart">Reiniciar</string>
+    <string formatted="false" name="po_no_images_in_project">O projeto não tem imagens.</string>
+    <string formatted="false" name="po_insert_image">Inserir imagem</string>
+    <string formatted="false" name="po_build_matryoshka">Montando matryoshka para o servidor...</string>
+    <string formatted="false" name="po_matryoshka_done">Matryoshka montada!</string>
+    <string formatted="false" name="stage_window_title">Palco</string>
+    <string formatted="false" name="stage_press_again_for_menu">Pressione novamente para abrir o menu</string>
+    <string formatted="false" name="stage_export_error">Erro de exportação: %1$s</string>
+    <string formatted="false" name="stage_warning_title">O projeto pode conter código malicioso</string>
+    <string formatted="false" name="stage_warning_msg">Este projeto usa compilação Java, LunoScript, Python ou Bibliotecas, o que pode ser perigoso. Execute-o somente se você verificou o código ou confia na fonte.</string>
+    <string formatted="false" name="stage_run">Executar</string>
+    <string formatted="false" name="stage_dont_remind_again">Não lembrar novamente</string>
+    <string formatted="false" name="sf_logged_in_as">Conectado como @%1$s (Toque para sair)</string>
+    <string formatted="false" name="sf_log_in_or_register">Entre ou registre-se para publicar seus projetos</string>
+    <string formatted="false" name="sf_logout_confirm_title">Sair da comunidade?</string>
+    <string formatted="false" name="sf_logout_confirm_msg">Tem certeza de que deseja sair da sua conta da comunidade NewCatroid?</string>
+    <string formatted="false" name="sf_logout">Sair</string>
+    <string formatted="false" name="sf_loading_user_data">Carregando dados do usuário...</string>
+    <string formatted="false" name="sf_failed_to_fetch_data">Falha ao obter os dados</string>
+    <string formatted="false" name="sf_no_lost_projects">Nenhum projeto perdido encontrado</string>
+    <string formatted="false" name="sf_found_projects_title">Projetos encontrados (%1$d)</string>
+    <string formatted="false" name="sf_restore">Restaurar</string>
+    <string formatted="false" name="sf_projects_processed">Projetos processados: %1$d. O aplicativo será reiniciado para atualizar a lista.</string>
+    <string formatted="false" name="sf_done_title">Concluído</string>
+    <string formatted="false" name="plugin_installed_toast">Plugin instalado com sucesso! (não se esqueça de reiniciar o aplicativo)</string>
+    <string formatted="false" name="plugin_install_error">Erro de instalação. Certifique-se de que você selecionou um arquivo .nplug válido e que ele não está corrompido.</string>
+    <string formatted="false" name="plugin_none_installed">Nenhum plugin instalado</string>
+    <string formatted="false" name="plugin_enabled_badge">[LIGADO]</string>
+    <string formatted="false" name="plugin_disabled_badge">[DESLIGADO]</string>
+    <string formatted="false" name="plugin_enable">Ativar</string>
+    <string formatted="false" name="plugin_disable">Desativar</string>
+    <string formatted="false" name="plugin_configure">Configurar</string>
+    <string formatted="false" name="plugin_actions_title">Ações para: %1$s</string>
+    <string formatted="false" name="plugin_delete_confirm_title">Excluir plugin</string>
+    <string formatted="false" name="plugin_delete_confirm_msg">Tem certeza de que deseja excluir permanentemente \'%1$s\'?</string>
+    <string formatted="false" name="plugin_deleted_toast">Plugin excluído! (não se esqueça de reiniciar o aplicativo)</string>
+    <string formatted="false" name="plugin_title">Plugins</string>
+    <string formatted="false" name="common_error_with_message">Erro: %1$s</string>
+    <string formatted="false" name="common_file_not_found">Arquivo não encontrado</string>
+    <string formatted="false" name="common_unknown_file">arquivo_desconhecido</string>
+    <string formatted="false" name="common_choose_file">Escolher arquivo</string>
+    <string formatted="false" name="pf_dir_not_found">Erro: diretório do projeto não encontrado</string>
+    <string formatted="false" name="pf_no_app_to_open">Nenhum aplicativo pode abrir este arquivo</string>
+    <string formatted="false" name="pf_open_error">Erro ao abrir: %1$s</string>
+    <string formatted="false" name="pf_name_copied">Nome do arquivo copiado para a área de transferência</string>
+    <string formatted="false" name="pf_deleted">Excluído</string>
+    <string formatted="false" name="pf_delete_error">Erro ao excluir</string>
+    <string formatted="false" name="pf_open_failed">Falha ao abrir o arquivo</string>
+    <string formatted="false" name="pf_save_error">Erro ao salvar: %1$s</string>
+    <string formatted="false" name="lib_no_app_to_open">Nenhum aplicativo encontrado para abrir este arquivo</string>
+    <string formatted="false" name="lib_name_copied">Nome copiado</string>
+    <string formatted="false" name="lib_deleted">Biblioteca excluída</string>
+    <string formatted="false" name="lib_delete_error">Erro ao excluir a biblioteca</string>
+    <string formatted="false" name="lib_choose_newlib_file">Selecione o arquivo .newlib</string>
+    <string formatted="false" name="ide_dash_preparing_env">Preparando o ambiente...\nBaixando Android SDK %1$s</string>
+    <string formatted="false" name="ide_dash_sdk_error">Erro de SDK: %1$s</string>
+    <string formatted="false" name="ide_dash_github_api_error">Erro da API do GitHub: %1$s</string>
+    <string formatted="false" name="ide_dash_fork_link_error">Falha ao obter o link do fork</string>
+    <string formatted="false" name="ide_dash_sdk_installed">SDK instalado com sucesso!</string>
+    <string formatted="false" name="ide_dash_github_login_first">Faça login no GitHub primeiro!</string>
+    <string formatted="false" name="ide_dash_coming_soon">O recurso de conexão estará disponível em breve</string>
+    <string formatted="false" name="ide_dash_delete_feature_title">Excluir este recurso?</string>
+    <string formatted="false" name="ide_dash_delete_feature_msg">Tem certeza de que deseja excluir %1$s? As alterações locais serão perdidas.</string>
+    <string formatted="false" name="ide_dash_project_deleted">Projeto excluído</string>
+    <string formatted="false" name="ide_dash_creating_fork">Criando um fork no GitHub...\nIsso pode levar alguns minutos.</string>
+    <string formatted="false" name="ide_dash_cloning_source">Clonando o código-fonte...</string>
+    <string formatted="false" name="ide_dash_project_ready">O projeto está pronto para trabalhar!</string>
+    <string formatted="false" name="ide_dash_error">Erro!</string>
+    <string formatted="false" name="ide_choose_file_hint">// Selecione um arquivo no menu à esquerda para editar</string>
+    <string formatted="false" name="ide_build_started">Compilação iniciada! 🚀</string>
+    <string formatted="false" name="ide_build_error_code">Código %1$s</string>
+    <string formatted="false" name="ide_no_base_branch">Falha ao encontrar o branch base (main/master) para criar o fork.</string>
+    <string formatted="false" name="ide_branch_create_error">Falha ao criar um branch no GitHub: %1$s</string>
+    <string formatted="false" name="ide_code_saved_ecj">Código salvo. Chamando ECJ...</string>
+    <string formatted="false" name="build_connecting">Conectando ao servidor...</string>
+    <string formatted="false" name="build_failed_title">Falha na compilação</string>
+    <string formatted="false" name="build_unknown_error">Erro desconhecido</string>
+    <string formatted="false" name="build_github_timeout">O GitHub não iniciou a compilação a tempo. Tente novamente.</string>
+    <string formatted="false" name="build_on_github">Compilando no GitHub...</string>
+    <string formatted="false" name="build_status_prefix">Status: %1$s</string>
+    <string formatted="false" name="build_check_syntax">Verifique a sintaxe no editor.</string>
+    <string formatted="false" name="build_success">Compilação concluída com sucesso!</string>
+    <string formatted="false" name="build_looking_for_artifact">Procurando o arquivo compilado...</string>
+    <string formatted="false" name="build_artifact_not_found">Arquivo não encontrado.</string>
+    <string formatted="false" name="build_downloading_apk">Baixando APK...</string>
+    <string formatted="false" name="build_unpacking">Descompactando...</string>
+    <string formatted="false" name="build_ready_title">Compilação pronta!</string>
+    <string formatted="false" name="build_tap_to_send">Toque para enviar ou instalar o APK</string>
+    <string formatted="false" name="build_save_to_downloads_failed">Falha ao salvar o arquivo em Downloads</string>
+    <string formatted="false" name="build_open_apk">Abrir APK</string>
+    <string formatted="false" name="apk_preparing_template">Preparando modelo...</string>
+    <string formatted="false" name="apk_injecting_code">Injetando código...</string>
+    <string formatted="false" name="apk_configuring_manifest">Configurando manifesto...</string>
+    <string formatted="false" name="apk_configuring_sdk">Configurando versões do SDK...</string>
+    <string formatted="false" name="apk_optimizing_manifest">Otimizando manifesto...</string>
+    <string formatted="false" name="apk_updating_graphics">Atualizando gráficos...</string>
+    <string formatted="false" name="apk_packing_resources">Empacotando recursos...</string>
+    <string formatted="false" name="apk_packing_native_libs">Empacotando bibliotecas (Native)...</string>
+    <string formatted="false" name="apk_building">Compilando APK...</string>
+    <string formatted="false" name="apk_signing">Assinando...</string>
+    <string formatted="false" name="apk_keystore_required">SDK 30+ de destino requer configuração de Keystore!</string>
+    <string formatted="false" name="apk_done_v2">Concluído! Assinatura V2 OK.</string>
+    <string formatted="false" name="apk_signing_error">Erro de assinatura: %1$s</string>
+    <string formatted="false" name="se_protection_preparing">Proteção: Preparando...</string>
+    <string formatted="false" name="se_compiling">Compilando...</string>
+    <string formatted="false" name="se_no_compiled_classes">Nenhuma classe compilada</string>
+    <string formatted="false" name="se_generating_dex">Gerando DEX (D8)...</string>
+    <string formatted="false" name="se_obfuscating">Ofuscando (R8)...</string>
+    <string formatted="false" name="se_proguard_created">proguard-rules.pro criado</string>
+    <string formatted="false" name="se_processing_libs">Processando bibliotecas...</string>
+    <string formatted="false" name="se_sdk_not_found">SDK do Android (android.jar) não encontrado! Baixe a API %1$s nas configurações.</string>
+    <string formatted="false" name="se_stubs_not_found">Erro: core-lambda-stubs.jar não encontrado nos assets!</string>
+    <string formatted="false" name="sdk_searching_api">Procurando API %1$s...</string>
+    <string formatted="false" name="sdk_api_not_found">API %1$s não encontrada</string>
+    <string formatted="false" name="sdk_unpacking">Descompactando arquivo...</string>
+    <string formatted="false" name="sdk_install_done">Instalação concluída!</string>
+    <string formatted="false" name="sdk_no_android_jar">Erro: o arquivo não contém android.jar</string>
+    <string formatted="false" name="sdk_server_error">Erro de servidor: %1$s</string>
+    <string formatted="false" name="sdk_downloading_mb">Baixando: %1$.1f / %2$.1f MB</string>
+    <string formatted="false" name="sdk_downloaded_mb">Baixado: %1$.1f MB</string>
+    <string formatted="false" name="sdk_download_failed">Falha no download: %1$s</string>
+    <string formatted="false" name="ipm_creating_structure">Criando estrutura do projeto...</string>
+    <string formatted="false" name="ipm_project_exists_error">Erro: O projeto já existe</string>
+    <string formatted="false" name="ipm_downloading">Baixando: %1$s...</string>
+    <string formatted="false" name="ipm_download_error">Erro de download: %1$s</string>
+    <string formatted="false" name="ipm_generating_code">Gerando código...</string>
+    <string formatted="false" name="dm_invalid_id_format">Formato de ID inválido</string>
+    <string formatted="false" name="dm_aar_unpack_error">Erro ao descompactar AAR</string>
+    <string formatted="false" name="tab_scripts">Scripts</string>
+    <string formatted="false" name="tab_looks">Aparências</string>
+    <string formatted="false" name="tab_sounds">Sons</string>
+    <string formatted="false" name="tab_scenes">Cenas</string>
+    <string formatted="false" name="tab_sprites">Sprites</string>
+    <string formatted="false" name="tab_project_options">Opções do projeto</string>
+    <string formatted="false" name="tab_project_files">Arquivos do projeto</string>
+    <string formatted="false" name="tab_libraries">Bibliotecas</string>
+    <string formatted="false" name="crash_dialog_title">Falha / Registro de erros</string>
+    <string formatted="false" name="crash_dialog_msg">O aplicativo foi fechado com erro da última vez. Por favor, envie este texto ao desenvolvedor:\n\n%1$s</string>
+    <string formatted="false" name="crash_no_active_project">Nenhum projeto ativo para executar</string>
+    <string formatted="false" name="ws_tools">FERRAMENTAS DO WORKSPACE</string>
+    <string formatted="false" name="ws_categories">Categorias de Blocos</string>
+    <string formatted="false" name="ws_add_brick">Adicionar Bloco</string>
+    <string formatted="false" name="ws_data_selection">Selecionar Dados</string>
+    <string formatted="false" name="ws_formula_editor">Editor de Fórmulas</string>
+    <string formatted="false" name="scr_error">Erro:</string>
+    <string formatted="false" name="scr_warning">Aviso:</string>
+    <string formatted="false" name="scr_backpack_scripts">Mochila: Scripts</string>
+    <string formatted="false" name="scr_no_scripts"> (Sem scripts)\n</string>
+    <string formatted="false" name="scr_disabled">// [DESATIVADO] </string>
+    <string formatted="false" name="scr_start_script">Quando a cena inicia:</string>
+    <string formatted="false" name="scr_when_script">Quando o sprite é tocado:</string>
+    <string formatted="false" name="scr_touch_script">Quando a tela é tocada:</string>
+    <string formatted="false" name="scr_broadcast_script">Quando eu receber uma transmissão:</string>
+    <string formatted="false" name="scr_condition_script">Quando a condição se torna verdadeira:</string>
+    <string formatted="false" name="scr_cloned_script">Quando eu inicio como um clone:</string>
+    <string formatted="false" name="scr_background_script">Quando o fundo muda:</string>
+    <string formatted="false" name="scr_default_script">Script [%1$s]:</string>
+    <string formatted="false" name="ste_path_not_passed">Erro: nenhum caminho fornecido</string>
+    <string formatted="false" name="ste_file_too_large">// Arquivo muito grande (%1$d KB).\n// A edição está desativada para evitar travamentos.</string>
+    <string formatted="false" name="ste_read_error">Erro de leitura</string>
+    <string formatted="false" name="ste_saved">Salvo</string>
+    <string formatted="false" name="npd_clone_success">Projeto clonado com sucesso!</string>
+    <string formatted="false" name="npd_clone_not_readable">Clone concluído, mas o projeto não pôde ser lido: %1$s</string>
+    <string formatted="false" name="npd_clone_error">Erro de clonagem: %1$s</string>
+    <string formatted="false" name="libm_sync_success">Sincronização bem-sucedida!</string>
+    <string formatted="false" name="libm_sync_errors">Sincronização terminou com contagem de erros: %1$d</string>
+    <string formatted="false" name="fu_download_error_code">Erro de download: %1$s</string>
+    <string formatted="false" name="ask_default_placeholder">Digite a resposta:</string>
+    <string formatted="false" name="ask_default_ok">OK</string>
+    <string formatted="false" name="ask_default_cancel">Cancelar</string>
+    <string formatted="false" name="cbf_dialog_title">Meu diálogo</string>
+    <string formatted="false" name="cbf_dialog_answer">digite sua resposta</string>
+    <string formatted="false" name="cbf_dialog_yes">Sim</string>
+    <string formatted="false" name="cbf_dialog_later">Depois</string>
+    <string formatted="false" name="cbf_dialog_no">Não</string>
+    <string formatted="false" name="cbf_dialog_edit_hint">este é um campo de texto</string>
+    <string formatted="false" name="cbf_dialog_radio_hint">esta é uma escolha</string>
+    <string formatted="false" name="cbf_copy_example">Bife</string>
+    <string formatted="false" name="cbf_notif_title">Oooolá</string>
+    <string formatted="false" name="cbf_notif_text">Este é o aviso (mais precisamente, seu texto)</string>
+    <string formatted="false" name="cbf_notif2_title">Oooolá de novo</string>
+    <string formatted="false" name="cbf_notif2_text">Este já é um aviso mais complexo</string>
+    <string formatted="false" name="cbf_bg_title">O aplicativo está em execução em segundo plano</string>
+    <string formatted="false" name="cbf_bg_text">sem uma notificação no Android 14+ infelizmente não é possível</string>
+    <string formatted="false" name="cbf_lua_example">return \'Olá do Lua!\'</string>
+    <string formatted="false" name="cbf_web_html_simple">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Olá!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_web_html_full">&lt;html&gt;&lt;body style=\'background-color:lightyellow;\'&gt;&lt;h1&gt;Olá, mundo!&lt;/h1&gt;&lt;p&gt;Este é um WebView criado direto do código.&lt;/p&gt;&lt;button onclick=\'alert(&quot;JavaScript funciona!&quot;)\'&gt;Clique em mim&lt;/button&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string formatted="false" name="cbf_textfield_hint">Digite um valor...</string>
+    <string formatted="false" name="cbf_textfield_default">se o arquivo não existir - padrão</string>
+    <string formatted="false" name="cbf_label_html">&lt;b&gt;Olá&lt;/b&gt; Este é um texto HTML.</string>
+    <string formatted="false" name="cbf_button_text">Clique em mim!</string>
+    <string formatted="false" name="cbf_switch_text">Ativar</string>
+    <string formatted="false" name="cbf_share_text">Olá do NewCatroid!</string>
+    <string formatted="false" name="cbf_gpt_prompt">Olá!</string>
+    <string formatted="false" name="cbf_gpt_system">Responda tudo com a palavra &quot;laranja&quot;</string>
+    <string formatted="false" name="cpf_empty_names">Os nomes dos arquivos não podem estar vazios</string>
+    <string formatted="false" name="cpf_source_not_found">Arquivo de origem não encontrado: %1$s</string>
+    <string formatted="false" name="cpf_copy_error">Erro ao copiar arquivo</string>
+    <string formatted="false" name="epf_activity_unavailable">Erro: não foi possível acessar a Activity</string>
+    <string formatted="false" name="cpd_file_saved">Arquivo %1$s salvo</string>
+    <string formatted="false" name="cpd_save_error">Erro ao salvar</string>
+    <string formatted="false" name="bgs_default_title">Rodando em segundo plano</string>
+    <string formatted="false" name="bgs_default_text">Executando scripts...</string>
+    <string formatted="false" name="bgs_channel_name">Modo de jogo em segundo plano</string>
+    <string formatted="false" name="psf_action_done">Ação executada</string>
+    <string formatted="false" name="lmm_focus_success">FOCUS: SUCESSO</string>
+    <string formatted="false" name="backpack_scenes">Mochila: Cenas</string>
+    <string formatted="false" name="backpack_sprites">Mochila: Sprites</string>
+    <string formatted="false" name="cfb_type_image">Imagem</string>
+    <string formatted="false" name="cfb_type_video">Vídeo</string>
+    <string formatted="false" name="cfb_type_audio">Áudio</string>
+    <string formatted="false" name="cfb_type_document">Documento</string>
+    <string formatted="false" name="cfb_type_other">Outro</string>
+    <string formatted="false" name="ccd_on">Ligado</string>
+    <string formatted="false" name="ccd_off">Desligado</string>
+    <string formatted="false" name="nlb_in_front_of_scene">Na frente da cena</string>
+    <string formatted="false" name="nlb_behind_scene">Atrás da cena</string>
+    <string formatted="false" name="chip8_file_not_found">Erro: arquivo %1$s não encontrado!</string>
+    <string formatted="false" name="chip8_loading">Carregando...</string>
+    <string formatted="false" name="chip8_loaded">Jogo carregado. Inicialização concluída!</string>
+    <string formatted="false" name="bgm_default_title">Rodando em segundo plano</string>
+    <string formatted="false" name="bgm_default_text">Scripts ativos</string>
+    <string formatted="false" name="formula_repeat_example">repetição é sinal de loucura </string>
+    <string formatted="false" name="library_author_default">Autor</string>
+    <string formatted="false" name="merger_conflict_your_version_below">--- CONFLITO: SUA VERSÃO ABAIXO ---</string>
+    <string formatted="false" name="merger_conflict_end">--- FIM DO CONFLITO ---</string>
+    <string formatted="false" name="merger_conflict_header">--- CONFLITO --- (Abaixo está a versão do servidor)</string>
+    <string formatted="false" name="merger_your_version">--- SUA VERSÃO ---</string>
+    <string formatted="false" name="ask_default_answer_name">Sua resposta</string>
+    <string formatted="false" name="plf_launching_baked_project">Iniciando projeto integrado...</string>
+    <string formatted="false" name="plf_project_info">Informações do projeto: %1$s</string>
+    <string formatted="false" name="ub_unknown_block">Bloco desconhecido: %1$s</string>
+    <string formatted="false" name="psf_settings_for">Configurações: %1$s</string>
+    <string formatted="false" name="fu_download_error">Erro ao baixar arquivo: %1$s</string>
+    <string formatted="false" name="libm_load_error">Erro ao carregar \'%1$s\'</string>
+    <string-array name="pf_success_messages">
+        <item>Concluído!</item>
+        <item>Feito!</item>
+        <item>Sucesso!</item>
+        <item>Concluído!</item>
+        <item>Ótimo trabalho!</item>
+        <item>Tudo pronto!</item>
+    </string-array>
+    <string-array name="pf_error_messages">
+        <item>Ocorreu um erro!</item>
+        <item>Ops! Algo deu errado.</item>
+    </string-array>
+    <string formatted="false" name="common_create">Criar</string>
+    <string formatted="false" name="common_start">Iniciar</string>
+    <string formatted="false" name="po_image_save_error">Erro ao salvar a imagem: %1$s</string>
+    <string formatted="false" name="po_apk_signing_error">Erro ao assinar o APK: %1$s</string>
+    <string-array name="po_success_messages">
+        <item>Concluído!</item>
+        <item>Feito!</item>
+        <item>Sucesso!</item>
+        <item>Concluído!</item>
+        <item>Pronto para usar!</item>
+        <item>Tarefa concluída!</item>
+        <item>Ótimo trabalho!</item>
+        <item>Tudo pronto!</item>
+        <item>O ovo ou a galinha...?</item>
+        <item>Concluído! Dá uma olhada!</item>
+        <item>Bora lá!</item>
+        <item>Parece que está pronto...</item>
+        <item>Confere, chefe!</item>
+        <item>Pronto. Boa sorte com o seu projeto!</item>
+        <item>Trabalho concluído, como o café da manhã!</item>
+        <item>Pronto! Como se eu fosse um mago, não um programador!</item>
+        <item>Tudo feito! Bem a tempo do almoço.</item>
+        <item>Tudo concluído! Hora de pegar uns lanches!</item>
+        <item>Tarefa concluída! Agora você pode descansar e ver gatinhos.</item>
+        <item>Pronto! Aconteceu antes mesmo de eu perceber.</item>
+        <item>Feito! Agora é só comemorar dançando.</item>
+        <item>Pronto! Um momento de calma antes de novas aventuras.</item>
+        <item>Ótimo trabalho! Você é como um super-herói, só que sem capa.</item>
+        <item>Pronto! Finalmente posso voltar às compras online.</item>
+        <item>Como dizer \'faça isso\' e receber \'feito!\'? Assim!</item>
+        <item>Tudo pronto! Agora podemos nos concentrar em coisas mais importantes.</item>
+        <item>Tarefa concluída! Como um bom livro - você não larga até a última página.</item>
+        <item>Pronto! Podemos descansar, como se tivéssemos feito tudo com um toque.</item>
+        <item>Feito! Prontos para novas aventuras?</item>
+    </string-array>
+    <string-array name="po_error_messages">
+        <item>Ocorreu um erro! Acho que pedi o algoritmo errado.</item>
+        <item>Ops! Algo deu errado. Como se um gato tivesse passado pelo teclado.</item>
+        <item>Ocorreu um erro! Talvez o sistema tenha decidido descansar um pouco?</item>
+        <item>Ops! Parece que ocorreu um erro. Talvez seja uma piada de programador?</item>
+        <item>Ocorreu um erro! Quem teve a ideia de atualizar o programa antes do prazo?</item>
+        <item>Ops! Um erro. Acho que meu código também decidiu tirar um cochilo.</item>
+        <item>Ocorreu um erro! Por mais que eu tentasse, os resultados não coincidiram.</item>
+        <item>Opa! Um erro! Exatamente o que precisávamos evitar.</item>
+        <item>Ocorreu um erro! Aparentemente o servidor também está cansado.</item>
+        <item>Ops! Um erro. Como esquecer uma reunião importante.</item>
+        <item>Ocorreu um erro! Talvez devêssemos pedir pizza em vez de código?</item>
+        <item>Ops! Um erro. Dizem que todos os caminhos levam a Roma, mas hoje não.</item>
+        <item>Ocorreu um erro! Não era isso que eu queria lembrar.</item>
+        <item>Ops! Um erro! Talvez a máquina tenha decidido que hoje é folga dela.</item>
+        <item>Ocorreu um erro! Tentei agradar o código com biscoitos e olha no que deu!</item>
+        <item>Opa! Um erro. Talvez haja variáveis curiosas demais no código.</item>
+        <item>Ocorreu um erro! Desculpe, não sou eu - é a vida!</item>
+        <item>Ops! Ocorreu um erro. O código às vezes faz manha sozinho.</item>
+        <item>Ops! Ocorreu um erro! Como se a internet tivesse ido a um piquenique sem mim.</item>
+        <item>Ocorreu um erro! E claro, o bug é sempre o culpado.</item>
+        <item>Ops! Um erro. Você sabe, perdoar também é uma arte.</item>
+    </string-array>
 </resources>

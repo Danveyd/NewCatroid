@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import org.catrobat.catroid.R
 import org.catrobat.catroid.stage.StageActivity
 import kotlin.concurrent.thread
 
@@ -22,15 +23,15 @@ class NewCatroidBackgroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val title = intent?.getStringExtra("TITLE") ?: "Работа в фоне"
-        val text = intent?.getStringExtra("TEXT") ?: "Выполняются скрипты..."
+        val title = intent?.getStringExtra("TITLE") ?: getString(R.string.bgs_default_title)
+        val text = intent?.getStringExtra("TEXT") ?: getString(R.string.bgs_default_text)
         val channelId = "catroid_bg_service_channel"
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId, "Фоновый режим игры", NotificationManager.IMPORTANCE_LOW
+                channelId, getString(R.string.bgs_channel_name), NotificationManager.IMPORTANCE_LOW
             )
             notificationManager.createNotificationChannel(channel)
         }

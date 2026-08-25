@@ -1,6 +1,7 @@
 package org.catrobat.catroid.ide
 
 import android.content.Context
+import org.catrobat.catroid.R
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
@@ -57,7 +58,7 @@ object DependencyManager {
         onProgressUpdate: (String, DownloadStatus) -> Unit
     ): Boolean {
         val rootLib = parseLib(libString) ?: run {
-            onProgressUpdate(libString, DownloadStatus.Error("Неверный формат ID"))
+            onProgressUpdate(libString, DownloadStatus.Error(context.getString(R.string.dm_invalid_id_format)))
             return false
         }
 
@@ -173,14 +174,14 @@ object DependencyManager {
                             }
                         }
                     } catch (e: Exception) {
-                        onProgressUpdate(fileName, DownloadStatus.Error("Ошибка распаковки AAR"))
+                        onProgressUpdate(fileName, DownloadStatus.Error(context.getString(R.string.dm_aar_unpack_error)))
                     }
                     aarFile.delete()
                 }
             }
         }
 
-        onProgressUpdate(fileName, DownloadStatus.Error("Файл не найден"))
+        onProgressUpdate(fileName, DownloadStatus.Error(context.getString(R.string.common_file_not_found)))
         return false
     }
 

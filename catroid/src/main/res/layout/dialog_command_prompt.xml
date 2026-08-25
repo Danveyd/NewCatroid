@@ -74,7 +74,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:fontFamily="monospace"
-            android:hint="Команда..."
+            android:hint="@string/command_prompt_hint"
             android:textColorHint="@color/text_secondary"
             android:imeOptions="actionDone"
             android:inputType="textNoSuggestions|textVisiblePassword"

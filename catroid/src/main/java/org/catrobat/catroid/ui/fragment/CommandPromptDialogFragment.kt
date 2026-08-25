@@ -177,10 +177,10 @@ class CommandPromptDialogFragment : DialogFragment(), CommandOutputListener {
             try {
                 file.writeText(editorInput.text.toString())
                 onOutput("Saved ${file.name}\n")
-                android.widget.Toast.makeText(requireContext(), "Файл ${file.name} сохранен", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(requireContext(), getString(org.catrobat.catroid.R.string.cpd_file_saved, file.name), android.widget.Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 onOutput("Error saving file: ${e.message}\n")
-                android.widget.Toast.makeText(requireContext(), "Ошибка сохранения", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(requireContext(), getString(org.catrobat.catroid.R.string.cpd_save_error), android.widget.Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -4,19 +4,19 @@
 
     <item
         android:id="@+id/action_import_library"
-        android:title="Импорт"
+        android:title="@string/import_library"
         android:icon="@drawable/baseline_save_alt_24_w"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_export_library"
-        android:title="Экспорт"
+        android:title="@string/export"
         android:icon="@drawable/unarchive_24px"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_clear_library"
-        android:title="Очистить"
+        android:title="@string/clear"
         android:icon="@drawable/delete_24px"
         app:showAsAction="ifRoom" />
 </menu>

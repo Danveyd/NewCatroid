@@ -1319,7 +1319,7 @@ open class CategoryBricksFactory {
                 looksBrickList.add(HideBrick())
                 looksBrickList.add(ShowBrick())
                 looksBrickList.add(AskBrick(context.getString(R.string.brick_ask_default_question)))
-                looksBrickList.add(BigAskBrick(context.getString(R.string.brick_ask_default_question), "Введите ответ:", "OK", "Отмена", "Ваш ответ"))
+                looksBrickList.add(BigAskBrick(context.getString(R.string.brick_ask_default_question), context.getString(R.string.ask_default_placeholder), context.getString(R.string.ask_default_ok), context.getString(R.string.ask_default_cancel), context.getString(R.string.ask_default_answer_name)))
                 if (!isBackgroundSprite) {
                     looksBrickList.add(SayBubbleBrick(context.getString(R.string.brick_say_bubble_default_value)))
                     looksBrickList.add(SayForBubbleBrick(context.getString(R.string.brick_say_bubble_default_value), 1.0f))
@@ -1377,12 +1377,12 @@ open class CategoryBricksFactory {
                 looksBrickList.add(EditLookBrick())
                 looksBrickList.add(CopyLookBrick(context.getString(R.string.brick_copy_look_name)))
                 looksBrickList.add(DeleteLookBrick())
-                looksBrickList.add(CreateDialogBrick("myDialog", "Фижма", "введите ваш ответ"))
-                looksBrickList.add(SetPositiveBrick("myDialog", "Да"))
-                looksBrickList.add(SetNeutralBrick("myDialog", "Позже"))
-                looksBrickList.add(SetNegativeBrick("myDialog", "Нет"))
-                looksBrickList.add(AddEditBrick("myDialog", "это текстовое поле"))
-                looksBrickList.add(AddRadioBrick("myDialog", "это выбор"))
+                looksBrickList.add(CreateDialogBrick("myDialog", context.getString(R.string.cbf_dialog_title), context.getString(R.string.cbf_dialog_answer)))
+                looksBrickList.add(SetPositiveBrick("myDialog", context.getString(R.string.cbf_dialog_yes)))
+                looksBrickList.add(SetNeutralBrick("myDialog", context.getString(R.string.cbf_dialog_later)))
+                looksBrickList.add(SetNegativeBrick("myDialog", context.getString(R.string.cbf_dialog_no)))
+                looksBrickList.add(AddEditBrick("myDialog", context.getString(R.string.cbf_dialog_edit_hint)))
+                looksBrickList.add(AddRadioBrick("myDialog", context.getString(R.string.cbf_dialog_radio_hint)))
                 looksBrickList.add(SetCallbackBrick("myDialog"))
                 looksBrickList.add(ShowDialogBrick("myDialog"))
                 looksBrickList.add(SquareBrick("square", "#ff0000", 0f, 0f, 100f, 100f, 1f, 0f, 0f))
@@ -1498,15 +1498,15 @@ void main() {
             looksBrickList.add(ThinkForBubbleBrick(context.getString(R.string.brick_think_bubble_default_value), 1.0f))
         }
         looksBrickList.add(AskBrick(context.getString(R.string.brick_ask_default_question)))
-        looksBrickList.add(BigAskBrick(context.getString(R.string.brick_ask_default_question), "Введите ответ:", "OK", "Отмена", "Ваш ответ"))
+        looksBrickList.add(BigAskBrick(context.getString(R.string.brick_ask_default_question), context.getString(R.string.ask_default_placeholder), context.getString(R.string.ask_default_ok), context.getString(R.string.ask_default_cancel), context.getString(R.string.ask_default_answer_name)))
         looksBrickList.add(ShowTextBrick(BrickValues.X_POSITION, BrickValues.Y_POSITION))
         looksBrickList.add(ShowTextColorSizeAlignmentBrick(BrickValues.X_POSITION, BrickValues.Y_POSITION, BrickValues.RELATIVE_SIZE_IN_PERCENT, BrickValues.SHOW_VARIABLE_COLOR))
-        looksBrickList.add(CreateDialogBrick("myDialog", "Фижма", "введите ваш ответ"))
-        looksBrickList.add(SetPositiveBrick("myDialog", "Да"))
-        looksBrickList.add(SetNeutralBrick("myDialog", "Позже"))
-        looksBrickList.add(SetNegativeBrick("myDialog", "Нет"))
-        looksBrickList.add(AddEditBrick("myDialog", "это текстовое поле"))
-        looksBrickList.add(AddRadioBrick("myDialog", "это выбор"))
+        looksBrickList.add(CreateDialogBrick("myDialog", context.getString(R.string.cbf_dialog_title), context.getString(R.string.cbf_dialog_answer)))
+        looksBrickList.add(SetPositiveBrick("myDialog", context.getString(R.string.cbf_dialog_yes)))
+        looksBrickList.add(SetNeutralBrick("myDialog", context.getString(R.string.cbf_dialog_later)))
+        looksBrickList.add(SetNegativeBrick("myDialog", context.getString(R.string.cbf_dialog_no)))
+        looksBrickList.add(AddEditBrick("myDialog", context.getString(R.string.cbf_dialog_edit_hint)))
+        looksBrickList.add(AddRadioBrick("myDialog", context.getString(R.string.cbf_dialog_radio_hint)))
         looksBrickList.add(SetCallbackBrick("myDialog"))
         looksBrickList.add(ShowDialogBrick("myDialog"))
 
@@ -1683,7 +1683,7 @@ void main() {
                 dataBrickList.add(DeleteTableBrick("myTable"))
                 dataBrickList.add(DeleteAllTablesBrick())
                 dataBrickList.add(ShowToastBlock("Hello World!"))
-                dataBrickList.add(CopyTextBrick("Котлета"))
+                dataBrickList.add(CopyTextBrick(context.getString(R.string.cbf_copy_example)))
                 dataBrickList.add(ListenMicroBrick("100"))
                 dataBrickList.add(SquareBrick("square", "#ff0000", 0f, 0f, 100f, 100f, 1f, 0f, 0f))
                 dataBrickList.add(DelSquareBrick("square"))
@@ -1750,7 +1750,7 @@ void main() {
         dataBrickList.add(SplitBrick(context.getString(R.string.brick_store_csv_into_userlist_data), ","))
         dataBrickList.add(StringToTableBrick("1,2,3\n4,5,6\n7,8,9", ",", "\n", "myTable"))
         dataBrickList.add(RegexBrick("panda ananas", "a[^n]+"))
-        dataBrickList.add(CopyTextBrick("Котлета"))
+        dataBrickList.add(CopyTextBrick(context.getString(R.string.cbf_copy_example)))
 
         dataBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_data_files), template))
         dataBrickList.add(WriteVariableOnDeviceBrick())
@@ -1808,17 +1808,17 @@ void main() {
             if (!isGroupingEnabled) {
                 val deviceBrickList: MutableList<Brick> = ArrayList()
                 deviceBrickList.add(ShowToastBlock("Hello World"))
-                deviceBrickList.add(CopyTextBrick("Котлета"))
-                deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
-                deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
+                deviceBrickList.add(CopyTextBrick(context.getString(R.string.cbf_copy_example)))
+                deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", context.getString(R.string.cbf_notif_title), context.getString(R.string.cbf_notif_text), "icon.png"))
+                deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", context.getString(R.string.cbf_notif2_title), context.getString(R.string.cbf_notif2_text), "icon.png"))
                 deviceBrickList.add(NotificationAddButtonBrick("123456", "123", "CLICK ME", "none.png", "Enter any text..."))
                 deviceBrickList.add(NotificationShowBrick("123456", 60.0))
                 deviceBrickList.add(NotificationCancelBrick("123456"))
-                deviceBrickList.add(EnableBackgroundModeBrick("Приложение работает в фоне", "без уведомления в Android 14+ нельзя к сожалению("))
+                deviceBrickList.add(EnableBackgroundModeBrick(context.getString(R.string.cbf_bg_title), context.getString(R.string.cbf_bg_text)))
                 deviceBrickList.add(DisableBackgroundModeBrick())
                 deviceBrickList.add(ListenMicroBrick("100"))
                 deviceBrickList.add(RunJSBrick("1 + 2"))
-                deviceBrickList.add(RunLuaBrick("return 'Привет из Lua!'"))
+                deviceBrickList.add(RunLuaBrick(context.getString(R.string.cbf_lua_example)))
                 deviceBrickList.add(LunoScriptBrick("MakeToast(\"Hey from Luno! :)\");"))
                 deviceBrickList.add(
                     JavaCompileBrick(
@@ -1871,18 +1871,14 @@ print("Bot has stopped.")""", "myVar"))
                 //deviceBrickList.add(OpenFilesBrick("my_actor.png"))
                 deviceBrickList.add(OrientationBrick())
                 deviceBrickList.add(CreateWebUrlBrick("myWebView", "https://google.com", "0", "0", "500", "700"))
-                deviceBrickList.add(CreateWebFileBrick("myWebView", "<html><body style='background-color:lightyellow;'>" +
-                        "<h1>Привет, мир!</h1>" +
-                        "<p>Это WebView, созданный прямо из кода.</p>" +
-                        "<button onclick='alert(\"JavaScript работает!\")'>Нажми меня</button>" +
-                        "</body></html>", "0", "0", "500", "700"))
+                deviceBrickList.add(CreateWebFileBrick("myWebView", context.getString(R.string.cbf_web_html_full), "0", "0", "500", "700"))
                 deviceBrickList.add(SetWebBrick("myWebView"))
                 deviceBrickList.add(EvalWebBrick("Android.postMessage(\"Hello from WebView!\");", "myWebView"))
                 deviceBrickList.add(CreateVideoBrick("myVideoPlayer", "video.mp4", 0, 0, 750, 500, 1, 0))
                 deviceBrickList.add(PlayVideoBrick("myVideoPlayer"))
                 deviceBrickList.add(PauseVideoBrick("myVideoPlayer"))
                 deviceBrickList.add(SeekVideoBrick("myVideoPlayer", 30))
-                deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", "Напишите значение...", "#CCCCCC", "left", 0, 5, -1, "text", "если файла не существует - по умолчанию"))
+                deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", context.getString(R.string.cbf_textfield_hint), "#CCCCCC", "left", 0, 5, -1, "text", context.getString(R.string.cbf_textfield_default)))
                 //deviceBrickList.add(NativeLayerBrick(0))
                 deviceBrickList.add(AttachSOBrick("glView", "mylib.so"))
                 deviceBrickList.add(CreateGLViewBrick("glView", 100, 200, 500, 300))
@@ -1905,7 +1901,7 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(
                     CreateTextLabelBrick(
                         "myTextView",
-                        "<b>Привет</b> Это HTML текст.",
+                        context.getString(R.string.cbf_label_html),
                         "#FFFFFF",
                         18.0,
                         "#44000000",
@@ -1924,7 +1920,7 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(
                     CreateButtonBrick(
                         "myButton",
-                        "Нажми меня!",
+                        context.getString(R.string.cbf_button_text),
                         "#FFFFFF",
                         18.0,
                         "#00C853",
@@ -1938,7 +1934,7 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(
                     CreateSwitchBrick(
                         "mySwitch",
-                        "Включить",
+                        context.getString(R.string.cbf_switch_text),
                         1,
                         100,
                         450,
@@ -1983,7 +1979,7 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(HideStatusBarBrick())
                 deviceBrickList.add(ChooseFileBrick())
                 deviceBrickList.add(ExportProjectFileBrick("file.txt"))
-                deviceBrickList.add(ShareBrick("Привет из NewCatroid!"));
+                deviceBrickList.add(ShareBrick(context.getString(R.string.cbf_share_text)));
                 deviceBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
                 deviceBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
                 deviceBrickList.add(ApplyShaderToImageBrick("image.png", """attribute vec4 a_position;
@@ -2067,7 +2063,7 @@ void main() {
 
         deviceBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_device_scripting), template))
         deviceBrickList.add(RunJSBrick("1 + 2"))
-        deviceBrickList.add(RunLuaBrick("return 'Привет из Lua!'"))
+        deviceBrickList.add(RunLuaBrick(context.getString(R.string.cbf_lua_example)))
         deviceBrickList.add(LunoScriptBrick("MakeToast(\"Hey from Luno! :)\");"))
         deviceBrickList.add(
             JavaCompileBrick(
@@ -2121,14 +2117,14 @@ bot.polling()""", "myVar"))
 
         deviceBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_device_views), template))
         deviceBrickList.add(CreateWebUrlBrick("myWebView", "https://google.com", "0", "0", "500", "700"))
-        deviceBrickList.add(CreateWebFileBrick("myWebView", "<html><body><h1>Привет!</h1></body></html>", "0", "0", "500", "700"))
+        deviceBrickList.add(CreateWebFileBrick("myWebView", context.getString(R.string.cbf_web_html_simple), "0", "0", "500", "700"))
         deviceBrickList.add(SetWebBrick("myWebView"))
         deviceBrickList.add(EvalWebBrick("Android.postMessage(\"Hello from WebView!\");", "myWebView"))
         deviceBrickList.add(CreateVideoBrick("myVideoPlayer", "video.mp4", 0, 0, 750, 500, 1, 0))
         deviceBrickList.add(PlayVideoBrick("myVideoPlayer"))
         deviceBrickList.add(PauseVideoBrick("myVideoPlayer"))
         deviceBrickList.add(SeekVideoBrick("myVideoPlayer", 30))
-        deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", "Напишите значение...", "#CCCCCC", "left", 0, 5, -1, "text", "если файла не существует - по умолчанию"))
+        deviceBrickList.add(CreateTextFieldBrick("myTextField", "", 300, 500, 300, 200, 22, "#FFFFFF", "#88000000", context.getString(R.string.cbf_textfield_hint), "#CCCCCC", "left", 0, 5, -1, "text", context.getString(R.string.cbf_textfield_default)))
         deviceBrickList.add(AttachSOBrick("glView", "mylib.so"))
         deviceBrickList.add(CreateGLViewBrick("glView", 100, 200, 500, 300))
         deviceBrickList.add(SetViewPositionBrick("myVideoPlayer", 100, 200))
@@ -2150,7 +2146,7 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(
             CreateTextLabelBrick(
                 "myTextView",
-                "<b>Привет</b> Это HTML текст.",
+                context.getString(R.string.cbf_label_html),
                 "#FFFFFF",
                 18.0,
                 "#44000000",
@@ -2169,7 +2165,7 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(
             CreateButtonBrick(
                 "myButton",
-                "Нажми меня!",
+                context.getString(R.string.cbf_button_text),
                 "#FFFFFF",
                 18.0,
                 "#00C853",
@@ -2183,7 +2179,7 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(
             CreateSwitchBrick(
                 "mySwitch",
-                "Включить",
+                context.getString(R.string.cbf_switch_text),
                 1,
                 100,
                 450,
@@ -2218,7 +2214,7 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(MoveDownloadsBrick("variable.txt"))
         deviceBrickList.add(CopyProjectFileBrick("variable.txt", "copy_variable.txt"))
         deviceBrickList.add(ExportProjectFileBrick("file.txt"))
-        deviceBrickList.add(ShareBrick("Привет из NewCatroid!"));
+        deviceBrickList.add(ShareBrick(context.getString(R.string.cbf_share_text)));
         deviceBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
         deviceBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
         deviceBrickList.add(WriteVariableOnDeviceBrick())
@@ -2242,13 +2238,13 @@ bot.polling()""", "myVar"))
 
         deviceBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_device_speech), template))
         deviceBrickList.add(ShowToastBlock("Hello World"))
-        deviceBrickList.add(CopyTextBrick("Котлета"))
-        deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
-        deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
+        deviceBrickList.add(CopyTextBrick(context.getString(R.string.cbf_copy_example)))
+        deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", context.getString(R.string.cbf_notif_title), context.getString(R.string.cbf_notif_text), "icon.png"))
+        deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", context.getString(R.string.cbf_notif2_title), context.getString(R.string.cbf_notif2_text), "icon.png"))
         deviceBrickList.add(NotificationAddButtonBrick("123456", "123", "CLICK ME", "none.png", "Enter any text..."))
         deviceBrickList.add(NotificationShowBrick("123456", 60.0))
         deviceBrickList.add(NotificationCancelBrick("123456"))
-        deviceBrickList.add(EnableBackgroundModeBrick("Приложение работает в фоне", "без уведомления в Android 14+ нельзя к сожалению("))
+        deviceBrickList.add(EnableBackgroundModeBrick(context.getString(R.string.cbf_bg_title), context.getString(R.string.cbf_bg_text)))
         deviceBrickList.add(DisableBackgroundModeBrick())
         deviceBrickList.add(ListenMicroBrick("100"))
         deviceBrickList.add(AskBrick(context.getString(R.string.brick_ask_default_question)))
@@ -2442,7 +2438,7 @@ void main() {
                 neuralBrickList.add(SetGeminiKeyBrick("api_key"))
                 neuralBrickList.add(AskGeminiBrick("Hello!"))
                 neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-flash-lite-latest"))
-                neuralBrickList.add(AskGPTBrick("Привет!", "Отвечай на все словом \"апельсин\""))
+                neuralBrickList.add(AskGPTBrick(context.getString(R.string.cbf_gpt_prompt), context.getString(R.string.cbf_gpt_system)))
                 neuralBrickList.add(CreateFloatBrick("FloatArray"))
                 neuralBrickList.add(PutFloatBrick("FloatArray", 1, 0))
                 neuralBrickList.add(TableToFloatBrick("myTable", "FloatArray"))
@@ -2489,7 +2485,7 @@ void main() {
         neuralBrickList.add(SetGeminiKeyBrick("api_key"))
         neuralBrickList.add(AskGeminiBrick("Hello!"))
         neuralBrickList.add(AskGemini2Brick("Hello! How are you?", "models/gemini-flash-lite-latest"))
-        neuralBrickList.add(AskGPTBrick("Привет!", "Отвечай на все словом \"апельсин\""))
+        neuralBrickList.add(AskGPTBrick(context.getString(R.string.cbf_gpt_prompt), context.getString(R.string.cbf_gpt_system)))
 
         neuralBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_neural_local), template))
         neuralBrickList.add(LoadNNBrick("model.onnx"))
@@ -2611,7 +2607,7 @@ void main() {
         fileBrickList.add(CopyProjectFileBrick("variable.txt", "copy_variable.txt"))
         fileBrickList.add(ChooseFileBrick())
         fileBrickList.add(ExportProjectFileBrick("file.txt"))
-        fileBrickList.add(ShareBrick("Привет из NewCatroid!"));
+        fileBrickList.add(ShareBrick(context.getString(R.string.cbf_share_text)));
         fileBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
         fileBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
         fileBrickList.add(SaveLookBrick("my_actor.png"))

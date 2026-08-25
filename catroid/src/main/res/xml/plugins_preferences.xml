@@ -3,17 +3,17 @@
 
     <PreferenceCategory
         android:key="plugins_installed_category"
-        android:title="Установленные плагины">
+        android:title="@string/plugins_installed">
 
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Действия">
+    <PreferenceCategory android:title="@string/plugins_actions">
 
         <Preference
             android:key="plugin_import_button"
-            android:title="Импортировать плагин"
-            android:summary="Установить плагин из .nplug файла"
+            android:title="@string/plugins_import"
+            android:summary="@string/plugins_import_summary"
             android:icon="@android:drawable/ic_menu_upload" />
 
     </PreferenceCategory>

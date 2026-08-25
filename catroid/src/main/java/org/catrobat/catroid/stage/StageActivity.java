@@ -369,7 +369,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
             canvas.setBackgroundColor(Color.TRANSPARENT);
 
             window = new org.catrobat.catroid.ui.workspace.WindowContainer(this);
-            window.initWindow("StageGame", "Игровой экран");
+            window.initWindow("StageGame", getString(R.string.stage_window_title));
 
             FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1886,7 +1886,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 				handleBack();
 			} else {
 				broadcastEventToAllSprites(new EventId(EventId.BACK_PRESSED));
-				Toast.makeText(this, "Нажмите еще раз для вызова меню", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.stage_press_again_for_menu), Toast.LENGTH_SHORT).show();
 				backPressedTime = System.currentTimeMillis();
 			}
 		} else {
@@ -2070,7 +2070,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 				} catch (IOException e) {
 					Log.e(TAG, "Ошибка экспорта файла", e);
-					Toast.makeText(this, "Ошибка при экспорте: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, getString(R.string.stage_export_error, e.getMessage()), Toast.LENGTH_SHORT).show();
 				}
 			}
 
@@ -2177,24 +2177,24 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 	private static void showSecurityWarningDialog(ProjectManager projectManager, Activity activity) {
 		new AlertDialog.Builder(activity)
-				.setTitle("Проект может содержать вредоносный код")
-				.setMessage("В проекте используется Java компиляция, LunoScript, Python или Библиотеки, это может быть опасно. Запускайте его только если проверили код или доверяете источнику.")
+				.setTitle(R.string.stage_warning_title)
+				.setMessage(R.string.stage_warning_msg)
 				.setCancelable(false)
 				.setIcon(android.R.drawable.ic_dialog_alert)
 
 
-				.setPositiveButton("Запуск", (dialog, which) -> {
+				.setPositiveButton(R.string.stage_run, (dialog, which) -> {
 					dialog.dismiss();
 					launchProject(projectManager, activity);
 				})
 
 
-				.setNegativeButton("Отмена", (dialog, which) -> {
+				.setNegativeButton(R.string.cancel, (dialog, which) -> {
 					dialog.dismiss();
 				})
 
 
-				.setNeutralButton("Больше не напоминать", (dialog, which) -> {
+				.setNeutralButton(R.string.stage_dont_remind_again, (dialog, which) -> {
 
 					SharedPreferences prefs = activity.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 					SharedPreferences.Editor editor = prefs.edit();

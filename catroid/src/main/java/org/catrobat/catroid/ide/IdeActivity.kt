@@ -127,7 +127,7 @@ class IdeActivity : AppCompatActivity() {
 
         if (openFiles.isEmpty()) {
             currentOpenedFile = null
-            editor.setText("// Выберите файл слева в меню для редактирования")
+            editor.setText(getString(R.string.ide_choose_file_hint))
         } else {
             // Если закрыли текущий, открываем последний в списке
             if (currentOpenedFile == file) openFileInEditor(openFiles.last())
@@ -195,7 +195,7 @@ class IdeActivity : AppCompatActivity() {
     private fun setupEditor() {
         editor.colorScheme = SchemeDarcula()
         editor.setEditorLanguage(JavaLanguage() as Language)
-        editor.setText("// Выберите файл слева в меню для редактирования")
+        editor.setText(getString(R.string.ide_choose_file_hint))
     }
 
 
@@ -310,17 +310,17 @@ class IdeActivity : AppCompatActivity() {
                 if (actionRes.isSuccessful || actionRes.code() == 204) {
                     withContext(Dispatchers.Main) {
                         startBuildService(token, login, branchName)
-                        Toast.makeText(this@IdeActivity, "Сборка запущена! 🚀", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@IdeActivity, getString(R.string.ide_build_started), Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    val errorMsg = actionRes.errorBody()?.string() ?: "Код ${actionRes.code()}"
+                    val errorMsg = actionRes.errorBody()?.string() ?: getString(R.string.ide_build_error_code, actionRes.code())
                     throw Exception("GitHub API Error: $errorMsg")
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@IdeActivity, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@IdeActivity, getString(R.string.common_error_with_message, e.message), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -358,7 +358,7 @@ class IdeActivity : AppCompatActivity() {
             }
         }
 
-        if (baseSha == null) throw Exception("Не удалось найти базовую ветку (main/master) для создания форка.")
+        if (baseSha == null) throw Exception(getString(R.string.ide_no_base_branch))
 
 
         val createJson = JSONObject().apply {
@@ -368,7 +368,7 @@ class IdeActivity : AppCompatActivity() {
 
         val createRes = api.createRef(auth, login, "NewCatroid", createJson.toString().toRequestBody(jsonType))
         if (!createRes.isSuccessful) {
-            throw Exception("Не удалось создать ветку на GitHub: ${createRes.code()}")
+            throw Exception(getString(R.string.ide_branch_create_error, createRes.code()))
         }
 
         android.util.Log.d("IDE_DEBUG", "Ветка $branch успешно создана на GitHub!")
@@ -410,7 +410,7 @@ class IdeActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_check_syntax).setOnClickListener {
             saveCurrentFile()
-            Toast.makeText(this, "Код сохранен. Вызов ECJ...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.ide_code_saved_ecj), Toast.LENGTH_SHORT).show()
         }
 
         findViewById<Button>(R.id.btn_build_cloud).setOnClickListener {

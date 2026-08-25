@@ -117,7 +117,7 @@ class FileUrlAction() : TemporalAction() {
 
                 if (connection.responseCode != HttpURLConnection.HTTP_OK) {
                     Log.e("DownloadFile", "Ошибка: ${connection.responseCode}")
-                    showToast("Ошибка: ${connection.responseCode}")
+                    showToast(CatroidApplication.getAppContext().getString(R.string.fu_download_error_code, connection.responseCode))
                     return@Thread
                 }
 
@@ -131,7 +131,7 @@ class FileUrlAction() : TemporalAction() {
 
                 Log.d("DownloadFile", "Файл скачан: ${destFile.absolutePath}")
             } catch (e: Exception) {
-                showToast("Ошибка при загрузке файла: ${e.message}")
+                showToast(CatroidApplication.getAppContext().getString(R.string.fu_download_error, e.message ?: ""))
                 Log.e("DownloadFile", "Ошибка при загрузке файла: ${e.message}", e)
             } finally {
                 inputStream?.close()

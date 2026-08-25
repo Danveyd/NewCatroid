@@ -10,7 +10,7 @@
         android:id="@+id/progressTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Копирование..."
+        android:text="@string/copying"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/solid_white"
