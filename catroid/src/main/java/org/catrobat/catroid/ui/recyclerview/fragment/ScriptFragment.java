@@ -434,22 +434,9 @@ public class ScriptFragment extends ListFragment implements
 		imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 	}
 
-    private static void clearBrickViewsReflection(Brick brick) {
-        if (brick == null) return;
-
-        Class<?> clazz = brick.getClass();
-        while (clazz != null && clazz != Object.class) {
-            java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
-            for (java.lang.reflect.Field field : fields) {
-                try {
-                    if (android.view.View.class.isAssignableFrom(field.getType())) {
-                        field.setAccessible(true);
-                        field.set(brick, null);
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-            clazz = clazz.getSuperclass();
+    private static void releaseBrickViews(Brick brick) {
+        if (brick != null) {
+            brick.invalidateCachedView();
         }
     }
 
@@ -467,7 +454,7 @@ public class ScriptFragment extends ListFragment implements
                 List<Brick> bricks = getBricksFromScript(script);
                 if (bricks != null) {
                     for (Brick brick : bricks) {
-                        clearBrickViewsReflection(brick);
+                        releaseBrickViews(brick);
                     }
                 }
             }
@@ -972,8 +959,7 @@ public class ScriptFragment extends ListFragment implements
 
         View dialogTitleView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_brick_context, null);
 
-        View brickView = brick.getView(getContext());
-        brick.disableSpinners();
+        View brickView = brick.getPrototypeView(getContext());
         ViewGroup brickContainer = dialogTitleView.findViewById(R.id.brick_view_container);
 
         final int maxBrickHeight = (int) (200 * getContext().getResources().getDisplayMetrics().density);

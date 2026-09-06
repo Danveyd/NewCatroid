@@ -527,6 +527,7 @@ public class SceneManager {
 
     public void loadAndReplaceScene(FileHandle fileHandle) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             clearScene_internal();
             if (fileHandle == null || !fileHandle.exists()) {
                 Gdx.app.error("SceneManager", "Scene file handle is null or does not exist.");
@@ -908,6 +909,10 @@ public class SceneManager {
     public void setSkybox(String texturePath) {
         this.skyboxPath = texturePath;
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) {
+                Log.i("SceneManager", "Aborted setting skybox: ThreeDManager is disposed.");
+                return;
+            }
             if (texturePath != null && !texturePath.isEmpty()) {
                 File textureFile = ProjectManager.getInstance().getCurrentProject().getFile(texturePath);
                 if (textureFile != null && textureFile.exists()) {
@@ -932,7 +937,7 @@ public class SceneManager {
     }
 
     private void removeGameObjectInternal(GameObject go) {
-        if (go == null) return;
+        if (go == null || engine == null || engine.isDisposed()) return;
 
         List<String> childrenIdsCopy = new ArrayList<>(go.childrenIds);
         for (String childId : childrenIdsCopy) {
@@ -970,6 +975,7 @@ public class SceneManager {
 
     public void setRenderComponent(GameObject go, String modelFileName) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             RenderComponent render = go.getComponent(RenderComponent.class);
             if (render == null) {
                 render = new RenderComponent();
@@ -1012,6 +1018,7 @@ public class SceneManager {
 
     public void setPhysicsComponent(GameObject go, ThreeDManager.PhysicsState state, ThreeDManager.PhysicsShape shape, float mass) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             PhysicsComponent physics = go.getComponent(PhysicsComponent.class);
             if (physics == null) {
                 physics = new PhysicsComponent();
@@ -1053,6 +1060,7 @@ public class SceneManager {
 
     public void setPhysicsComponent(GameObject go, PhysicsComponent component) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             go.components.removeIf(c -> c instanceof PhysicsComponent);
             go.addComponent(component);
 
@@ -1071,6 +1079,7 @@ public class SceneManager {
 
     public void setLightComponent(GameObject go, LightComponent lightData) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             boolean wasLightBefore = go.hasComponent(LightComponent.class);
             go.components.removeIf(c -> c instanceof LightComponent);
             go.addComponent(lightData);
@@ -1085,6 +1094,7 @@ public class SceneManager {
 
     public void setCameraComponent(GameObject go, CameraComponent cameraData) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             boolean wasCameraBefore = go.hasComponent(CameraComponent.class);
             go.components.removeIf(c -> c instanceof CameraComponent);
             go.addComponent(cameraData);
@@ -1206,6 +1216,7 @@ public class SceneManager {
 
     public void loadScene(FileHandle fileHandle) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             if (fileHandle == null || !fileHandle.exists()) {
                 Gdx.app.error("SceneManager", "Scene file handle is null or does not exist.");
                 return;
@@ -1495,6 +1506,7 @@ public class SceneManager {
     }
 
     private void clearScene_internal() {
+        if (engine == null || engine.isDisposed()) return;
         engine.clearScene();
         gameObjects.clear();
         cameraAttachments.clear();
@@ -1516,6 +1528,7 @@ public class SceneManager {
             return;
         }
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             engine.playAnimation(go.id, anim.animationName, anim.loops, anim.speed, anim.transitionTime);
         });
     }
@@ -1661,6 +1674,7 @@ public class SceneManager {
 
     public void setMaterialComponent(GameObject go, MaterialComponent component) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             go.components.removeIf(c -> c instanceof MaterialComponent);
             go.addComponent(component);
             engine.applyPBRMaterial(go.id, component);
@@ -1713,12 +1727,14 @@ public class SceneManager {
 
     public void setParent(GameObject child, GameObject parent) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             setParentInternal(child, parent);
         });
     }
 
     public void removeParent(GameObject child) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             setParentInternal(child, null);
         });
     }
@@ -1805,6 +1821,7 @@ public class SceneManager {
         updateWorldTransforms();
 
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             for (GameObject go : newObjects) {
                 rebuildGameObject_internal(go);
 
@@ -1846,6 +1863,7 @@ public class SceneManager {
 
     public void loadAndAddScene(FileHandle fileHandle) {
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             if (fileHandle == null || !fileHandle.exists()) {
                 Gdx.app.error("SceneManager", "Additive scene file not found.");
                 return;
@@ -2039,6 +2057,7 @@ public class SceneManager {
         if (prefix == null || prefix.isEmpty()) return;
 
         Gdx.app.postRunnable(() -> {
+            if (engine == null || engine.isDisposed()) return;
             java.util.List<GameObject> toRemove = new java.util.ArrayList<>();
             for (java.util.Map.Entry<String, GameObject> entry : gameObjects.entrySet()) {
                 if (entry.getKey().startsWith(prefix)) {

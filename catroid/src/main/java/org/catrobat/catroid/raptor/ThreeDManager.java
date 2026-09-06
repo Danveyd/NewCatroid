@@ -207,6 +207,7 @@ public class ThreeDManager implements Disposable {
     public void resize(int width, int height) {
         this.lastScreenWidth = width;
         this.lastScreenHeight = height;
+        if (!initialized) return;
 
         camera.viewportWidth = width;
         camera.viewportHeight = height;
@@ -526,6 +527,18 @@ public class ThreeDManager implements Disposable {
         return disposed;
     }
 
+    private boolean initialized = false;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void ensureInitialized() {
+        if (!initialized && !disposed) {
+            init();
+        }
+    }
+
     public void init() {
         init(new SceneSettings());
     }
@@ -750,6 +763,8 @@ public class ThreeDManager implements Disposable {
         createDefaultParticleTexture();
 
         contactListCallback = new NameAccumulatingContactCallback();
+
+        initialized = true;
     }
 
     public void setObjectCustomShader(String objectId, String vertexCode, String fragmentCode) {
@@ -757,6 +772,7 @@ public class ThreeDManager implements Disposable {
         if (instance == null) return;
 
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             try {
                 ShaderProgram program = new ShaderProgram(vertexCode, fragmentCode);
                 if (!program.isCompiled()) {
@@ -789,6 +805,7 @@ public class ThreeDManager implements Disposable {
 
         final CustomShaderAttribute finalAttr = attr;
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             if (paramCount == 1) {
                 finalAttr.uniforms.put("u_" + name, v1);
             } else if (paramCount == 2) {
@@ -1179,6 +1196,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean handleTouchDown(int screenX, int screenY, int pointer, Stage uiStage, Stage stage2d) {
+        if (!initialized) return false;
         if (!touchRotationEnabled || activePointerId != -1) return false;
 
         float px = (rotationAreaX / 100f) * Gdx.graphics.getWidth();
@@ -1792,6 +1810,7 @@ public class ThreeDManager implements Disposable {
         com.badlogic.gdx.Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                if (disposed) return;
                 resize(com.badlogic.gdx.Gdx.graphics.getWidth(), com.badlogic.gdx.Gdx.graphics.getHeight());
             }
         });
@@ -1925,6 +1944,7 @@ public class ThreeDManager implements Disposable {
         data.sortGraphs();
 
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             Texture texture = defaultParticleTexture;
             if (data.texturePath != null && !data.texturePath.isEmpty()) {
                 Texture customTex = loadTexture(data.texturePath);
@@ -2147,6 +2167,7 @@ public class ThreeDManager implements Disposable {
 
     public void setupBufferPipeline(FrameBuffer targetFbo, int width, int height, boolean enable) {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             if (!enable) {
                 BufferPipeline pipeline = bufferPipelines.remove(targetFbo);
                 if (pipeline != null) pipeline.dispose();
@@ -2166,6 +2187,7 @@ public class ThreeDManager implements Disposable {
 
     public void removeBufferPipeline(FrameBuffer targetFbo) {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             BufferPipeline pipeline = bufferPipelines.remove(targetFbo);
             if (pipeline != null) pipeline.dispose();
         });
@@ -2567,6 +2589,7 @@ public class ThreeDManager implements Disposable {
     public void updatePostProcessing(PostProcessingComponent config) {
         this.currentConfig = config;
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             if (vfxManager == null) return;
             this.postprocessingEnabled = config.isActive;
 
@@ -3306,6 +3329,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public void update(float delta) {
+        if (!initialized) return;
         if (LOG_THREED_MANAGER_DEBUG) Log.d("TDM_DEBUG", "--- ThreeDManager.update() START (Delta: " + delta + ") ---");
         if (cameraTargetId != null) {
             updateThirdPersonCamera();
@@ -3731,6 +3755,11 @@ public class ThreeDManager implements Disposable {
     }
 
     public void setSkybox(String panoramicTexturePath) {
+        if (disposed || sceneManager == null) {
+            Gdx.app.error("Skybox", "Aborted setting skybox: ThreeDManager is disposed.");
+            return;
+        }
+
         if (!realisticMode) {
             Gdx.app.error("Skybox", "Skybox can only be enabled in realistic rendering mode.");
             return;
@@ -3787,6 +3816,8 @@ public class ThreeDManager implements Disposable {
     }
 
     private void updateProceduralIBL() {
+        if (disposed || sceneManager == null || pbrLight == null) return;
+
         if (diffuseCubemap != null) diffuseCubemap.dispose();
         if (specularCubemap != null) specularCubemap.dispose();
 
@@ -3804,6 +3835,8 @@ public class ThreeDManager implements Disposable {
 
 
     private void updateIBLFromCubemap(Cubemap sourceCubemap) {
+        if (disposed || sceneManager == null) return;
+
         if (iblBuilderCompat == null) {
             Gdx.app.error("IBL", "IBLBuilderCompat not initialized yet. Deferring IBL update.");
 
@@ -3980,6 +4013,7 @@ public class ThreeDManager implements Disposable {
     public void setDepthRender(boolean value) {isDepthRenderEnabled = value; }
 
     public void render() {
+        if (!initialized) return;
         try {
             float delta = Gdx.graphics.getDeltaTime();
 
@@ -4632,6 +4666,7 @@ public class ThreeDManager implements Disposable {
 
 
     public boolean createObject(String objectId, String modelPath) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         try {
@@ -5110,6 +5145,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean createCylinder(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
         final String CYL_MODEL_KEY = "__PRIMITIVE_CYLINDER__";
         Model cylModel = loadedModels.get(CYL_MODEL_KEY);
@@ -5151,6 +5187,7 @@ public class ThreeDManager implements Disposable {
 
 
     public boolean createSphere(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         final String SPHERE_MODEL_KEY = "__PRIMITIVE_SPHERE__";
@@ -5402,6 +5439,7 @@ public class ThreeDManager implements Disposable {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                if (disposed) return;
                 if (manager != null) {
                     GameObject go = manager.findGameObject(objectId);
                     if (go != null) {
@@ -6018,6 +6056,7 @@ public class ThreeDManager implements Disposable {
     }
 
     public boolean createCube(String objectId) {
+        ensureInitialized();
         if (sceneObjects.containsKey(objectId)) return false;
 
         final String CUBE_MODEL_KEY = "__PRIMITIVE_CUBE__";
@@ -6289,6 +6328,7 @@ public class ThreeDManager implements Disposable {
 
     public void setCustomScreenShader(String vertexCode, String fragmentCode) {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             if (vfxManager != null) {
                 if (customScreenEffect != null) {
                     vfxManager.removeEffect(customScreenEffect);
@@ -6315,6 +6355,7 @@ public class ThreeDManager implements Disposable {
 
     public void setShaderCode(String vertexCode, String fragmentCode) {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             Gdx.app.log("ShaderDebug", "--- setShaderCode CALLED ---");
             if (vertexCode == null || vertexCode.isEmpty() || fragmentCode == null || fragmentCode.isEmpty()) {
                 resetSceneShader();
@@ -6348,6 +6389,7 @@ public class ThreeDManager implements Disposable {
 
     public void resetSceneShader() {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             if (customShaderProvider != null) {
                 customShaderProvider.dispose();
                 customShaderProvider = null;
@@ -7061,6 +7103,7 @@ public class ThreeDManager implements Disposable {
             final btCollisionShape newShape = new btBvhTriangleMeshShape(vertexArray, false);
 
             Gdx.app.postRunnable(() -> {
+                if (disposed) return;
                 ModelInstance oldInstance = sceneObjects.get(objectId);
                 ModelInstance newInstance = new ModelInstance(model);
 
@@ -7116,6 +7159,7 @@ public class ThreeDManager implements Disposable {
 
     public void applyShaderToImage(final String filename, final String vertexCode, final String fragmentCode) {
         Gdx.app.postRunnable(() -> {
+            if (disposed) return;
             File file = ProjectManager.getInstance().getCurrentProject().getFile(filename);
             if (file == null || !file.exists()) {
                 Gdx.app.error("ThreeDManager", "ShaderImage Error: file not found: " + filename);

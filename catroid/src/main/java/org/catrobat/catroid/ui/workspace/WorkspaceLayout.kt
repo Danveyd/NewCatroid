@@ -722,13 +722,25 @@ class WorkspaceLayout @JvmOverloads constructor(
 
         val existingWindow = activeWindows[tag]
         if (existingWindow != null) {
-            requestFocus(tag)
-            existingWindow.bringToFront()
             val fragment = (context as? androidx.fragment.app.FragmentActivity)
                 ?.supportFragmentManager
                 ?.findFragmentByTag(tag) as? org.catrobat.catroid.ui.fragment.FormulaEditorFragment
-            fragment?.setInputFormula(formulaField, if (showCustomView) 0 else 1)
-            return
+            if (fragment != null) {
+                requestFocus(tag)
+                existingWindow.bringToFront()
+                fragment.switchToFormula(formulaBrick, formulaField, showCustomView)
+                return
+            }
+            removeWindow(tag, force = true)
+        }
+
+        val fragmentManager = (context as? androidx.fragment.app.FragmentActivity)?.supportFragmentManager
+        if (fragmentManager != null && !fragmentManager.isStateSaved) {
+            fragmentManager.executePendingTransactions()
+            val leftover = fragmentManager.findFragmentByTag(tag)
+            if (leftover != null) {
+                fragmentManager.beginTransaction().remove(leftover).commitNowAllowingStateLoss()
+            }
         }
 
         openWindow(tag, title) {

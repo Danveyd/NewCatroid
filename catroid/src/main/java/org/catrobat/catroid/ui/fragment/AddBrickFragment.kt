@@ -61,6 +61,8 @@ class AddBrickFragment : ListFragment() {
 
     private var previousVisibleListSize = 0
 
+    private var lastBuiltWithBeginnerBricksSetting: Boolean? = null
+
     private fun onlyBeginnerBricks(): Boolean = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean(AccessibilityProfile.BEGINNER_BRICKS, false)
     private val projectManager: ProjectManager by inject(ProjectManager::class.java)
 
@@ -88,6 +90,7 @@ class AddBrickFragment : ListFragment() {
         } } ?: emptyList()
 
         masterBrickList = brickList
+        lastBuiltWithBeginnerBricksSetting = onlyBeginnerBricks()
 
         for (brick in masterBrickList) {
             if (brick is org.catrobat.catroid.content.bricks.SubCategoryHeaderBrick) {
@@ -261,7 +264,9 @@ class AddBrickFragment : ListFragment() {
 
     override fun onResume() {
         super.onResume()
-        setupSelectedBrickCategory()
+        if (masterBrickList.isEmpty() || lastBuiltWithBeginnerBricksSetting != onlyBeginnerBricks()) {
+            setupSelectedBrickCategory()
+        }
         SnackbarUtil.showHintSnackbar(activity, R.string.hint_bricks)
     }
 
@@ -296,8 +301,7 @@ class AddBrickFragment : ListFragment() {
         val context = requireContext()
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_brick_context, null)
 
-        val brickView = brick.getView(context)
-        brick.disableSpinners()
+        val brickView = brick.getPrototypeView(context)
 
         val maxBrickHeight = (200 * context.resources.displayMetrics.density).toInt()
         val wrapperScrollView = object : android.widget.ScrollView(context) {

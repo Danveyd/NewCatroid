@@ -37,12 +37,10 @@ public class SetPhysicsStateBrick extends FormulaBrick {
 
     @Override
     public View getView(Context context) {
-        super.getView(context);
+        final View brickView = super.getView(context);
 
-        Spinner stateSpinner = view.findViewById(R.id.brick_set_physics_state_spinner);
-        Spinner shapeSpinner = view.findViewById(R.id.brick_set_physics_shape_spinner);
-        LinearLayout shapeLayout = view.findViewById(R.id.brick_set_physics_shape_layout);
-        LinearLayout massLayout = view.findViewById(R.id.brick_set_physics_state_mass_layout);
+        Spinner stateSpinner = brickView.findViewById(R.id.brick_set_physics_state_spinner);
+        Spinner shapeSpinner = brickView.findViewById(R.id.brick_set_physics_shape_spinner);
 
         ArrayAdapter<CharSequence> stateAdapter = ArrayAdapter.createFromResource(context, R.array.brick_physics_states, android.R.layout.simple_spinner_item);
         stateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -54,16 +52,16 @@ public class SetPhysicsStateBrick extends FormulaBrick {
 
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View selectedView, int position, long id) {
                 stateSelection = position;
-                updateVisibility();
+                updateVisibility(brickView);
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         shapeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View selectedView, int position, long id) {
                 shapeSelection = position;
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
@@ -71,15 +69,21 @@ public class SetPhysicsStateBrick extends FormulaBrick {
 
         stateSpinner.setSelection(stateSelection);
         shapeSpinner.setSelection(shapeSelection);
-        updateVisibility();
+        updateVisibility(brickView);
 
-        return view;
+        return brickView;
     }
 
-    private void updateVisibility() {
-        LinearLayout shapeLayout = view.findViewById(R.id.brick_set_physics_shape_layout);
-        LinearLayout massLayout = view.findViewById(R.id.brick_set_physics_state_mass_layout);
+    private void updateVisibility(View root) {
+        if (root == null) {
+            return;
+        }
+        LinearLayout shapeLayout = root.findViewById(R.id.brick_set_physics_shape_layout);
+        LinearLayout massLayout = root.findViewById(R.id.brick_set_physics_state_mass_layout);
 
+        if (shapeLayout == null || massLayout == null) {
+            return;
+        }
         shapeLayout.setVisibility(stateSelection == 1 || stateSelection == 2 ? View.VISIBLE : View.GONE);
         massLayout.setVisibility(stateSelection == 2 ? View.VISIBLE : View.GONE);
     }

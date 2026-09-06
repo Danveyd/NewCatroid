@@ -193,6 +193,9 @@ public interface Brick extends Serializable, Cloneable {
 
 	View getPrototypeView(Context context);
 
+	default void invalidateCachedView() {
+	}
+
 	CheckBox getCheckBox();
 
 	void disableSpinners();

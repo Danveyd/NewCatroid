@@ -27,6 +27,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
@@ -37,6 +38,7 @@ import org.catrobat.catroid.content.UserDefinedScript;
 import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 import org.catrobat.catroid.content.bricks.brickspinner.BrickSpinner;
 import org.catrobat.catroid.content.bricks.brickspinner.StringOption;
+import org.catrobat.catroid.userbrick.UserDefinedBrickData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,7 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 	private UserDefinedScript userDefinedScript;
 	private LinearLayout userBrickSpace;
 	private Brick userDefinedBrick;
+	private transient String lastEmbeddedBrickState;
 
 	public int spinnerSelection;
 
@@ -81,6 +84,33 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 	}
 
 	@Override
+	public void invalidateCachedView() {
+		super.invalidateCachedView();
+		userBrickSpace = null;
+		lastEmbeddedBrickState = null;
+		if (userDefinedBrick != null) {
+			userDefinedBrick.invalidateCachedView();
+		}
+	}
+
+	@Override
+	protected DetachedViewState beginDetachedView() {
+		DetachedViewState state = super.beginDetachedView();
+		state.extra = new Object[] {userBrickSpace, lastEmbeddedBrickState};
+		userBrickSpace = null;
+		lastEmbeddedBrickState = null;
+		return state;
+	}
+
+	@Override
+	protected void endDetachedView(DetachedViewState state) {
+		Object[] saved = (Object[]) state.extra;
+		userBrickSpace = (LinearLayout) saved[0];
+		lastEmbeddedBrickState = (String) saved[1];
+		super.endDetachedView(state);
+	}
+
+	@Override
 	public Brick clone() throws CloneNotSupportedException {
 		UserDefinedReceiverBrick clone = (UserDefinedReceiverBrick) super.clone();
 		clone.userDefinedScript = (UserDefinedScript) userDefinedScript.clone();
@@ -100,10 +130,27 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 			userDefinedBrick = currentSprite.getUserDefinedBrickByID(userDefinedScript.getUserDefinedBrickID());
 		}
 		if (userDefinedBrick != null) {
-			userBrickSpace.addView(userDefinedBrick.getView(context));
+			String embeddedBrickState = describeUserDefinedBrick(userDefinedBrick);
+			if (userBrickSpace.getChildCount() == 0
+					|| !embeddedBrickState.equals(lastEmbeddedBrickState)) {
+				userBrickSpace.removeAllViews();
+				userBrickSpace.addView(userDefinedBrick.getPrototypeView(context));
+				lastEmbeddedBrickState = embeddedBrickState;
+			}
 		}
 		setUpSpinner(context);
 		return view;
+	}
+
+	private static String describeUserDefinedBrick(Brick brick) {
+		if (!(brick instanceof UserDefinedBrick)) {
+			return String.valueOf(brick);
+		}
+		StringBuilder description = new StringBuilder();
+		for (UserDefinedBrickData userData : ((UserDefinedBrick) brick).getUserDefinedBrickDataList()) {
+			description.append(userData.getType()).append(':').append(userData.getName()).append('\n');
+		}
+		return description.toString();
 	}
 
 	private void setUpSpinner(Context context) {
@@ -144,7 +191,10 @@ public class UserDefinedReceiverBrick extends ScriptBrickBaseType implements Bri
 
 	@Override
 	public void onStringOptionSelected(Integer spinnerId, String string) {
-		Context context = view.getContext();
+		Context context = view != null ? view.getContext() : CatroidApplication.getAppContext();
+		if (context == null) {
+			return;
+		}
 
 		if (string.equals(context.getString(R.string.brick_user_defined_with_screen_refreshing))) {
 			spinnerSelection = BrickValues.USER_DEFINED_BRICK_WITH_SCREEN_REFRESH;

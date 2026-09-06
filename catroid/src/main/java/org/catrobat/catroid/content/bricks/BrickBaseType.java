@@ -31,11 +31,14 @@ import android.widget.Spinner;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.bricks.brickspinner.BrickSpinner;
 import org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import androidx.annotation.CallSuper;
@@ -49,6 +52,9 @@ public abstract class BrickBaseType implements Brick {
 
 	public transient View view;
 	private transient CheckBox checkbox;
+	private transient Map<Integer, BrickSpinner<?>> attachedSpinners;
+
+	private transient boolean buildingDetachedView;
 
 	protected transient Brick parent;
 
@@ -105,6 +111,10 @@ public abstract class BrickBaseType implements Brick {
 	@CallSuper
 	@Override
 	public View getView(Context context) {
+		View cachedView = view;
+		if (cachedView != null && cachedView.getContext() == context) {
+			return cachedView;
+		}
 		view = LayoutInflater.from(context).inflate(getViewResource(), null, false);
 		checkbox = view.findViewById(R.id.brick_checkbox);
 		return view;
@@ -112,9 +122,61 @@ public abstract class BrickBaseType implements Brick {
 
 	@Override
 	public View getPrototypeView(Context context) {
-		View view = getView(context);
-		disableSpinners(view);
-		return view;
+		DetachedViewState state = beginDetachedView();
+		try {
+			View freshView = getView(context);
+			disableSpinners(freshView);
+			removeSpinnerListeners(freshView);
+			return freshView;
+		} finally {
+			endDetachedView(state);
+		}
+	}
+
+	public static class DetachedViewState {
+		private View view;
+		private CheckBox checkbox;
+		protected Object extra;
+	}
+
+	@CallSuper
+	protected DetachedViewState beginDetachedView() {
+		DetachedViewState state = new DetachedViewState();
+		state.view = this.view;
+		state.checkbox = this.checkbox;
+		this.view = null;
+		this.checkbox = null;
+		this.buildingDetachedView = true;
+		return state;
+	}
+
+	@CallSuper
+	protected void endDetachedView(DetachedViewState state) {
+		this.view = state.view;
+		this.checkbox = state.checkbox;
+		this.buildingDetachedView = false;
+	}
+
+	public void attachSpinner(Integer spinnerId, BrickSpinner<?> spinner) {
+		if (buildingDetachedView) {
+			return;
+		}
+		if (attachedSpinners == null) {
+			attachedSpinners = new HashMap<>();
+		}
+		attachedSpinners.put(spinnerId, spinner);
+	}
+
+	@Override
+	public void invalidateCachedView() {
+		this.view = null;
+		this.checkbox = null;
+		if (attachedSpinners != null) {
+			for (BrickSpinner<?> attachedSpinner : attachedSpinners.values()) {
+				attachedSpinner.release();
+			}
+			attachedSpinners.clear();
+		}
 	}
 
 	public void disableSpinners() {
@@ -131,6 +193,18 @@ public abstract class BrickBaseType implements Brick {
 			ViewGroup parent = (ViewGroup) view;
 			for (int i = 0; i < parent.getChildCount(); i++) {
 				disableSpinners(parent.getChildAt(i));
+			}
+		}
+	}
+
+	private void removeSpinnerListeners(View view) {
+		if (view instanceof Spinner) {
+			((Spinner) view).setOnItemSelectedListener(null);
+		}
+		if (view instanceof ViewGroup) {
+			ViewGroup parent = (ViewGroup) view;
+			for (int i = 0; i < parent.getChildCount(); i++) {
+				removeSpinnerListeners(parent.getChildAt(i));
 			}
 		}
 	}

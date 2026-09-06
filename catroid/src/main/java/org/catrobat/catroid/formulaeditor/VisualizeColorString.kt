@@ -29,18 +29,27 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.text.style.ImageSpan
+import android.util.LruCache
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 
 private const val COLOR_SQUARE_PADDING_LEFT = 4
 private const val COLOR_SQUARE_PADDING_TOP = 0
 private const val COLOR_SQUARE_ROUNDED_CORNER_DIVIDER = 4
+private const val SWATCH_CACHE_SIZE = 64
 
 class VisualizeColorString(
     context: Context,
     colorString: String,
     bitmapSize: Float
 ) {
+
+    companion object {
+        private val swatchCache = LruCache<Long, Bitmap>(SWATCH_CACHE_SIZE)
+
+        private fun swatchKey(colorValue: Int, size: Int): Long =
+            (colorValue.toLong() shl 32) or (size.toLong() and 0xFFFFFFFFL)
+    }
 
     var drawable: RoundedBitmapDrawable
     var imageSpan: VisualizeColorImageSpan
@@ -50,16 +59,21 @@ class VisualizeColorString(
         colorValue = getColorValueFromColorString(colorString)
 
         val size = bitmapSize.toInt().coerceAtLeast(16)
-        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
+        val key = swatchKey(colorValue, size)
+        var bitmap = swatchCache.get(key)
+        if (bitmap == null) {
+            bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
 
-        drawCheckerboard(canvas, size)
+            drawCheckerboard(canvas, size)
 
-        val colorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = colorValue
-            style = Paint.Style.FILL
+            val colorPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = colorValue
+                style = Paint.Style.FILL
+            }
+            canvas.drawRect(0f, 0f, size.toFloat(), size.toFloat(), colorPaint)
+            swatchCache.put(key, bitmap)
         }
-        canvas.drawRect(0f, 0f, size.toFloat(), size.toFloat(), colorPaint)
 
         drawable = RoundedBitmapDrawableFactory.create(context.resources, bitmap)
         drawable.cornerRadius = bitmapSize / COLOR_SQUARE_ROUNDED_CORNER_DIVIDER

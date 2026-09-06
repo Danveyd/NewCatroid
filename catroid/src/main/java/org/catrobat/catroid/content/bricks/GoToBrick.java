@@ -26,6 +26,7 @@ package org.catrobat.catroid.content.bricks;
 import android.content.Context;
 import android.view.View;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
@@ -94,7 +95,10 @@ public class GoToBrick extends BrickBaseType implements BrickSpinner.OnItemSelec
 
 	@Override
 	public void onStringOptionSelected(Integer spinnerId, String string) {
-		Context context = view.getContext();
+		Context context = view != null ? view.getContext() : CatroidApplication.getAppContext();
+		if (context == null) {
+			return;
+		}
 
 		if (string.equals(context.getString(R.string.brick_go_to_touch_position))) {
 			spinnerSelection = BrickValues.GO_TO_TOUCH_POSITION;

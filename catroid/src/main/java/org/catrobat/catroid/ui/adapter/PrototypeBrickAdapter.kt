@@ -12,6 +12,7 @@ class PrototypeBrickAdapter(private var brickList: List<Brick>) : BaseAdapter() 
 
     private val viewCache = HashMap<Int, View>()
     private val itemsToAnimate = HashMap<Brick, Long>()
+    private var boundListView: ViewGroup? = null
 
     var isScrolling: Boolean = false
         set(value) {
@@ -40,6 +41,11 @@ class PrototypeBrickAdapter(private var brickList: List<Brick>) : BaseAdapter() 
     override fun hasStableIds(): Boolean = true
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
+        if (parent != null && parent !== boundListView) {
+            viewCache.clear()
+            boundListView = parent
+        }
+
         val brick = brickList[position]
         val cacheKey = brick.hashCode()
 
@@ -146,6 +152,7 @@ class PrototypeBrickAdapter(private var brickList: List<Brick>) : BaseAdapter() 
     fun clearCache() {
         viewCache.clear()
         itemsToAnimate.clear()
+        boundListView = null
     }
 
     private fun getBrickDepth(position: Int): Int {

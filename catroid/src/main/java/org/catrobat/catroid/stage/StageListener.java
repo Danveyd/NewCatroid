@@ -181,7 +181,16 @@ public class StageListener implements ApplicationListener {
 	private boolean paused = true;
 	private boolean finished = false;
 	private boolean reloadProject = false;
+	private volatile Thread collisionWarmThread;
 	public boolean firstFrameDrawn = false;
+
+	private static final int MAX_SKIPPED_FRAMES_AFTER_SCENE_START = 4;
+	private boolean drawSuppressedAfterSceneStart = false;
+	private int framesSkippedAfterSceneStart = 0;
+
+	private String pendingSceneName = null;
+	private boolean pendingSceneStopSounds = true;
+	private boolean pendingSceneSave = true;
 
 	private boolean makeScreenshot = false;
 	private int screenshotWidth;
@@ -278,6 +287,9 @@ public class StageListener implements ApplicationListener {
 
 
 	public ThreeDManager getThreeDManager() {
+		if (threeDManager != null) {
+			threeDManager.ensureInitialized();
+		}
 		return threeDManager;
 	}
 
@@ -326,6 +338,8 @@ public class StageListener implements ApplicationListener {
 
     public void create() {
         isFirstResize = true;
+        drawSuppressedAfterSceneStart = true;
+        framesSkippedAfterSceneStart = 0;
         org.catrobat.catroid.utils.ActionThreadRegistry.clear();
 
         deltaActionTimeDivisor = 10f;
@@ -372,7 +386,6 @@ public class StageListener implements ApplicationListener {
 		scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
 
 		threeDManager = new ThreeDManager();
-		threeDManager.init();
 
         MLBridge.nativeResetEngine();
 
@@ -404,21 +417,29 @@ public class StageListener implements ApplicationListener {
 
 		RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		Gdx.app.log("CacheWarming", "Starting asset pre-loading...");
-		for (Sprite sprite : sprites) {
-
-			if (sprite.getLookList() != null) {
-				for (LookData lookData : sprite.getLookList()) {
-					if (lookData != null) {
-
-						lookData.getCollisionInformation().loadCollisionPolygon();
+		final List<Sprite> spritesToWarm = new ArrayList<>(sprites);
+		stopCollisionCacheWarming();
+		Thread collisionWarmThread = new Thread(() -> {
+			for (Sprite sprite : spritesToWarm) {
+				if (Thread.currentThread().isInterrupted()) {
+					return;
+				}
+				if (sprite.getLookList() != null) {
+					for (LookData lookData : sprite.getLookList()) {
+						if (Thread.currentThread().isInterrupted()) {
+							return;
+						}
+						if (lookData != null) {
+							lookData.getCollisionInformation().loadCollisionPolygon();
+						}
 					}
 				}
 			}
-
-
-		}
-		Gdx.app.log("CacheWarming", "Pre-loading finished.");
+		}, "CollisionCacheWarming");
+		this.collisionWarmThread = collisionWarmThread;
+		collisionWarmThread.setPriority(Thread.MIN_PRIORITY);
+		collisionWarmThread.setDaemon(true);
+		collisionWarmThread.start();
 
 		passepartout = new Passepartout(
 				ScreenValues.currentScreenResolution.getWidth(),
@@ -523,6 +544,7 @@ public class StageListener implements ApplicationListener {
 
     public void backgroundTick(float delta) {
         processPendingNotificationActions();
+        processPendingSceneStart();
 
         if (paused && isBackgroundModeEnabled && !finished) {
             try {
@@ -1223,6 +1245,27 @@ public class StageListener implements ApplicationListener {
 		create();
 	}
 
+	public void requestStartScene(String sceneName, Boolean stopSound, Boolean save) {
+		pendingSceneName = sceneName;
+		pendingSceneStopSounds = stopSound == null || stopSound;
+		pendingSceneSave = save == null || save;
+	}
+
+	private void processPendingSceneStart() {
+		if (pendingSceneName == null) {
+			return;
+		}
+		String sceneName = pendingSceneName;
+		boolean stopSound = pendingSceneStopSounds;
+		boolean save = pendingSceneSave;
+		pendingSceneName = null;
+		try {
+			startScene(sceneName, stopSound, save);
+		} catch (Exception e) {
+			Log.e("StageListener", "Failed to start scene " + sceneName, e);
+		}
+	}
+
 	public void startScene(String sceneName, Boolean stopSound, Boolean save) {
 
 		Scene newScene = ProjectManager.getInstance().getCurrentProject().getSceneByName(sceneName);
@@ -1396,7 +1439,6 @@ public class StageListener implements ApplicationListener {
 		try {
 			RenderManager.INSTANCE.initialize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			threeDManager = new ThreeDManager();
-			threeDManager.init();
 			sceneManager = new SceneManager(threeDManager);
 		} catch (Exception e) {
 			Log.e("StageListener", "INITIALIZE ERROR: " + e);
@@ -1563,6 +1605,8 @@ public class StageListener implements ApplicationListener {
         long frameLogicTime = 0;
         long endLogic = 0;
 		try {
+			processPendingSceneStart();
+
 			Look.tickGlobalFrame();
 
             org.catrobat.catroid.common.NativeViewBindingManager.updateBindings(camera, viewPort);
@@ -1599,7 +1643,6 @@ public class StageListener implements ApplicationListener {
                 if (sceneManager != null) sceneManager.clearScene();
 
 				threeDManager = new ThreeDManager();
-				threeDManager.init();
 				sceneManager = new SceneManager(threeDManager);
 
 				stage.clear();
@@ -1699,7 +1742,7 @@ public class StageListener implements ApplicationListener {
 				batch.end();
 				batch.setShader(null);
             }
-            if (!finished) {
+            if (!finished && !drawSuppressedAfterSceneStart) {
                 try {
                     if (!paused) {
                         if (threeDManager != null) {
@@ -1731,6 +1774,13 @@ public class StageListener implements ApplicationListener {
                     Log.e("RENDER", "FATAL ERROR: " + e);
                 }
                 firstFrameDrawn = true;
+            }
+
+            if (drawSuppressedAfterSceneStart) {
+                framesSkippedAfterSceneStart++;
+                if (!paused || framesSkippedAfterSceneStart >= MAX_SKIPPED_FRAMES_AFTER_SCENE_START) {
+                    drawSuppressedAfterSceneStart = false;
+                }
             }
 
             if (makeScreenshot) {
@@ -2059,8 +2109,18 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
+	private void stopCollisionCacheWarming() {
+		Thread runningWarmThread = collisionWarmThread;
+		if (runningWarmThread != null) {
+			runningWarmThread.interrupt();
+			collisionWarmThread = null;
+		}
+	}
+
 	@Override
 	public void dispose() {
+		stopCollisionCacheWarming();
+
         if (isBackgroundModeEnabled) {
             isBackgroundModeEnabled = false;
             Context context = CatroidApplication.getAppContext();

@@ -34,15 +34,18 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ListAdapter
 import android.widget.ListView
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.OneShotPreDrawListener
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.content.bricks.Brick
 import org.catrobat.catroid.content.bricks.CompositeBrick
 import org.catrobat.catroid.content.bricks.EndBrick
 import org.catrobat.catroid.ui.settingsfragments.SettingsFragment
 import java.util.ArrayList
+import kotlin.math.abs
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.withTranslation
@@ -50,12 +53,12 @@ import androidx.core.graphics.withTranslation
 private const val SMOOTH_SCROLL_BY = 15
 private const val SMOOTH_SCROLL_BY_NEW = 20
 private const val ANIMATION_DURATION = 250
+private const val SWAP_ANIMATION_DURATION = 150
 private const val TRANSLUCENT_BLACK_ALPHA = 128
 private const val OBJECT_ANIMATOR_VALUE = 255
 private const val ANIMATION_REPEAT_COUNT = 5
-private const val UPPER_SCROLL_BOUND_DIVISOR = 8
-private const val LOWER_SCROLL_BOUND_DIVISOR = 48
-private const val Y_TRANSLATION_CONSTANT = 10
+private const val MINIMUM_ANIMATED_OFFSET = 1f
+private const val MINIMUM_ROWS_FOR_SCROLL_ESTIMATE = 4
 
 enum class DragMode {
     NEW,
@@ -73,6 +76,9 @@ class BrickListView : ListView {
     private var downY = 0f
     private var offsetToCenter = 0
     private var invalidateHoveringItem = false
+    private val runningSwapAnimators = HashMap<View, ObjectAnimator>()
+    private val itemPositionsBeforeSwap = HashMap<Any, Float>()
+    private val swapInterpolator = DecelerateInterpolator()
     private var brickAdapterInterface: BrickAdapterInterface? = null
     private val translucentBlack = Color.argb(TRANSLUCENT_BLACK_ALPHA, 0, 0, 0)
     var dragMode: DragMode = DragMode.NEW
@@ -114,10 +120,10 @@ class BrickListView : ListView {
     }
 
     fun startMoving(brickToMove: Brick?) {
-        dragMode = if(SettingsFragment.isOldDragEnabled(CatroidApplication.getAppContext())) {
-            DragMode.NEW
-        } else {
+        dragMode = if (SettingsFragment.isOldDragEnabled(CatroidApplication.getAppContext())) {
             DragMode.LEGACY
+        } else {
+            DragMode.NEW
         }
         cancelMove()
         val flatList: MutableList<Brick> = ArrayList()
@@ -132,16 +138,8 @@ class BrickListView : ListView {
             flatList.removeAt(0)
         }
 
-        when (dragMode) {
-            DragMode.NEW -> {
-                upperScrollBound = height / 4
-                lowerScrollBound = height * 3 / 4
-            }
-            DragMode.LEGACY -> {
-                upperScrollBound = height / UPPER_SCROLL_BOUND_DIVISOR
-                lowerScrollBound = height / LOWER_SCROLL_BOUND_DIVISOR
-            }
-        }
+        upperScrollBound = height / 4
+        lowerScrollBound = height * 3 / 4
         currentPositionOfHoveringBrick = brickAdapterInterface!!.getPosition(this.brickToMove)
         invalidateHoveringItem = true
 
@@ -163,6 +161,7 @@ class BrickListView : ListView {
         brickToMove = null
         hoveringDrawable = null
         motionEventId = -1
+        finishRunningSwapAnimations()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -254,70 +253,168 @@ class BrickListView : ListView {
         val itemBelow: View? = if (isPositionValid(itemPositionBelow)) getChildAtVisiblePosition(itemPositionBelow) else null
         val itemAbove: View? = if (isPositionValid(itemPositionAbove)) getChildAtVisiblePosition(itemPositionAbove) else null
 
-        val isAbove = itemBelow != null && downY > itemBelow.y
-        val isBelow = itemAbove != null && downY < itemAbove.y
+        val hoverCenter = downY + viewBounds.height() / 2f
+        val isAbove = itemBelow != null &&
+            hoverCenter > itemBelow.top + itemBelow.translationY + itemBelow.height / 2f
+        val isBelow = itemAbove != null &&
+            hoverCenter < itemAbove.top + itemAbove.translationY + itemAbove.height / 2f
 
         if (isAbove || isBelow) {
             val swapWith = if (isAbove) itemPositionBelow else itemPositionAbove
-            val translationY = if (isAbove) Y_TRANSLATION_CONSTANT - viewBounds.height() else viewBounds.height() - Y_TRANSLATION_CONSTANT
 
+            snapshotVisibleItemPositions()
             if (brickAdapterInterface?.onItemMove(currentPositionOfHoveringBrick, swapWith) == true) {
                 brickAdapterInterface?.setItemVisible(currentPositionOfHoveringBrick, true)
                 currentPositionOfHoveringBrick = swapWith
                 brickAdapterInterface?.setItemVisible(currentPositionOfHoveringBrick, false)
 
-                val viewToSwapWith = if (isAbove) itemBelow else itemAbove
-                startAnimationToSwap(viewToSwapWith, translationY)
+                invalidateViews()
+                animateItemsToTheirNewPositions()
+            } else {
+                itemPositionsBeforeSwap.clear()
             }
         }
     }
 
-    private fun startAnimationToSwap(viewToSwapWith: View?, translationY: Int) {
-        val animator = ObjectAnimator.ofFloat(viewToSwapWith, TRANSLATION_Y, translationY.toFloat())
-        animator.duration = ANIMATION_DURATION.toLong()
-        animator.start()
+    private fun snapshotVisibleItemPositions() {
+        itemPositionsBeforeSwap.clear()
+        val listAdapter = adapter ?: return
+        for (childIndex in 0 until childCount) {
+            val position = firstVisiblePosition + childIndex
+            if (position < 0 || position >= listAdapter.count) {
+                continue
+            }
+            val child = getChildAt(childIndex) ?: continue
+            val item = listAdapter.getItem(position) ?: continue
+            itemPositionsBeforeSwap[item] = child.top + child.translationY
+        }
+    }
 
+    private fun animateItemsToTheirNewPositions() {
+        if (itemPositionsBeforeSwap.isEmpty()) {
+            return
+        }
+        OneShotPreDrawListener.add(this) {
+            val listAdapter = adapter
+            if (listAdapter != null) {
+                val movedChildren = ArrayList<View>()
+                val offsets = ArrayList<Float>()
+                for (childIndex in 0 until childCount) {
+                    val position = firstVisiblePosition + childIndex
+                    if (position < 0 || position >= listAdapter.count) {
+                        continue
+                    }
+                    val child = getChildAt(childIndex) ?: continue
+                    val item = listAdapter.getItem(position) ?: continue
+                    val positionBeforeSwap = itemPositionsBeforeSwap[item] ?: continue
+                    movedChildren.add(child)
+                    offsets.add(positionBeforeSwap - child.top)
+                }
+
+                val scrollShift = estimateCommonOffset(offsets)
+                for (index in movedChildren.indices) {
+                    val offset = offsets[index] - scrollShift
+                    if (abs(offset) >= MINIMUM_ANIMATED_OFFSET) {
+                        animateChildFromOffset(movedChildren[index], offset)
+                    }
+                }
+            }
+            itemPositionsBeforeSwap.clear()
+        }
+    }
+
+    private fun estimateCommonOffset(offsets: List<Float>): Float {
+        if (offsets.size < MINIMUM_ROWS_FOR_SCROLL_ESTIMATE) {
+            return 0f
+        }
+        var commonOffset = 0f
+        var bestCount = 0
+        for (candidate in offsets) {
+            val count = offsets.count { abs(it - candidate) < MINIMUM_ANIMATED_OFFSET }
+            if (count > bestCount || (count == bestCount && abs(candidate) < abs(commonOffset))) {
+                commonOffset = candidate
+                bestCount = count
+            }
+        }
+        return if (bestCount > 2) commonOffset else 0f
+    }
+
+    private fun animateChildFromOffset(child: View, offset: Float) {
+        stopSwapAnimation(child)
+
+        child.translationY = offset
+        child.setHasTransientState(true)
+
+        val animator = ObjectAnimator.ofFloat(child, TRANSLATION_Y, 0f)
+        animator.duration = SWAP_ANIMATION_DURATION.toLong()
+        animator.interpolator = swapInterpolator
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) = Unit
             override fun onAnimationEnd(animation: Animator) {
-                invalidateViews()
+                if (runningSwapAnimators[child] === animation) {
+                    runningSwapAnimators.remove(child)
+                }
+                child.translationY = 0f
+                child.setHasTransientState(false)
             }
 
             override fun onAnimationCancel(animation: Animator) = Unit
             override fun onAnimationRepeat(animation: Animator) = Unit
         })
+        runningSwapAnimators[child] = animator
+        animator.start()
+    }
+
+    private fun stopSwapAnimation(child: View) {
+        runningSwapAnimators.remove(child)?.let { animator ->
+            animator.cancel()
+            child.translationY = 0f
+            child.setHasTransientState(false)
+        }
+    }
+
+    private fun finishRunningSwapAnimations() {
+        if (runningSwapAnimators.isEmpty()) {
+            itemPositionsBeforeSwap.clear()
+            return
+        }
+        for (child in ArrayList(runningSwapAnimators.keys)) {
+            stopSwapAnimation(child)
+        }
+        runningSwapAnimators.clear()
+        itemPositionsBeforeSwap.clear()
+    }
+
+    override fun onDetachedFromWindow() {
+        finishRunningSwapAnimations()
+        super.onDetachedFromWindow()
     }
 
     private fun scrollWhileDragging() {
         val scrollSpeed: Int
 
-        dragMode = if(SettingsFragment.isOldDragEnabled(CatroidApplication.getAppContext())) {
-            DragMode.NEW
-        } else {
-            DragMode.LEGACY
-        }
+        val referenceY = downY + viewBounds.height() / 2f
 
         when (dragMode) {
             DragMode.NEW -> {
                 val scrollZoneSize = height / 5
 
-                if (downY < upperScrollBound) {
-                    val distance = (upperScrollBound - downY) / scrollZoneSize
+                if (referenceY < upperScrollBound) {
+                    val distance = (upperScrollBound - referenceY) / scrollZoneSize
                     scrollSpeed = (-SMOOTH_SCROLL_BY_NEW * distance).toInt()
-                } else if (downY > lowerScrollBound) {
-                    val distance = (downY - lowerScrollBound) / scrollZoneSize
+                } else if (referenceY > lowerScrollBound) {
+                    val distance = (referenceY - lowerScrollBound) / scrollZoneSize
                     scrollSpeed = (SMOOTH_SCROLL_BY_NEW * distance).toInt()
                 } else {
                     scrollSpeed = 0
                 }
             }
             DragMode.LEGACY -> {
-                if (downY > lowerScrollBound) {
-                    smoothScrollBy(SMOOTH_SCROLL_BY, 0)
-                } else if (downY < upperScrollBound) {
-                    smoothScrollBy(-SMOOTH_SCROLL_BY, 0)
+                scrollSpeed = when {
+                    referenceY > lowerScrollBound -> SMOOTH_SCROLL_BY
+                    referenceY < upperScrollBound -> -SMOOTH_SCROLL_BY
+                    else -> 0
                 }
-                scrollSpeed = 0
             }
         }
 
