@@ -109,6 +109,7 @@ public class ParticleEditorActivity extends AppCompatActivity implements Android
             config.useGL30 = false;
             config.useAccelerometer = false;
             config.useCompass = false;
+            config.maxSimultaneousSounds = 32;
 
             return initializeForView(listener, config);
         }

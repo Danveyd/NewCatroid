@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        style="@style/InspectorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/editor_3d_audio_clip" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_audio_path"
+            style="@style/InspectorEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            android:text="@string/editor_3d_audio_no_clip" />
+
+        <Button
+            android:id="@+id/btn_select_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="6dp"
+            android:backgroundTint="@color/button_background"
+            android:text="@string/editor_3d_audio_select"
+            android:textColor="@color/solid_white" />
+
+        <ImageButton
+            android:id="@+id/btn_clear_audio"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_audio_preview_play"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/button_background"
+            android:text="@string/editor_3d_audio_preview_play"
+            android:textColor="@color/solid_white" />
+
+        <Button
+            android:id="@+id/btn_audio_preview_stop"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/button_background"
+            android:text="@string/editor_3d_audio_preview_stop"
+            android:textColor="@color/solid_white" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/check_audio_play_on_awake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/editor_3d_audio_play_on_awake"
+        android:textColor="@color/solid_white" />
+
+    <CheckBox
+        android:id="@+id/check_audio_loop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/editor_3d_audio_loop"
+        android:textColor="@color/solid_white" />
+
+    <CheckBox
+        android:id="@+id/check_audio_is_3d"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/editor_3d_audio_is_3d"
+        android:textColor="@color/solid_white" />
+
+    <CheckBox
+        android:id="@+id/check_audio_is_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/editor_3d_audio_is_music"
+        android:textColor="@color/solid_white" />
+
+    <TextView
+        style="@style/InspectorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/editor_3d_audio_delay" />
+    <EditText
+        android:id="@+id/edit_audio_delay"
+        style="@style/InspectorEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        style="@style/InspectorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/editor_3d_audio_volume" />
+    <EditText
+        android:id="@+id/edit_audio_volume"
+        style="@style/InspectorEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        style="@style/InspectorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/editor_3d_audio_pitch" />
+    <EditText
+        android:id="@+id/edit_audio_pitch"
+        style="@style/InspectorEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:inputType="numberDecimal" />
+
+    <LinearLayout
+        android:id="@+id/layout_audio_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/InspectorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/editor_3d_audio_range" />
+        <EditText
+            android:id="@+id/edit_audio_distance"
+            style="@style/InspectorEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+</LinearLayout>

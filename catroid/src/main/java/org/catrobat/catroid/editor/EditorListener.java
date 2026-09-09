@@ -28,6 +28,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 
+import org.catrobat.catroid.raptor.AudioComponent;
 import org.catrobat.catroid.raptor.CameraComponent;
 import org.catrobat.catroid.raptor.ColliderShapeData;
 import org.catrobat.catroid.raptor.GameObject;
@@ -165,7 +166,13 @@ public class EditorListener extends ApplicationAdapter {
 
     public void onCameraMove(float vx, float vy, float vz) {
         if (cameraController != null) {
-            cameraController.velocity.add(vx, vy, vz);
+            cameraController.onCameraMove(vx, vy, vz);
+        }
+    }
+
+    public void onCameraAccelerate(boolean active) {
+        if (cameraController != null) {
+            cameraController.onCameraAccelerate(active);
         }
     }
 
@@ -285,13 +292,6 @@ public class EditorListener extends ApplicationAdapter {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
-    public void onCameraAccelerate(boolean accelerate) {
-        if (cameraController != null) {
-            cameraController.isAccelerating = accelerate;
-        }
-    }
-
-
     private void selectObjectAt(int screenX, int screenY) {
         Ray pickRay = threeDManager.getCamera().getPickRay(screenX, screenY);
         GameObject selectedObject = sceneManager.getObjectByRaycast(pickRay);
@@ -359,6 +359,16 @@ public class EditorListener extends ApplicationAdapter {
         }
 
         GameObject selectedObject = gizmo.getSelectedObject();
+
+        if (selectedObject != null && selectedObject.hasComponent(AudioComponent.class)) {
+            AudioComponent audio = selectedObject.getComponent(AudioComponent.class);
+            if (audio.is3D) {
+                Vector3 pos = selectedObject.transform.worldTransform.getTranslation(new Vector3());
+                threeDManager.getWireframeBatch().begin(threeDManager.getCamera());
+                threeDManager.renderSoundRadius(pos, audio.maxDistance, Color.ORANGE);
+                threeDManager.getWireframeBatch().end();
+            }
+        }
 
         if (showColliders && selectedObject != null) {
             PhysicsComponent physics = selectedObject.getComponent(PhysicsComponent.class);

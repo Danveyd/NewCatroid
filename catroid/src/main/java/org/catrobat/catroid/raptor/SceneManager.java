@@ -43,7 +43,7 @@ public class SceneManager {
 
     private final Queue<GameObject> loadingQueue = new LinkedList<>();
 
-    private static final long MAX_LOADING_TIME_PER_FRAME_MS = 8;
+    private static final long MAX_LOADING_TIME_PER_FRAME_MS = 1;
 
     public final ThreeDManager engine;
     private final Map<String, GameObject> gameObjects = new ConcurrentHashMap<>();
@@ -132,6 +132,7 @@ public class SceneManager {
         json.addClassTag("ShapeModule", ParticleSystem3DComponent.ShapeModule.class);
         json.addClassTag("CollisionPlane", ParticleSystem3DComponent.CollisionPlane.class);
         json.addClassTag("SubEmitterEntry", ParticleSystem3DComponent.SubEmitterEntry.class);
+        json.addClassTag("AudioComponent", AudioComponent.class);
     }
 
     private void synchronizeTransformsFromEngine() {
@@ -177,6 +178,7 @@ public class SceneManager {
         if (!isEditorMode) {
             updateKeyframeAnimations(delta);
             synchronizeTransformsFromEngine();
+            updateAudioComponents(delta);
         }
 
         if (!cameraAttachments.isEmpty()) {
@@ -252,6 +254,44 @@ public class SceneManager {
                 Log.e("SceneManager", "ОШИБКА ПРИВЯЗКИ: Кость '" + att.boneName + "' не найдена в модели!");
             }
         }
+    }
+
+    private void updateAudioComponents(float delta) {
+        for (GameObject go : gameObjects.values()) {
+            if (!isObjectActiveInHierarchy(go)) continue;
+
+            AudioComponent audio = go.getComponent(AudioComponent.class);
+            if (audio == null || audio.soundFileName == null || audio.soundFileName.isEmpty()) continue;
+
+            if (audio.playOnAwake && !audio.hasStarted) {
+                audio.delayTimer += delta;
+                if (audio.delayTimer >= audio.startDelay) {
+                    playAudioComponentSound(go, audio);
+                    audio.hasStarted = true;
+                }
+            }
+        }
+    }
+
+    public void playAudioComponentSound(GameObject go, AudioComponent audio) {
+        if (audio.soundFileName == null || audio.soundFileName.isEmpty()) return;
+
+        engine.prepareAudio(audio.soundFileName, audio.soundFileName, audio.isMusic);
+
+        engine.playSoundAttached(
+                go.id,
+                audio.soundFileName,
+                go.id,
+                audio.volume,
+                audio.pitch,
+                audio.loop,
+                audio.is3D,
+                audio.maxDistance
+        );
+    }
+
+    public void stopAudioComponentSound(GameObject go) {
+        engine.stopSound(go.id);
     }
 
     private final Vector3 tmpKeyframePos = new Vector3();
@@ -357,18 +397,14 @@ public class SceneManager {
 
         long startTime = System.currentTimeMillis();
 
-
         while (!loadingQueue.isEmpty()) {
-
             if (System.currentTimeMillis() - startTime > MAX_LOADING_TIME_PER_FRAME_MS) {
                 break;
             }
 
             GameObject go = loadingQueue.poll();
             if (go != null) {
-
                 gameObjects.put(go.id, go);
-
                 rebuildGameObject_internal(go);
             }
         }
@@ -477,15 +513,20 @@ public class SceneManager {
     }
 
     private String generateUniqueName(String baseName) {
-        String finalName = baseName.replaceAll(" \\(\\d+\\)$", "");
-        if (!gameObjects.containsKey(finalName)) {
-            return finalName;
+        if (baseName == null || baseName.isEmpty()) {
+            baseName = "Object";
         }
+
+        if (!gameObjects.containsKey(baseName)) {
+            return baseName;
+        }
+
+        String rootName = baseName.replaceAll(" \\(\\d+\\)$", "");
         int counter = 1;
-        while (gameObjects.containsKey(finalName + " (" + counter + ")")) {
+        while (gameObjects.containsKey(rootName + " (" + counter + ")")) {
             counter++;
         }
-        return finalName + " (" + counter + ")";
+        return rootName + " (" + counter + ")";
     }
 
     private void applyTransformToEngine(GameObject go) {
@@ -538,26 +579,33 @@ public class SceneManager {
             SceneData sceneData = json.fromJson(SceneData.class, sceneJson);
 
             if (sceneData == null) { return; }
+
             setBackgroundLightIntensity(sceneData.ambientIntensity);
             setSkyColor(sceneData.skyR, sceneData.skyG, sceneData.skyB);
-            float size = (sceneData.shadowSize > 0) ? sceneData.shadowSize : 100f;
-            float res = (sceneData.shadowResolution > 0) ? sceneData.shadowResolution : 2048f;
-            float csmFactor = (sceneData.csmSplitFactor >= 1f) ? sceneData.csmSplitFactor : 4f;
 
-            engine.setShadowSettings(size, (int) res, sceneData.useCSM, csmFactor);
+            int res = (int) sceneData.shadowResolution;
+            float size = sceneData.shadowSize;
+
+            if (res <= 2 || size <= 1) {
+                engine.setShadowsEnabled(false);
+            } else {
+                engine.setShadowsEnabled(true);
+                float csmFactor = (sceneData.csmSplitFactor >= 1f) ? sceneData.csmSplitFactor : 4f;
+                engine.setShadowSettings(size, res, sceneData.useCSM, csmFactor);
+            }
 
             if (sceneData.gameObjects == null) { return; }
-
 
             for (GameObject go : sceneData.gameObjects) {
                 gameObjects.put(go.id, go);
             }
 
-
             if (engine == null || engine.isDisposed()) {
                 Log.i("SceneManager", "Aborted scene rebuilding: ThreeDManager is disposed.");
                 return;
             }
+
+            updateWorldTransforms();
 
             for (GameObject go : sceneData.gameObjects) {
                 rebuildGameObject_internal(go);
@@ -565,8 +613,8 @@ public class SceneManager {
 
             findAndSetMainCamera();
 
-            Gdx.app.log("SceneManager", "Applying loaded skybox: " + this.skyboxPath);
             this.skyboxPath = sceneData.skyboxPath;
+            Gdx.app.log("SceneManager", "Applying loaded skybox: " + this.skyboxPath);
             setSkybox(this.skyboxPath);
         });
     }
@@ -966,6 +1014,11 @@ public class SceneManager {
             engine.removeParticleEffect3D(go.id);
             engine.removeEditorProxy(go.id);
         }
+
+        if (go.hasComponent(AudioComponent.class)) {
+            engine.stopSound(go.id);
+            engine.removeEditorProxy(go.id);
+        }
     }
 
     public void setRenderComponent(GameObject go, String modelFileName) {
@@ -1229,11 +1282,6 @@ public class SceneManager {
                 return;
             }
 
-            for (GameObject go : sceneData.gameObjects) {
-                gameObjects.put(go.id, go);
-                rebuildGameObject(go);
-            }
-
             findAndSetMainCamera();
 
             Gdx.app.log("SceneManager", "Scene build commands issued.");
@@ -1241,6 +1289,10 @@ public class SceneManager {
             Gdx.app.log("SceneManager", "Applying loaded skybox: " + this.skyboxPath);
             this.skyboxPath = sceneData.skyboxPath;
             setSkybox(this.skyboxPath);
+
+            for (GameObject go : sceneData.gameObjects) {
+                loadingQueue.add(go);
+            }
         });
     }
 
@@ -1248,10 +1300,6 @@ public class SceneManager {
         if (engine == null || engine.isDisposed()) {
             return;
         }
-
-        Log.d("PhysicsDebug", "============================================================");
-        Log.d("PhysicsDebug", "=== Rebuilding GameObject: '" + go.name + "' (ID: " + go.id + ")");
-        Log.d("PhysicsDebug", "============================================================");
 
         RenderComponent render = go.getComponent(RenderComponent.class);
         if (render != null && render.modelFileName != null && !render.modelFileName.isEmpty()) {
@@ -1288,31 +1336,12 @@ public class SceneManager {
 
         engine.setWorldTransform(go.id, go.transform.worldTransform);
 
-        Log.d("PhysicsDebug", "Transform for '" + go.name + "':");
-        Log.d("PhysicsDebug", "  - Local Position: " + go.transform.position);
-        Log.d("PhysicsDebug", "  - Local Rotation: " + go.transform.rotation);
-        Log.d("PhysicsDebug", "  - Local Scale:    " + go.transform.scale);
-        Log.d("PhysicsDebug", "  - World Transform Matrix:\n" + go.transform.worldTransform);
-        if (go.parentId != null) {
-            GameObject parent = findGameObject(go.parentId);
-            if (parent != null) {
-                Log.d("PhysicsDebug", "  - Parent ('"+parent.name+"') World Transform:\n" + parent.transform.worldTransform);
-            }
-        }
-
         PhysicsComponent physics = go.getComponent(PhysicsComponent.class);
         if (physics != null) {
-            Matrix4 physicsTransform = new Matrix4(go.transform.worldTransform);
-
-            if (physics.state == ThreeDManager.PhysicsState.MESH_STATIC) {
-                Log.d("PhysicsDebug", "MESH_STATIC detected. Using rotation/scale only for physics baking.");
-                physicsTransform.setTranslation(0, 0, 0);
-            }
             if (physics.colliders != null && !physics.colliders.isEmpty()) {
-                engine.setPhysicsStateFromComponent(go.id, physics, physicsTransform);
-            }
-            else {
-                engine.setPhysicsState(go.id, physics.state, physics.shape, physics.mass, physicsTransform);
+                engine.setPhysicsStateFromComponent(go.id, physics, go.transform.worldTransform);
+            } else {
+                engine.setPhysicsState(go.id, physics.state, physics.shape, physics.mass, go.transform.worldTransform);
             }
 
             engine.setFriction(go.id, physics.friction);
@@ -1380,6 +1409,15 @@ public class SceneManager {
             if (anim.autoStart && !isEditorMode) {
                 anim.isPlaying = true;
                 anim.currentTime = 0f;
+            }
+        }
+
+        AudioComponent audio = go.getComponent(AudioComponent.class);
+        if (audio != null) {
+            engine.createAudioProxy(go.id);
+            if (!isEditorMode) {
+                audio.delayTimer = 0f;
+                audio.hasStarted = false;
             }
         }
 
@@ -1856,21 +1894,47 @@ public class SceneManager {
             SceneData sceneData = json.fromJson(SceneData.class, sceneJson);
             if (sceneData == null || sceneData.gameObjects == null) { return; }
 
+            if (sceneData.ambientIntensity > 0) {
+                setBackgroundLightIntensity(sceneData.ambientIntensity);
+            }
+            if (sceneData.skyR != 0 || sceneData.skyG != 0 || sceneData.skyB != 0) {
+                setSkyColor(sceneData.skyR, sceneData.skyG, sceneData.skyB);
+            }
+
+            int res = (int) sceneData.shadowResolution;
+            float size = sceneData.shadowSize;
+
+            if (res <= 2 || size <= 1) {
+                engine.setShadowsEnabled(false);
+            } else {
+                engine.setShadowsEnabled(true);
+                float csmFactor = (sceneData.csmSplitFactor >= 1f) ? sceneData.csmSplitFactor : 4f;
+                engine.setShadowSettings(size, res, sceneData.useCSM, csmFactor);
+            }
+
+            if (sceneData.skyboxPath != null && !sceneData.skyboxPath.isEmpty()) {
+                setSkybox(sceneData.skyboxPath);
+            }
+
             List<GameObject> newObjects = new ArrayList<>();
             Map<String, String> oldIdToNewId = new HashMap<>();
-
 
             for (GameObject go : sceneData.gameObjects) {
                 String originalId = go.id;
                 String newId = generateUniqueName(originalId);
+
                 go.id = newId;
                 go.name = newId;
+
                 newObjects.add(go);
                 oldIdToNewId.put(originalId, newId);
             }
 
             for (GameObject go : newObjects) {
-                if (go.parentId != null) go.parentId = oldIdToNewId.get(go.parentId);
+                if (go.parentId != null) {
+                    String newParentId = oldIdToNewId.get(go.parentId);
+                    if (newParentId != null) go.parentId = newParentId;
+                }
                 ArrayList<String> newChildrenIds = new ArrayList<>();
                 for (String oldChildId : go.childrenIds) {
                     String newChildId = oldIdToNewId.get(oldChildId);
@@ -1880,11 +1944,7 @@ public class SceneManager {
             }
 
             for (GameObject go : newObjects) {
-                gameObjects.put(go.id, go);
-            }
-
-            for (GameObject go : newObjects) {
-                rebuildGameObject_internal(go);
+                loadingQueue.add(go);
             }
         });
     }

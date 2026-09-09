@@ -53,6 +53,7 @@ import org.catrobat.catroid.content.bricks.ApplyAngularImpulseBrick
 import org.catrobat.catroid.content.bricks.ApplyBufferLookBrick
 import org.catrobat.catroid.content.bricks.ApplyForceBrick
 import org.catrobat.catroid.content.bricks.ApplyImpulseBrick
+import org.catrobat.catroid.content.bricks.ApplyShaderBrick
 import org.catrobat.catroid.content.bricks.ApplyShaderToImageBrick
 import org.catrobat.catroid.content.bricks.ApplyTorqueBrick
 import org.catrobat.catroid.content.bricks.ArduinoSendDigitalValueBrick
@@ -1454,6 +1455,8 @@ void main() {
                 looksBrickList.add(EmitParticleBurstBrick("fire1", 20.0))
                 looksBrickList.add(StopParticleInstanceBrick("fire1", 0))
 
+                looksBrickList.add(ApplyShaderBrick("wave1", 0, "", 0.5))
+
                 looksBrickList.add(OpenUrlBrick(BrickValues.OPEN_IN_BROWSER))
                 looksBrickList.add(OpenAppBrick(Formula("com.android.settings")))
                 return looksBrickList
@@ -1623,6 +1626,9 @@ void main() {
         looksBrickList.add(SetParticlePropertyBrick("fire1", 0, 50.0))
         looksBrickList.add(EmitParticleBurstBrick("fire1", 20.0))
         looksBrickList.add(StopParticleInstanceBrick("fire1", 0))
+
+        //looksBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.brick_subcategory_shaders), template))
+        //looksBrickList.add(ApplyShaderBrick("wave1", 0, "", 0.5))
 
         return looksBrickList
     }

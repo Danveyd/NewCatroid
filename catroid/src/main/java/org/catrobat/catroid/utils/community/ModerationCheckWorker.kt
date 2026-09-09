@@ -36,7 +36,7 @@ class ModerationCheckWorker(
         val username = CommunityTokenManager.getUsername(context) ?: return Result.success()
 
         try {
-            val url = "https://backend.sois.site/profiles/$username/games"
+            val url = "https://backend.mindpy.dev/profiles/$username/games"
             val request = Request.Builder()
                 .url(url)
                 .header("Authorization", "Bearer $token")

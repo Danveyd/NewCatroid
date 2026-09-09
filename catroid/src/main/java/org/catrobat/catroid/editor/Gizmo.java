@@ -57,6 +57,20 @@ public class Gizmo {
     private final Vector3 dragStartScale = new Vector3();
     private boolean isTransforming = false;
 
+    public boolean snapEnabled = false;
+    public float snapSize = 1.0f;
+    public float rotationSnapSize = 15.0f;
+
+    private final Vector3 initialObjectPos = new Vector3();
+    private final Quaternion initialObjectRot = new Quaternion();
+    private final Vector3 initialObjectScale = new Vector3();
+    private final Vector3 initialTouchPoint = new Vector3();
+
+    private float snap(float value, float step) {
+        if (!snapEnabled || step <= 0.0001f) return value;
+        return Math.round(value / step) * step;
+    }
+
 
     public Gizmo(EditorActivity activity, SceneManager sceneManager, Camera camera) {
         this.activity = activity;
@@ -209,6 +223,8 @@ public class Gizmo {
 
         Vector3 dragVector = dragCurrentPoint.cpy().sub(dragStartPoint);
 
+        Vector3 totalDragVector = dragCurrentPoint.cpy().sub(initialTouchPoint);
+
         Vector3 axisVector = new Vector3();
         if (selectedAxis == Axis.X) axisVector.set(1, 0, 0);
         if (selectedAxis == Axis.Y) axisVector.set(0, 1, 0);
@@ -291,35 +307,43 @@ public class Gizmo {
         } else {
             switch (currentTool) {
                 case TRANSLATE: {
-                    float projection = dragVector.dot(axisVector);
+                    float projection = totalDragVector.dot(axisVector);
                     Vector3 worldTranslation = axisVector.cpy().scl(projection);
 
                     if (selectedObject.parentId != null) {
                         GameObject parent = sceneManager.findGameObject(selectedObject.parentId);
                         if (parent != null) {
                             Quaternion parentInverseRotation = parent.transform.worldTransform.getRotation(new Quaternion()).conjugate();
-
                             parentInverseRotation.transform(worldTranslation);
-
-                            Vector3 parentScale = parent.transform.worldTransform.getScale(new Vector3());
-                            if (parentScale.x != 0) worldTranslation.x /= parentScale.x;
-                            if (parentScale.y != 0) worldTranslation.y /= parentScale.y;
-                            if (parentScale.z != 0) worldTranslation.z /= parentScale.z;
                         }
                     }
-                    selectedObject.transform.position.add(worldTranslation);
+
+                    Vector3 targetPos = initialObjectPos.cpy().add(worldTranslation);
+                    if (snapEnabled) {
+                        targetPos.x = snap(targetPos.x, snapSize);
+                        targetPos.y = snap(targetPos.y, snapSize);
+                        targetPos.z = snap(targetPos.z, snapSize);
+                    }
+                    selectedObject.transform.position.set(targetPos);
                     break;
                 }
                 case SCALE: {
-                    float projection = dragVector.dot(axisVector);
-                    float scaleAmount = projection * 0.1f;
+                    float projection = totalDragVector.dot(axisVector);
+                    float scaleAmount = projection * 0.5f;
                     Vector3 scaleVec = axisVector.cpy().scl(scaleAmount);
-                    selectedObject.transform.scale.add(scaleVec);
+
+                    Vector3 targetScale = initialObjectScale.cpy().add(scaleVec);
+                    if (snapEnabled) {
+                        targetScale.x = Math.max(0.01f, snap(targetScale.x, snapSize));
+                        targetScale.y = Math.max(0.01f, snap(targetScale.y, snapSize));
+                        targetScale.z = Math.max(0.01f, snap(targetScale.z, snapSize));
+                    }
+                    selectedObject.transform.scale.set(targetScale);
                     break;
                 }
                 case ROTATE: {
                     Vector3 currentVec = dragCurrentPoint.cpy().sub(getGizmoPosition());
-                    Vector3 startVec = dragStartPoint.cpy().sub(getGizmoPosition());
+                    Vector3 startVec = initialTouchPoint.cpy().sub(getGizmoPosition());
 
                     Vector3 planeNormal = axisVector;
                     Vector3 projectedStart = startVec.cpy().sub(planeNormal.cpy().scl(startVec.dot(planeNormal)));
@@ -329,14 +353,18 @@ public class Gizmo {
                     projectedCurrent.nor();
 
                     float angle = (float) Math.toDegrees(Math.acos(projectedStart.dot(projectedCurrent)));
-
                     if (Float.isNaN(angle) || angle < 0.01f) break;
 
                     Vector3 cross = projectedStart.crs(projectedCurrent);
                     float sign = Math.signum(cross.dot(axisVector));
 
-                    Quaternion deltaRotation = new Quaternion(axisVector, angle * sign);
-                    sceneManager.rotate(selectedObject, deltaRotation);
+                    float finalAngle = angle * sign;
+                    if (snapEnabled) {
+                        finalAngle = snap(finalAngle, rotationSnapSize);
+                    }
+
+                    Quaternion deltaRotation = new Quaternion(axisVector, finalAngle);
+                    selectedObject.transform.rotation.set(initialObjectRot).mulLeft(deltaRotation);
                     break;
                 }
             }
@@ -380,7 +408,12 @@ public class Gizmo {
 
         if (selectedAxis != Axis.NONE) {
             setupDragPlane(getGizmoPosition());
-            Intersector.intersectRayPlane(pickRay, dragPlane, dragStartPoint);
+
+            Intersector.intersectRayPlane(pickRay, dragPlane, initialTouchPoint);
+            initialObjectPos.set(selectedObject.transform.position);
+            initialObjectRot.set(selectedObject.transform.rotation);
+            initialObjectScale.set(selectedObject.transform.scale);
+
             if (currentTool == EditorTool.ROTATE) {
                 lastObjectRotation.set(selectedObject.transform.rotation);
             }

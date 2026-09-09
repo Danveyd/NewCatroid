@@ -607,6 +607,7 @@ dependencies {
 
     implementation 'androidx.activity:activity-ktx:1.8.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
 
     // Room
     implementation("androidx.room:room-runtime:$room_version")

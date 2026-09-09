@@ -444,6 +444,8 @@ public class ThreeDManager implements Disposable {
 
     private ModelBatch particleModelBatch;
     private Model particleProxyModel;
+    private Model soundProxyModel;
+    private ModelInstance wireframeSoundRadiusInstance;
     private com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch batchNormal;
     private com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch batchAdditive;
 
@@ -519,6 +521,22 @@ public class ThreeDManager implements Disposable {
     private final Map<String, net.mgsx.gltf.scene3d.scene.SceneAsset> loadedGltfAssets = new HashMap<>();
 
     private net.mgsx.gltf.scene3d.scene.Scene gridScene;
+
+    private com.badlogic.gdx.assets.AssetManager assetManager;
+
+    private static class PendingObjectRequest {
+        public final String objectId;
+        public final String modelPath;
+        public final Runnable onComplete;
+
+        public PendingObjectRequest(String objectId, String modelPath, Runnable onComplete) {
+            this.objectId = objectId;
+            this.modelPath = modelPath;
+            this.onComplete = onComplete;
+        }
+    }
+
+    private final List<PendingObjectRequest> pendingObjectRequests = new ArrayList<>();
 
     private boolean disposed = false;
 
@@ -598,6 +616,9 @@ public class ThreeDManager implements Disposable {
         particleProxyModel = modelBuilder.createSphere(0.25f, 0.25f, 0.25f, 8, 8,
                 new com.badlogic.gdx.graphics.g3d.Material(ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.MAGENTA)),
                 com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal);
+        soundProxyModel = modelBuilder.createSphere(0.25f, 0.25f, 0.25f, 8, 8,
+                new Material(ColorAttribute.createDiffuse(Color.ORANGE)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
         Material camMat = new Material(ColorAttribute.createDiffuse(Color.CYAN));
         Model box = modelBuilder.createBox(0.4f, 0.4f, 0.4f, camMat, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
@@ -618,6 +639,8 @@ public class ThreeDManager implements Disposable {
         wireframeBoxModel = modelBuilder.createBox(1f, 1f, 1f, GL20.GL_LINES, wireframeMaterial, usage);
         wireframeSphereModel = modelBuilder.createSphere(1f, 1f, 1f, 16, 12, GL20.GL_LINES, wireframeMaterial, usage);
         wireframeCylinderModel = modelBuilder.createCylinder(1f, 2f, 1f, 16, GL20.GL_LINES, wireframeMaterial, usage);
+
+        wireframeSoundRadiusInstance = new ModelInstance(wireframeSphereModel);
 
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
         sceneFboRegion = new TextureRegion();
@@ -750,6 +773,86 @@ public class ThreeDManager implements Disposable {
         createDefaultParticleTexture();
 
         contactListCallback = new NameAccumulatingContactCallback();
+
+
+        FileHandleResolver resolver = fileName -> {
+            if (fileName.startsWith("/")) {
+                return Gdx.files.absolute(fileName);
+            }
+            return Gdx.files.internal("models/" + fileName);
+        };
+
+        assetManager = new com.badlogic.gdx.assets.AssetManager(resolver);
+        assetManager.setLoader(net.mgsx.gltf.scene3d.scene.SceneAsset.class, ".gltf", new net.mgsx.gltf.loaders.gltf.GLTFAssetLoader(resolver));
+        assetManager.setLoader(net.mgsx.gltf.scene3d.scene.SceneAsset.class, ".glb", new net.mgsx.gltf.loaders.glb.GLBAssetLoader(resolver));
+        assetManager.setLoader(Model.class, ".obj", new ObjLoader(resolver));
+    }
+
+    public void createObjectAsync(final String objectId, final String modelPath, final Runnable onComplete) {
+        if (sceneObjects.containsKey(objectId)) {
+            if (onComplete != null) onComplete.run();
+            return;
+        }
+
+        String lower = modelPath.toLowerCase();
+        boolean isGltf = lower.endsWith(".gltf") || lower.endsWith(".glb");
+
+        if (isGltf && loadedGltfAssets.containsKey(modelPath)) {
+            createObjectFromLoadedGltf(objectId, loadedGltfAssets.get(modelPath));
+            if (onComplete != null) onComplete.run();
+            return;
+        } else if (!isGltf && loadedModels.containsKey(modelPath)) {
+            createObjectFromLoadedModel(objectId, loadedModels.get(modelPath));
+            if (onComplete != null) onComplete.run();
+            return;
+        }
+
+        pendingObjectRequests.add(new PendingObjectRequest(objectId, modelPath, onComplete));
+
+        if (!assetManager.isLoaded(modelPath)) {
+            if (isGltf) {
+                assetManager.load(modelPath, net.mgsx.gltf.scene3d.scene.SceneAsset.class);
+            } else {
+                assetManager.load(modelPath, Model.class);
+            }
+        }
+    }
+
+    private void createObjectFromLoadedGltf(String objectId, net.mgsx.gltf.scene3d.scene.SceneAsset sceneAsset) {
+        net.mgsx.gltf.scene3d.scene.Scene scene = new net.mgsx.gltf.scene3d.scene.Scene(sceneAsset.scene);
+        if (realisticMode && sceneManager != null) {
+            sceneManager.addScene(scene);
+        }
+        sceneObjects.put(objectId, scene.modelInstance);
+        gltfObjectIds.add(objectId);
+
+        if (scene.modelInstance.animations.size > 0) {
+            AnimationController controller = new AnimationController(scene.modelInstance);
+            animationControllers.put(objectId, controller);
+        }
+        if (hiddenSpawnIds.contains(objectId)) {
+            hiddenSpawnIds.remove(objectId);
+            setObjectVisibility(objectId, false);
+        }
+    }
+
+    private void createObjectFromLoadedModel(String objectId, Model model) {
+        ModelInstance instance = new ModelInstance(model);
+        sceneObjects.put(objectId, instance);
+
+        if (realisticMode && sceneManager != null) {
+            PBRColorAttribute baseColor = PBRColorAttribute.createBaseColorFactor(Color.WHITE);
+            for (Material mat : instance.materials) {
+                mat.set(baseColor);
+                mat.set(PBRFloatAttribute.createMetallic(0.0f));
+                mat.set(PBRFloatAttribute.createRoughness(1.0f));
+            }
+            sceneManager.addScene(new net.mgsx.gltf.scene3d.scene.Scene(instance));
+        }
+        if (hiddenSpawnIds.contains(objectId)) {
+            hiddenSpawnIds.remove(objectId);
+            setObjectVisibility(objectId, false);
+        }
     }
 
     public void setObjectCustomShader(String objectId, String vertexCode, String fragmentCode) {
@@ -1810,6 +1913,20 @@ public class ThreeDManager implements Disposable {
         if (editorProxies.containsKey(ownerId) || particleProxyModel == null) return;
         ModelInstance proxyInstance = new ModelInstance(particleProxyModel);
         editorProxies.put(ownerId, proxyInstance);
+    }
+
+    public void createAudioProxy(String ownerId) {
+        if (editorProxies.containsKey(ownerId) || soundProxyModel == null) return;
+        ModelInstance proxyInstance = new ModelInstance(soundProxyModel);
+        editorProxies.put(ownerId, proxyInstance);
+    }
+
+    public void renderSoundRadius(Vector3 position, float radius, Color color) {
+        if (wireframeBatch == null || wireframeSoundRadiusInstance == null || radius <= 0.01f) return;
+
+        wireframeSoundRadiusInstance.transform.setToTranslation(position).scl(radius * 2f);
+        ((ColorAttribute) wireframeSoundRadiusInstance.materials.get(0).get(ColorAttribute.Diffuse)).color.set(color);
+        wireframeBatch.render(wireframeSoundRadiusInstance);
     }
 
     private BillboardParticleBatch getBatchFor(Texture texture, boolean isAdditive) {
@@ -3156,6 +3273,14 @@ public class ThreeDManager implements Disposable {
         if (spotLights.containsKey(oldId)) {
             spotLights.put(newId, spotLights.remove(oldId));
         }
+        for (PlayableAudio audio : active3DSounds) {
+            if (oldId.equals(audio.getInstanceName())) {
+                audio.setInstanceName(newId);
+            }
+            if (oldId.equals(audio.getAttachedObjectId())) {
+                audio.setAttachedObjectId(newId);
+            }
+        }
     }
 
 
@@ -3307,6 +3432,32 @@ public class ThreeDManager implements Disposable {
 
     public void update(float delta) {
         if (LOG_THREED_MANAGER_DEBUG) Log.d("TDM_DEBUG", "--- ThreeDManager.update() START (Delta: " + delta + ") ---");
+        if (assetManager != null && assetManager.getQueuedAssets() > 0) {
+            assetManager.update(5);
+        }
+
+        if (!pendingObjectRequests.isEmpty()) {
+            Iterator<PendingObjectRequest> it = pendingObjectRequests.iterator();
+            while (it.hasNext()) {
+                PendingObjectRequest req = it.next();
+                if (assetManager.isLoaded(req.modelPath)) {
+                    String lower = req.modelPath.toLowerCase();
+                    if (lower.endsWith(".gltf") || lower.endsWith(".glb")) {
+                        net.mgsx.gltf.scene3d.scene.SceneAsset asset = assetManager.get(req.modelPath, net.mgsx.gltf.scene3d.scene.SceneAsset.class);
+                        loadedGltfAssets.put(req.modelPath, asset);
+                        createObjectFromLoadedGltf(req.objectId, asset);
+                    } else {
+                        Model model = assetManager.get(req.modelPath, Model.class);
+                        loadedModels.put(req.modelPath, model);
+                        createObjectFromLoadedModel(req.objectId, model);
+                    }
+                    if (req.onComplete != null) {
+                        req.onComplete.run();
+                    }
+                    it.remove();
+                }
+            }
+        }
         if (cameraTargetId != null) {
             updateThirdPersonCamera();
         } else if (cameraTrackMode != 0 && cameraTrackTargetId != null) {
@@ -3397,63 +3548,11 @@ public class ThreeDManager implements Disposable {
             }
         }
 
-        if (!editorMode) {
+        if (!active3DSounds.isEmpty()) {
             update3DAudio();
         }
         applyCameraEffects(delta);
         if (LOG_THREED_MANAGER_DEBUG) Log.d("TDM_DEBUG", "--- ThreeDManager.update() END ---");
-    }
-
-    private void update3DAudio() {
-        if (active3DSounds.isEmpty()) {
-            return;
-        }
-
-        Vector3 listenerPos = camera.position;
-        cameraRight.set(camera.direction).crs(camera.up).nor();
-
-        Iterator<PlayableAudio> iterator = active3DSounds.iterator();
-        while (iterator.hasNext()) {
-            PlayableAudio audio = iterator.next();
-
-            if (!audio.isPlaying()) {
-                audio.dispose();
-                iterator.remove();
-                continue;
-            }
-
-            String attachedId = audio.getAttachedObjectId();
-            if (attachedId != null) {
-                ModelInstance attachedObject = sceneObjects.get(attachedId);
-                if (attachedObject != null) {
-                    attachedObject.transform.getTranslation(tmpPos);
-                    audio.setPosition(tmpPos);
-                } else {
-                    audio.stop();
-                    audio.dispose();
-                    iterator.remove();
-                    continue;
-                }
-            }
-
-            float distance = listenerPos.dst(audio.getPosition());
-            float maxDist = audio.getMaxDistance();
-
-            float finalVolume;
-            float finalPan;
-
-            if (distance > maxDist) {
-                finalVolume = 0;
-                finalPan = 0;
-            } else {
-                finalVolume = (1.0f - (distance / maxDist)) * globalSoundVolume;
-
-                soundToListener.set(audio.getPosition()).sub(listenerPos).nor();
-                finalPan = soundToListener.dot(cameraRight);
-            }
-
-            audio.update3D(finalVolume, finalPan);
-        }
     }
 
     public void set3DSoundMaxDistance(String instanceName, float maxDistance) {
@@ -3618,20 +3717,27 @@ public class ThreeDManager implements Disposable {
     }
 
     public void addCameraRotation(float yawDelta, float pitchDelta) {
+        if (Float.isNaN(yawDelta) || Float.isNaN(pitchDelta)) return;
+
         if (cameraTargetId != null) {
             cameraYaw += yawDelta;
             cameraPitch += pitchDelta;
 
             if (cameraPitch > 89.0f) cameraPitch = 89.0f;
             if (cameraPitch < -89.0f) cameraPitch = -89.0f;
-        }
-        else {
-            camera.view.getRotation(tmpRot);
-            camera.rotate(Vector3.Y, yawDelta);
+        } else {
+            Vector3 dir = camera.direction;
+            float currentPitch = (float) Math.toDegrees(Math.asin(MathUtils.clamp(dir.y, -1f, 1f)));
+            float currentYaw = (float) Math.toDegrees(Math.atan2(-dir.x, -dir.z));
 
-            tmpVec.set(camera.direction).crs(camera.up).nor();
-            camera.rotate(tmpVec, pitchDelta);
+            float newPitch = MathUtils.clamp(currentPitch + pitchDelta, -89.0f, 89.0f);
+            float newYaw = currentYaw + yawDelta;
 
+            Quaternion q = new Quaternion().setEulerAngles(newYaw, newPitch, 0);
+            camera.direction.set(0, 0, -1);
+            q.transform(camera.direction);
+            camera.up.set(0, 1, 0);
+            q.transform(camera.up);
             camera.update();
         }
     }
@@ -3646,15 +3752,104 @@ public class ThreeDManager implements Disposable {
         if (cameraPitch < -89.0f) cameraPitch = -89.0f;
     }
 
-    public void playSoundAt(String instanceName, String soundName, float x, float y, float z, float volume, float pitch, boolean loop) {
-        playSoundInternal(instanceName, soundName, volume, pitch, loop, new Vector3(x, y, z), null);
+    public void playSoundAt(String instanceName, String soundName, float x, float y, float z, float volume, float pitch, boolean loop, boolean is3D, float maxDistance) {
+        playSoundInternal(instanceName, soundName, volume, pitch, loop, is3D, maxDistance, new Vector3(x, y, z), null);
     }
 
-    public void playSoundAttached(String instanceName, String soundName, String objectId, float volume, float pitch, boolean loop) {
+    public void playSoundAttached(String instanceName, String soundName, String objectId, float volume, float pitch, boolean loop, boolean is3D, float maxDistance) {
+        Vector3 initialPos = new Vector3();
         ModelInstance instance = sceneObjects.get(objectId);
-        if (instance == null) return;
-        Vector3 initialPos = instance.transform.getTranslation(new Vector3());
-        playSoundInternal(instanceName, soundName, volume, pitch, loop, initialPos, objectId);
+        if (instance != null) {
+            instance.transform.getTranslation(initialPos);
+        } else if (editorProxies.containsKey(objectId)) {
+            editorProxies.get(objectId).transform.getTranslation(initialPos);
+        } else if (manager != null && manager.findGameObject(objectId) != null) {
+            manager.findGameObject(objectId).transform.worldTransform.getTranslation(initialPos);
+        }
+        playSoundInternal(instanceName, soundName, volume, pitch, loop, is3D, maxDistance, initialPos, objectId);
+    }
+
+    private void playSoundInternal(String instanceName, String soundName, float volume, float pitch, boolean loop, boolean is3D, float maxDistance, Vector3 position, String attachedToId) {
+        if (instanceName == null || instanceName.isEmpty()) return;
+        stopSound(instanceName);
+
+        AudioAsset asset = loadedAudioAssets.get(soundName);
+        if (asset == null) return;
+
+        PlayableAudio playableAudio;
+        if (asset.music != null) {
+            Music newMusicInstance = Gdx.audio.newMusic(Gdx.files.absolute(asset.filePath));
+            playableAudio = new MusicWrapper(newMusicInstance, volume, pitch, loop);
+        } else {
+            playableAudio = new SoundWrapper(asset.sound, volume, pitch, loop);
+        }
+
+        playableAudio.setInstanceName(instanceName);
+        playableAudio.setPosition(position);
+        playableAudio.setAttachedObjectId(attachedToId);
+        playableAudio.set3D(is3D);
+        playableAudio.setMaxDistance(maxDistance);
+
+        playableAudio.play();
+        active3DSounds.add(playableAudio);
+    }
+
+    private void update3DAudio() {
+        if (active3DSounds.isEmpty()) {
+            return;
+        }
+
+        Vector3 listenerPos = camera.position;
+        cameraRight.set(camera.direction).crs(camera.up).nor();
+
+        Iterator<PlayableAudio> iterator = active3DSounds.iterator();
+        while (iterator.hasNext()) {
+            PlayableAudio audio = iterator.next();
+
+            if (!audio.isPlaying()) {
+                audio.dispose();
+                iterator.remove();
+                continue;
+            }
+
+            String attachedId = audio.getAttachedObjectId();
+            if (attachedId != null) {
+                ModelInstance attachedObject = sceneObjects.get(attachedId);
+                if (attachedObject == null) {
+                    attachedObject = editorProxies.get(attachedId);
+                }
+
+                if (attachedObject != null) {
+                    attachedObject.transform.getTranslation(tmpPos);
+                    audio.setPosition(tmpPos);
+                } else if (manager != null && manager.findGameObject(attachedId) != null) {
+                    manager.findGameObject(attachedId).transform.worldTransform.getTranslation(tmpPos);
+                    audio.setPosition(tmpPos);
+                }
+            }
+
+            if (!audio.is3D()) {
+                audio.update3D(globalSoundVolume, 0f);
+            } else {
+                float distance = listenerPos.dst(audio.getPosition());
+                float maxDist = Math.max(0.1f, audio.getMaxDistance());
+
+                float finalVolume;
+                float finalPan;
+
+                if (distance > maxDist) {
+                    finalVolume = 0;
+                    finalPan = 0;
+                } else {
+                    finalVolume = (1.0f - (distance / maxDist)) * globalSoundVolume;
+
+                    soundToListener.set(audio.getPosition()).sub(listenerPos).nor();
+                    finalPan = soundToListener.dot(cameraRight);
+                }
+
+                audio.update3D(finalVolume, finalPan);
+            }
+        }
     }
 
     public boolean prepareAudio(String soundName, String fileName, boolean asMusic) {
@@ -3736,54 +3931,58 @@ public class ThreeDManager implements Disposable {
             return;
         }
 
-        if (panoramicConverter == null) {
-            Gdx.app.error("Skybox", "PanoramicConverter is not initialized yet. Deferring task.");
-
-            Gdx.app.postRunnable(() -> setSkybox(panoramicTexturePath));
-            return;
-        }
-
         if (panoramicTexturePath == null || panoramicTexturePath.isEmpty()) {
-            if (skybox != null) {
-                sceneManager.setSkyBox(null);
-                skybox.dispose();
-                skybox = null;
-            }
-            if (skyboxCubemap != null) {
-                skyboxCubemap.dispose();
-                skyboxCubemap = null;
-            }
-            updateProceduralIBL();
-            Gdx.app.log("Skybox", "Skybox cleared. Reverted to procedural IBL.");
+            Gdx.app.postRunnable(() -> {
+                if (skybox != null) {
+                    sceneManager.setSkyBox(null);
+                    skybox.dispose();
+                    skybox = null;
+                }
+                if (skyboxCubemap != null) {
+                    skyboxCubemap.dispose();
+                    skyboxCubemap = null;
+                }
+                updateProceduralIBL();
+                Gdx.app.log("Skybox", "Skybox cleared. Reverted to procedural IBL.");
+            });
             return;
         }
 
-        try {
-            FileHandle textureFile = Gdx.files.absolute(panoramicTexturePath);
-            if (!textureFile.exists()) {
-                Gdx.app.error("Skybox", "Skybox texture not found: " + panoramicTexturePath);
-                return;
-            }
-
-            Texture panoramicTexture = new Texture(textureFile);
-
-            if (skyboxCubemap != null) skyboxCubemap.dispose();
-            if (skybox != null) skybox.dispose();
-
-            skyboxCubemap = panoramicConverter.convert(panoramicTexture, 1024);
-            skybox = new net.mgsx.gltf.scene3d.scene.SceneSkybox(skyboxCubemap);
-            sceneManager.setSkyBox(skybox);
-
-
-            updateIBLFromCubemap(skyboxCubemap);
-
-            panoramicTexture.dispose();
-
-            Gdx.app.log("Skybox", "Skybox and its Image-Based Lighting set successfully.");
-
-        } catch (Exception e) {
-            Gdx.app.error("Skybox", "Failed to set skybox", e);
+        FileHandle textureFile = Gdx.files.absolute(panoramicTexturePath);
+        if (!textureFile.exists()) {
+            Gdx.app.error("Skybox", "Skybox texture not found: " + panoramicTexturePath);
+            return;
         }
+
+        new Thread(() -> {
+            try {
+                final com.badlogic.gdx.graphics.TextureData textureData =
+                        com.badlogic.gdx.graphics.TextureData.Factory.loadFromFile(textureFile, false);
+                textureData.prepare();
+
+                Gdx.app.postRunnable(() -> {
+                    try {
+                        Texture panoramicTexture = new Texture(textureData);
+
+                        if (skyboxCubemap != null) skyboxCubemap.dispose();
+                        if (skybox != null) skybox.dispose();
+
+                        skyboxCubemap = panoramicConverter.convert(panoramicTexture, 1024);
+                        skybox = new net.mgsx.gltf.scene3d.scene.SceneSkybox(skyboxCubemap);
+                        sceneManager.setSkyBox(skybox);
+
+                        updateIBLFromCubemap(skyboxCubemap);
+                        panoramicTexture.dispose();
+
+                        Gdx.app.log("Skybox", "Skybox loaded asynchronously and applied instantly.");
+                    } catch (Exception e) {
+                        Gdx.app.error("Skybox", "Failed to compile skybox on GL thread", e);
+                    }
+                });
+            } catch (Exception e) {
+                Gdx.app.error("Skybox", "Async skybox load failed", e);
+            }
+        }).start();
     }
 
     private void updateProceduralIBL() {
@@ -4838,6 +5037,22 @@ public class ThreeDManager implements Disposable {
             } else {
                 sun.color.set(1f, 1f, 1f, 1f);
             }
+        } else if (pbrLight != null) {
+            net.mgsx.gltf.scene3d.lights.DirectionalLightEx sun = pbrLight;
+
+            if (dirX == 0f && dirY == 0f && dirZ == 0f) {
+                sun.direction.set(0f, -1f, 0f);
+            } else {
+                sun.direction.set(dirX, dirY, dirZ).nor();
+            }
+
+            sun.intensity = intensity;
+
+            if (intensity <= 0.001f) {
+                sun.color.set(0f, 0f, 0f, 1f);
+            } else {
+                sun.color.set(1f, 1f, 1f, 1f);
+            }
         } else {
             Gdx.app.error("ThreeDManager", "setRealisticSunLight called, but no DirectionalShadowLight was found!");
         }
@@ -4960,37 +5175,36 @@ public class ThreeDManager implements Disposable {
 
 
     private void createGltfMeshPhysicsBody(String objectId, ModelInstance instance) {
-        Gdx.app.log("PhysicsDebug", "============================================================");
-        Gdx.app.log("PhysicsDebug", "=== STARTING MESH BODY CREATION (BAKING METHOD) for object: '" + objectId + "'");
-        Gdx.app.log("PhysicsDebug", "============================================================");
+        Gdx.app.log("PhysicsDebug", "=== CREATING GLTF MESH BODY (LOCAL SPACE) for: '" + objectId + "' ===");
 
         instance.calculateTransforms();
 
         btCompoundShape compoundShape = new btCompoundShape();
         Array<Disposable> disposables = new Array<>();
 
-        if (instance.nodes.size == 0) {
-            Gdx.app.error("PhysicsDebug", "FATAL: ModelInstance has NO nodes!");
-        } else {
-            Gdx.app.log("PhysicsDebug", "Model has " + instance.nodes.size + " root nodes. Starting recursion...");
-
-            addPartsToCompoundShapeRecursive(instance.nodes, instance.transform, compoundShape, disposables, "  ");
-        }
+        Matrix4 identityRoot = new Matrix4().idt();
+        addPartsToCompoundShapeRecursive(instance.nodes, identityRoot, compoundShape, disposables, "  ");
 
         int childCount = compoundShape.getNumChildShapes();
-        Gdx.app.log("PhysicsDebug", "RECURSION FINISHED. Total child shapes in CompoundShape: " + childCount);
-
         if (childCount == 0) {
-            Gdx.app.error("PhysicsDebug", "FATAL: CompoundShape is EMPTY!");
+            Gdx.app.error("PhysicsDebug", "FATAL: CompoundShape is EMPTY for object: " + objectId);
             compoundShape.dispose();
             for (Disposable d : disposables) d.dispose();
-            Gdx.app.log("PhysicsDebug", "=================== CREATION FAILED ===================");
             return;
         }
 
-        Matrix4 bodyTransform = new Matrix4().idt();
+        Vector3 scale = instance.transform.getScale(new Vector3());
+        if (scale.x == 0) scale.x = 0.0001f;
+        if (scale.y == 0) scale.y = 0.0001f;
+        if (scale.z == 0) scale.z = 0.0001f;
+        compoundShape.setLocalScaling(scale);
 
-        Gdx.app.log("PhysicsDebug", "RigidBody initial transform is IDENTITY because geometry is pre-transformed.");
+        Vector3 pos = new Vector3();
+        Quaternion rot = new Quaternion();
+        instance.transform.getTranslation(pos);
+        instance.transform.getRotation(rot, true);
+
+        Matrix4 bodyTransform = new Matrix4(pos, rot, new Vector3(1, 1, 1));
 
         btMotionState motionState = new btDefaultMotionState(bodyTransform);
         btRigidBody.btRigidBodyConstructionInfo bodyInfo =
@@ -5007,9 +5221,6 @@ public class ThreeDManager implements Disposable {
         disposables.add(compoundShape);
         body.userData = disposables;
         physicsResources.put(objectId, disposables);
-
-        Gdx.app.log("PhysicsDebug", "SUCCESS: RigidBody added to dynamicsWorld. AABB was manually updated.");
-        Gdx.app.log("PhysicsDebug", "=================== CREATION FINISHED for: '" + objectId + "' ===================");
 
         bodyInfo.dispose();
     }
@@ -6674,6 +6885,7 @@ public class ThreeDManager implements Disposable {
         if (customScreenEffect != null) { customScreenEffect.dispose(); customScreenEffect = null; }
 
         if (particleProxyModel != null) particleProxyModel.dispose();
+        if (soundProxyModel != null) soundProxyModel.dispose();
         if (modelBatch != null) modelBatch.dispose();
         if (defaultParticleTexture != null) defaultParticleTexture.dispose();
         if (particleModelBatch != null) particleModelBatch.dispose();

@@ -466,6 +466,7 @@ public final class BrickInfo {
         add(EmitParticleBurstBrick.class, "Производит мгновенный импульсный выброс частиц");
         add(StopParticleInstanceBrick.class, "Останавливает или мгновенно удаляет экземпляр частиц");
         add(UpdateScreenBrick.class, "Принудительно отрисовывает 1 кадр экрана во время моментального цикла");
+        add(ApplyShaderBrick.class, "Применяет шейдерный эффект к экрану, спрайту или буферу (для спрайта - введите его имя. Для экрана - оставьте цель пустой. Для буффера введите buffer://имя_буфера)");
     }
 
     private static void initEnglishDescriptions() {
@@ -893,6 +894,7 @@ public final class BrickInfo {
         add(EmitParticleBurstBrick.class, "Triggers an instant particle burst");
         add(StopParticleInstanceBrick.class, "Stops or immediately deletes particle instance");
         add(UpdateScreenBrick.class, "Forces a single frame render during instant loops");
+        add(ApplyShaderBrick.class, "Applies a shader effect to the screen, sprite, or buffer (for a sprite, enter its name; for the screen, leave the target empty; for a buffer, enter buffer://buffer_name)");
     }
 
     private static void initPortugueseDescriptions() {
@@ -1304,6 +1306,7 @@ public final class BrickInfo {
         add(EmitParticleBurstBrick.class, "Dispara um pulso instantâneo de partículas");
         add(StopParticleInstanceBrick.class, "Para ou exclui imediatamente a instância de partículas");
         add(UpdateScreenBrick.class, "Força a renderização de 1 quadro durante loops instantâneos");
+        add(ApplyShaderBrick.class, "Aplica um efeito de shader à tela, ao sprite ou ao buffer (para sprite, insira o nome dele; para a tela, deixe o alvo vazio; para buffer, insira buffer://nome_do_buffer)");
     }
 
     private static void initChineseDescriptions() {

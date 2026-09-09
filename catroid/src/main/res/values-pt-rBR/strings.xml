@@ -23,6 +23,48 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="component_audio">Fonte de Áudio</string>
+    <string name="editor_3d_audio_clip">Clipe de Áudio</string>
+    <string name="editor_3d_audio_no_clip">Nenhum áudio selecionado</string>
+    <string name="editor_3d_audio_select">Selecionar</string>
+    <string name="editor_3d_audio_preview_play">▶ Ouvir</string>
+    <string name="editor_3d_audio_preview_stop">■ Parar</string>
+    <string name="editor_3d_audio_play_on_awake">Reproduzir ao Iniciar</string>
+    <string name="editor_3d_audio_loop">Repetir (Loop)</string>
+    <string name="editor_3d_audio_is_3d">Áudio Espacial 3D</string>
+    <string name="editor_3d_audio_is_music">Streaming de Áudio (Música)</string>
+    <string name="editor_3d_audio_delay">Atraso Inicial (seg)</string>
+    <string name="editor_3d_audio_volume">Volume (0.0 - 1.0)</string>
+    <string name="editor_3d_audio_pitch">Tom / Pitch (0.5 - 2.0)</string>
+    <string name="editor_3d_audio_range">Distância de Audição (Raio)</string>
+    <string name="editor_3d_audio_select_title">Selecionar Arquivo de Áudio</string>
+    <string name="editor_3d_audio_no_files">Nenhum arquivo de áudio (.mp3, .ogg, .wav) encontrado no projeto.</string>
+
+    <string name="editor_3d_grid_snap_dialog_title">Tamanho da Grade</string>
+    <string name="editor_3d_grid_snap_dialog_msg">Digite o tamanho da célula em metros:</string>
+    <string name="editor_3d_grid_snap_hint">ex.: 0.5</string>
+    <string name="editor_3d_grid_snap_error_positive">O tamanho da grade deve ser maior que 0</string>
+    <string name="editor_3d_grid_snap_error_number">Por favor, digite um número válido!</string>
+    <string name="editor_3d_grid_snap_success">Tamanho da grade definido para: %s m</string>
+    <string name="apply">Aplicar</string>
+
+    <string formatted="false" name="brick_subcategory_shaders">Shaders</string>
+
+    <string formatted="false" name="brick_apply_shader_id">ID do efeito</string>
+    <string formatted="false" name="brick_apply_shader_preset">Predefinição</string>
+    <string formatted="false" name="brick_apply_shader_target">Alvo</string>
+    <string formatted="false" name="brick_apply_shader_strength">Intensidade</string>
+
+    <string-array name="brick_shader_presets">
+        <item>Onda de choque</item>
+        <item>Glitch</item>
+        <item>Bulge / Lente</item>
+        <item>Bloom</item>
+        <item>Névoa 2D</item>
+        <item>Pixelar</item>
+        <item>Cor / Sépia</item>
+    </string-array>
+
     <string formatted="false" name="brick_update_screen">Atualizar tela</string>
 
     <string name="particle_exit_dialog_title">Alterações não salvas</string>
@@ -1908,6 +1950,9 @@
         <item>Densidade</item>
         <item>Falloff (Decaimento)</item>
         <item>Altura</item>
+        <item>Color (R)</item>
+        <item>Color (G)</item>
+        <item>Color (B)</item>
     </string-array>
     <string-array name="pp_params_dof">
         <item>Ativado</item>

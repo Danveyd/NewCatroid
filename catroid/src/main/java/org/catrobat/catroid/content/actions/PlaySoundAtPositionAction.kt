@@ -30,6 +30,6 @@ class PlaySoundAtPositionAction : TemporalAction() {
         val vol = (volume?.interpretFloat(scope) ?: 100f) / 100f
         val pit = (pitch?.interpretFloat(scope) ?: 100f) / 100f
 
-        engine.playSoundAt(instance, sound, x, y, z, vol, pit, loop)
+        engine.playSoundAt(instance, sound, x, y, z, vol, pit, loop, true, 250f)
     }
 }

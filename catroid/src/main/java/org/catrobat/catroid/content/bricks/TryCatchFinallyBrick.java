@@ -16,9 +16,9 @@ public class TryCatchFinallyBrick extends BrickBaseType implements CompositeBric
     private transient FinallyBrick finallyBrickPart = new FinallyBrick(this);
     private transient EndBrick endBrick = new EndBrick(this);
 
-    protected List<Brick> tryBricks = new ArrayList<>();
-    protected List<Brick> catchBricks = new ArrayList<>();
-    protected List<Brick> finallyBricks = new ArrayList<>();
+    public List<Brick> tryBricks = new ArrayList<>();
+    public List<Brick> catchBricks = new ArrayList<>();
+    public List<Brick> finallyBricks = new ArrayList<>();
 
     public TryCatchFinallyBrick() {
     }

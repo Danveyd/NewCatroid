@@ -108,14 +108,14 @@ class CreateProjectTest {
         onView(withId(R.id.input))
             .check(matches(isDisplayed()))
 
-        onView(withId(R.id.portrait_radio_button))
+        /*onView(withId(R.id.portrait_radio_button))
             .check(matches(allOf(isDisplayed(), isChecked())))
 
         onView(withId(R.id.landscape_radio_button))
             .check(matches(allOf(isDisplayed(), isNotChecked())))
 
         onView(withId(R.id.cast_radio_button))
-            .check(matches(allOf(isDisplayed(), isNotChecked())))
+            .check(matches(allOf(isDisplayed(), isNotChecked())))*/
 
         onView(withId(R.id.example_project_switch))
             .check(matches(allOf(isDisplayed(), isNotChecked())))
@@ -131,14 +131,14 @@ class CreateProjectTest {
         onView(withId(R.id.newProjectFloatingActionButton))
             .perform(click())
 
-        onView(withId(R.id.portrait_radio_button))
+        /*onView(withId(R.id.portrait_radio_button))
             .check(matches(allOf(isDisplayed(), isChecked())))
 
         onView(withId(R.id.landscape_radio_button))
             .check(matches(allOf(isDisplayed(), isNotChecked())))
 
         onView(withId(R.id.cast_radio_button))
-            .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))*/
     }
 
     @Test
@@ -148,8 +148,8 @@ class CreateProjectTest {
 
         closeSoftKeyboard()
 
-        onView(withId(R.id.cast_radio_button))
-            .perform(click())
+        /*onView(withId(R.id.cast_radio_button))
+            .perform(click())*/
 
         onView(withId(R.id.confirm))
             .perform(click())

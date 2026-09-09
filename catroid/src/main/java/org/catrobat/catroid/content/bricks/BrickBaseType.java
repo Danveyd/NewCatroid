@@ -150,18 +150,25 @@ public abstract class BrickBaseType implements Brick {
 		bricks.add(this);
 	}
 
-	@Override
-	public Script getScript() {
-		return getParent().getScript();
-	}
+    @Override
+    public Script getScript() {
+        if (getParent() == null) {
+            return null;
+        }
+        return getParent().getScript();
+    }
 
-	@Override
-	public int getPositionInScript() {
-		if (getParent() instanceof ScriptBrick) {
-			return getScript().getBrickList().indexOf(this);
-		}
-		return getParent().getPositionInScript();
-	}
+    @Override
+    public int getPositionInScript() {
+        if (getParent() == null) {
+            return -1;
+        }
+        if (getParent() instanceof ScriptBrick) {
+            Script script = getScript();
+            return script != null ? script.getBrickList().indexOf(this) : -1;
+        }
+        return getParent().getPositionInScript();
+    }
 
 	@Override
 	public Brick getParent() {

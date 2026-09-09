@@ -195,6 +195,9 @@ public class CollisionInformation {
         float epsilon = 1.0f;
         collisionPolygons = new Polygon[0];
 
+        int previousVertexCount = -1;
+        int stuckCounter = 0;
+
         do {
             if (isCalculationThreadCancelled) {
                 return;
@@ -221,6 +224,20 @@ public class CollisionInformation {
                 collisionPolygons = PolygonDecomposer.decompose(simplifiedPolygons);
             } catch (Exception e) {
                 Log.e(TAG, "PolygonDecomposer error: " + e.getMessage());
+                collisionPolygons = createCollisionPolygonByHitbox(bitmap);
+                break;
+            }
+
+            int currentVertexCount = getNumberOfVertices();
+            if (currentVertexCount == previousVertexCount) {
+                stuckCounter++;
+            } else {
+                stuckCounter = 0;
+            }
+            previousVertexCount = currentVertexCount;
+
+            if (stuckCounter >= 3 || epsilon > 10000f) {
+                Log.w(TAG, "Cannot simplify polygons further (too many isolated noise chunks). Falling back to Hitbox.");
                 collisionPolygons = createCollisionPolygonByHitbox(bitmap);
                 break;
             }
@@ -274,6 +291,12 @@ public class CollisionInformation {
         ArrayList<CollisionPolygonVertex> horizontal = createHorizontalVertices(grid, bitmap.getWidth(), bitmap.getHeight());
 
         if (vertical.size() == 0 || horizontal.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        if (vertical.size() + horizontal.size() > 2000) {
+            Log.w(TAG_COLLISION_POLYGON, "Texture is too complex or noisy (" +
+                    (vertical.size() + horizontal.size()) + " edges). Falling back to Hitbox.");
             return new ArrayList<>();
         }
 

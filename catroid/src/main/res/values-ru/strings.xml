@@ -23,6 +23,48 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="component_audio">Источник звука</string>
+    <string name="editor_3d_audio_clip">Аудиоклип</string>
+    <string name="editor_3d_audio_no_clip">Аудиоклип не выбран</string>
+    <string name="editor_3d_audio_select">Выбрать</string>
+    <string name="editor_3d_audio_preview_play">▶ Прослушать</string>
+    <string name="editor_3d_audio_preview_stop">■ Остановить</string>
+    <string name="editor_3d_audio_play_on_awake">Воспроизводить при старте</string>
+    <string name="editor_3d_audio_loop">Зацикливать</string>
+    <string name="editor_3d_audio_is_3d">3D Пространственный звук</string>
+    <string name="editor_3d_audio_is_music">Потоковое аудио (Музыка)</string>
+    <string name="editor_3d_audio_delay">Задержка старта (сек)</string>
+    <string name="editor_3d_audio_volume">Громкость (0.0 - 1.0)</string>
+    <string name="editor_3d_audio_pitch">Высота тона / Pitch (0.5 - 2.0)</string>
+    <string name="editor_3d_audio_range">Радиус слышимости</string>
+    <string name="editor_3d_audio_select_title">Выберите аудиофайл</string>
+    <string name="editor_3d_audio_no_files">В проекте не найдено аудиофайлов (.mp3, .ogg, .wav).</string>
+
+    <string name="editor_3d_grid_snap_dialog_title">Шаг сетки</string>
+    <string name="editor_3d_grid_snap_dialog_msg">Введите размер ячейки в метрах:</string>
+    <string name="editor_3d_grid_snap_hint">например: 0.5</string>
+    <string name="editor_3d_grid_snap_error_positive">Шаг должен быть больше 0</string>
+    <string name="editor_3d_grid_snap_error_number">Введите корректное число!</string>
+    <string name="editor_3d_grid_snap_success">Шаг сетки установлен: %s м</string>
+    <string name="apply">Применить</string>
+
+    <string formatted="false" name="brick_subcategory_shaders">Шейдеры</string>
+
+    <string formatted="false" name="brick_apply_shader_id">ID эффекта</string>
+    <string formatted="false" name="brick_apply_shader_preset">Пресет</string>
+    <string formatted="false" name="brick_apply_shader_target">Цель</string>
+    <string formatted="false" name="brick_apply_shader_strength">Сила</string>
+
+    <string-array name="brick_shader_presets">
+        <item>Взрывная волна</item>
+        <item>Глитч</item>
+        <item>Выпуклость</item>
+        <item>Свечение (Bloom)</item>
+        <item>2D Туман</item>
+        <item>Пикселизация</item>
+        <item>Цвет / Сепия</item>
+    </string-array>
+
     <string formatted="false" name="brick_update_screen">Обновить экран</string>
 
     <string name="particle_exit_dialog_title">Несохраненные изменения</string>
@@ -1106,6 +1148,7 @@
     <string name="pref_ai_settings_title">Настройки ИИ</string>
     <string name="pref_ai_autocomplete_title">Автодополнение с ИИ</string>
     <string name="pref_ai_autocomplete_summary">Автоматическая генерация скриптов и формул на устройстве с помощью нейросети Kove.</string>
+    <string name="brick_context_dialog_kove_autocomplete">✦ Kove: дополнить скрипт</string>
 
     <string name="ai_download_dialog_title">Скачивание модели Kove</string>
     <string name="ai_download_dialog_message">Для включения автодополнения необходимо скачать модель нейросети размером около 800 МБ. Хотите скачать её сейчас?</string>
@@ -1841,7 +1884,7 @@
     <string-array name="pp_params_eyeadapt"><item>Включен</item><item>Яркость цели</item><item>Скорость</item><item>Мин. экспозиция</item><item>Макс. экспозиция</item></string-array>
     <string-array name="pp_params_ssr"><item>Включен</item><item>Отражаемость</item><item>Шаги</item><item>Толщина</item><item>Дистанция</item><item>Stride (Шаг)</item><item>Jitter (Дрожание)</item><item>Затухание краев</item></string-array>
     <string-array name="pp_params_ssao"><item>Включен</item><item>Интенсивность</item><item>Радиус</item><item>Bias (Смещение)</item></string-array>
-    <string-array name="pp_params_heightfog"><item>Включен</item><item>Плотность</item><item>Спад (Falloff)</item><item>Высота</item></string-array>
+    <string-array name="pp_params_heightfog"><item>Включен</item><item>Плотность</item><item>Спад (Falloff)</item><item>Высота</item><item>Цвет (R)</item><item>Цвет (G)</item><item>Цвет (B)</item></string-array>
     <string-array name="pp_params_dof"><item>Включен</item><item>Дистанция фокуса</item><item>Диапазон</item><item>Размер блюра</item><item>Переход (Transition)</item><item>Автофокус (1/0)</item><item>Скорость АФ</item></string-array>
     <string-array name="pp_params_godrays"><item>Включен</item><item>Экспозиция</item><item>Затухание (Decay)</item><item>Плотность</item><item>Вес</item></string-array>
     <string-array name="pp_params_volfog"><item>Включен</item><item>Плотность</item><item>Рассеивание</item><item>Шаги</item><item>Дистанция</item></string-array>
@@ -2472,6 +2515,16 @@
         <item>Ты и я.. ты и я.. мы с тобой друзья а-а-а...</item>
         <item>Главное что нам все нравится (ВЫПУСТИТЕ ОТСЮДА)</item>
         <item>А ведь все началось с розовой скамейки...</item>
+        <item>Мне какой-то чел с ником "Sobaka" сказал его сюда написать. Ну вот, написал...</item>
+        <item>ПРЕДСТАВЛЯЕМ ВАМ ЕДИНСТВЕННЫЙ И НЕПОВТОРИМЫЙ В СВОЕМ РОДЕ, ВОСХИТИТЕЛЬНЫЙ вылет и краш лог :D</item>
+        <item>А вы хоть раз подумали, что мне вообще-то больно когда вы вырезаете блоки? :(</item>
+        <item>я календарь... переверну... и снова 3-е сентября...</item>
+        <item>Конечно я создал для вас звук перетаскивания блоков, вот он: клик клик клик клик клик</item>
+        <item>Учи физику: E = (mv^2) / 2</item>
+        <item>Иногда бывает скучно, да? Если будет так ты всегда можешь включить Kove и пообщаться с ним через блоки комментариев, хахах</item>
+        <item>ТОНИ СТАРК СОБРАЛ ЯДЕРНЫЙ РЕАКТОР СИДЯ В ЯМЕ... ИЗ МЕТАЛОЛОМА!!11</item>
+        <item>Are you, are you, are u u u u u...</item>
+        <item>Малиновый фпссссссс... стекает по стенееееее....</item>
     </string-array>
     <string name="rebuild_cache_button">Обновить кэш физики</string>
     <string name="insert_image">Вставить изображение</string>

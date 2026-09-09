@@ -905,6 +905,18 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 		addViewToStage(viewId, webView, params);
 	}
 
+    public FrameLayout getBackgroundLayout() {
+        return backgroundLayout;
+    }
+
+    public FrameLayout getForegroundLayout() {
+        return foregroundLayout;
+    }
+
+    public Map<String, View> getDynamicViews() {
+        return dynamicViews;
+    }
+
 
 	public void playVideo(final String viewId) {
 		runOnUiThread(() -> {

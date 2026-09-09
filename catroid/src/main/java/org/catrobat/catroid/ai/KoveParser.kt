@@ -1,9 +1,5 @@
 package org.catrobat.catroid.ai
 
-// =========================================================================
-// 1. ПЕРЕЧЕНЬ ТОКЕНОВ (Tokens)
-// =========================================================================
-
 enum class TokenType {
     IDENTIFIER, NUMBER, STRING,
     PLUS, MINUS, MULT, DIV, MOD, POW,
@@ -11,16 +7,13 @@ enum class TokenType {
     GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
     AND, OR, NOT,
     LPAREN, RPAREN, COLON, COMMA, AT,
-    IF, ELSE, FOREVER, REPEAT, REPEAT_UNTIL,
-    DEF, CLASS, PASS, // Новые токены для фильтрации заголовков
+    IF, ELIF, ELSE, FOREVER, REPEAT, REPEAT_UNTIL,
+    TRY, EXCEPT, FINALLY,
+    DEF, CLASS, PASS,
     INDENT, DEDENT, NEWLINE, EOF
 }
 
 data class Token(val type: TokenType, val value: String, val line: Int, val column: Int)
-
-// =========================================================================
-// 2. ЛЕКСИЧЕСКИЙ АНАЛИЗАТОР (KoveLexer)
-// =========================================================================
 
 class KoveLexer(private val input: String) {
     private val tokens = mutableListOf<Token>()
@@ -156,7 +149,11 @@ class KoveLexer(private val input: String) {
                     val word = sb.toString()
                     val type = when (word) {
                         "if" -> TokenType.IF
+                        "elif" -> TokenType.ELIF
                         "else" -> TokenType.ELSE
+                        "try" -> TokenType.TRY
+                        "except", "catch" -> TokenType.EXCEPT
+                        "finally" -> TokenType.FINALLY
                         "and" -> TokenType.AND
                         "or" -> TokenType.OR
                         "not" -> TokenType.NOT
@@ -175,10 +172,6 @@ class KoveLexer(private val input: String) {
         }
     }
 }
-
-// =========================================================================
-// 3. СИНТАКСИЧЕСКИЙ АНАЛИЗАТОР (KoveParser)
-// =========================================================================
 
 class KoveParser(private val tokens: List<Token>) {
     private var current = 0
@@ -213,8 +206,6 @@ class KoveParser(private val tokens: List<Token>) {
         if (check(type)) return advance()
         throw RuntimeException("Parser error at line ${peek().line}, column ${peek().column}: $msg")
     }
-
-    // --- ПАРСИНГ ФОРМУЛ ---
 
     fun parseExpression(): ParsedFormulaElement = orExpr()
 
@@ -332,10 +323,6 @@ class KoveParser(private val tokens: List<Token>) {
         }
     }
 
-    // ---------------------------------------------------------------------
-    // ПАРСИНГ БЛОКОВ С ГИБКОЙ СТРУКТУРОЙ И ФИЛЬТРАЦИЕЙ ДЕКОРАТОРОВ
-    // ---------------------------------------------------------------------
-
     fun parseBricks(): List<ParsedBrick> {
         val bricks = mutableListOf<ParsedBrick>()
         while (!isAtEnd() && !check(TokenType.DEDENT)) {
@@ -345,7 +332,6 @@ class KoveParser(private val tokens: List<Token>) {
                     bricks.add(b)
                 }
             } catch (e: Exception) {
-                // Логируем ошибку, но не даем приложению упасть
                 android.util.Log.e("KOVE_PARSER", "Recovering from syntax error: ${e.message}")
                 recoverToNextLine()
             }
@@ -354,7 +340,6 @@ class KoveParser(private val tokens: List<Token>) {
         return bricks
     }
 
-    // Пропускает токены до следующей строки в случае ошибки на текущей
     private fun recoverToNextLine() {
         while (!isAtEnd() && !check(TokenType.NEWLINE) && !check(TokenType.DEDENT)) {
             advance()
@@ -368,117 +353,94 @@ class KoveParser(private val tokens: List<Token>) {
         while (match(TokenType.NEWLINE)) {}
         if (isAtEnd() || check(TokenType.DEDENT)) return null
 
-        // 1. Самозалечивание: Пропускаем декораторы (например, @StartScript)
-        if (match(TokenType.AT)) {
-            consume(TokenType.IDENTIFIER, "Expected decorator name after '@'")
-            if (match(TokenType.LPAREN)) {
-                while (!isAtEnd() && !match(TokenType.RPAREN)) {
-                    advance()
-                }
-            }
-            consume(TokenType.NEWLINE, "Expected newline after decorator")
-            return null
-        }
-
-        // 2. Самозалечивание: Пропускаем объявления функций (например, def start():)
-        if (match(TokenType.DEF)) {
-            consume(TokenType.IDENTIFIER, "Expected function name after 'def'")
-            consume(TokenType.LPAREN, "Expected '('")
-            while (!isAtEnd() && !check(TokenType.RPAREN)) {
-                advance()
-            }
-            consume(TokenType.RPAREN, "Expected ')'")
-            consume(TokenType.COLON, "Expected ':'")
-            consume(TokenType.NEWLINE, "Expected newline")
-            return null
-        }
-
-        // 3. Самозалечивание: Пропускаем объявления классов (например, class Фон:)
-        if (match(TokenType.CLASS)) {
-            consume(TokenType.IDENTIFIER, "Expected class name after 'class'")
-            if (match(TokenType.COLON)) {
-                // Обычный класс
-            } else if (match(TokenType.LPAREN)) {
-                while (!isAtEnd() && !match(TokenType.RPAREN)) {
-                    advance()
-                }
-                consume(TokenType.COLON, "Expected ':'")
-            }
-            consume(TokenType.NEWLINE, "Expected newline")
-            return null
-        }
-
-        // 4. Самозалечивание: Пропускаем заглушку pass
         if (match(TokenType.PASS)) {
-            consume(TokenType.NEWLINE, "Expected newline after 'pass'")
+            match(TokenType.NEWLINE)
             return null
         }
 
-        // Ветвление: if condition:
         if (match(TokenType.IF)) {
             val cond = parseExpression()
             consume(TokenType.COLON, "Expected ':' after 'if'")
-            consume(TokenType.NEWLINE, "Expected newline after 'if'")
-            consume(TokenType.INDENT, "Expected indented block after 'if'")
-            val thenBranch = parseBricks()
-            consume(TokenType.DEDENT, "Expected dedent")
+            match(TokenType.NEWLINE)
+
+            var thenBranch = emptyList<ParsedBrick>()
+            if (match(TokenType.INDENT)) {
+                thenBranch = parseBricks()
+                match(TokenType.DEDENT)
+            }
+
+            val elseIfBranches = mutableListOf<ParsedElseIf>()
+            while (match(TokenType.NEWLINE)) {}
+
+            while (match(TokenType.ELIF)) {
+                val elifCond = parseExpression()
+                consume(TokenType.COLON, "Expected ':' after 'elif'")
+                match(TokenType.NEWLINE)
+                var elifBody = emptyList<ParsedBrick>()
+                if (match(TokenType.INDENT)) {
+                    elifBody = parseBricks()
+                    match(TokenType.DEDENT)
+                }
+                elseIfBranches.add(ParsedElseIf(elifCond, elifBody))
+                while (match(TokenType.NEWLINE)) {}
+            }
 
             var elseBranch: List<ParsedBrick>? = null
-
-            val savedPos = current
-            while (match(TokenType.NEWLINE)) {}
             if (match(TokenType.ELSE)) {
                 consume(TokenType.COLON, "Expected ':' after 'else'")
-                consume(TokenType.NEWLINE, "Expected newline after 'else'")
-                consume(TokenType.INDENT, "Expected indented block after 'else'")
-                elseBranch = parseBricks()
-                consume(TokenType.DEDENT, "Expected dedent")
-            } else {
-                current = savedPos
+                match(TokenType.NEWLINE)
+                if (match(TokenType.INDENT)) {
+                    elseBranch = parseBricks()
+                    match(TokenType.DEDENT)
+                }
             }
-            return ParsedBrick.If(cond, thenBranch, elseBranch)
+
+            return ParsedBrick.If(cond, thenBranch, elseIfBranches, elseBranch)
         }
 
-        // Цикл: forever():
-        if (match(TokenType.FOREVER)) {
-            consume(TokenType.LPAREN, "Expected '('")
-            consume(TokenType.RPAREN, "Expected ')'")
-            consume(TokenType.COLON, "Expected ':'")
-            consume(TokenType.NEWLINE, "Expected newline")
-            consume(TokenType.INDENT, "Expected indented block")
-            val body = parseBricks()
-            consume(TokenType.DEDENT, "Expected dedent")
-            return ParsedBrick.Loop("forever", emptyMap(), body)
+        if (match(TokenType.TRY)) {
+            consume(TokenType.COLON, "Expected ':' after 'try'")
+            match(TokenType.NEWLINE)
+            var tryBody = emptyList<ParsedBrick>()
+            if (match(TokenType.INDENT)) {
+                tryBody = parseBricks()
+                match(TokenType.DEDENT)
+            }
+
+            while (match(TokenType.NEWLINE)) {}
+            var catchVar: String? = null
+            var catchBody = emptyList<ParsedBrick>()
+
+            if (match(TokenType.EXCEPT)) {
+                if (match(TokenType.LPAREN)) {
+                    if (match(TokenType.IDENTIFIER)) {
+                        catchVar = previous().value
+                    }
+                    consume(TokenType.RPAREN, "Expected ')' after except argument")
+                }
+                consume(TokenType.COLON, "Expected ':' after 'except'")
+                match(TokenType.NEWLINE)
+                if (match(TokenType.INDENT)) {
+                    catchBody = parseBricks()
+                    match(TokenType.DEDENT)
+                }
+            }
+
+            while (match(TokenType.NEWLINE)) {}
+            var finallyBody: List<ParsedBrick>? = null
+            if (match(TokenType.FINALLY)) {
+                consume(TokenType.COLON, "Expected ':' after 'finally'")
+                match(TokenType.NEWLINE)
+                if (match(TokenType.INDENT)) {
+                    finallyBody = parseBricks()
+                    match(TokenType.DEDENT)
+                }
+            }
+
+            return ParsedBrick.TryCatch(tryBody, catchVar, catchBody, finallyBody)
         }
 
-        // Цикл: repeat(times):
-        if (match(TokenType.REPEAT)) {
-            consume(TokenType.LPAREN, "Expected '('")
-            val times = parseExpression()
-            consume(TokenType.RPAREN, "Expected ')'")
-            consume(TokenType.COLON, "Expected ':'")
-            consume(TokenType.NEWLINE, "Expected newline")
-            consume(TokenType.INDENT, "Expected indented block")
-            val body = parseBricks()
-            consume(TokenType.DEDENT, "Expected dedent")
-            return ParsedBrick.Loop("repeat", mapOf("times" to times), body)
-        }
-
-        // Цикл: repeat_until(cond):
-        if (match(TokenType.REPEAT_UNTIL)) {
-            consume(TokenType.LPAREN, "Expected '('")
-            val cond = parseExpression()
-            consume(TokenType.RPAREN, "Expected ')'")
-            consume(TokenType.COLON, "Expected ':'")
-            consume(TokenType.NEWLINE, "Expected newline")
-            consume(TokenType.INDENT, "Expected indented block")
-            val body = parseBricks()
-            consume(TokenType.DEDENT, "Expected dedent")
-            return ParsedBrick.Loop("repeat_until", mapOf("cond" to cond), body)
-        }
-
-        // Простой кирпич: name(arg=value, value)
-        if (match(TokenType.IDENTIFIER)) {
+        if (match(TokenType.IDENTIFIER, TokenType.REPEAT, TokenType.FOREVER, TokenType.REPEAT_UNTIL)) {
             val name = previous().value
             consume(TokenType.LPAREN, "Expected '(' after block name '$name'")
 
@@ -499,8 +461,18 @@ class KoveParser(private val tokens: List<Token>) {
                 } while (match(TokenType.COMMA))
             }
             consume(TokenType.RPAREN, "Expected ')'")
-            consume(TokenType.NEWLINE, "Expected newline")
 
+            if (match(TokenType.COLON)) {
+                match(TokenType.NEWLINE)
+                var body = emptyList<ParsedBrick>()
+                if (match(TokenType.INDENT)) {
+                    body = parseBricks()
+                    match(TokenType.DEDENT)
+                }
+                return ParsedBrick.Composite(name, arguments, body)
+            }
+
+            match(TokenType.NEWLINE)
             return ParsedBrick.Simple(name, arguments)
         }
 

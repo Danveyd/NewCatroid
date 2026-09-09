@@ -138,6 +138,16 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_marginTop="4dp"/>
 
+            <ImageButton
+                android:id="@+id/btn_quick_grid_snap"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@android:drawable/ic_menu_crop"
+                android:contentDescription="Grid Snap Toggle"
+                app:tint="@color/solid_white"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginTop="4dp"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

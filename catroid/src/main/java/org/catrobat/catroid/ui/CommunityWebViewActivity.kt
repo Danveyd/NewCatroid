@@ -54,7 +54,7 @@ class CommunityWebViewActivity : AppCompatActivity(), ProjectLoader.ProjectLoadL
         setupWebView()
         setupNotificationListeners()
 
-        webView.loadUrl("https://newcatroid.sois.site")
+        webView.loadUrl("https://newcatroid.mindpy.dev")
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -131,7 +131,7 @@ class CommunityWebViewActivity : AppCompatActivity(), ProjectLoader.ProjectLoadL
                 lowerUrl.contains(".newtrobat") ||
                 lowerUrl.contains(".catrobat") ||
                 lowerUrl.contains("/files/")) &&
-                lowerUrl.contains("backend.sois.site")
+                lowerUrl.contains("backend.mindpy.dev")
     }
 
     private fun syncSessionWithWeb(view: WebView?) {

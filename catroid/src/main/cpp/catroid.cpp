@@ -3181,7 +3181,7 @@ Java_org_catrobat_catroid_ai_KoveManager_nativeInitKove(JNIEnv* env, jclass claz
 }
 
 JNIEXPORT jstring JNICALL
-Java_org_catrobat_catroid_ai_KoveManager_nativeCompleteKove(JNIEnv* env, jclass clazz, jstring j_prompt) {
+Java_org_catrobat_catroid_ai_KoveManager_nativeCompleteKove(JNIEnv* env, jclass clazz, jstring j_prompt, jfloat j_temperature) {
 #if USE_MNN
     if (!g_kove_loaded || !g_kove_llm) {
         __android_log_print(ANDROID_LOG_ERROR, "KOVE_NATIVE", "Kove is not loaded.");
@@ -3194,7 +3194,30 @@ Java_org_catrobat_catroid_ai_KoveManager_nativeCompleteKove(JNIEnv* env, jclass 
     }
 
     try {
-        g_kove_llm->reset();
+          g_kove_llm->reset();
+
+        float temp = static_cast<float>(j_temperature);
+        unsigned int random_seed = std::random_device{}();
+
+        std::string config_json;
+        if (temp > 0.05f) {
+            float top_p_val = (temp > 0.4f) ? 0.98f : 0.90f;
+            int top_k_val = (temp > 0.4f) ? 15 : 40;
+            float rep_penalty = (temp > 0.4f) ? 1.25f : 1.15f;
+
+            config_json = "{"
+                "\"temperature\":" + std::to_string(temp) + ","
+                "\"top_k\":" + std::to_string(top_k_val) + ","
+                "\"top_p\":" + std::to_string(top_p_val) + ","
+                "\"repetition_penalty\":" + std::to_string(rep_penalty) + ","
+                "\"sampler_type\":\"mixed\","
+                "\"seed\":" + std::to_string(random_seed) +
+            "}";
+        } else {
+            config_json = "{\"sampler_type\":\"greedy\"}";
+        }
+
+        g_kove_llm->set_config(config_json);
 
         auto start_gen = std::chrono::high_resolution_clock::now();
 
@@ -3214,7 +3237,9 @@ Java_org_catrobat_catroid_ai_KoveManager_nativeCompleteKove(JNIEnv* env, jclass 
                                  : 0.0;
         double est_tokens_sec = speed_chars_sec / 4.0;
 
-        __android_log_print(ANDROID_LOG_INFO, "KOVE_BENCHMARK", "Inference complete in %lld ms. Speed: %.2f tokens/sec", gen_duration, est_tokens_sec);
+        __android_log_print(ANDROID_LOG_INFO, "KOVE_BENCHMARK",
+            "Inference complete in %lld ms. Speed: %.2f tokens/sec (temp: %.2f, seed: %u)",
+            gen_duration, est_tokens_sec, temp, random_seed);
 
         return env->NewStringUTF(response.c_str());
     } catch (const std::exception& e) {
@@ -3222,6 +3247,7 @@ Java_org_catrobat_catroid_ai_KoveManager_nativeCompleteKove(JNIEnv* env, jclass 
         return env->NewStringUTF("ERROR: Exception during inference");
     }
 #else
+    return env->NewStringUTF("ERROR: MNN not enabled");
 #endif
 }
 

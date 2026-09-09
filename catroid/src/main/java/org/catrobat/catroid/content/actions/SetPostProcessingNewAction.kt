@@ -177,6 +177,9 @@ class SetPostProcessingNewAction : TemporalAction() {
                 1 -> data.density = fVal
                 2 -> data.falloff = fVal
                 3 -> data.height = fVal
+                4 -> data.color.r = fVal
+                5 -> data.color.g = fVal
+                6 -> data.color.b = fVal
             }
             is PostProcessingData.DepthOfField -> when (pIdx) {
                 1 -> data.focusDistance = fVal

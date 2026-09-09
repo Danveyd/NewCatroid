@@ -1586,7 +1586,7 @@
     <string-array name="pp_params_eyeadapt"><item>启用</item><item>目标亮度</item><item>速度</item><item>最小曝光</item><item>最大曝光</item></string-array>
     <string-array name="pp_params_ssr"><item>启用</item><item>反射率</item><item>步数</item><item>厚度</item><item>最大距离</item><item>步长</item><item>抖动</item><item>边缘淡出</item></string-array>
     <string-array name="pp_params_ssao"><item>启用</item><item>强度</item><item>半径</item><item>偏移</item></string-array>
-    <string-array name="pp_params_heightfog"><item>启用</item><item>密度</item><item>衰减</item><item>高度</item></string-array>
+    <string-array name="pp_params_heightfog"><item>启用</item><item>密度</item><item>衰减</item><item>高度</item><item>Color (R)</item><item>Color (G)</item><item>Color (B)</item></string-array>
     <string-array name="pp_params_dof"><item>启用</item><item>焦点距离</item><item>焦点范围</item><item>模糊大小</item><item>过渡</item><item>自动对焦（1/0）</item><item>AF速度</item></string-array>
     <string-array name="pp_params_godrays"><item>启用</item><item>曝光</item><item>衰减</item><item>密度</item><item>权重</item></string-array>
     <string-array name="pp_params_volfog"><item>启用</item><item>密度</item><item>散射</item><item>步数</item><item>最大距离</item></string-array>

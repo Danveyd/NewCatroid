@@ -19,13 +19,25 @@ public class EditorCameraController implements GestureListener {
     public float maxMoveSpeed = 100f;
     public float acceleration = 30f;
     private float currentMoveSpeed = baseMoveSpeed;
-    public boolean isAccelerating = false;
 
-    public final Vector3 velocity = new Vector3();
+    public boolean isAccelerating = false;
+    public boolean isButtonAccelerating = false;
+
+    public final Vector3 buttonVelocity = new Vector3();
+    public final Vector3 keyboardVelocity = new Vector3();
+    private final Vector3 totalVelocity = new Vector3();
     private final Vector3 tmp = new Vector3();
 
     public EditorCameraController(Camera camera) {
         this.camera = camera;
+    }
+
+    public void onCameraMove(float vx, float vy, float vz) {
+        buttonVelocity.add(vx, vy, vz);
+    }
+
+    public void onCameraAccelerate(boolean active) {
+        isButtonAccelerating = active;
     }
 
     public void update(float delta) {
@@ -33,7 +45,11 @@ public class EditorCameraController implements GestureListener {
 
         if (isPcMode) {
             handlePcInputs();
+        } else {
+            keyboardVelocity.setZero();
         }
+
+        isAccelerating = isButtonAccelerating || (isPcMode && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT));
 
         if (isAccelerating) {
             currentMoveSpeed = Math.min(currentMoveSpeed + acceleration * delta, maxMoveSpeed);
@@ -41,41 +57,41 @@ public class EditorCameraController implements GestureListener {
             currentMoveSpeed = Math.max(currentMoveSpeed - acceleration * delta * 2, baseMoveSpeed);
         }
 
-        if (velocity.isZero() && isPcMode) {
+        totalVelocity.set(buttonVelocity).add(keyboardVelocity);
+
+        if (totalVelocity.isZero()) {
             camera.update();
             return;
         }
 
         float finalSpeed = currentMoveSpeed * delta;
 
-        if (velocity.z != 0) {
-            tmp.set(camera.direction).nor().scl(finalSpeed * velocity.z);
+        if (totalVelocity.z != 0) {
+            tmp.set(camera.direction).nor().scl(finalSpeed * totalVelocity.z);
             camera.position.add(tmp);
         }
-        if (velocity.x != 0) {
-            tmp.set(camera.direction).crs(camera.up).nor().scl(finalSpeed * velocity.x);
+        if (totalVelocity.x != 0) {
+            tmp.set(camera.direction).crs(camera.up).nor().scl(finalSpeed * totalVelocity.x);
             camera.position.add(tmp);
         }
-        if (velocity.y != 0) {
-            tmp.set(camera.up).nor().scl(finalSpeed * velocity.y);
+        if (totalVelocity.y != 0) {
+            tmp.set(camera.up).nor().scl(finalSpeed * totalVelocity.y);
             camera.position.add(tmp);
         }
         camera.update();
     }
 
     private void handlePcInputs() {
-        velocity.setZero();
-        isAccelerating = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT);
+        keyboardVelocity.setZero();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) velocity.z = 1;
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) velocity.z = -1;
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) velocity.x = -1;
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) velocity.x = 1;
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) velocity.y = 1;
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) velocity.y = -1;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) keyboardVelocity.z += 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) keyboardVelocity.z -= 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) keyboardVelocity.x -= 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) keyboardVelocity.x += 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) keyboardVelocity.y += 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) keyboardVelocity.y -= 1;
 
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT) || Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-
             float deltaX = -Gdx.input.getDeltaX() * rotateSpeed;
             float deltaY = -Gdx.input.getDeltaY() * rotateSpeed;
 
@@ -95,7 +111,6 @@ public class EditorCameraController implements GestureListener {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         if (!enabled) return false;
-
         if (isPcMode) return false;
 
         camera.rotate(Vector3.Y, -deltaX * rotateSpeed);
@@ -105,11 +120,7 @@ public class EditorCameraController implements GestureListener {
         return true;
     }
 
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return enabled;
-    }
-
+    @Override public boolean touchDown(float x, float y, int pointer, int button) { return enabled; }
     @Override public boolean panStop(float x, float y, int pointer, int button) { return false; }
     @Override public boolean pinch(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4) { return false; }
     @Override public void pinchStop() {}

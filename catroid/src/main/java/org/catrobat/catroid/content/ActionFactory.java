@@ -5695,4 +5695,16 @@ public class ActionFactory extends Actions {
         action.setScope(scope);
         return action;
     }
+
+    public Action createApplyShaderAction(Sprite sprite, SequenceAction sequence,
+                                          Formula effectId, int presetSelection, Formula target, Formula strength) {
+        ApplyShaderAction action = action(ApplyShaderAction.class);
+        Scope scope = new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence);
+        action.setScope(scope);
+        action.setEffectIdFormula(effectId);
+        action.setPresetSelection(presetSelection);
+        action.setTargetFormula(target);
+        action.setStrengthFormula(strength);
+        return action;
+    }
 }

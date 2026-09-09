@@ -8,6 +8,8 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.catrobat.catroid.CatroidApplication
 import org.catrobat.catroid.R
@@ -23,8 +25,10 @@ interface KoveCallback {
 
 object KoveManager {
     private const val TAG = "KoveManager"
-    private const val MODEL_URL = "https://github.com/Danveyd/Kove/releases/download/release/kove_v1.zip"
+    private const val MODEL_URL = "https://github.com/Danveyd/Kove/releases/download/v2/kove-v2.zip"
     private const val MODEL_DIR_NAME = "kove_model"
+
+    private val inferenceMutex = Mutex()
 
     init {
         try {
@@ -39,19 +43,24 @@ object KoveManager {
     external fun nativeInitKove(modelPath: String): Boolean
 
     @JvmStatic
-    external fun nativeCompleteKove(prompt: String): String
+    external fun nativeCompleteKove(prompt: String, temperature: Float): String
 
-    suspend fun getAutocompleteSuggestion(prefix: String, suffix: String): String = withContext(Dispatchers.IO) {
-        val context = CatroidApplication.getAppContext()
-        if (!isModelDownloaded(context)) {
-            return@withContext "ERROR: Model not downloaded"
+    suspend fun getAutocompleteSuggestion(prefix: String, suffix: String, temperature: Float = 0.18f): String = inferenceMutex.withLock {
+        withContext(Dispatchers.IO) {
+            val context = CatroidApplication.getAppContext()
+            if (!isModelDownloaded(context)) {
+                return@withContext "ERROR: Model not downloaded"
+            }
+
+            val prompt = "<|fim_prefix|>$prefix<|fim_suffix|>$suffix<|fim_middle|>"
+
+            return@withContext try {
+                nativeCompleteKove(prompt, temperature)
+            } catch (e: Exception) {
+                Log.e(TAG, "Native inference failed", e)
+                "ERROR: Inference crashed"
+            }
         }
-
-        val prompt = "<|fim_prefix|>$prefix<|fim_suffix|>$suffix<|fim_middle|>"
-
-        val suggestion = nativeCompleteKove(prompt)
-
-        return@withContext suggestion
     }
 
     fun getModelDirectory(context: Context): File {
@@ -135,31 +144,57 @@ object KoveManager {
         val targetDir = getModelDirectory(context)
         if (!targetDir.exists()) targetDir.mkdirs()
 
-        val zipFile = File(targetDir, "kove_v1.zip")
+        val zipFile = File(targetDir, "kove-v2.zip")
         var connection: HttpURLConnection? = null
         try {
-            val url = URL(MODEL_URL)
-            connection = url.openConnection() as HttpURLConnection
-            connection.connect()
+            var currentUrl = MODEL_URL
+            var redirectCount = 0
 
-            if (connection.responseCode != HttpURLConnection.HTTP_OK) {
-                return false
+            while (redirectCount < 5) {
+                val url = URL(currentUrl)
+                connection = (url.openConnection() as HttpURLConnection).apply {
+                    instanceFollowRedirects = true
+                    setRequestProperty("User-Agent", "NewCatroid-App")
+                    connectTimeout = 15000
+                    readTimeout = 30000
+                }
+                connection.connect()
+
+                val status = connection.responseCode
+                if (status == HttpURLConnection.HTTP_MOVED_TEMP ||
+                    status == HttpURLConnection.HTTP_MOVED_PERM ||
+                    status == HttpURLConnection.HTTP_SEE_OTHER ||
+                    status == 307 || status == 308) {
+                    currentUrl = connection.getHeaderField("Location")
+                    connection.disconnect()
+                    redirectCount++
+                } else if (status == HttpURLConnection.HTTP_OK) {
+                    break
+                } else {
+                    Log.e(TAG, "HTTP Error code: $status")
+                    return false
+                }
             }
 
-            val fileLength = connection.contentLength
+            val fileLength = connection!!.contentLength
             val input = BufferedInputStream(connection.inputStream)
             val output = FileOutputStream(zipFile)
 
-            val data = ByteArray(4096)
+            val data = ByteArray(8192)
             var total: Long = 0
             var count: Int
+            var lastProgress = 0
+
             while (input.read(data).also { count = it } != -1) {
                 total += count
                 if (fileLength > 0) {
                     val progress = (total * 100 / fileLength).toInt()
-                    progressDialog.progress = progress
-                    (context as? android.app.Activity)?.runOnUiThread {
-                        progressDialog.setMessage(context.getString(R.string.ai_downloading_progress, progress))
+                    if (progress != lastProgress) {
+                        lastProgress = progress
+                        (context as? android.app.Activity)?.runOnUiThread {
+                            progressDialog.progress = progress
+                            progressDialog.setMessage(context.getString(R.string.ai_downloading_progress, progress))
+                        }
                     }
                 }
                 output.write(data, 0, count)
@@ -172,6 +207,7 @@ object KoveManager {
                 progressDialog.isIndeterminate = true
                 progressDialog.setMessage(context.getString(R.string.ai_unzipping))
             }
+
             unzip(zipFile, targetDir)
             zipFile.delete()
             return true

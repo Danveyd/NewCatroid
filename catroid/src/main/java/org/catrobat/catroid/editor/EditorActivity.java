@@ -2,11 +2,17 @@ package org.catrobat.catroid.editor;
 
 import android.annotation.SuppressLint;
 import androidx.appcompat.app.AlertDialog;
+
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.res.Configuration;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.InputDevice;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -81,6 +87,23 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
     private Thread.UncaughtExceptionHandler defaultCrashHandler;
     private static final String AUTOSAVE_FILE_NAME = "_recovery_autosave.rscene";
 
+    private final InputManager.InputDeviceListener inputDeviceListener = new InputManager.InputDeviceListener() {
+        @Override
+        public void onInputDeviceAdded(int deviceId) {
+            runOnUiThread(() -> updateCameraControlsVisibility());
+        }
+
+        @Override
+        public void onInputDeviceRemoved(int deviceId) {
+            runOnUiThread(() -> updateCameraControlsVisibility());
+        }
+
+        @Override
+        public void onInputDeviceChanged(int deviceId) {
+            runOnUiThread(() -> updateCameraControlsVisibility());
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +131,31 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             }
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        InputManager inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+        if (inputManager != null) {
+            inputManager.registerInputDeviceListener(inputDeviceListener, null);
+        }
+        updateCameraControlsVisibility();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        InputManager inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+        if (inputManager != null) {
+            inputManager.unregisterInputDeviceListener(inputDeviceListener);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateCameraControlsVisibility();
     }
 
     public void onEditorReady(SceneManager manager, ThreeDManager TDmanager) {
@@ -222,16 +270,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
         this.touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(hierarchyRecyclerView);
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pc_mode_enabled", false)) {
-            findViewById(R.id.btn_cam_w).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_a).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_s).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_d).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_q).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_e).setVisibility(View.GONE);
-            findViewById(R.id.btn_cam_shift).setVisibility(View.GONE);
-        }
-
+        updateCameraControlsVisibility();
 
         hierarchyRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
 
@@ -332,6 +371,61 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             if (currentSelectedObject != null) {
                 drawerLayout.openDrawer(GravityCompat.END);
             }
+        });
+
+        ImageButton btnGridSnap = findViewById(R.id.btn_quick_grid_snap);
+
+        btnGridSnap.setOnClickListener(v -> {
+            if (gizmo != null) {
+                gizmo.snapEnabled = !gizmo.snapEnabled;
+                int color = gizmo.snapEnabled ? android.graphics.Color.GREEN : android.graphics.Color.WHITE;
+                btnGridSnap.setColorFilter(color);
+                Toast.makeText(this, gizmo.snapEnabled ? "Grid Snap: ON (" + gizmo.snapSize + "m)" : "Grid Snap: OFF", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnGridSnap.setOnLongClickListener(v -> {
+            final EditText input = new EditText(this);
+            input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            input.setHint(R.string.editor_3d_grid_snap_hint);
+
+            if (gizmo != null) {
+                input.setText(String.valueOf(gizmo.snapSize));
+                input.setSelection(input.getText().length());
+            }
+
+            android.widget.FrameLayout container = new android.widget.FrameLayout(this);
+            int paddingPx = (int) (20 * getResources().getDisplayMetrics().density);
+            container.setPadding(paddingPx, paddingPx / 2, paddingPx, 0);
+            container.addView(input);
+
+            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+                    .setTitle(R.string.editor_3d_grid_snap_dialog_title)
+                    .setMessage(R.string.editor_3d_grid_snap_dialog_msg)
+                    .setView(container)
+                    .setPositiveButton(R.string.apply, (dialog, which) -> {
+                        String inputText = input.getText().toString().trim();
+                        try {
+                            float newSize = Float.parseFloat(inputText);
+                            if (newSize <= 0f) {
+                                Toast.makeText(this, R.string.editor_3d_grid_snap_error_positive, Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            if (gizmo != null) {
+                                gizmo.snapSize = newSize;
+                                gizmo.snapEnabled = true;
+                                btnGridSnap.setColorFilter(android.graphics.Color.GREEN);
+                                Toast.makeText(this, getString(R.string.editor_3d_grid_snap_success, String.valueOf(newSize)), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(this, R.string.editor_3d_grid_snap_error_number, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
+
+            return true;
         });
 
         findViewById(R.id.btn_mass_delete).setOnClickListener(v -> {
@@ -520,6 +614,54 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
         gizmo.setSelectedObject(gameObject);
         onObjectSelected(gameObject);
         drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    private boolean hasPhysicalKeyboardOrMouse() {
+        Configuration config = getResources().getConfiguration();
+        boolean isHardKeyboardActive = (config.keyboard == Configuration.KEYBOARD_QWERTY)
+                && (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO);
+
+        if (isHardKeyboardActive) {
+            return true;
+        }
+
+        InputManager inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+        if (inputManager != null) {
+            int[] deviceIds = inputManager.getInputDeviceIds();
+            for (int id : deviceIds) {
+                InputDevice device = inputManager.getInputDevice(id);
+                if (device == null || device.isVirtual()) continue;
+
+                int sources = device.getSources();
+
+                boolean isPhysicalKeyboard = (sources & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD
+                        && device.getKeyboardType() == InputDevice.KEYBOARD_TYPE_ALPHABETIC;
+
+                boolean isMouse = (sources & InputDevice.SOURCE_MOUSE) == InputDevice.SOURCE_MOUSE
+                        || (sources & InputDevice.SOURCE_TRACKBALL) == InputDevice.SOURCE_TRACKBALL;
+
+                if (isPhysicalKeyboard || isMouse) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void updateCameraControlsVisibility() {
+        boolean pcModeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("pref_pc_mode_enabled", false);
+
+        boolean shouldHideButtons = pcModeEnabled && hasPhysicalKeyboardOrMouse();
+
+        int visibility = shouldHideButtons ? View.GONE : View.VISIBLE;
+
+        View cameraControls = findViewById(R.id.camera_controls);
+        View btnShift = findViewById(R.id.btn_cam_shift);
+
+        if (cameraControls != null) cameraControls.setVisibility(visibility);
+        if (btnShift != null) btnShift.setVisibility(visibility);
     }
 
     private void setupCameraButton(int buttonId, float vx, float vy, float vz) {
@@ -975,9 +1117,13 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
 
                         fragment.getListener().resetEngine(fileHandle, settings);
 
-                        updateHierarchy();
-                        onObjectSelected(null);
-                        Toast.makeText(this, getString(R.string.editor_3d_loading_scene, selectedFile.getName()), Toast.LENGTH_SHORT).show();
+                        Gdx.app.postRunnable(() -> {
+                            runOnUiThread(() -> {
+                                updateHierarchy();
+                                onObjectSelected(null);
+                                Toast.makeText(EditorActivity.this, getString(R.string.editor_3d_loading_scene, selectedFile.getName()), Toast.LENGTH_SHORT).show();
+                            });
+                        });
                     }
                 })
                 .show();

@@ -160,6 +160,8 @@ public class Look extends Image {
     private transient TextureRegionDrawable animationDrawable;
     private transient TextureRegion[][] cachedSplitRegions = null;
 
+    public transient final java.util.List<org.catrobat.catroid.utils.shaders.ShaderEffectInstance> shaderChain = new java.util.ArrayList<>();
+
 	public Look(final Sprite sprite) {
 		this.sprite = sprite;
 		globalFrameTicker++;
@@ -661,21 +663,25 @@ public class Look extends Image {
 
         super.setVisible(alpha != 0.0f);
 
+        org.catrobat.catroid.utils.shaders.ShaderEffectInstance activeSpriteShader = null;
+        if (!shaderChain.isEmpty()) {
+            activeSpriteShader = shaderChain.get(shaderChain.size() - 1);
+        }
+
         if (maskBufferName != null) {
             initMaskShader();
             TextureRegion maskRegion = org.catrobat.catroid.content.RenderTextureManager.INSTANCE.getTextureRegion(maskBufferName);
             if (maskRegion != null && maskShader != null && maskShader.isCompiled()) {
                 Texture maskTexture = maskRegion.getTexture();
-
                 maskTexture.bind(1);
-
                 Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-
                 batch.setShader(maskShader);
-
                 maskShader.setUniformi("u_mask", 1);
                 maskShader.setUniformi("u_mode", maskMode);
             }
+        } else if (activeSpriteShader != null && activeSpriteShader.getShaderProgram().isCompiled()) {
+            batch.setShader(activeSpriteShader.getShaderProgram());
+            activeSpriteShader.applyUniformsToShader();
         } else if (shader != null) {
             batch.setShader(shader);
         }
@@ -711,19 +717,18 @@ public class Look extends Image {
                     float centerX = x + ox;
                     float centerY = y + oy;
 
-                    // BL
                     float rx0 = x0 - centerX; float ry0 = y0 - centerY;
                     x0 = (rx0 * cos - ry0 * sin) + centerX;
                     y0 = (rx0 * sin + ry0 * cos) + centerY;
-                    // TL
+
                     float rx1 = x1 - centerX; float ry1 = y1 - centerY;
                     x1 = (rx1 * cos - ry1 * sin) + centerX;
                     y1 = (rx1 * sin + ry1 * cos) + centerY;
-                    // TR
+
                     float rx2 = x2 - centerX; float ry2 = y2 - centerY;
                     x2 = (rx2 * cos - ry2 * sin) + centerX;
                     y2 = (rx2 * sin + ry2 * cos) + centerY;
-                    // BR
+
                     float rx3 = x3 - centerX; float ry3 = y3 - centerY;
                     x3 = (rx3 * cos - ry3 * sin) + centerX;
                     y3 = (rx3 * sin + ry3 * cos) + centerY;

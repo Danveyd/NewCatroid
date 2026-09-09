@@ -1,31 +1,17 @@
 /*
  * Catroid: An on-device visual programming system for Android devices
- * Copyright (C) 2010-2022 The Catrobat Team
- * (<http://developer.catrobat.org/credits>)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * An additional term exception under section 7 of the GNU Affero
- * General Public License, version 3, is available at
- * http://developer.catrobat.org/license_additional_term
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2010-2024 The Catrobat Team
  */
 package org.catrobat.catroid.sensing
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Build
-import android.util.Log
-import com.badlogic.gdx.Gdx
+import android.os.Handler
+import android.os.Looper
+import android.view.PixelCopy
+import android.view.SurfaceView
+import android.widget.VideoView
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Matrix4
@@ -45,17 +31,32 @@ private const val RGBA_END_INDEX = 6
 private const val ARGB_START_INDEX = 2
 private const val ARGB_END_INDEX = 8
 private const val HEX_COLOR_BLACK = "#000000"
-private const val TAG = "COLORATXY"
 
 @LunoClass
 class ColorAtXYDetection(
     scope: Scope,
     stageListener: StageListener?
 ) : ColorDetection(scope, stageListener) {
+
     companion object {
         @JvmStatic
-        fun disposeShared() {
+        fun disposeShared() {}
+
+        // 1x1 Bitmap для считывания ровно 1 пикселя
+        private val pixelBitmap: Bitmap by lazy {
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         }
+        private val srcRect = Rect()
+
+        // Главный обработчик для системных колбэков SurfaceFlinger
+        private val mainHandler: Handler by lazy {
+            Handler(Looper.getMainLooper())
+        }
+
+        // Асинхронный кэш цвета (0 мс задержки для 60 FPS)
+        @Volatile private var cachedColorHex: String = HEX_COLOR_BLACK
+        @Volatile private var isCopyInProgress: Boolean = false
+        @Volatile private var lastRequestTime: Long = 0L
     }
 
     private var xPosition: Int = 0
@@ -68,63 +69,131 @@ class ColorAtXYDetection(
         val xPositionUnchecked = convertArgumentToDouble(x) ?: return "NaN"
         val yPositionUnchecked = convertArgumentToDouble(y) ?: return "NaN"
 
-        if (xPositionUnchecked.isNaN() || yPositionUnchecked.isNaN() || stageListener == null) {
+        if (xPositionUnchecked.isNaN() || yPositionUnchecked.isNaN()) {
             return "NaN"
         }
 
         xPosition = xPositionUnchecked.roundToInt()
         yPosition = yPositionUnchecked.roundToInt()
 
-        if (
-            StageActivity.getActiveCameraManager() != null &&
-            StageActivity.getActiveCameraManager().isCameraActive
-        ) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                return Double.NaN.toString()
-            }
-            if (isXPositionOutsideOfScreen() || isYPositionOutsideOfScreen()) {
-                return rgbaColorToRGBHexString(Color.WHITE)
-            }
-            adjustBorderCoordinatesToPreventInvalidBitmapAccessForUsability()
-            callPixelCopyWithSurfaceView(receiveBitmapFromPixelCopy)
-            return getHexColorStringFromBitmapAtPosition(cameraBitmap, xPosition, yPosition)
+        // 1. Сначала проверяем обычные спрайты LibGDX (если они поверх видео)
+        val listener = stageListener ?: StageActivity.getActiveStageListener()
+        val spriteColor = getHexColorStringFromStagePixmap(listener)
+        if (spriteColor != HEX_COLOR_BLACK) {
+            return spriteColor
         }
 
-        return try {
-            getHexColorStringFromStagePixmap()
+        // 2. Запрашиваем считывание кадра с VideoView в фоне
+        sampleVideoViewDirectly(xPosition, yPosition)
+
+        // 3. Мгновенно возвращаем актуальный цвет видео (без блокировки потока рендера)
+        return cachedColorHex
+    }
+
+    /**
+     * Считывает пиксель напрямую из Surface видеодекодера VideoView
+     */
+    private fun sampleVideoViewDirectly(catroidX: Int, catroidY: Int) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+        // Защита от зависания очереди: если запрос выполняется дольше 100 мс, сбрасываем флаг
+        val now = System.currentTimeMillis()
+        if (isCopyInProgress) {
+            if (now - lastRequestTime > 100) {
+                isCopyInProgress = false
+            } else {
+                return
+            }
+        }
+
+        val activity = StageActivity.activeStageActivity?.get() ?: return
+        val videoView = findVideoPlayerSurfaceView(activity) ?: return
+
+        val holder = videoView.holder ?: return
+        val surface = holder.surface ?: return
+        if (!surface.isValid) return
+
+        // Получаем реальные размеры видеоповерхности
+        val surfaceFrame = holder.surfaceFrame
+        val surfW = if (surfaceFrame != null && surfaceFrame.width() > 0) surfaceFrame.width() else videoView.width
+        val surfH = if (surfaceFrame != null && surfaceFrame.height() > 0) surfaceFrame.height() else videoView.height
+
+        if (surfW <= 0 || surfH <= 0) return
+
+        // Точный перевод координат Catroid (центр 0,0, Y вверх) в координаты видео (0,0 слева сверху, Y вниз)
+        val vW = if (virtualWidth > 0) virtualWidth.toFloat() else surfW.toFloat()
+        val vH = if (virtualHeight > 0) virtualHeight.toFloat() else surfH.toFloat()
+
+        val normX = ((catroidX + vW / 2f) / vW).coerceIn(0f, 1f)
+        val normY = ((vH / 2f - catroidY) / vH).coerceIn(0f, 1f)
+
+        val px = (normX * (surfW - 1)).toInt().coerceIn(0, surfW - 1)
+        val py = (normY * (surfH - 1)).toInt().coerceIn(0, surfH - 1)
+
+        srcRect.set(px, py, px + 1, py + 1)
+
+        isCopyInProgress = true
+        lastRequestTime = now
+
+        try {
+            // Запрос PixelCopy напрямую к аппаратному Surface видео
+            PixelCopy.request(
+                surface,
+                srcRect,
+                pixelBitmap,
+                { copyResult ->
+                    if (copyResult == PixelCopy.SUCCESS) {
+                        val pixel = pixelBitmap.getPixel(0, 0)
+                        val r = (pixel shr 16) and 0xFF
+                        val g = (pixel shr 8) and 0xFF
+                        val b = pixel and 0xFF
+
+                        val rHex = r.toString(16).padStart(2, '0')
+                        val gHex = g.toString(16).padStart(2, '0')
+                        val bHex = b.toString(16).padStart(2, '0')
+                        cachedColorHex = "#$rHex$gHex$bHex"
+                    }
+                    isCopyInProgress = false
+                },
+                mainHandler
+            )
         } catch (_: Exception) {
-            Double.NaN.toString()
+            isCopyInProgress = false
         }
     }
 
-    private fun adjustBorderCoordinatesToPreventInvalidBitmapAccessForUsability() {
-        if (isXCoordinateOnRightBorder()) {
-            xPosition--
+    /**
+     * Находит именно видеоплеер, строго игнорируя gameView LibGDX
+     */
+    private fun findVideoPlayerSurfaceView(activity: StageActivity): SurfaceView? {
+        // 1. Ищем в dynamicViews (куда VideoPlayer добавляется при создании)
+        val dynamicViews = activity.dynamicViews
+        if (dynamicViews != null) {
+            for (view in dynamicViews.values) {
+                if (view is VideoView) return view
+                if (view is SurfaceView) return view
+            }
         }
-        if (isYCoordinateOnTopBorderLandscape()) {
-            yPosition--
-        } else if (isYCoordinateOnBottomBorderPortrait()) {
-            yPosition++
+
+        // 2. Ищем в backgroundLayout
+        val bgLayout = activity.backgroundLayout
+        if (bgLayout != null) {
+            for (i in bgLayout.childCount - 1 downTo 0) {
+                val child = bgLayout.getChildAt(i)
+                if (child is VideoView) return child
+                if (child is SurfaceView) return child
+            }
         }
+
+        return null
     }
 
-    private fun isXCoordinateOnRightBorder() = xPosition == virtualWidth / 2
-
-    private fun isYCoordinateOnTopBorderLandscape() =
-        ProjectManager.getInstance().isCurrentProjectLandscapeMode &&
-                yPosition == virtualHeight / 2
-
-    private fun isYCoordinateOnBottomBorderPortrait() =
-        !ProjectManager.getInstance().isCurrentProjectLandscapeMode &&
-                yPosition == -virtualHeight / 2
-
-    private fun getHexColorStringFromStagePixmap(): String {
-        val listener = stageListener ?: return HEX_COLOR_BLACK
-        val sprites = listener.spritesFromStage ?: return HEX_COLOR_BLACK
+    private fun getHexColorStringFromStagePixmap(listener: StageListener?): String {
+        val stListener = listener ?: return HEX_COLOR_BLACK
+        val sprites = stListener.spritesFromStage ?: return HEX_COLOR_BLACK
 
         val queryX = xPosition.toFloat()
         val queryY = yPosition.toFloat()
-
         val localPos = com.badlogic.gdx.math.Vector2()
 
         for (i in sprites.indices.reversed()) {
@@ -153,7 +222,6 @@ class ColorAtXYDetection(
 
                 if (px in 0 until pixmap.width && py in 0 until pixmap.height) {
                     val pixelVal = pixmap.getPixel(px, py)
-
                     val alpha = pixelVal and 0xFF
 
                     if (alpha > 10) {
@@ -180,78 +248,6 @@ class ColorAtXYDetection(
                 .map { s -> s.look }
                 .toMutableList()
         }
-
-    private fun getHexColorStringFromBitmapAtPosition(
-        bitmap: Bitmap?,
-        xPosition: Int,
-        yPosition: Int
-    ): String {
-        bitmap ?: return Double.NaN.toString()
-
-        val surfaceViewScaleX = StageActivity.getActiveCameraManager().previewView.surfaceView
-            .scaleX
-        val surfaceViewScaleY = StageActivity.getActiveCameraManager().previewView.surfaceView
-            .scaleY
-
-        val bitmapXCoordinateLandscape = convertStageToBitmapCoordinate(
-            yPosition,
-            surfaceViewScaleY,
-            bitmap.width.toFloat() / virtualHeight.toFloat(),
-            bitmap.width / 2
-        )
-
-        val bitmapYCoordinateLandscape = convertStageToBitmapCoordinate(
-            xPosition,
-            surfaceViewScaleX,
-            bitmap.height.toFloat() / virtualWidth.toFloat(),
-            bitmap.height / 2
-        )
-
-        val bitmapXCoordinatePortrait = convertStageToBitmapCoordinate(
-            xPosition,
-            surfaceViewScaleX,
-            bitmap.width.toFloat() / virtualWidth.toFloat(),
-            bitmap.width / 2
-        )
-
-        val bitmapYCoordinatePortrait = convertStageToBitmapCoordinate(
-            -yPosition,
-            surfaceViewScaleY,
-            bitmap.height.toFloat() / virtualHeight.toFloat(),
-            bitmap.height / 2
-        )
-
-        val bitmapPixel = if (ProjectManager.getInstance().isCurrentProjectLandscapeMode) {
-            bitmap.getPixel(bitmapXCoordinateLandscape, bitmapYCoordinateLandscape)
-        } else {
-            bitmap.getPixel(bitmapXCoordinatePortrait, bitmapYCoordinatePortrait)
-        }
-        return argbColorToRGBHexString(Color(bitmapPixel))
-    }
-
-    private fun rgbaColorToRGBHexString(color: Color): String =
-        COLOR_HEX_PREFIX + color.toString().substring(RGBA_START_INDEX, RGBA_END_INDEX)
-
-    private fun argbColorToRGBHexString(color: Color): String =
-        COLOR_HEX_PREFIX + color.toString().substring(ARGB_START_INDEX, ARGB_END_INDEX)
-
-    private fun convertStageToBitmapCoordinate(
-        position: Int,
-        surfaceViewScale: Float,
-        bitmapToScreenRatio: Float,
-        centerBitmapOffset: Int
-    ): Int {
-        val scaledPosition = position.toFloat() / surfaceViewScale
-        val bitmapPosition = scaledPosition * bitmapToScreenRatio
-        val centeredBitmapPosition = bitmapPosition + centerBitmapOffset
-        return centeredBitmapPosition.toInt()
-    }
-
-    private fun isXPositionOutsideOfScreen(): Boolean = xPosition > virtualWidth / 2 ||
-            xPosition < -virtualWidth / 2
-
-    private fun isYPositionOutsideOfScreen(): Boolean = yPosition > virtualHeight / 2 ||
-            yPosition < -virtualHeight / 2
 
     override fun setBufferParameters() {
         bufferHeight = 1

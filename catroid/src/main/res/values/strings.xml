@@ -23,6 +23,48 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="component_audio">Audio Source</string>
+    <string name="editor_3d_audio_clip">Audio Clip</string>
+    <string name="editor_3d_audio_no_clip">No Audio Clip Selected</string>
+    <string name="editor_3d_audio_select">Select</string>
+    <string name="editor_3d_audio_preview_play">▶ Preview</string>
+    <string name="editor_3d_audio_preview_stop">■ Stop</string>
+    <string name="editor_3d_audio_play_on_awake">Play on Awake</string>
+    <string name="editor_3d_audio_loop">Looping</string>
+    <string name="editor_3d_audio_is_3d">3D Spatial Audio</string>
+    <string name="editor_3d_audio_is_music">Streaming Audio (Music)</string>
+    <string name="editor_3d_audio_delay">Start Delay (sec)</string>
+    <string name="editor_3d_audio_volume">Volume (0.0 - 1.0)</string>
+    <string name="editor_3d_audio_pitch">Pitch (0.5 - 2.0)</string>
+    <string name="editor_3d_audio_range">Hearing Distance (Radius)</string>
+    <string name="editor_3d_audio_select_title">Select Audio File</string>
+    <string name="editor_3d_audio_no_files">No audio files (.mp3, .ogg, .wav) found in project.</string>
+
+    <string name="editor_3d_grid_snap_dialog_title">Grid Step Size</string>
+    <string name="editor_3d_grid_snap_dialog_msg">Enter cell size in meters:</string>
+    <string name="editor_3d_grid_snap_hint">e.g., 0.5</string>
+    <string name="editor_3d_grid_snap_error_positive">Step size must be greater than 0</string>
+    <string name="editor_3d_grid_snap_error_number">Please enter a valid number!</string>
+    <string name="editor_3d_grid_snap_success">Grid step set to: %s m</string>
+    <string name="apply">Apply</string>
+
+    <string formatted="false" name="brick_subcategory_shaders">Shaders</string>
+
+    <string formatted="false" name="brick_apply_shader_id">Effect ID</string>
+    <string formatted="false" name="brick_apply_shader_preset">Preset</string>
+    <string formatted="false" name="brick_apply_shader_target">Target</string>
+    <string formatted="false" name="brick_apply_shader_strength">Strength</string>
+
+    <string-array name="brick_shader_presets">
+        <item>Shockwave</item>
+        <item>Glitch</item>
+        <item>Bulge / Lens</item>
+        <item>Bloom</item>
+        <item>2D Fog</item>
+        <item>Pixelate</item>
+        <item>Color / Sepia</item>
+    </string-array>
+
     <string formatted="false" name="brick_update_screen">Update screen</string>
 
     <string name="particle_exit_dialog_title">Unsaved Changes</string>
@@ -1104,6 +1146,7 @@
     <string name="pref_ai_settings_title">AI Settings</string>
     <string name="pref_ai_autocomplete_title">AI Autocomplete</string>
     <string name="pref_ai_autocomplete_summary">Generate scripts and formulas automatically on-device using Kove neural network.</string>
+    <string name="brick_context_dialog_kove_autocomplete">✦ Kove: complete script</string>
 
     <string name="ai_download_dialog_title">Download Kove Model</string>
     <string name="ai_download_dialog_message">To enable AI Autocomplete, a neural network model of about 800 MB needs to be downloaded. Would you like to download it now?</string>
@@ -1839,7 +1882,7 @@
     <string-array name="pp_params_eyeadapt"><item>Enabled</item><item>Target Luminance</item><item>Speed</item><item>Min Exposure</item><item>Max Exposure</item></string-array>
     <string-array name="pp_params_ssr"><item>Enabled</item><item>Reflectivity</item><item>Steps</item><item>Thickness</item><item>Max Distance</item><item>Stride</item><item>Jitter</item><item>Edge Fade</item></string-array>
     <string-array name="pp_params_ssao"><item>Enabled</item><item>Intensity</item><item>Radius</item><item>Bias</item></string-array>
-    <string-array name="pp_params_heightfog"><item>Enabled</item><item>Density</item><item>Falloff</item><item>Height</item></string-array>
+    <string-array name="pp_params_heightfog"><item>Enabled</item><item>Density</item><item>Falloff</item><item>Height</item><item>Color (R)</item><item>Color (G)</item><item>Color (B)</item></string-array>
     <string-array name="pp_params_dof"><item>Enabled</item><item>Focus Distance</item><item>Focus Range</item><item>Blur Size</item><item>Transition</item><item>Auto-Focus (1/0)</item><item>AF Speed</item></string-array>
     <string-array name="pp_params_godrays"><item>Enabled</item><item>Exposure</item><item>Decay</item><item>Density</item><item>Weight</item></string-array>
     <string-array name="pp_params_volfog"><item>Enabled</item><item>Density</item><item>Scattering</item><item>Steps</item><item>Max Distance</item></string-array>
@@ -2540,6 +2583,16 @@
         <item>Ты и я.. ты и я.. мы с тобой друзья а-а-а...</item>
         <item>Главное что нам все нравится (ВЫПУСТИТЕ ОТСЮДА)</item>
         <item>А ведь все началось с розовой скамейки...</item>
+        <item>Мне какой-то чел с ником "Sobaka" сказал его сюда написать. Ну вот, написал...</item>
+        <item>ПРЕДСТАВЛЯЕМ ВАМ ЕДИНСТВЕННЫЙ И НЕПОВТОРИМЫЙ В СВОЕМ РОДЕ, ВОСХИТИТЕЛЬНЫЙ вылет и краш лог :D</item>
+        <item>А вы хоть раз подумали, что мне вообще-то больно когда вы вырезаете блоки? :(</item>
+        <item>я календарь... переверну... и снова 3-е сентября...</item>
+        <item>Конечно я создал для вас звук перетаскивания блоков, вот он: клик клик клик клик клик</item>
+        <item>Учи физику: E = (mv^2) / 2</item>
+        <item>Иногда бывает скучно, да? Если будет так ты всегда можешь включить Kove и пообщаться с ним через блоки комментариев, хахах</item>
+        <item>ТОНИ СТАРК СОБРАЛ ЯДЕРНЫЙ РЕАКТОР СИДЯ В ЯМЕ... ИЗ МЕТАЛОЛОМА!!11</item>
+        <item>Are you, are you, are u u u u u...</item>
+        <item>Малиновый фпссссссс... стекает по стенееееее....</item>
     </string-array>
     <string name="rebuild_cache_button">Update physics cache</string>
     <string name="insert_image">Insert image</string>

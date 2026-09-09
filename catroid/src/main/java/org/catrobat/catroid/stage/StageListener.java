@@ -362,6 +362,8 @@ public class StageListener implements ApplicationListener {
             axes = null;
         }
 
+        org.catrobat.catroid.utils.shaders.GlobalShaderManager.clear();
+
         SquareController.getInstance().clearSquares();
         SquareActor.disposeShared();
 
@@ -1353,6 +1355,9 @@ public class StageListener implements ApplicationListener {
 			threeDManager.dispose();
 		}
 		threeDManager = null;
+
+        org.catrobat.catroid.utils.shaders.GlobalShaderManager.clear();
+
         SquareController.getInstance().clearSquares();
         SquareActor.disposeShared();
 
@@ -1559,6 +1564,15 @@ public class StageListener implements ApplicationListener {
 	public int getVmWidth() { return (int) vmWidth; }
 	public int getVmHeight() { return (int) vmHeight; }
 
+    private final java.nio.IntBuffer fboCheckBuffer = com.badlogic.gdx.utils.BufferUtils.newIntBuffer(1);
+
+    private boolean isFboBound(com.badlogic.gdx.graphics.glutils.FrameBuffer fbo) {
+        if (fbo == null) return false;
+        fboCheckBuffer.clear();
+        Gdx.gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, fboCheckBuffer);
+        return fboCheckBuffer.get(0) == fbo.getFramebufferHandle();
+    }
+
 	@Override
 	public void render() {
         processPendingNotificationActions();
@@ -1710,6 +1724,7 @@ public class StageListener implements ApplicationListener {
                             threeDManager.update(Gdx.graphics.getDeltaTime());
                         }
                         org.catrobat.catroid.particles.ParticleManager.getInstance().updateAll(Gdx.graphics.getDeltaTime());
+                        org.catrobat.catroid.utils.shaders.GlobalShaderManager.update(Gdx.graphics.getDeltaTime());
                     }
                     updatePinnedSprites();
 
@@ -1718,6 +1733,7 @@ public class StageListener implements ApplicationListener {
                     }
                     try {
                         if (threeDManager != null && org.catrobat.catroid.content.RenderTextureManager.isMain3DRenderEnabled()) {
+                            Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
                             threeDManager.render();
                         }
                     } catch (Exception e) {
@@ -1729,8 +1745,21 @@ public class StageListener implements ApplicationListener {
                     }
 
                     if (org.catrobat.catroid.content.RenderTextureManager.isMain2DRenderEnabled()) {
-                        stage.draw();
-                        uiStage.draw();
+                        if (viewPort != null) {
+                            viewPort.apply();
+                        }
+                        if (!org.catrobat.catroid.utils.shaders.GlobalShaderManager.hasActiveScreenShaders()) {
+                            stage.draw();
+                            uiStage.draw();
+                        } else {
+                            stage.draw();
+                            org.catrobat.catroid.utils.shaders.GlobalShaderManager.captureAndRenderPostProcessing((SpriteBatch) batch);
+
+                            if (viewPort != null) {
+                                viewPort.apply();
+                            }
+                            uiStage.draw();
+                        }
                     }
                 } catch (Exception e) {
                     Log.e("RENDER", "FATAL ERROR: " + e);
@@ -2126,6 +2155,8 @@ public class StageListener implements ApplicationListener {
 		if (postProcessShader != null) {
 			postProcessShader.dispose();
 		}
+
+        org.catrobat.catroid.utils.shaders.GlobalShaderManager.clear();
 
         SquareController.getInstance().clearSquares();
         SquareActor.disposeShared();

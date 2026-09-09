@@ -985,7 +985,7 @@ class ProjectOptionsFragment : Fragment() {
         etDesc.setText(cleanDescription)
 
         tvRulesLink.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://newcatroid.sois.site/market/documents"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://newcatroid.mindpy.dev/market/documents"))
             startActivity(browserIntent)
         }
 
@@ -1155,7 +1155,7 @@ class ProjectOptionsFragment : Fragment() {
                 }
 
                 val jsonString = initPayload.toString()
-                val initUrl = "https://backend.sois.site/games/upload/init"
+                val initUrl = "https://backend.mindpy.dev/games/upload/init"
                 val initRequest = Request.Builder()
                     .url(initUrl)
                     .header("Authorization", "Bearer $token")
@@ -1181,7 +1181,7 @@ class ProjectOptionsFragment : Fragment() {
                     }
 
                     updatePublishPillStatus(getString(R.string.community_stage_finishing))
-                    val finishUrl = "https://backend.sois.site/games/upload/finish"
+                    val finishUrl = "https://backend.mindpy.dev/games/upload/finish"
 
                     val multipartBodyBuilder = MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
@@ -1260,7 +1260,7 @@ class ProjectOptionsFragment : Fragment() {
             }
 
             val chunkRequest = Request.Builder()
-                .url("https://backend.sois.site/games/upload/chunk")
+                .url("https://backend.mindpy.dev/games/upload/chunk")
                 .header("Authorization", "Bearer $token")
                 .header("X-Upload-Id", uploadId)
                 .header("X-Chunk-Index", chunkIndex.toString())
@@ -1345,7 +1345,7 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     private suspend fun fetchCaptchaSiteKey(): String? {
-        val request = Request.Builder().url("https://backend.sois.site/config").get().build()
+        val request = Request.Builder().url("https://backend.mindpy.dev/config").get().build()
         return withContext(Dispatchers.IO) {
             try {
                 httpClient.newCall(request).execute().use { response ->

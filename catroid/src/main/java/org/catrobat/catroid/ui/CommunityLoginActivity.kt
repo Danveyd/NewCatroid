@@ -102,7 +102,7 @@ class CommunityLoginActivity : AppCompatActivity() {
     }
 
     private fun fetchCaptchaSiteKey(): String? {
-        val request = Request.Builder().url("https://backend.sois.site/config").get().build()
+        val request = Request.Builder().url("https://backend.mindpy.dev/config").get().build()
         return try {
             client.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {
@@ -131,8 +131,8 @@ class CommunityLoginActivity : AppCompatActivity() {
 
     private fun executeFinalAuthRequest(login: String, email: String, pass: String, captchaToken: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val url = if (isRegisterMode) "https://backend.sois.site/auth/register"
-            else "https://backend.sois.site/auth/login"
+            val url = if (isRegisterMode) "https://backend.mindpy.dev/auth/register"
+            else "https://backend.mindpy.dev/auth/login"
 
             val jsonPayload = JSONObject().apply {
                 if (isRegisterMode) {

@@ -43,6 +43,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import org.catrobat.catroid.BuildConfig;
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.ai.KoveAutocompleteController;
@@ -184,6 +185,8 @@ public class ScriptFragment extends ListFragment implements
     private TextView warningCountText;
 
     private Sprite currentSprite;
+
+    private Brick lastInteractedBrick = null;
 
     private static final boolean DEBUG_SPRITE_PRINTER = false;
 
@@ -339,9 +342,6 @@ public class ScriptFragment extends ListFragment implements
         listView.setOnScrollListener(new android.widget.AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(android.widget.AbsListView view, int scrollState) {
-                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    KoveAutocompleteController.getInstance().dismissSuggestions();
-                }
             }
 
             @Override
@@ -518,14 +518,30 @@ public class ScriptFragment extends ListFragment implements
 		}
 	}
 
-	@Override
-	public void onScriptChanged() {
-		runCodeAnalysis();
-	}
+    @Override
+    public void onScriptChanged() {
+        runCodeAnalysis();
+
+        if (BuildConfig.FEATURE_AI_ASSIST_ENABLED && listView != null && !listView.isCurrentlyMoving()) {
+            Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
+            if (sprite != null && lastInteractedBrick != null) {
+                Brick target = lastInteractedBrick;
+                lastInteractedBrick = null;
+                triggerKoveUnderBrick(target, sprite, adapter);
+            }
+        }
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
+
+        new Thread(() -> {
+            try {
+                org.catrobat.catroid.io.XstreamSerializer.getInstance();
+            } catch (Exception ignored) {}
+        }).start();
 
         Project project = ProjectManager.getInstance().getCurrentProject();
         Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
@@ -909,44 +925,80 @@ public class ScriptFragment extends ListFragment implements
 		}
 	}
 
-	public void addBrick(Brick brick) {
+    public void addBrick(Brick brick) {
         KoveAutocompleteController.getInstance().cancelActiveJob();
         KoveAutocompleteController.getInstance().dismissSuggestions();
 
-		try {
-			if (!brick.getClass().equals(UserDefinedReceiverBrick.class) && !brick.getClass().equals(UserDefinedBrick.class)) {
-				RecentBrickListManager.getInstance().addBrick(brick.clone());
-			}
-		} catch (CloneNotSupportedException e) {
-			Log.e(TAG, Log.getStackTraceString(e));
-		}
-		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
-		addBrick(brick, sprite, adapter, listView);
-	}
+        this.lastInteractedBrick = brick;
 
-	@VisibleForTesting
-	public void addBrick(Brick brick, Sprite sprite, BrickAdapter brickAdapter, BrickListView brickListView) {
-		if (brickAdapter.getCount() == 0) {
-			if (brick instanceof ScriptBrick) {
-				sprite.addScript(brick.getScript());
-			} else {
-				Script script = new StartScript();
-				script.addBrick(brick);
-				sprite.addScript(script);
-			}
-			brickAdapter.updateItems(sprite);
-		} else if (brickAdapter.getCount() == 1 && !(brick instanceof ScriptBrick)) {
-			sprite.getScriptList().get(0).addBrick(brick);
-			brickAdapter.updateItems(sprite);
-		} else {
-			int firstVisibleBrick = brickListView.getFirstVisiblePosition();
-			int lastVisibleBrick = brickListView.getLastVisiblePosition();
-			int position = (1 + lastVisibleBrick - firstVisibleBrick) / 2;
-			position += firstVisibleBrick;
-			brickAdapter.addItem(position, brick);
-			brickListView.startMoving(brick);
-		}
-	}
+        try {
+            if (!brick.getClass().equals(UserDefinedReceiverBrick.class) && !brick.getClass().equals(UserDefinedBrick.class)) {
+                RecentBrickListManager.getInstance().addBrick(brick.clone());
+            }
+        } catch (CloneNotSupportedException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+        Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
+        addBrick(brick, sprite, adapter, listView);
+    }
+
+    @VisibleForTesting
+    public void addBrick(Brick brick, Sprite sprite, BrickAdapter brickAdapter, BrickListView brickListView) {
+        this.lastInteractedBrick = brick;
+
+        if (brickAdapter.getCount() == 0) {
+            if (brick instanceof ScriptBrick) {
+                sprite.addScript(brick.getScript());
+            } else {
+                Script script = new StartScript();
+                script.addBrick(brick);
+                sprite.addScript(script);
+            }
+            brickAdapter.updateItems(sprite);
+            triggerKoveUnderBrick(brick, sprite, brickAdapter);
+        } else if (brickAdapter.getCount() == 1 && !(brick instanceof ScriptBrick)) {
+            sprite.getScriptList().get(0).addBrick(brick);
+            brickAdapter.updateItems(sprite);
+            triggerKoveUnderBrick(brick, sprite, brickAdapter);
+        } else {
+            int firstVisibleBrick = brickListView.getFirstVisiblePosition();
+            int lastVisibleBrick = brickListView.getLastVisiblePosition();
+            int position = (1 + lastVisibleBrick - firstVisibleBrick) / 2;
+            position += firstVisibleBrick;
+            brickAdapter.addItem(position, brick);
+            brickListView.startMoving(brick);
+        }
+    }
+
+    private void triggerKoveUnderBrick(Brick brick, Sprite sprite, BrickAdapter brickAdapter) {
+        if (!isKoveAiEnabled() || brick == null) return;
+
+        Script script = brick.getScript();
+        if (script == null && brick instanceof ScriptBrick) {
+            script = ((ScriptBrick) brick).getScript();
+        }
+
+        if (script == null) {
+            Log.w("KOVE_DEBUG", "triggerKoveUnderBrick: Script is null for brick " + brick.getClass().getSimpleName());
+            return;
+        }
+
+        int positionInScript = -1;
+        if (brick instanceof ScriptBrick) {
+            positionInScript = -1;
+        } else if (script.getBrickList() != null) {
+            positionInScript = script.getBrickList().indexOf(brick);
+        }
+
+        KoveAutocompleteController.getInstance().triggerAutocomplete(
+                sprite,
+                script,
+                positionInScript,
+                brickAdapter,
+                120L,
+                brick
+        );
+    }
 
     @Override
     public void onBrickClick(Brick brick, int position) {
@@ -954,13 +1006,6 @@ public class ScriptFragment extends ListFragment implements
             listView.cancelHighlighting();
             return;
         }
-
-        KoveAutocompleteController.getInstance().onUserActivity(
-                ProjectManager.getInstance().getCurrentSprite(),
-                brick.getScript(),
-                brick.getPositionInScript(),
-                adapter
-        );
 
         List<Integer> options = getContextMenuItems(brick);
         List<String> names = new ArrayList<>();
@@ -1024,6 +1069,11 @@ public class ScriptFragment extends ListFragment implements
 	@VisibleForTesting
 	public static List<Integer> getContextMenuItems(Brick brick) {
 		List<Integer> items = new ArrayList<>();
+
+        Context context = brick.getScript() != null ? ProjectManager.getInstance().getCurrentProject() != null ? CatroidApplication.getAppContext() : null : null;
+        if (context != null && PreferenceManager.getDefaultSharedPreferences(context).getBoolean("setting_kove_ai_autocomplete", false)) {
+            items.add(R.string.brick_context_dialog_kove_autocomplete);
+        }
 
         if (brick instanceof org.catrobat.catroid.content.bricks.CompositeBrick) {
             if (org.catrobat.catroid.utils.BrickCollapseManager.INSTANCE.isCollapsed(brick)) {
@@ -1190,8 +1240,20 @@ public class ScriptFragment extends ListFragment implements
             case R.string.brick_context_dialog_clipboard_history:
                 showClipboardHistoryDialog(brick);
                 break;
+            case R.string.brick_context_dialog_kove_autocomplete:
+                Sprite sprite2 = ProjectManager.getInstance().getCurrentSprite();
+                if (sprite2 != null) {
+                    triggerKoveUnderBrick(brick, sprite2, adapter);
+                }
+                break;
 		}
 	}
+
+    private boolean isKoveAiEnabled() {
+        if (getContext() == null) return false;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return prefs.getBoolean("setting_kove_ai_autocomplete", false);
+    }
 
     private void pasteBricksBelow(List<Brick> originalBricks, Brick targetBrick) {
         if (originalBricks == null || originalBricks.isEmpty()) return;

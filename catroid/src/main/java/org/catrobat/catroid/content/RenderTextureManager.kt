@@ -79,6 +79,8 @@ object RenderTextureManager {
     private var tempFbo: FrameBuffer? = null
     private val shaderCamera = OrthographicCamera()
 
+    private var totalTime: Float = 0f
+
     fun createRenderTarget(name: String, width: Int, height: Int) {
         val existing = renderTextures[name]
         if (existing != null && existing.width == width && existing.height == height) return
@@ -267,6 +269,8 @@ object RenderTextureManager {
         if (activeTexturesList.isEmpty()) return
         isRenderingToBuffer = true
 
+        totalTime += Gdx.graphics.deltaTime
+
         tempMatrix.set(batch.projectionMatrix)
         val wasDrawing = batch.isDrawing
         if (wasDrawing) batch.end()
@@ -355,6 +359,13 @@ object RenderTextureManager {
         batch.projectionMatrix = shaderCamera.combined
         batch.begin()
 
+        if (shader.hasUniform("u_time")) {
+            shader.setUniformf("u_time", totalTime)
+        }
+        if (shader.hasUniform("u_resolution")) {
+            shader.setUniformf("u_resolution", target.width.toFloat(), target.height.toFloat())
+        }
+
         for ((uniformName, value) in target.customUniforms) {
             when (value) {
                 is Float -> shader.setUniformf(uniformName, value)
@@ -387,7 +398,6 @@ object RenderTextureManager {
         target.fbo.end()
     }
 
-
     fun clearAll() {
         val tDM = StageActivity.getActiveStageListener()?.threeDManager
         renderTextures.values.forEach {
@@ -398,6 +408,7 @@ object RenderTextureManager {
         activeTexturesList.clear()
         tempFbo?.dispose()
         tempFbo = null
+        totalTime = 0f
 
         isMain2DRenderEnabled = true
         isMainFast2DRenderEnabled = true

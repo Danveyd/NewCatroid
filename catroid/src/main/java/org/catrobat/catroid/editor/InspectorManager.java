@@ -31,6 +31,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.raptor.AnimationComponent;
+import org.catrobat.catroid.raptor.AudioComponent;
 import org.catrobat.catroid.raptor.CameraComponent;
 import org.catrobat.catroid.raptor.ColliderShapeData;
 import org.catrobat.catroid.raptor.FogComponent;
@@ -146,6 +147,7 @@ public class InspectorManager {
             if (go.hasComponent(RenderComponent.class)) createRenderView(go);
             if (go.hasComponent(PhysicsComponent.class)) createPhysicsView(go);
             if (go.hasComponent(LightComponent.class)) createLightView(go);
+            if (go.hasComponent(AudioComponent.class)) createAudioView(go);
             if (go.hasComponent(AnimationComponent.class)) createAnimationView(go);
             if (go.hasComponent(CameraComponent.class)) createCameraView(go);
             if (go.hasComponent(MaterialComponent.class)) createMaterialView(go);
@@ -2865,6 +2867,139 @@ public class InspectorManager {
         radiusEditor.addTextChangedListener(watcher);
     }
 
+    private void createAudioView(GameObject go) {
+        addComponentHeader(R.string.component_audio, true, false, () -> {
+            sceneManager.stopAudioComponentSound(go);
+            go.components.removeIf(c -> c instanceof AudioComponent);
+            sceneManager.engine.removeEditorProxy(go.id);
+            populateInspector(go);
+        });
+
+        View view = inflater.inflate(R.layout.inspector_audio, container, false);
+        AudioComponent audio = go.getComponent(AudioComponent.class);
+
+        TextView pathText = view.findViewById(R.id.text_audio_path);
+        Button selectButton = view.findViewById(R.id.btn_select_audio);
+        ImageButton clearButton = view.findViewById(R.id.btn_clear_audio);
+        Button playPreviewBtn = view.findViewById(R.id.btn_audio_preview_play);
+        Button stopPreviewBtn = view.findViewById(R.id.btn_audio_preview_stop);
+
+        CheckBox playOnAwakeCheck = view.findViewById(R.id.check_audio_play_on_awake);
+        CheckBox loopCheck = view.findViewById(R.id.check_audio_loop);
+        CheckBox is3DCheck = view.findViewById(R.id.check_audio_is_3d);
+        CheckBox isMusicCheck = view.findViewById(R.id.check_audio_is_music);
+
+        View distanceLayout = view.findViewById(R.id.layout_audio_distance);
+
+        EditText delayEdit = view.findViewById(R.id.edit_audio_delay);
+        EditText volumeEdit = view.findViewById(R.id.edit_audio_volume);
+        EditText pitchEdit = view.findViewById(R.id.edit_audio_pitch);
+        EditText distanceEdit = view.findViewById(R.id.edit_audio_distance);
+
+        pathText.setText(audio.soundFileName != null ? audio.soundFileName : activity.getString(R.string.editor_3d_audio_no_clip));
+        clearButton.setVisibility(audio.soundFileName != null ? View.VISIBLE : View.GONE);
+
+        playOnAwakeCheck.setChecked(audio.playOnAwake);
+        loopCheck.setChecked(audio.loop);
+        is3DCheck.setChecked(audio.is3D);
+        isMusicCheck.setChecked(audio.isMusic);
+
+        distanceLayout.setVisibility(audio.is3D ? View.VISIBLE : View.GONE);
+
+        delayEdit.setText(String.format(Locale.US, "%.2f", audio.startDelay));
+        volumeEdit.setText(String.format(Locale.US, "%.2f", audio.volume));
+        pitchEdit.setText(String.format(Locale.US, "%.2f", audio.pitch));
+        distanceEdit.setText(String.format(Locale.US, "%.2f", audio.maxDistance));
+
+        selectButton.setOnClickListener(v -> showAudioPicker(audio, pathText, clearButton, go));
+
+        clearButton.setOnClickListener(v -> {
+            sceneManager.stopAudioComponentSound(go);
+            audio.soundFileName = null;
+            pathText.setText(activity.getString(R.string.editor_3d_audio_no_clip));
+            clearButton.setVisibility(View.GONE);
+        });
+
+        playPreviewBtn.setOnClickListener(v -> {
+            sceneManager.stopAudioComponentSound(go);
+            sceneManager.playAudioComponentSound(go, audio);
+        });
+
+        stopPreviewBtn.setOnClickListener(v -> {
+            sceneManager.stopAudioComponentSound(go);
+        });
+
+        playOnAwakeCheck.setOnCheckedChangeListener((v, isChecked) -> audio.playOnAwake = isChecked);
+        loopCheck.setOnCheckedChangeListener((v, isChecked) -> audio.loop = isChecked);
+
+        is3DCheck.setOnCheckedChangeListener((v, isChecked) -> {
+            audio.is3D = isChecked;
+            distanceLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            sceneManager.stopAudioComponentSound(go);
+            sceneManager.playAudioComponentSound(go, audio);
+        });
+
+        isMusicCheck.setOnCheckedChangeListener((v, isChecked) -> audio.isMusic = isChecked);
+
+        addSimpleTextListener(delayEdit, s -> {
+            try { audio.startDelay = Math.max(0f, Float.parseFloat(s)); } catch (Exception ignored) {}
+        });
+
+        addSimpleTextListener(volumeEdit, s -> {
+            try {
+                audio.volume = Math.max(0f, Math.min(1f, Float.parseFloat(s)));
+                threeDManager.setSoundInstanceVolume(go.id, audio.volume * 100f);
+            } catch (Exception ignored) {}
+        });
+
+        addSimpleTextListener(pitchEdit, s -> {
+            try {
+                audio.pitch = Math.max(0.1f, Math.min(3.0f, Float.parseFloat(s)));
+                threeDManager.setSoundInstancePitch(go.id, audio.pitch);
+            } catch (Exception ignored) {}
+        });
+
+        addSimpleTextListener(distanceEdit, s -> {
+            try {
+                audio.maxDistance = Math.max(0.1f, Float.parseFloat(s));
+                threeDManager.set3DSoundMaxDistance(go.id, audio.maxDistance);
+            } catch (Exception ignored) {}
+        });
+
+        container.addView(view);
+    }
+
+    private void showAudioPicker(AudioComponent audio, TextView pathText, ImageButton clearBtn, GameObject go) {
+        File projectFilesDir = ProjectManager.getInstance().getCurrentProject().getFilesDir();
+        File[] allFiles = projectFilesDir.listFiles();
+        if (allFiles == null) return;
+
+        List<String> audioFiles = new ArrayList<>();
+        for (File file : allFiles) {
+            String name = file.getName().toLowerCase();
+            if (name.endsWith(".mp3") || name.endsWith(".ogg") || name.endsWith(".wav")) {
+                audioFiles.add(file.getName());
+            }
+        }
+
+        if (audioFiles.isEmpty()) {
+            Toast.makeText(activity, R.string.editor_3d_audio_no_files, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(activity)
+                .setTitle(R.string.editor_3d_audio_select_title)
+                .setItems(audioFiles.toArray(new String[0]), (dialog, which) -> {
+                    String selected = audioFiles.get(which);
+                    audio.soundFileName = selected;
+                    pathText.setText(selected);
+                    clearBtn.setVisibility(View.VISIBLE);
+                    sceneManager.engine.prepareAudio(selected, selected, audio.isMusic);
+                    populateInspector(go);
+                })
+                .show();
+    }
+
     private void createLightView(GameObject go) {
         addComponentHeader(R.string.component_light, true, false, () -> {
             go.components.removeIf(c -> c instanceof LightComponent);
@@ -3025,7 +3160,8 @@ public class InspectorManager {
                 activity.getString(R.string.component_particle_legacy),
                 activity.getString(R.string.component_particle_3d),
                 activity.getString(R.string.component_keyframe),
-                activity.getString(R.string.component_prefab)
+                activity.getString(R.string.component_prefab),
+                activity.getString(R.string.component_audio)
         };
 
         new AlertDialog.Builder(activity)
@@ -3093,6 +3229,11 @@ public class InspectorManager {
                         case 10:
                             if (!go.hasComponent(PrefabComponent.class)) {
                                 go.addComponent(new PrefabComponent());
+                            }
+                            break;
+                        case 11:
+                            if (!go.hasComponent(AudioComponent.class)) {
+                                go.addComponent(new AudioComponent());
                             }
                             break;
 

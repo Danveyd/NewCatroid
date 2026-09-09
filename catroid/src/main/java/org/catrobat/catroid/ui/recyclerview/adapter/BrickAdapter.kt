@@ -41,6 +41,8 @@ import android.widget.TextView
 import androidx.annotation.IntDef
 import org.catrobat.catroid.R
 import org.catrobat.catroid.ai.KoveAutocompleteController
+import org.catrobat.catroid.ai.ui.KoveSuggestionBrick
+import org.catrobat.catroid.ai.ui.KoveThinkingBrick
 import org.catrobat.catroid.codeanalysis.AnalysisManager
 import org.catrobat.catroid.codeanalysis.Severity
 import org.catrobat.catroid.content.Script
@@ -101,6 +103,8 @@ class BrickAdapter(private val sprite: Sprite) :
 
     private val brickDepthCache = HashMap<Int, Int>()
 
+    private val materializedBricks = HashSet<Brick>()
+
     init {
         updateItems(sprite)
     }
@@ -120,6 +124,17 @@ class BrickAdapter(private val sprite: Sprite) :
             background.mutate()
             background.colorFilter = filter
         }
+    }
+
+    fun highlightMaterializedBricks(newBricks: List<Brick>) {
+        materializedBricks.clear()
+        materializedBricks.addAll(newBricks)
+        notifyDataSetChanged()
+
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            materializedBricks.clear()
+            notifyDataSetChanged()
+        }, 1600L)
     }
 
     private class BrickViewHolder(val itemView: View) {
@@ -199,6 +214,44 @@ class BrickAdapter(private val sprite: Sprite) :
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val item = items[position]
 
+        if (item.isPhantom || item is KoveSuggestionBrick || item is KoveThinkingBrick) {
+            val itemView = item.getView(parent.context)
+            val useIndentation = getUseIndentation(parent.context)
+            var rootView: View = itemView
+
+            if (useIndentation) {
+                val depth = getBrickDepthCached(item)
+                val existingParent = itemView.parent
+                if (existingParent is IndentedBrickLayout) {
+                    val lastDepth = existingParent.tag as? Int
+                    if (lastDepth != depth) {
+                        existingParent.setDepth(depth)
+                        existingParent.tag = depth
+                    }
+                    rootView = existingParent
+                } else {
+                    (existingParent as? ViewGroup)?.removeView(itemView)
+
+                    val indentedLayout = IndentedBrickLayout(parent.context, depth).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        tag = depth
+                        addView(
+                            itemView,
+                            LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                        )
+                    }
+                    rootView = indentedLayout
+                }
+            }
+            return rootView
+        }
+
         if (item is SetParticleColorBrick) {
             val colorFormula = item.getFormulaWithBrickField(BrickField.COLOR, true)
                 ?: return createUnknownView("NoneBrick", parent)
@@ -224,6 +277,16 @@ class BrickAdapter(private val sprite: Sprite) :
         val targetAlpha = if (item.isPhantom) baseAlpha * 0.5f else baseAlpha
         if (itemView.alpha != targetAlpha) {
             itemView.alpha = targetAlpha
+        }
+
+        if (materializedBricks.contains(item)) {
+            itemView.foreground = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                setStroke((2.5f * parent.context.resources.displayMetrics.density).toInt(), Color.parseColor("#A8DFF4"))
+                cornerRadius = 8f * parent.context.resources.displayMetrics.density
+            }
+        } else if (holder.lastAppliedSeverity == null) {
+            itemView.foreground = null
         }
 
         var brickViewContainer = itemView.getChildAt(1)
@@ -829,6 +892,17 @@ class BrickAdapter(private val sprite: Sprite) :
             }
         }
         updateItemsFromCurrentScripts()
+
+        itemToMove?.script?.let { targetScript ->
+            val posInScript = targetScript.brickList.indexOf(itemToMove)
+            KoveAutocompleteController.getInstance().triggerAutocomplete(
+                sprite,
+                targetScript,
+                posInScript,
+                this,
+                120L
+            )
+        }
     }
 
     private fun moveScript(itemToMove: ScriptBrick, brickAboveTargetPosition: Brick) {

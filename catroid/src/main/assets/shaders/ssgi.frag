@@ -2,12 +2,9 @@
 precision highp float;
 #endif
 
-#define USE_NOISE
-
 varying vec2 v_texCoords;
 uniform sampler2D u_texture0;
 uniform sampler2D u_depthTexture;
-uniform sampler2D u_noiseTexture;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_invProjectionMatrix;
@@ -17,37 +14,42 @@ uniform float u_farPlane;
 uniform float u_radius;
 uniform float u_intensity;
 uniform float u_bias;
-uniform float u_ssaoStrength;
 uniform vec3 u_baseAlbedo;
-uniform float u_flipDepth;
 
-uniform vec2 u_noiseScale;
-uniform vec3 u_kernel[12];
-
-vec2 getDepthUV(vec2 uv) {
-if (u_flipDepth > 0.5) {
-return vec2(uv.x, 1.0 - uv.y);
-}
-return uv;
+float getScreenEdgeFade(vec2 uv) {
+vec2 margin = smoothstep(vec2(0.0), vec2(0.12), uv) * smoothstep(vec2(1.0), vec2(0.88), uv);
+return margin.x * margin.y;
 }
 
 float getDepth(vec2 uv) {
-vec2 data = texture2D(u_depthTexture, getDepthUV(uv)).rg;
+vec2 data = texture2D(u_depthTexture, uv).rg;
 return (data.x + data.y / 255.0) * u_farPlane;
 }
 
 vec3 getNormal(vec2 uv) {
-vec2 p = texture2D(u_depthTexture, getDepthUV(uv)).ba * 2.0 - 1.0;
-vec3 v = vec3(p.xy, 1.0 - abs(p.x) - abs(p.y));
-if (v.z < 0.0) v.xy = (1.0 - abs(v.yx)) * vec2(p.x >= 0.0 ? 1.0 : -1.0, p.y >= 0.0 ? 1.0 : -1.0);
-return normalize(mat3(u_viewMatrix) * v);
+vec2 p = texture2D(u_depthTexture, uv).ba * 2.0 - 1.0;
+vec3 n = vec3(p.x, p.y, 1.0 - abs(p.x) - abs(p.y));
+float t = clamp(-n.z, 0.0, 1.0);
+n.x += (n.x >= 0.0) ? -t : t;
+n.y += (n.y >= 0.0) ? -t : t;
+return normalize(mat3(u_viewMatrix) * n);
 }
 
 vec3 getViewPos(vec2 uv) {
 float z = getDepth(uv);
-vec4 ndc = vec4(uv * 2.0 - 1.0, 1.0, 1.0);
-vec4 farRay = u_invProjectionMatrix * ndc;
-return (farRay.xyz / farRay.w) * (z / u_farPlane);
+vec2 ndc = uv * 2.0 - 1.0;
+
+float invProjX = 1.0 / u_projectionMatrix[0][0];
+float invProjY = 1.0 / u_projectionMatrix[1][1];
+
+return vec3(ndc.x * invProjX * z, ndc.y * invProjY * z, -z);
+}
+
+vec2 projectToUV(vec3 viewPos) {
+vec2 ndc;
+ndc.x = (viewPos.x * u_projectionMatrix[0][0]) / (-viewPos.z);
+ndc.y = (viewPos.y * u_projectionMatrix[1][1]) / (-viewPos.z);
+return ndc * 0.5 + 0.5;
 }
 
 void main() {
@@ -62,66 +64,82 @@ void main() {
     vec3 vPos = getViewPos(v_texCoords);
     vec3 vNorm = getNormal(v_texCoords);
 
-#ifdef USE_NOISE
-    vec2 noise = texture2D(u_noiseTexture, v_texCoords * u_noiseScale).rg * 2.0 - 1.0;
-    vec3 randomVec = normalize(vec3(noise, 0.0));
-#else
-    vec3 randomVec = vec3(0.0, 1.0, 0.0);
-#endif
-
-    vec3 tangent = normalize(randomVec - vNorm * dot(randomVec, vNorm));
+    vec3 helper = abs(vNorm.z) < 0.99 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangent = normalize(cross(helper, vNorm));
     vec3 bitangent = cross(vNorm, tangent);
     mat3 TBN = mat3(tangent, bitangent, vNorm);
 
+    vec3 rayDirs[8];
+    rayDirs[0] = normalize(TBN * vec3( 0.0,  0.6, 0.8));
+    rayDirs[1] = normalize(TBN * vec3( 0.6,  0.0, 0.8));
+    rayDirs[2] = normalize(TBN * vec3( 0.0, -0.6, 0.8));
+    rayDirs[3] = normalize(TBN * vec3(-0.6,  0.0, 0.8));
+    rayDirs[4] = normalize(TBN * vec3( 0.4,  0.4, 0.82));
+    rayDirs[5] = normalize(TBN * vec3(-0.4,  0.4, 0.82));
+    rayDirs[6] = normalize(TBN * vec3(-0.4, -0.4, 0.82));
+    rayDirs[7] = normalize(TBN * vec3( 0.4, -0.4, 0.82));
+
     vec3 indirectLight = vec3(0.0);
-    float occlusion = 0.0;
-    const int SAMPLES = 8;
+    float totalWeight = 0.001;
 
-    for (int i = 0; i < SAMPLES; i++) {
-        vec3 samplePos = vPos + TBN * u_kernel[i] * u_radius;
+    const int STEPS = 6;
+    float maxDist3D = max(2.0, u_radius);
+    float stepSize = maxDist3D / float(STEPS);
 
-        vec4 offset = u_projectionMatrix * vec4(samplePos, 1.0);
-        vec2 sampleUV = (offset.xy / offset.w) * 0.5 + 0.5;
+    for (int r = 0; r < 8; r++) {
+        vec3 rayDir3D = rayDirs[r];
+        float NdotL = max(0.0, dot(vNorm, rayDir3D));
 
-        float inScreen = step(0.0, sampleUV.x) * step(sampleUV.x, 1.0) * step(0.0, sampleUV.y) * step(sampleUV.y, 1.0);
+        for (int s = 1; s <= STEPS; s++) {
+            float rayDist = float(s) * stepSize;
+            vec3 rayViewPos = vPos + rayDir3D * rayDist;
 
-        float sampleDepth = getDepth(sampleUV);
-        vec3 sampleNorm = getNormal(sampleUV);
+            vec2 sampleUV = projectToUV(rayViewPos);
 
-        vec3 sampleViewPos = getViewPos(sampleUV);
-        vec3 L = sampleViewPos - vPos;
-        float dist = length(L);
+            float edgeFade = getScreenEdgeFade(sampleUV);
+            if (edgeFade <= 0.001) break;
 
-        if (dist < 0.001) {
-            continue;
+            float sampleDepth = getDepth(sampleUV);
+            if (sampleDepth >= u_farPlane * 0.95) continue;
+
+            float rayDepth = -rayViewPos.z;
+            float depthDiff = rayDepth - sampleDepth;
+
+            if (depthDiff > 0.02) {
+                if (depthDiff < 0.8) {
+                    vec3 sampleNormGI = getNormal(sampleUV);
+                    vec3 actualDir3D = rayViewPos - vPos;
+                    float actualDist = length(actualDir3D);
+                    if (actualDist < 0.05) break;
+
+                    vec3 L_norm = actualDir3D / actualDist;
+                    float NsDotL = max(0.0, dot(sampleNormGI, -L_norm));
+
+                    if (NsDotL > 0.01) {
+                        float atten = smoothstep(maxDist3D, 0.0, actualDist);
+                        float weight = NdotL * NsDotL * atten * edgeFade;
+
+                        vec3 sampleColor = texture2D(u_texture0, sampleUV).rgb;
+
+                        indirectLight += sampleColor * weight;
+                        totalWeight += weight;
+                    }
+
+                    break;
+                }
+            }
         }
-        vec3 L_normalized = L / dist;
-
-        float geoDiff = -samplePos.z - sampleDepth;
-        float occWeight = step(u_bias, geoDiff) * (1.0 - smoothstep(u_bias, u_radius, geoDiff));
-        occlusion += occWeight * max(0.0, dot(vNorm, L_normalized)) * inScreen;
-
-        float cosTheta = max(0.0, dot(vNorm, L_normalized));
-        float cosThetaSample = max(0.0, dot(sampleNorm, -L_normalized));
-        float atten = 1.0 / (1.0 + dist * dist);
-
-        float depthDiff = abs(originDepth - sampleDepth);
-        float rangeCheck = smoothstep(u_radius, 0.0, depthDiff);
-
-        float bounceWeight = cosTheta * cosThetaSample * atten * rangeCheck * (1.0 - occWeight) * inScreen;
-        vec3 bounceColor = texture2D(u_texture0, sampleUV).rgb;
-
-        indirectLight += bounceColor * bounceWeight;
     }
 
-    occlusion /= float(SAMPLES);
-    indirectLight /= float(SAMPLES);
+    vec3 avgIndirect = indirectLight / totalWeight;
+    float coverage = clamp(totalWeight * 1.5, 0.0, 1.0);
 
-    float ssaoFactor = clamp(1.0 - (occlusion * u_ssaoStrength), 0.1, 1.0);
+    float indirectLum = dot(avgIndirect, vec3(0.299, 0.587, 0.114));
+    vec3 compressedIndirect = avgIndirect / (1.0 + indirectLum);
 
-    vec3 albedo = max(baseColor.rgb, u_baseAlbedo);
+    vec3 finalBounce = baseColor.rgb * compressedIndirect * coverage * u_intensity * 2.0;
 
-    vec3 finalColor = (baseColor.rgb * ssaoFactor) + (albedo * indirectLight * u_intensity);
+    vec3 finalColor = baseColor.rgb + finalBounce;
 
     gl_FragColor = vec4(finalColor, baseColor.a);
 }

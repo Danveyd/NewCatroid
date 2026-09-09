@@ -1,144 +1,471 @@
 package org.catrobat.catroid.ai
 
-import org.catrobat.catroid.content.Sprite
-import org.catrobat.catroid.content.Script
-import org.catrobat.catroid.content.bricks.Brick
-import org.catrobat.catroid.content.bricks.CompositeBrick
-import org.catrobat.catroid.content.bricks.IfThenLogicBeginBrick
-import org.catrobat.catroid.content.bricks.FormulaBrick
-import org.catrobat.catroid.formulaeditor.Formula
-import org.catrobat.catroid.formulaeditor.FormulaElement
+import org.catrobat.catroid.ProjectManager
 import org.catrobat.catroid.common.LookData
 import org.catrobat.catroid.common.SoundInfo
+import org.catrobat.catroid.content.Project
+import org.catrobat.catroid.content.Scene
+import org.catrobat.catroid.content.Script
+import org.catrobat.catroid.content.Sprite
+import org.catrobat.catroid.content.bricks.Brick
+import org.catrobat.catroid.content.bricks.CompositeBrick
+import org.catrobat.catroid.content.bricks.FormulaBrick
+import org.catrobat.catroid.content.bricks.IfLogicBeginBrick
+import org.catrobat.catroid.content.bricks.TryCatchFinallyBrick
+import org.catrobat.catroid.formulaeditor.Formula
+import org.catrobat.catroid.formulaeditor.FormulaElement
+import org.catrobat.catroid.formulaeditor.UserVariable
 import java.lang.reflect.Modifier
 
 object KoveContextGenerator {
 
-    fun generateContext(sprite: Sprite, activeScript: Script, cursorBrickIndex: Int): Pair<String, String> {
+    private class TraversalState(
+        val targetBrick: Brick?,
+        var isPastCursor: Boolean = false
+    )
+
+    fun generateContext(
+        activeSprite: Sprite,
+        activeScript: Script,
+        targetBrick: Brick?,
+        cursorBrickIndex: Int,
+        variantIndex: Int = 0
+    ): Pair<String, String> {
         val prefixBuilder = StringBuilder()
         val suffixBuilder = StringBuilder()
 
-        val looksList = sprite.lookList.map { "'${it.name}'" }
-        val soundsList = sprite.soundList.map { "'${it.name}'" }
+        val project: Project? = ProjectManager.getInstance().currentProject
+        val currentScene: Scene? = ProjectManager.getInstance().currentlyEditedScene
 
-        prefixBuilder.append("@Sprite(\"${sprite.name}\")\n")
-        prefixBuilder.append("class ${toCamelCase(sprite.name)}:\n")
-        prefixBuilder.append("    looks = $looksList\n")
-        prefixBuilder.append("    sounds = $soundsList\n\n")
+        val projectName = project?.name ?: "Unnamed"
+        val globalVars = project?.userVariables?.map { it.name } ?: emptyList()
+        val globalLists = project?.userLists?.map { it.name } ?: emptyList()
+        val sceneName = currentScene?.name ?: "DefaultScene"
 
-        for (script in sprite.scriptList) {
-            val scriptName = script.javaClass.simpleName
-            val isEditing = (script == activeScript)
-            val decorator = "@$scriptName"
-            val defName = toSnakeCase(scriptName.replace("Script", ""))
+        prefixBuilder.append("# Project: $projectName\n")
+        prefixBuilder.append("# Global Variables: $globalVars\n")
+        prefixBuilder.append("# Global Lists: $globalLists\n")
 
-            if (isEditing) {
-                prefixBuilder.append("    $decorator\n")
-                prefixBuilder.append("    def $defName():\n")
+        prefixBuilder.append("# " + "-".repeat(50) + "\n")
+        prefixBuilder.append("# Scene: $sceneName\n")
+        prefixBuilder.append("# " + "-".repeat(50) + "\n\n")
 
-                val safeCursorIndex = if (cursorBrickIndex < 0) 0 else cursorBrickIndex
-                val bricksBefore = script.brickList.take(safeCursorIndex)
-                val bricksAfter = script.brickList.drop(safeCursorIndex)
+        val spriteList = currentScene?.spriteList ?: listOf(activeSprite)
+        val state = TraversalState(targetBrick)
 
-                // Если перед курсором пусто — обязательно пишем pass, чтобы не ломать синтаксис Python!
-                if (bricksBefore.isEmpty()) {
-                    prefixBuilder.append("        pass\n")
-                } else {
-                    serializeBricks(bricksBefore, prefixBuilder, indent = 8)
-                }
+        for (sprite in spriteList) {
+            val spriteHeader = buildSpriteHeader(sprite)
 
-                serializeBricks(bricksAfter, suffixBuilder, indent = 8)
+            if (sprite != activeSprite) {
+                val targetBuilder = if (!state.isPastCursor) prefixBuilder else suffixBuilder
+                targetBuilder.append(spriteHeader)
+                targetBuilder.append("    pass\n\n")
             } else {
-                prefixBuilder.append("    $decorator\n")
-                prefixBuilder.append("    def $defName():\n")
+                prefixBuilder.append(spriteHeader)
+                for (script in sprite.scriptList) {
+                    val scriptHeader = buildScriptHeader(script)
 
-                if (script.brickList.isEmpty()) {
-                    prefixBuilder.append("        pass\n")
-                } else {
-                    serializeBricks(script.brickList, prefixBuilder, indent = 8)
+                    if (script == activeScript) {
+                        prefixBuilder.append(scriptHeader)
+
+                        val realBricks = script.brickList.filter {
+                            !it.isPhantom && !it.javaClass.simpleName.startsWith("Kove")
+                        }
+
+                        serializeBricksHierarchy(
+                            realBricks,
+                            prefixBuilder,
+                            suffixBuilder,
+                            state,
+                            indent = 8,
+                            variantIndex = variantIndex
+                        )
+
+                        state.isPastCursor = true
+                    } else {
+                        val targetBuilder = if (!state.isPastCursor) prefixBuilder else suffixBuilder
+                        targetBuilder.append(scriptHeader)
+                        targetBuilder.append("        pass\n\n")
+                    }
                 }
-                prefixBuilder.append("\n")
             }
         }
 
-        return Pair(prefixBuilder.toString(), suffixBuilder.toString())
+        val prefix = prefixBuilder.toString()
+        var suffix = suffixBuilder.toString()
+        if (suffix.isEmpty()) suffix = "\n"
+
+        return Pair(prefix, suffix)
+    }
+
+    private fun serializeBricksHierarchy(
+        bricks: List<Brick>,
+        prefixBuilder: StringBuilder,
+        suffixBuilder: StringBuilder,
+        state: TraversalState,
+        indent: Int,
+        variantIndex: Int
+    ) {
+        val spaces = " ".repeat(indent)
+
+        for (brick in bricks) {
+            if (brick.isCommentedOut || brick.isPhantom) continue
+            if (brick.javaClass.simpleName.startsWith("Kove")) continue
+
+            val brickType = brick.javaClass.simpleName
+            val cleanName = cleanBrickName(brickType)
+
+            fun currentBuilder() = if (!state.isPastCursor) prefixBuilder else suffixBuilder
+
+            if (brickType.startsWith("IfLogicBegin") || brickType.startsWith("IfThenLogicBegin")) {
+                val condFormula = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)
+                val condStr = if (condFormula != null) serializeFormula(condFormula.formulaTree) else "True"
+
+                currentBuilder().append(spaces).append("if $condStr:\n")
+                if (brick == state.targetBrick) state.isPastCursor = true
+
+                if (brick is CompositeBrick) {
+                    serializeBricksHierarchy(brick.nestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+
+                    if (brick is IfLogicBeginBrick) {
+                        for (branch in brick.elseIfBranches) {
+                            val elifCond = serializeFormula(branch.condition.formulaTree)
+                            currentBuilder().append(spaces).append("elif $elifCond:\n")
+                            serializeBricksHierarchy(branch.branchBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+                        }
+
+                        if (brick.hasSecondaryList() && brick.secondaryNestedBricks != null && brick.secondaryNestedBricks.isNotEmpty()) {
+                            currentBuilder().append(spaces).append("else:\n")
+                            serializeBricksHierarchy(brick.secondaryNestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+                        }
+                    }
+                }
+                continue
+            }
+
+            if (brick is TryCatchFinallyBrick) {
+                currentBuilder().append(spaces).append("try:\n")
+                if (brick == state.targetBrick) state.isPastCursor = true
+                serializeBricksHierarchy(brick.nestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+
+                val catchPart = brick.allParts.firstOrNull { it is TryCatchFinallyBrick.CatchBrick } as? TryCatchFinallyBrick.CatchBrick
+                val errVar = catchPart?.userVariable?.name ?: "err"
+                currentBuilder().append(spaces).append("except(var=\"$errVar\"):\n")
+                serializeBricksHierarchy(brick.secondaryNestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+
+                if (brick.thirdNestedBricks != null && brick.thirdNestedBricks.isNotEmpty()) {
+                    currentBuilder().append(spaces).append("finally:\n")
+                    serializeBricksHierarchy(brick.thirdNestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+                }
+                continue
+            }
+
+            if (brick is CompositeBrick) {
+                val loopHeader = when (brickType) {
+                    "ForeverBrick" -> "forever():"
+                    "RepeatBrick" -> {
+                        val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                        "repeat($times):"
+                    }
+                    "RepeatUntilBrick" -> {
+                        val cond = getFormulaFromBrick(brick, Brick.BrickField.REPEAT_UNTIL_CONDITION)?.let { serializeFormula(it.formulaTree) } ?: "False"
+                        "repeat_until($cond):"
+                    }
+                    "AsyncRepeatBrick" -> {
+                        val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                        "async_repeat(times=$times):"
+                    }
+                    "IntervalRepeatBrick" -> {
+                        val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                        val interval = getFormulaFromBrick(brick, Brick.BrickField.INTERVAL)?.let { serializeFormula(it.formulaTree) } ?: "0.1"
+                        "interval_repeat(times=$times, interval=$interval):"
+                    }
+                    "ForVariableFromToBrick" -> {
+                        val varName = extractUserVariableName(brick)
+                        val from = getFormulaFromBrick(brick, Brick.BrickField.FOR_LOOP_FROM)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                        val to = getFormulaFromBrick(brick, Brick.BrickField.FOR_LOOP_TO)?.let { serializeFormula(it.formulaTree) } ?: "10"
+                        "for_variable(var=\"$varName\", from=$from, to=$to):"
+                    }
+                    "InstantBrick" -> "instant():"
+                    "SpawnThreadBrick" -> {
+                        val id = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                        "spawn_thread(id=$id):"
+                    }
+                    "RunAsSpriteBrick" -> {
+                        val name = getFormulaFromBrick(brick, Brick.BrickField.NAME)?.let { serializeFormula(it.formulaTree) } ?: "\"Sprite\""
+                        "run_as_sprite(name=$name):"
+                    }
+                    else -> "$cleanName():"
+                }
+
+                currentBuilder().append(spaces).append("$loopHeader\n")
+                if (brick == state.targetBrick) state.isPastCursor = true
+                serializeBricksHierarchy(brick.nestedBricks, prefixBuilder, suffixBuilder, state, indent + 4, variantIndex)
+                continue
+            }
+
+            if (cleanName == "set_var" || cleanName == "change_var") {
+                val varName = extractUserVariableName(brick)
+                val valFormula = getAllFormulasFromBrick(brick).values.firstOrNull()?.let { serializeFormula(it.formulaTree) } ?: "0"
+                if (varName.isNotEmpty()) {
+                    currentBuilder().append(spaces).append("$cleanName(var=\"$varName\", val=$valFormula)\n")
+                } else {
+                    currentBuilder().append(spaces).append("$cleanName($valFormula)\n")
+                }
+                if (brick == state.targetBrick) state.isPastCursor = true
+                continue
+            }
+
+            val formulas = getAllFormulasFromBrick(brick)
+            val primitives = getPrimitiveFields(brick)
+            val totalArgsCount = formulas.size + primitives.size
+
+            if (totalArgsCount == 1) {
+                val valOnly = if (formulas.isNotEmpty()) {
+                    serializeFormula(formulas.values.first().formulaTree)
+                } else {
+                    val value = primitives.values.first()
+                    if (value is String) "\"$value\"" else value.toString()
+                }
+                currentBuilder().append(spaces).append("$cleanName($valOnly)\n")
+            } else {
+                val args = mutableListOf<String>()
+                formulas.forEach { (field, formula) ->
+                    val paramName = getShortParamName(field.name)
+                    args.add("$paramName=${serializeFormula(formula.formulaTree)}")
+                }
+                primitives.forEach { (name, value) ->
+                    val paramName = toSnakeCase(name)
+                    val valStr = when (value) {
+                        is String -> "\"$value\""
+                        is Boolean -> value.toString().replaceFirstChar { it.uppercase() }
+                        else -> value.toString()
+                    }
+                    args.add("$paramName=$valStr")
+                }
+                currentBuilder().append(spaces).append("$cleanName(${args.joinToString(", ")})\n")
+            }
+
+            if (brick == state.targetBrick) {
+                state.isPastCursor = true
+            }
+        }
+    }
+
+    private fun buildSpriteHeader(sprite: Sprite): String {
+        val looksList = sprite.lookList.map { "'${it.name}'" }
+        val soundsList = sprite.soundList.map { "'${it.name}'" }
+        val classId = safeIdentifier(sprite.name)
+
+        return "@Sprite(\"${sprite.name}\")\nclass $classId:\n    looks = $looksList\n    sounds = $soundsList\n\n"
+    }
+
+    private fun buildScriptHeader(script: Script): String {
+        val scriptType = script.javaClass.simpleName
+        val decoratorArg = getScriptDecoratorArg(script)
+        val funcName = toSnakeCase(scriptType.replace("Script", ""))
+
+        val decorator = if (decoratorArg.isNotEmpty()) "    @$scriptType($decoratorArg)\n" else "    @$scriptType\n"
+        return "$decorator    def $funcName():\n"
+    }
+
+    private fun getScriptDecoratorArg(script: Script): String {
+        return try {
+            when (script.javaClass.simpleName) {
+                "BroadcastScript" -> {
+                    val field = script.javaClass.getDeclaredField("receivedMessage")
+                    field.isAccessible = true
+                    val msg = field.get(script) as? String
+                    if (!msg.isNullOrEmpty()) "\"$msg\"" else ""
+                }
+                "WhenConditionScript" -> {
+                    val field = script.javaClass.getDeclaredField("formula")
+                    field.isAccessible = true
+                    val formula = field.get(script) as? Formula
+                    if (formula != null) serializeFormula(formula.formulaTree) else ""
+                }
+                else -> ""
+            }
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     private fun serializeBricks(bricks: List<Brick>, builder: StringBuilder, indent: Int) {
         val spaces = " ".repeat(indent)
         for (brick in bricks) {
-            if (brick.isCommentedOut) continue
-            val cleanName = cleanBrickName(brick.javaClass.simpleName)
+            if (brick.isCommentedOut || brick.isPhantom) continue
+            if (brick.javaClass.simpleName.startsWith("Kove")) continue
+            val brickType = brick.javaClass.simpleName
+            val cleanName = cleanBrickName(brickType)
 
-            if (brick is CompositeBrick) {
-                if (brick is IfThenLogicBeginBrick) {
-                    val condFormula = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)
-                    val condStr = serializeFormula(condFormula?.formulaTree)
-                    builder.append(spaces).append("if $condStr:\n")
+            if (brickType.startsWith("IfLogicBegin") || brickType.startsWith("IfThenLogicBegin")) {
+                val condFormula = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)
+                val condStr = if (condFormula != null) serializeFormula(condFormula.formulaTree) else "True"
+                builder.append(spaces).append("if $condStr:\n")
+
+                if (brick is CompositeBrick) {
                     serializeBricks(brick.nestedBricks, builder, indent + 4)
-
                     if (brick.hasSecondaryList() && brick.secondaryNestedBricks != null) {
                         builder.append(spaces).append("else:\n")
                         serializeBricks(brick.secondaryNestedBricks, builder, indent + 4)
                     }
-                } else if (cleanName == "forever") {
-                    builder.append(spaces).append("forever():\n")
-                    serializeBricks(brick.nestedBricks, builder, indent + 4)
-                } else if (cleanName == "repeat") {
-                    val timesFormula = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)
-                    val timesStr = serializeFormula(timesFormula?.formulaTree)
-                    builder.append(spaces).append("repeat($timesStr):\n")
-                    serializeBricks(brick.nestedBricks, builder, indent + 4)
-                } else if (cleanName == "repeat_until") {
-                    val condFormula = getFormulaFromBrick(brick, Brick.BrickField.REPEAT_UNTIL_CONDITION)
-                    val condStr = serializeFormula(condFormula?.formulaTree)
-                    builder.append(spaces).append("repeat_until($condStr):\n")
-                    serializeBricks(brick.nestedBricks, builder, indent + 4)
-                } else {
-                    builder.append(spaces).append("$cleanName():\n")
-                    serializeBricks(brick.nestedBricks, builder, indent + 4)
                 }
-            } else {
-                val formulas = getAllFormulasFromBrick(brick)
-                val primitives = getPrimitiveFields(brick)
-                val totalArgsCount = formulas.size + primitives.size
+                continue
+            }
 
-                if (totalArgsCount == 1) {
-                    // ЕСЛИ ОДИН АРГУМЕНТ — ГЕНЕРИРУЕМ БЕЗ ИМЕНИ ( wait(0.2) )
-                    val valOnly = if (formulas.isNotEmpty()) {
-                        serializeFormula(formulas.values.first().formulaTree)
-                    } else {
-                        val value = primitives.values.first()
-                        if (value is String) "\"$value\"" else value.toString()
-                    }
-                    builder.append(spaces).append("$cleanName($valOnly)\n")
-                } else {
-                    // ЕСЛИ МНОГО — ГЕНЕРИРУЕМ С ИМЕНАМИ
-                    val args = mutableListOf<String>()
-                    formulas.forEach { (field, formula) ->
-                        val paramName = getShortParamName(field.name)
-                        args.add("$paramName=${serializeFormula(formula.formulaTree)}")
-                    }
-                    primitives.forEach { (name, value) ->
-                        val paramName = toSnakeCase(name)
-                        val valStr = when (value) {
-                            is String -> "\"$value\""
-                            is Boolean -> value.toString().replaceFirstChar { it.uppercase() }
-                            else -> value.toString()
+            if (brick is CompositeBrick || brickType in listOf("AsyncRepeatBrick", "IntervalRepeatBrick", "RunAsSpriteBrick")) {
+                if (brickType.startsWith("IfLogicBegin") || brickType.startsWith("IfThenLogicBegin")) {
+                    val condFormula = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)
+                    val condStr = if (condFormula != null) serializeFormula(condFormula.formulaTree) else "True"
+                    builder.append(spaces).append("if $condStr:\n")
+
+                    if (brick is CompositeBrick) {
+                        serializeBricks(brick.nestedBricks, builder, indent + 4)
+
+                        if (brick is IfLogicBeginBrick) {
+                            for (branch in brick.elseIfBranches) {
+                                val elifCond = serializeFormula(branch.condition.formulaTree)
+                                builder.append(spaces).append("elif $elifCond:\n")
+                                serializeBricks(branch.branchBricks, builder, indent + 4)
+                            }
+
+                            if (brick.hasSecondaryList() && brick.secondaryNestedBricks != null && brick.secondaryNestedBricks.isNotEmpty()) {
+                                builder.append(spaces).append("else:\n")
+                                serializeBricks(brick.secondaryNestedBricks, builder, indent + 4)
+                            }
                         }
-                        args.add("$paramName=$valStr")
                     }
-                    builder.append(spaces).append("$cleanName(${args.joinToString(", ")})\n")
+                    continue
+                }
+
+                if (brick is TryCatchFinallyBrick) {
+                    builder.append(spaces).append("try:\n")
+                    serializeBricks(brick.nestedBricks, builder, indent + 4)
+
+                    val catchPart = brick.allParts.firstOrNull { it is TryCatchFinallyBrick.CatchBrick } as? TryCatchFinallyBrick.CatchBrick
+                    val errVar = catchPart?.userVariable?.name ?: "err"
+                    builder.append(spaces).append("except(var=\"$errVar\"):\n")
+                    serializeBricks(brick.secondaryNestedBricks, builder, indent + 4)
+
+                    if (brick.thirdNestedBricks != null && brick.thirdNestedBricks.isNotEmpty()) {
+                        builder.append(spaces).append("finally:\n")
+                        serializeBricks(brick.thirdNestedBricks, builder, indent + 4)
+                    }
+                    continue
+                }
+
+                if (brick is CompositeBrick) {
+                    val loopHeader = when (brickType) {
+                        "ForeverBrick" -> "forever():"
+                        "RepeatBrick" -> {
+                            val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                            "repeat($times):"
+                        }
+                        "RepeatUntilBrick" -> {
+                            val cond = getFormulaFromBrick(brick, Brick.BrickField.REPEAT_UNTIL_CONDITION)?.let { serializeFormula(it.formulaTree) } ?: "False"
+                            "repeat_until($cond):"
+                        }
+                        "AsyncRepeatBrick" -> {
+                            val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                            "async_repeat(times=$times):"
+                        }
+                        "IntervalRepeatBrick" -> {
+                            val times = getFormulaFromBrick(brick, Brick.BrickField.TIMES_TO_REPEAT)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                            val interval = getFormulaFromBrick(brick, Brick.BrickField.INTERVAL)?.let { serializeFormula(it.formulaTree) } ?: "0.1"
+                            "interval_repeat(times=$times, interval=$interval):"
+                        }
+                        "ForVariableFromToBrick" -> {
+                            val varName = extractUserVariableName(brick)
+                            val from = getFormulaFromBrick(brick, Brick.BrickField.FOR_LOOP_FROM)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                            val to = getFormulaFromBrick(brick, Brick.BrickField.FOR_LOOP_TO)?.let { serializeFormula(it.formulaTree) } ?: "10"
+                            "for_variable(var=\"$varName\", from=$from, to=$to):"
+                        }
+                        "InstantBrick" -> "instant():"
+                        "SpawnThreadBrick" -> {
+                            val id = getFormulaFromBrick(brick, Brick.BrickField.IF_CONDITION)?.let { serializeFormula(it.formulaTree) } ?: "1"
+                            "spawn_thread(id=$id):"
+                        }
+                        "RunAsSpriteBrick" -> {
+                            val name = getFormulaFromBrick(brick, Brick.BrickField.NAME)?.let { serializeFormula(it.formulaTree) } ?: "\"Sprite\""
+                            "run_as_sprite(name=$name):"
+                        }
+                        else -> "$cleanName():"
+                    }
+                    builder.append(spaces).append("$loopHeader\n")
+                    serializeBricks(brick.nestedBricks, builder, indent + 4)
+                    continue
                 }
             }
+
+            if (cleanName == "set_var" || cleanName == "change_var") {
+                val varName = extractUserVariableName(brick)
+                val valFormula = getAllFormulasFromBrick(brick).values.firstOrNull()?.let { serializeFormula(it.formulaTree) } ?: "0"
+                if (varName.isNotEmpty()) {
+                    builder.append(spaces).append("$cleanName(var=\"$varName\", val=$valFormula)\n")
+                } else {
+                    builder.append(spaces).append("$cleanName($valFormula)\n")
+                }
+                continue
+            }
+
+            val formulas = getAllFormulasFromBrick(brick)
+            val primitives = getPrimitiveFields(brick)
+            val totalArgsCount = formulas.size + primitives.size
+
+            if (totalArgsCount == 1) {
+                val valOnly = if (formulas.isNotEmpty()) {
+                    serializeFormula(formulas.values.first().formulaTree)
+                } else {
+                    val value = primitives.values.first()
+                    if (value is String) "\"$value\"" else value.toString()
+                }
+                builder.append(spaces).append("$cleanName($valOnly)\n")
+            } else {
+                val args = mutableListOf<String>()
+                formulas.forEach { (field, formula) ->
+                    val paramName = getShortParamName(field.name)
+                    args.add("$paramName=${serializeFormula(formula.formulaTree)}")
+                }
+                primitives.forEach { (name, value) ->
+                    val paramName = toSnakeCase(name)
+                    val valStr = when (value) {
+                        is String -> "\"$value\""
+                        is Boolean -> value.toString().replaceFirstChar { it.uppercase() }
+                        else -> value.toString()
+                    }
+                    args.add("$paramName=$valStr")
+                }
+                builder.append(spaces).append("$cleanName(${args.joinToString(", ")})\n")
+            }
         }
+    }
+
+    private fun extractUserVariableName(brick: Brick): String {
+        var clazz: Class<*>? = brick.javaClass
+        while (clazz != null && clazz.name.startsWith("org.catrobat.catroid")) {
+            for (field in clazz.declaredFields) {
+                if (UserVariable::class.java.isAssignableFrom(field.type)) {
+                    field.isAccessible = true
+                    val uVar = field.get(brick) as? UserVariable
+                    if (uVar != null && !uVar.name.isNullOrEmpty()) {
+                        return uVar.name
+                    }
+                }
+            }
+            clazz = clazz.superclass
+        }
+        return ""
     }
 
     fun serializeFormula(element: FormulaElement?): String {
         if (element == null) return ""
         return when (element.elementType) {
             FormulaElement.ElementType.NUMBER -> element.value ?: "0"
-            FormulaElement.ElementType.STRING -> "\"${element.value}\""
+            FormulaElement.ElementType.STRING -> {
+                val escaped = (element.value ?: "").replace("\"", "\\\"")
+                "\"$escaped\""
+            }
             FormulaElement.ElementType.USER_VARIABLE -> "var(\"${element.value}\")"
             FormulaElement.ElementType.USER_LIST -> "list(\"${element.value}\")"
             FormulaElement.ElementType.SENSOR -> "sensor(\"${element.value}\")"
@@ -148,7 +475,16 @@ object KoveContextGenerator {
                 val op = mapOperatorToSymbol(element.value)
                 val left = serializeFormula(element.leftChild)
                 val right = serializeFormula(element.rightChild)
-                if (left.isNotEmpty()) "($left $op $right)" else "($op$right)"
+
+                if (left.isNotEmpty() && right.isNotEmpty()) {
+                    "($left $op $right)"
+                } else if (left.isNotEmpty()) {
+                    left
+                } else if (right.isNotEmpty()) {
+                    "($op$right)"
+                } else {
+                    "0"
+                }
             }
             FormulaElement.ElementType.FUNCTION -> {
                 val funcName = element.value.lowercase()
@@ -198,7 +534,6 @@ object KoveContextGenerator {
                     val value = field.get(brick)
                     if (value != null) result[field.name] = value
                 } else if (LookData::class.java.isAssignableFrom(type) || SoundInfo::class.java.isAssignableFrom(type)) {
-                    // Поддержка выгрузки имен образов и звуков!
                     field.isAccessible = true
                     val value = field.get(brick)
                     if (value != null) {
@@ -213,6 +548,13 @@ object KoveContextGenerator {
             clazz = clazz.superclass
         }
         return result
+    }
+
+    private fun safeIdentifier(name: String): String {
+        var subbed = name.replace(Regex("[^a-zA-Zа-яА-Я0-9_]"), "_")
+        if (subbed.isEmpty()) return "empty_id"
+        if (subbed[0].isDigit()) subbed = "_$subbed"
+        return subbed
     }
 
     private fun mapOperatorToSymbol(op: String): String {
@@ -250,11 +592,5 @@ object KoveContextGenerator {
 
     private fun toSnakeCase(s: String): String {
         return s.replace(Regex("([a-z0-9])([A-Z])"), "$1_$2").lowercase()
-    }
-
-    private fun toCamelCase(s: String): String {
-        return s.split("_").joinToString("") { part ->
-            part.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-        }
     }
 }
