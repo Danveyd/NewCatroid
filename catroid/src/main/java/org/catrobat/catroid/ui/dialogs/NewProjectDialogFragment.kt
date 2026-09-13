@@ -200,21 +200,21 @@ class NewProjectDialogFragment : DialogFragment() {
                     is GitResult.Success -> {
                         try {
                             projectManager.loadProject(targetDir)
-                            ToastUtil.showSuccess(activity, "Проект успешно клонирован!")
+                            ToastUtil.showSuccess(activity, getString(R.string.npd_clone_success))
                             activity?.startActivity(Intent(activity, ProjectActivity::class.java))
                             dismiss()
                         } catch (e: Exception) {
-                            ToastUtil.showError(activity, "Клонирование успешно, но проект не читается: ${e.message}")
+                            ToastUtil.showError(activity, getString(R.string.npd_clone_not_readable, e.message ?: ""))
                             resetUIState()
                         }
                     }
                     is GitResult.Error -> {
-                        ToastUtil.showError(activity, "Ошибка клонирования: ${result.message}")
+                        ToastUtil.showError(activity, getString(R.string.npd_clone_error, result.message))
                         resetUIState()
                     }
 
                     else -> {
-                        ToastUtil.showError(activity, "Ошибка клонирования: ${result.toString()}")
+                        ToastUtil.showError(activity, getString(R.string.npd_clone_error, result.toString()))
                         resetUIState()
                     }
                 }

@@ -1,6 +1,7 @@
 package org.catrobat.catroid.ide
 
 import android.content.Context
+import org.catrobat.catroid.R
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.File
@@ -17,11 +18,11 @@ object SdkManager {
     fun downloadPlatform(context: Context, apiLevel: Int, onProgress: (String, DownloadStatus) -> Unit): Boolean {
         var tempFile: File? = null
         try {
-            onProgress("Поиск API $apiLevel...", DownloadStatus.Connecting)
+            onProgress(context.getString(R.string.sdk_searching_api, apiLevel), DownloadStatus.Connecting)
 
             val platformUrl = getPlatformUrlFromRepositoryXml(apiLevel)
             if (platformUrl == null) {
-                onProgress("Версия API $apiLevel не найдена", DownloadStatus.Error("404 Not Found"))
+                onProgress(context.getString(R.string.sdk_api_not_found, apiLevel), DownloadStatus.Error("404 Not Found"))
                 return false
             }
 
@@ -30,12 +31,12 @@ object SdkManager {
             if (tempFile.exists()) tempFile.delete()
 
 
-            if (!downloadFile(platformUrl, tempFile, onProgress)) {
+            if (!downloadFile(context, platformUrl, tempFile, onProgress)) {
                 return false
             }
 
 
-            onProgress("Распаковка архива...", DownloadStatus.Downloading(1f))
+            onProgress(context.getString(R.string.sdk_unpacking), DownloadStatus.Downloading(1f))
 
             val sdkDir = IdeSettings.getSdkDir(context)
             val targetDir: File = File(sdkDir, "platforms/android-$apiLevel")
@@ -47,17 +48,17 @@ object SdkManager {
 
 
             if (File(targetDir, "android.jar").exists()) {
-                onProgress("Установка завершена!", DownloadStatus.Success)
+                onProgress(context.getString(R.string.sdk_install_done), DownloadStatus.Success)
                 return true
             } else {
                 targetDir.deleteRecursively()
-                onProgress("Ошибка: в архиве нет android.jar", DownloadStatus.Error("Invalid SDK structure"))
+                onProgress(context.getString(R.string.sdk_no_android_jar), DownloadStatus.Error("Invalid SDK structure"))
                 return false
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
-            onProgress("Ошибка: ${e.message}", DownloadStatus.Error(e.message ?: "Unknown Error"))
+            onProgress(context.getString(R.string.common_error_with_message, e.message), DownloadStatus.Error(e.message ?: "Unknown Error"))
             return false
         } finally {
 
@@ -108,7 +109,7 @@ object SdkManager {
         return null
     }
 
-    private fun downloadFile(url: URL, dest: File, onProgress: (String, DownloadStatus) -> Unit): Boolean {
+    private fun downloadFile(context: Context, url: URL, dest: File, onProgress: (String, DownloadStatus) -> Unit): Boolean {
         try {
             val conn = url.openConnection() as HttpURLConnection
             conn.connectTimeout = 15000
@@ -116,7 +117,7 @@ object SdkManager {
             conn.connect()
 
             if (conn.responseCode != 200) {
-                onProgress("Ошибка сервера: ${conn.responseCode}", DownloadStatus.Error("HTTP ${conn.responseCode}"))
+                onProgress(context.getString(R.string.sdk_server_error, conn.responseCode), DownloadStatus.Error("HTTP ${conn.responseCode}"))
                 return false
             }
 
@@ -145,11 +146,10 @@ object SdkManager {
                             if (totalBytes > 0) {
                                 val currentMb = downloadedBytes / 1024f / 1024f
                                 val progress = downloadedBytes.toFloat() / totalBytes.toFloat()
-                                val text = "Загрузка: %.1f / %.1f MB".format(currentMb, totalMb)
-                                onProgress(text, DownloadStatus.Downloading(progress))
+                                onProgress(context.getString(R.string.sdk_downloading_mb, currentMb, totalMb), DownloadStatus.Downloading(progress))
                             } else {
                                 val currentMb = downloadedBytes / 1024f / 1024f
-                                onProgress("Загружено: %.1f MB".format(currentMb), DownloadStatus.Connecting)
+                                onProgress(context.getString(R.string.sdk_downloaded_mb, currentMb), DownloadStatus.Connecting)
                             }
                         }
                     }
@@ -158,7 +158,7 @@ object SdkManager {
             return true
         } catch (e: Exception) {
             e.printStackTrace()
-            onProgress("Сбой загрузки: ${e.message}", DownloadStatus.Error(e.message ?: "Network Error"))
+            onProgress(context.getString(R.string.sdk_download_failed, e.message), DownloadStatus.Error(e.message ?: "Network Error"))
             return false
         }
     }

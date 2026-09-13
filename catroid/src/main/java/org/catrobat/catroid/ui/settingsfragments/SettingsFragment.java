@@ -412,17 +412,17 @@ public class SettingsFragment extends PreferenceFragment {
 
         if (org.catrobat.catroid.utils.community.CommunityTokenManager.isLoggedIn(context)) {
             String username = org.catrobat.catroid.utils.community.CommunityTokenManager.getUsername(context);
-            communityPreference.setSummary("Вы вошли как @" + username + " (Нажмите, чтобы выйти)");
+            communityPreference.setSummary(getString(R.string.sf_logged_in_as, username));
         } else {
-            communityPreference.setSummary("Войдите или зарегистрируйтесь, чтобы выкладывать свои проекты");
+            communityPreference.setSummary(R.string.sf_log_in_or_register);
         }
     }
 
     private void showCommunityLogoutDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Выйти из сообщества?")
-                .setMessage("Вы уверены, что хотите выйти из своего аккаунта сообщества NewCatroid?")
-                .setPositiveButton("Выйти", (dialog, which) -> {
+                .setTitle(R.string.sf_logout_confirm_title)
+                .setMessage(R.string.sf_logout_confirm_msg)
+                .setPositiveButton(R.string.sf_logout, (dialog, which) -> {
                     org.catrobat.catroid.utils.community.CommunityTokenManager.clearSession(getActivity());
                     updateCommunityPreference();
                 })
@@ -433,7 +433,7 @@ public class SettingsFragment extends PreferenceFragment {
 	private void updateGitHubPreference() {
 		String token = TokenManager.INSTANCE.getToken(getActivity());
 		if (token != null) {
-			githubPreference.setSummary("Загрузка данных пользователя...");
+			githubPreference.setSummary(R.string.sf_loading_user_data);
 			fetchGitHubUser(token);
 		} else {
 			githubPreference.setSummary(R.string.github_not_logged_in);
@@ -473,7 +473,7 @@ public class SettingsFragment extends PreferenceFragment {
 	private void handleFailedFetch() {
 		if (getActivity() != null) {
 			getActivity().runOnUiThread(() -> {
-				githubPreference.setSummary("Не удалось получить данные");
+				githubPreference.setSummary(R.string.sf_failed_to_fetch_data);
 			});
 		}
 	}
@@ -493,7 +493,7 @@ public class SettingsFragment extends PreferenceFragment {
                 org.catrobat.catroid.content.ProjectRecoveryManager.scanForLostProjects(getActivity());
 
         if (lostProjects.isEmpty()) {
-            android.widget.Toast.makeText(getActivity(), "Потерянных проектов не найдено", android.widget.Toast.LENGTH_SHORT).show();
+            android.widget.Toast.makeText(getActivity(), getString(R.string.sf_no_lost_projects), android.widget.Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -506,11 +506,11 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         new AlertDialog.Builder(getActivity())
-                .setTitle("Найденные проекты (" + lostProjects.size() + ")")
+                .setTitle(getString(R.string.sf_found_projects_title, lostProjects.size()))
                 .setMultiChoiceItems(displayNames, checkedItems, (dialog, which, isChecked) -> {
                     checkedItems[which] = isChecked;
                 })
-                .setPositiveButton("Восстановить", (dialog, which) -> {
+                .setPositiveButton(R.string.sf_restore, (dialog, which) -> {
                     performRecovery(lostProjects, checkedItems);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -530,10 +530,10 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        String message = "Обработано проектов: " + count + ". Приложение будет перезапущено для обновления списка.";
+        String message = getString(R.string.sf_projects_processed, count);
 
         new AlertDialog.Builder(getActivity())
-                .setTitle("Готово")
+                .setTitle(R.string.sf_done_title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton("OK", (d, w) -> {

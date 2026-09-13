@@ -209,7 +209,7 @@ class SpriteListFragment : RecyclerViewFragment<Sprite?>() {
     override fun switchToBackpack() {
         val workspace = activity?.findViewById<View>(R.id.workspace_layout) as? org.catrobat.catroid.ui.workspace.WorkspaceLayout
         if (workspace != null && workspace.visibility == View.VISIBLE) {
-            workspace.openWindow("BackpackSprites", "Рюкзак: Спрайты") { org.catrobat.catroid.ui.recyclerview.backpack.BackpackSpriteFragment() }
+            workspace.openWindow("BackpackSprites", getString(R.string.backpack_sprites)) { org.catrobat.catroid.ui.recyclerview.backpack.BackpackSpriteFragment() }
             return
         }
 
@@ -355,7 +355,7 @@ class SpriteListFragment : RecyclerViewFragment<Sprite?>() {
                         if (workspace.isWindowOpen(scriptTag)) {
                             workspace.replaceWindowContent(scriptTag) { org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment() }
                         } else {
-                            workspace.openWindow(scriptTag, "Скрипты") { org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment() }
+                            workspace.openWindow(scriptTag, getString(R.string.tab_scripts)) { org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment() }
                         }
 
                         val lookTag = org.catrobat.catroid.ui.recyclerview.fragment.LookListFragment.TAG

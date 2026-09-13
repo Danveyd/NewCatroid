@@ -43,7 +43,7 @@ public class UnknownBrick extends BrickBaseType {
     private void replaceLabelText(View view) {
         TextView tv = findFirstTextView(view);
         if (tv != null) {
-            tv.setText("Неизвестный блок: " + getShortClassName(unknownClassName));
+            tv.setText(view.getContext().getString(R.string.ub_unknown_block, getShortClassName(unknownClassName)));
         }
     }
 

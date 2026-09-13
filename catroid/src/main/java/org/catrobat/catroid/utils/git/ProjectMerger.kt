@@ -1,6 +1,8 @@
 package org.catrobat.catroid.utils.git
 
 import android.util.Log
+import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.common.LookData
 import org.catrobat.catroid.common.SoundInfo
 import org.catrobat.catroid.content.*
@@ -82,8 +84,8 @@ class ProjectMerger {
             val localCopy = XStreamUtilGit.deepCopy(originalLocalBrick)
             localCopy.isCommentedOut = true
 
-            val startComment = NoteBrick("--- КОНФЛИКТ: ВАША ВЕРСИЯ НИЖЕ ---")
-            val endComment = NoteBrick("--- КОНЕЦ КОНФЛИКТА ---")
+            val startComment = NoteBrick(CatroidApplication.getAppContext().getString(R.string.merger_conflict_your_version_below))
+            val endComment = NoteBrick(CatroidApplication.getAppContext().getString(R.string.merger_conflict_end))
 
             // Вставляем все в список после remote-версии
             brickList.add(index + 1, startComment)
@@ -339,9 +341,9 @@ class ProjectMerger {
             val localCopy = localBrick.clone() as Brick
             localCopy.setCommentedOut(true)
 
-            val startComment = NoteBrick("--- КОНФЛИКТ --- (Ниже версия с сервера)")
-            val midComment = NoteBrick("--- ВАША ВЕРСИЯ ---")
-            val endComment = NoteBrick("--- КОНЕЦ КОНФЛИКТА ---")
+            val startComment = NoteBrick(CatroidApplication.getAppContext().getString(R.string.merger_conflict_header))
+            val midComment = NoteBrick(CatroidApplication.getAppContext().getString(R.string.merger_your_version))
+            val endComment = NoteBrick(CatroidApplication.getAppContext().getString(R.string.merger_conflict_end))
 
             brickList.add(index, startComment)
             brickList.add(index + 2, midComment) // После remoteBrick

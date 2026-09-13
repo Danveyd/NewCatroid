@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Мои проекты"
+            android:text="@string/ide_my_projects"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#4CAF50"
-            android:text="+ Создать новый (Fork)"
+            android:text="@string/ide_create_new_fork"
             android:textColor="#FFFFFF" />
 
         <Button
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="#03A9F4"
-            android:text="Подключить существующий Fork"
+            android:text="@string/ide_connect_existing_fork"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="Локальные проекты:"
+            android:text="@string/ide_local_projects"
             android:textColor="#AAAAAA"
             android:textSize="16sp"/>
 
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Загрузка..."
+            android:text="@string/loading"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:gravity="center"

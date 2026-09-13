@@ -149,7 +149,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
             }
 
             is org.catrobat.catroid.io.asynctask.ImportResult.BakedProject -> {
-                ToastUtil.showSuccess(currentContext, "Запуск запеченного проекта...")
+                ToastUtil.showSuccess(currentContext, currentContext.getString(R.string.plf_launching_baked_project))
                 launchBakedProject(currentContext, result.projectDir)
             }
         }
@@ -264,7 +264,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
         AlertDialog.Builder(
             android.view.ContextThemeWrapper(context, R.style.Theme_NewCatroid_Dialog)
         )
-            .setTitle("Сведения о проекте: ${project.name}")
+            .setTitle(getString(R.string.plf_project_info, project.name))
             .setView(markdownView)
             .setPositiveButton(R.string.ok, null)
             .show()

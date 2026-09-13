@@ -1,6 +1,7 @@
 package org.catrobat.catroid.ide
 
 import android.content.Context
+import org.catrobat.catroid.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -83,11 +84,11 @@ object ProjectManager {
         onProgress: (String) -> Unit
     ): Boolean {
 
-        onProgress("Создание структуры проекта...")
+        onProgress(context.getString(R.string.ipm_creating_structure))
         val root = getProjectsFolder(context.filesDir)
         val projectDir = File(root, name)
         if (projectDir.exists()) {
-            onProgress("Ошибка: Проект уже существует")
+            onProgress(context.getString(R.string.ipm_project_exists_error))
             return false
         }
 
@@ -198,7 +199,7 @@ object ProjectManager {
 
 
                     for (lib in libs) {
-                        onProgress("Скачивание: ${lib.split(':')[1]}...")
+                        onProgress(context.getString(R.string.ipm_downloading, lib.split(':')[1]))
                         val success = DependencyManager.downloadLibraryRecursive(
                             context,
                             projectDir.absolutePath,
@@ -208,7 +209,7 @@ object ProjectManager {
 
                         }
                         if (!success) {
-                            onProgress("Ошибка загрузки: $lib")
+                            onProgress(context.getString(R.string.ipm_download_error, lib))
 
 
                             return true
@@ -216,7 +217,7 @@ object ProjectManager {
                         }
                     }
 
-                    onProgress("Генерация кода...")
+                    onProgress(context.getString(R.string.ipm_generating_code))
 
 
                     mainFile.writeText("""
@@ -346,7 +347,7 @@ object ProjectManager {
                 "jsoup" -> {
                     val lib = "org.jsoup:jsoup:1.13.1"
 
-                    onProgress("Скачивание: ${lib.split(':')[1]}...")
+                    onProgress(context.getString(R.string.ipm_downloading, lib.split(':')[1]))
                     val success = DependencyManager.downloadLibraryRecursive(
                         context,
                         projectDir.absolutePath,
@@ -355,14 +356,14 @@ object ProjectManager {
 
                     }
                     if (!success) {
-                        onProgress("Ошибка загрузки: $lib")
+                        onProgress(context.getString(R.string.ipm_download_error, lib))
 
 
                         return true
 
                     }
 
-                    onProgress("Генерация кода...")
+                    onProgress(context.getString(R.string.ipm_generating_code))
 
                     mainFile.writeText("""
                         package game;

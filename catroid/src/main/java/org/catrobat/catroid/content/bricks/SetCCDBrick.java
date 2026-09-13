@@ -37,8 +37,8 @@ public class SetCCDBrick extends FormulaBrick {
         Spinner spinner = view.findViewById(R.id.brick_set_ccd_spinner);
 
         String[] options = {
-                "Вкл.",
-                "Выкл"
+                context.getString(R.string.ccd_on),
+                context.getString(R.string.ccd_off)
         };
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, options);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

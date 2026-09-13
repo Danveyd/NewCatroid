@@ -36,7 +36,7 @@ class SimpleTextEditorActivity : AppCompatActivity() {
 
         val filePath = intent.getStringExtra("FILE_PATH")
         if (filePath == null) {
-            Toast.makeText(this, "Ошибка: путь не передан", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.ste_path_not_passed), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -52,7 +52,7 @@ class SimpleTextEditorActivity : AppCompatActivity() {
 
 
         if (currentFile.length() > MAX_FILE_SIZE) {
-            editText.setText("// Файл слишком большой (${currentFile.length() / 1024} KB).\n// Редактирование недоступно во избежание зависаний.")
+            editText.setText(getString(R.string.ste_file_too_large, currentFile.length() / 1024))
             editText.isEnabled = false
             return
         }
@@ -68,14 +68,14 @@ class SimpleTextEditorActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SimpleTextEditorActivity, "Ошибка чтения", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SimpleTextEditorActivity, getString(R.string.ste_read_error), Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menu?.add(0, 1, 0, "Сохранить")
+        menu?.add(0, 1, 0, getString(R.string.save))
             ?.setIcon(R.drawable.baseline_save_alt_24_w)
             ?.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         return true
@@ -104,11 +104,11 @@ class SimpleTextEditorActivity : AppCompatActivity() {
                 val content = editText.text.toString()
                 currentFile.writeText(content)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SimpleTextEditorActivity, "Сохранено", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SimpleTextEditorActivity, getString(R.string.ste_saved), Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SimpleTextEditorActivity, "Ошибка: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@SimpleTextEditorActivity, getString(R.string.common_error_with_message, e.message ?: ""), Toast.LENGTH_LONG).show()
                 }
             }
         }

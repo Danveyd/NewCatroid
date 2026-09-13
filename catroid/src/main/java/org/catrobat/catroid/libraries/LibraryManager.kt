@@ -6,6 +6,7 @@ import android.util.Xml
 import android.widget.Toast
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Project
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.CustomFormula
@@ -57,10 +58,10 @@ object LibraryManager {
 
         if (errors == 0) {
             if ((libsDir.listFiles()?.size ?: 0) != 0) {
-                MainMenuActivity.toast("Синхронизация прошла успешно!", Toast.LENGTH_SHORT)
+                MainMenuActivity.toast(CatroidApplication.getAppContext().getString(R.string.libm_sync_success), Toast.LENGTH_SHORT)
             }
         } else {
-            MainMenuActivity.toast("Синхронизация завершилась со счетчиком ошибок: $errors", Toast.LENGTH_SHORT)
+            MainMenuActivity.toast(CatroidApplication.getAppContext().getString(R.string.libm_sync_errors, errors), Toast.LENGTH_SHORT)
         }
     }
 
@@ -95,7 +96,7 @@ object LibraryManager {
 
         } catch (e: Exception) {
             Log.e("LibraryManager", "Ошибка загрузки библиотеки $libraryId", e)
-            MainMenuActivity.toast("Ошибка загрузки '$libraryId'", Toast.LENGTH_SHORT)
+            MainMenuActivity.toast(CatroidApplication.getAppContext().getString(R.string.libm_load_error, libraryId), Toast.LENGTH_SHORT)
             errors += 1
             // Здесь можно показать Toast с ошибкой
         }

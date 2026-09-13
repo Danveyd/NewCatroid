@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import java.io.IOException
@@ -22,14 +23,14 @@ class CopyProjectFileAction : TemporalAction() {
         val newName = newFileName?.interpretString(scope)
 
         if (sourceName.isNullOrEmpty() || newName.isNullOrEmpty()) {
-            Toast.makeText(context, "Имена файлов не могут быть пустыми", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.cpf_empty_names), Toast.LENGTH_SHORT).show()
             return
         }
 
         try {
             val sourceFile = project.getFile(sourceName)
             if (!sourceFile.exists() || sourceFile.isDirectory) {
-                Toast.makeText(context, "Исходный файл не найден: $sourceName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.cpf_source_not_found, sourceName), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -41,7 +42,7 @@ class CopyProjectFileAction : TemporalAction() {
             //Toast.makeText(context, "Файл скопирован: $newName", Toast.LENGTH_SHORT).show()
         } catch (e: IOException) {
             Log.e("CopyProjectFileAction", "Ошибка при копировании файла '$sourceName' в '$newName'", e)
-            Toast.makeText(context, "Ошибка копирования файла", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.cpf_copy_error), Toast.LENGTH_SHORT).show()
         }
     }
 }

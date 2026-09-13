@@ -171,11 +171,11 @@ class ProjectActivity : BaseCastActivity() {
             workspaceLayout?.visibility = View.VISIBLE
 
             val creators = mapOf(
-                SceneListFragment.TAG to Pair("Сцены", { SceneListFragment() }),
-                SpriteListFragment.TAG to Pair("Спрайты", { SpriteListFragment() }),
-                org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment.TAG to Pair("Скрипты", { org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment() }),
-                org.catrobat.catroid.ui.recyclerview.fragment.LookListFragment.TAG to Pair("Образы", { org.catrobat.catroid.ui.recyclerview.fragment.LookListFragment() }),
-                org.catrobat.catroid.ui.recyclerview.fragment.SoundListFragment.TAG to Pair("Звуки", { org.catrobat.catroid.ui.recyclerview.fragment.SoundListFragment() })
+                SceneListFragment.TAG to Pair(getString(R.string.tab_scenes), { SceneListFragment() }),
+                SpriteListFragment.TAG to Pair(getString(R.string.tab_sprites), { SpriteListFragment() }),
+                org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment.TAG to Pair(getString(R.string.tab_scripts), { org.catrobat.catroid.ui.recyclerview.fragment.ScriptFragment() }),
+                org.catrobat.catroid.ui.recyclerview.fragment.LookListFragment.TAG to Pair(getString(R.string.tab_looks), { org.catrobat.catroid.ui.recyclerview.fragment.LookListFragment() }),
+                org.catrobat.catroid.ui.recyclerview.fragment.SoundListFragment.TAG to Pair(getString(R.string.tab_sounds), { org.catrobat.catroid.ui.recyclerview.fragment.SoundListFragment() })
             )
 
             workspaceLayout?.restoreLayoutState(creators)
@@ -184,7 +184,7 @@ class ProjectActivity : BaseCastActivity() {
                 val prefs = getSharedPreferences("workspace_prefs", Context.MODE_PRIVATE)
                 val active = prefs.getString("active_tags", "") ?: ""
                 if (active.isEmpty()) {
-                    workspaceLayout?.openWindow(SpriteListFragment.TAG, "Спрайты") { SpriteListFragment() }
+                    workspaceLayout?.openWindow(SpriteListFragment.TAG, getString(R.string.tab_sprites)) { SpriteListFragment() }
                 }
             }
 
@@ -288,7 +288,7 @@ class ProjectActivity : BaseCastActivity() {
             R.id.new_scene -> handleAddSceneButton()
             R.id.project_options ->
                 if (isWorkspaceMode) {
-                    workspace?.openWindow(ProjectOptionsFragment.TAG, "Опции проекта") { ProjectOptionsFragment() }
+                    workspace?.openWindow(ProjectOptionsFragment.TAG, getString(R.string.tab_project_options)) { ProjectOptionsFragment() }
                 } else {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, ProjectOptionsFragment(), ProjectOptionsFragment.TAG)
@@ -296,7 +296,7 @@ class ProjectActivity : BaseCastActivity() {
                 }
             R.id.project_files ->
                 if (isWorkspaceMode) {
-                    workspace?.openWindow(ProjectFilesFragment.TAG, "Файлы проекта") { ProjectFilesFragment() }
+                    workspace?.openWindow(ProjectFilesFragment.TAG, getString(R.string.tab_project_files)) { ProjectFilesFragment() }
                 } else {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, ProjectFilesFragment(), ProjectFilesFragment.TAG)
@@ -304,7 +304,7 @@ class ProjectActivity : BaseCastActivity() {
                 }
             R.id.project_libs ->
                 if (isWorkspaceMode) {
-                    workspace?.openWindow(ProjectLibsFragment.TAG, "Библиотеки") { ProjectLibsFragment() }
+                    workspace?.openWindow(ProjectLibsFragment.TAG, getString(R.string.tab_libraries)) { ProjectLibsFragment() }
                 } else {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, ProjectLibsFragment(), ProjectLibsFragment.TAG)

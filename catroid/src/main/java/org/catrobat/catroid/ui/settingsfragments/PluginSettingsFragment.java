@@ -17,6 +17,7 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.plugins.PluginEventBus;
 import org.catrobat.catroid.plugins.PluginInfo;
 import org.catrobat.catroid.plugins.PluginManager;
@@ -106,7 +107,7 @@ public class PluginSettingsFragment extends PreferenceFragmentCompat {
                             if (!action.isEmpty()) {
                                 Log.d("PluginSettings", "Button clicked, dispatching action: " + action);
                                 PluginEventBus.getInstance().dispatch("Settings.onButtonAction", packageName, action);
-                                Toast.makeText(getContext(), setting.optString("toast", "Действие выполнено"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), setting.optString("toast", getString(R.string.psf_action_done)), Toast.LENGTH_SHORT).show();
                             }
                             return true;
                         });
@@ -153,7 +154,7 @@ public class PluginSettingsFragment extends PreferenceFragmentCompat {
         String packageName = getArguments().getString("plugin_package_name");
         PluginInfo plugin = PluginManager.getInstance(getContext()).getPluginByPackageName(packageName);
         if (plugin != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Настройки: " + plugin.name);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.psf_settings_for, plugin.name));
         }
     }
 }

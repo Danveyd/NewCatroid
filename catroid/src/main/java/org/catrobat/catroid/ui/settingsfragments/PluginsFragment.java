@@ -76,9 +76,9 @@ public class PluginsFragment extends PreferenceFragmentCompat {
     private void installPlugin(Uri uri) {
         boolean success = pluginManager.installPluginFromUri(uri);
         if (success) {
-            Toast.makeText(getActivity(), "Плагин успешно установлен! (не забудьте перезапустить приложение)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getString(R.string.plugin_installed_toast), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getActivity(), "Ошибка установки. Убедитесь, что вы выбрали корректный .nplug файл и он не поврежден.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(R.string.plugin_install_error), Toast.LENGTH_LONG).show();
         }
         populatePluginList();
     }
@@ -90,7 +90,7 @@ public class PluginsFragment extends PreferenceFragmentCompat {
 
         if (plugins.isEmpty()) {
             Preference emptyPref = new Preference(getContext());
-            emptyPref.setTitle("Нет установленных плагинов");
+            emptyPref.setTitle(R.string.plugin_none_installed);
             emptyPref.setEnabled(false);
             installedPluginsCategory.addPreference(emptyPref);
             return;
@@ -101,7 +101,7 @@ public class PluginsFragment extends PreferenceFragmentCompat {
             pluginPref.setKey(plugin.packageName);
             pluginPref.setSummary(plugin.description);
 
-            String status = plugin.isEnabled ? "[ВКЛ]" : "[ВЫКЛ]";
+            String status = getString(plugin.isEnabled ? R.string.plugin_enabled_badge : R.string.plugin_disabled_badge);
             pluginPref.setTitle(status + " " + plugin.name + " (v" + plugin.version + ")");
 
             pluginPref.setOnPreferenceClickListener(preference -> {
@@ -113,18 +113,18 @@ public class PluginsFragment extends PreferenceFragmentCompat {
     }
 
     private void showPluginActionsDialog(final PluginInfo plugin) {
-        final String enableDisableAction = plugin.isEnabled ? "Отключить" : "Включить";
+        final String enableDisableAction = getString(plugin.isEnabled ? R.string.plugin_disable : R.string.plugin_enable);
 
         
         final CharSequence[] items;
         if (plugin.hasSettings()) {
-            items = new CharSequence[]{enableDisableAction, "Удалить", "Настроить"};
+            items = new CharSequence[]{enableDisableAction, getString(R.string.delete), getString(R.string.plugin_configure)};
         } else {
-            items = new CharSequence[]{enableDisableAction, "Удалить"};
+            items = new CharSequence[]{enableDisableAction, getString(R.string.delete)};
         }
 
         new AlertDialog.Builder(getActivity())
-                .setTitle("Действия для: " + plugin.name)
+                .setTitle(getString(R.string.plugin_actions_title, plugin.name))
                 .setItems(items, (dialog, which) -> {
                     if (which == 0) { 
                         pluginManager.setPluginEnabled(plugin.packageName, !plugin.isEnabled);
@@ -135,7 +135,7 @@ public class PluginsFragment extends PreferenceFragmentCompat {
                         openPluginSettings(plugin);
                     }
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
@@ -156,14 +156,14 @@ public class PluginsFragment extends PreferenceFragmentCompat {
 
     private void showDeleteConfirmationDialog(final PluginInfo plugin) {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Удаление плагина")
-                .setMessage("Вы уверены, что хотите навсегда удалить '" + plugin.name + "'?")
-                .setPositiveButton("Удалить", (dialog, which) -> {
+                .setTitle(R.string.plugin_delete_confirm_title)
+                .setMessage(getString(R.string.plugin_delete_confirm_msg, plugin.name))
+                .setPositiveButton(R.string.delete, (dialog, which) -> {
                     pluginManager.deletePlugin(plugin);
                     populatePluginList();
-                    Toast.makeText(requireContext(), "Плагин удален! (не забудьте перезапустить приложение)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), getString(R.string.plugin_deleted_toast), Toast.LENGTH_SHORT).show();
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(R.string.cancel, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
@@ -171,6 +171,6 @@ public class PluginsFragment extends PreferenceFragmentCompat {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Плагины");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.plugin_title);
     }
 }
