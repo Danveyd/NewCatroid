@@ -55,7 +55,10 @@ add_library(
         example_core.cpp
 )
 
-add_library(${CMAKE_PROJECT_NAME} SHARED catroid.cpp)
+add_library(${CMAKE_PROJECT_NAME} SHARED
+        catroid.cpp
+        mesh_lod_generator.cpp
+)
 
 target_link_libraries(
         ${CMAKE_PROJECT_NAME}

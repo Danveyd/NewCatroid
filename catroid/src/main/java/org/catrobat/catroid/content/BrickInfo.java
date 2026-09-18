@@ -332,6 +332,7 @@ public final class BrickInfo {
         add(SetGlobalSoundVolumeBrick.class, "Задает глобальную громкость 3D звуков");
         add(SetMaterialBrick.class, "Задает PBR материал. ВАЖНО: только для рендера 2.0.\nЕсли в начале написать \"buffer://\" а потом имя буфера - текстура возьмется от туда (нужно чтоб отображать 2D сцены в 3D)");
         add(CloneObjectBrick.class, "Клонирует 3D обьект");
+        add(SetShaderUniformFloatBrick.class, "Задает униформу шейдеру. Если указать hasDepthBuffer = 1, то в u_depthTexture будет буфер глубины");
         add(SetRenderResolutionBrick.class, "Задает разрешение и соотношение сторон для 3D рендера (включает постобработку + работает только в 2.0)");
         add(SetFpsBrick.class, "Задает лимит FPS (кадров в секунду) для 3D рендера");
         add(ApplyShaderToImageBrick.class, "Применяет шейдер к файлу проекта (изображению). Используйте это для генерации чего-либо или обработки изображений");

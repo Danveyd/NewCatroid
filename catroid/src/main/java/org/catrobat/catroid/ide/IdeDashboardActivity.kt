@@ -34,7 +34,6 @@ class IdeDashboardActivity : AppCompatActivity() {
     private val UPSTREAM_OWNER = "Danveyd"
     private val UPSTREAM_REPO = "NewCatroid"
 
-    // Папка, где будут лежать клонированные форки
     private val workspaceDir by lazy { File(filesDir, "IdeProjects").apply { mkdirs() } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +46,6 @@ class IdeDashboardActivity : AppCompatActivity() {
 
         setupButtons()
 
-        // 1. При заходе сразу проверяем SDK
         checkAndInstallSdk()
     }
 
@@ -75,7 +73,6 @@ class IdeDashboardActivity : AppCompatActivity() {
                 }
             }
         } else {
-            // SDK уже есть, просто грузим список проектов
             refreshProjectsList()
         }
     }
@@ -126,7 +123,6 @@ class IdeDashboardActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // 1. Делаем API запрос на создание форка
                 val retrofit = Retrofit.Builder().baseUrl("https://api.github.com/").build()
                 val api = retrofit.create(GitHubActionsApi::class.java)
 
@@ -146,10 +142,9 @@ class IdeDashboardActivity : AppCompatActivity() {
                 runOnUiThread { tvLoadingText.text = "Клонирование исходного кода..." }
                 kotlinx.coroutines.delay(3000)
 
-                // Генерируем уникальное имя для ветки и папки
                 val featureId = System.currentTimeMillis().toString().takeLast(5)
                 val projectName = "Feature_$featureId"
-                val branchName = "feature-$featureId" // Имя новой ветки!
+                val branchName = "feature-$featureId"
 
                 val targetDir = File(workspaceDir, projectName)
                 val gitController = GitController(targetDir)

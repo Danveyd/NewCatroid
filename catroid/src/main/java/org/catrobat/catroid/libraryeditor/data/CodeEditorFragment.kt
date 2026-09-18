@@ -30,7 +30,7 @@ class CodeEditorFragment : Fragment() {
     private lateinit var editText: EditText
     private var textChangeJob: Job? = null
     private var ignoreTextChange = false
-    private val tab = "    " // 4 пробела
+    private val tab = "    "
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_code_editor, container, false)
@@ -67,10 +67,8 @@ class CodeEditorFragment : Fragment() {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            // --- ЛОГИКА АВТОТАБУЛЯЦИИ ---
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (ignoreTextChange) return
-                // Проверяем, что был добавлен один символ и это символ новой строки
                 if (before == 0 && count == 1 && s?.get(start) == '\n') {
                     handleAutoIndent(start)
                 }
@@ -90,10 +88,8 @@ class CodeEditorFragment : Fragment() {
 
     private fun handleAutoIndent(cursorPosition: Int) {
         val text = editText.text.toString()
-        // Ищем начало предыдущей строки
         val prevLineStart = text.lastIndexOf('\n', cursorPosition - 1) + 1
 
-        // Находим отступ предыдущей строки
         val prevLine = text.substring(prevLineStart, cursorPosition)
         val indentBuilder = StringBuilder()
         for (char in prevLine) {
@@ -104,14 +100,11 @@ class CodeEditorFragment : Fragment() {
             }
         }
 
-        // Если предыдущая строка заканчивалась на '{', добавляем еще один отступ
         if (prevLine.trim().endsWith('{')) {
             indentBuilder.append(tab)
         }
 
-        // Вставляем отступ на новую строку
         if (indentBuilder.isNotEmpty()) {
-            // Используем флаг, чтобы избежать рекурсивного вызова TextWatcher
             ignoreTextChange = true
             editText.text.insert(cursorPosition + 1, indentBuilder.toString())
             ignoreTextChange = false
@@ -123,7 +116,6 @@ class CodeEditorFragment : Fragment() {
         val originalText = editText.text.toString()
         val spannable = SpannableString(originalText)
 
-        // Подсветка токенов
         for (token in tokens) {
             val color = getColorForToken(token.type)
             val spanStart = calculateAbsolutePosition(originalText, token.line, token.position)
@@ -133,7 +125,6 @@ class CodeEditorFragment : Fragment() {
             }
         }
 
-        // Подсветка ошибки
         error?.let {
             val lineStart = calculateAbsolutePosition(originalText, it.line, 0)
             if (lineStart >= 0) {
@@ -155,7 +146,7 @@ class CodeEditorFragment : Fragment() {
         var absolutePosition = 0
         while (currentLine < line && absolutePosition < text.length) {
             val nextNewline = text.indexOf('\n', absolutePosition)
-            if (nextNewline == -1) return -1 // Строка не найдена
+            if (nextNewline == -1) return -1
             absolutePosition = nextNewline + 1
             currentLine++
         }
@@ -164,28 +155,23 @@ class CodeEditorFragment : Fragment() {
 
     private fun getColorForToken(type: TokenType): Int {
         return when (type) {
-            // Ключевые слова (оранжевый)
             TokenType.VAR, TokenType.FUN, TokenType.IF, TokenType.ELSE, TokenType.RETURN,
             TokenType.WHILE, TokenType.FOR, TokenType.IMPORT, TokenType.CLASS, TokenType.TRY,
             TokenType.CATCH, TokenType.FINALLY -> Color.parseColor("#CF5717")
 
-            // Литералы (голубой/фиолетовый)
             TokenType.NUMBER_LITERAL, TokenType.FLOAT_LITERAL, TokenType.TRUE,
             TokenType.FALSE, TokenType.NULL -> Color.parseColor("#8F4CBA")
 
-            // Строки (зеленый)
             TokenType.STRING_LITERAL -> Color.parseColor("#6B9C49")
 
-            // Основной текст (белый/светло-серый)
             TokenType.IDENTIFIER -> Color.parseColor("#D3D3D3")
 
-            // Операторы и символы (желтый)
             TokenType.LPAREN, TokenType.RPAREN, TokenType.LBRACE, TokenType.RBRACE,
             TokenType.PLUS, TokenType.MINUS, TokenType.ASSIGN -> Color.parseColor("#FCCB41")
 
             TokenType.COMMENT -> Color.parseColor("#808080")
 
-            else -> Color.parseColor("#A9B7C6") // Запасной цвет
+            else -> Color.parseColor("#A9B7C6")
         }
     }
 }*/
@@ -221,7 +207,7 @@ class CodeEditorFragment : Fragment() {
 
     private val viewModel: LibraryEditorViewModel by activityViewModels()
     private lateinit var editText: EditText
-    private lateinit var lineNumbersView: TextView // <-- ДОБАВИЛИ
+    private lateinit var lineNumbersView: TextView
     private var textChangeJob: Job? = null
     private var ignoreTextChange = false
     private val tab = "    "
@@ -233,9 +219,8 @@ class CodeEditorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         editText = view.findViewById(R.id.code_editor_edit_text)
-        lineNumbersView = view.findViewById(R.id.line_numbers_view) // <-- НАШЛИ VIEW
+        lineNumbersView = view.findViewById(R.id.line_numbers_view)
 
-        // --- ИСПРАВЛЕНИЕ ДЛЯ КЛАВИАТУРЫ ---
         editText.inputType = InputType.TYPE_CLASS_TEXT or
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE or
                 InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS// or
@@ -250,15 +235,14 @@ class CodeEditorFragment : Fragment() {
             if (editText.text.toString() != draft.code) {
                 ignoreTextChange = true
                 editText.setText(draft.code)
-                // Обновляем подсветку и номера строк после установки текста
                 applyHighlighting(viewModel.lexedTokens.value ?: emptyList(), viewModel.syntaxError.value)
-                updateLineNumbers() // <-- ОБНОВЛЯЕМ НОМЕРА СТРОК
+                updateLineNumbers()
                 ignoreTextChange = false
             }
         }
 
         viewModel.lexedTokens.observe(viewLifecycleOwner) { tokens ->
-            if (!ignoreTextChange) { // Чтобы не было двойной подсветки
+            if (!ignoreTextChange) {
                 applyHighlighting(tokens, viewModel.syntaxError.value)
             }
         }
@@ -284,7 +268,7 @@ class CodeEditorFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (ignoreTextChange) return
 
-                updateLineNumbers() // <-- ОБНОВЛЯЕМ НОМЕРА СТРОК ПРИ ИЗМЕНЕНИИ
+                updateLineNumbers()
 
                 textChangeJob?.cancel()
                 textChangeJob = lifecycleScope.launch {
@@ -295,9 +279,7 @@ class CodeEditorFragment : Fragment() {
         })
     }
 
-    // --- НОВАЯ ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ НОМЕРОВ СТРОК ---
     private fun updateLineNumbers() {
-        // Запускаем в post, чтобы lineCount был актуальным после изменений в тексте
         editText.post {
             val lineCount = editText.lineCount
             val numbersText = StringBuilder()
@@ -308,7 +290,6 @@ class CodeEditorFragment : Fragment() {
         }
     }
 
-    // ... (остальной ваш код: handleAutoIndent, applyHighlighting, и т.д. остается без изменений)
     private fun handleAutoIndent(cursorPosition: Int) {
         val text = editText.text.toString()
         val prevLineStart = text.lastIndexOf('\n', cursorPosition - 1) + 1
@@ -369,29 +350,24 @@ class CodeEditorFragment : Fragment() {
     }
     private fun getColorForToken(type: TokenType): Int {
         return when (type) {
-            // --- Ключевые слова (управление, структура, контекст) ---
             TokenType.VAR, TokenType.FUN, TokenType.CLASS, TokenType.STATIC,
             TokenType.IF, TokenType.ELSE, TokenType.WHILE, TokenType.FOR, TokenType.IN,
             TokenType.SWITCH, TokenType.CASE, TokenType.DEFAULT,
             TokenType.RETURN, TokenType.BREAK, TokenType.CONTINUE,
             TokenType.THIS, TokenType.SUPER,
             TokenType.IMPORT, TokenType.TRY, TokenType.CATCH, TokenType.FINALLY ->
-                Color.parseColor("#CF5717") // Оранжевый для ключевых слов
+                Color.parseColor("#CF5717")
 
-            // --- Литералы (конкретные значения) ---
             TokenType.NUMBER_LITERAL, TokenType.FLOAT_LITERAL,
             TokenType.TRUE, TokenType.FALSE, TokenType.NULL ->
-                Color.parseColor("#8F4CBA") // Фиолетовый для чисел и констант
+                Color.parseColor("#8F4CBA")
 
-            // --- Строки ---
             TokenType.STRING_LITERAL, TokenType.F_STRING ->
-                Color.parseColor("#6B9C49") // Зеленый для строк
+                Color.parseColor("#6B9C49")
 
-            // --- Идентификаторы (имена переменных, функций) ---
             TokenType.IDENTIFIER ->
-                Color.parseColor("#D3D3D3") // Светло-серый для имен
+                Color.parseColor("#D3D3D3")
 
-            // --- Операторы и разделители ---
             TokenType.LPAREN, TokenType.RPAREN, TokenType.LBRACE, TokenType.RBRACE,
             TokenType.LBRACKET, TokenType.RBRACKET,
             TokenType.PLUS, TokenType.MINUS, TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO,
@@ -400,15 +376,13 @@ class CodeEditorFragment : Fragment() {
             TokenType.AND, TokenType.OR, TokenType.BANG,
             TokenType.DOT, TokenType.COMMA, TokenType.COLON, TokenType.SEMICOLON,
             TokenType.ARROW ->
-                Color.parseColor("#FCCB41") // Желтый для символов
+                Color.parseColor("#FCCB41")
 
-            // --- Комментарии ---
             TokenType.COMMENT ->
-                Color.parseColor("#808080") // Серый для комментариев
+                Color.parseColor("#808080")
 
-            // --- Все остальное (на всякий случай) ---
             else ->
-                Color.parseColor("#A9B7C6") // Стандартный цвет текста
+                Color.parseColor("#A9B7C6")
         }
     }
 }

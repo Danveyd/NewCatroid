@@ -1,7 +1,7 @@
 The target system is: Android - 1 - i686
 The host system is: Windows - 10.0.19045 - AMD64
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
-Compiler: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
+Compiler: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe 
 Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;
 Id flags: -c;--target=i686-none-linux-android24 
 
@@ -11,10 +11,10 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
 
-The C compiler identification is Clang, found in "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o"
+The C compiler identification is Clang, found in "E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
-Compiler: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe 
+Compiler: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe 
 Build flags: -g;-DANDROID;-fdata-sections;-ffunction-sections;-funwind-tables;-fstack-protector-strong;-no-canonical-prefixes;-D_FORTIFY_SOURCE=2;-Wformat;-Werror=format-security;;
 Id flags: -c;--target=i686-none-linux-android24 
 
@@ -24,81 +24,81 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
 
-The CXX compiler identification is Clang, found in "D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o"
+The CXX compiler identification is Clang, found in "E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o"
 
 Detecting C compiler ABI info compiled with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_76308 && [1/2] Building C object CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a9eb3 && [1/2] Building C object CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o
 Android (10552028, based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)
 Target: i686-none-linux-android24
 Thread model: posix
-InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
+InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
 Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8, version 
  (in-process)
- "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -resource-dir D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_76308.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o -x c D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections "-fcoverage-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -resource-dir C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_a9eb3.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat "-fdebug-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o -x c C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c
 clang -cc1 version 17.0.2 based upon LLVM 17.0.2 default target x86_64-w64-windows-gnu
-ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"
-ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
+ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"
+ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
 #include "..." search starts here:
 #include <...> search starts here:
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
 End of search list.
-[2/2] Linking C executable cmTC_76308
+[2/2] Linking C executable cmTC_a9eb3
 Android (10552028, based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)
 Target: i686-none-linux-android24
 Thread model: posix
-InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
+InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
 Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8, version 
- "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_76308 D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o
+ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_a9eb3 C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o
 
 
 
 Parsed C implicit include dir info from above output: rv=done
   found start of include info
   found start of implicit include info
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
   end of search list found
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
-  implicit include dirs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  implicit include dirs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
 
 
 Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld\.lld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_76308 && [1/2] Building C object CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o]
+  ignore line: [Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a9eb3 && [1/2] Building C object CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o]
   ignore line: [Android (10552028  based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)]
   ignore line: [Target: i686-none-linux-android24]
   ignore line: [Thread model: posix]
-  ignore line: [InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
+  ignore line: [InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
   ignore line: [Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8  version ]
   ignore line: [ (in-process)]
-  ignore line: [ "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -resource-dir D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_76308.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdebug-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o -x c D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections "-fcoverage-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -resource-dir C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_a9eb3.dir\\CMakeCCompilerABI.c.o.d" -MT CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat "-fdebug-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o -x c C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
   ignore line: [clang -cc1 version 17.0.2 based upon LLVM 17.0.2 default target x86_64-w64-windows-gnu]
-  ignore line: [ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"]
-  ignore line: [ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
+  ignore line: [ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"]
+  ignore line: [ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
   ignore line: [#include "..." search starts here:]
   ignore line: [#include <...> search starts here:]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
   ignore line: [End of search list.]
-  ignore line: [[2/2] Linking C executable cmTC_76308]
+  ignore line: [[2/2] Linking C executable cmTC_a9eb3]
   ignore line: [Android (10552028  based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)]
   ignore line: [Target: i686-none-linux-android24]
   ignore line: [Thread model: posix]
-  ignore line: [InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
+  ignore line: [InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
   ignore line: [Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8  version ]
-  link line: [ "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_76308 D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld] ==> ignore
-    arg [--sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
+  link line: [ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_a9eb3 C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld] ==> ignore
+    arg [--sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
     arg [-pie] ==> ignore
     arg [-znow] ==> ignore
     arg [-zrelro] ==> ignore
@@ -109,115 +109,115 @@ Parsed C implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_76308] ==> ignore
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o] ==> obj [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [cmTC_a9eb3] ==> ignore
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o] ==> obj [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
     arg [--build-id=sha1] ==> ignore
     arg [--no-rosegment] ==> ignore
     arg [--no-undefined-version] ==> ignore
     arg [--fatal-warnings] ==> ignore
     arg [--no-undefined] ==> ignore
-    arg [CMakeFiles/cmTC_76308.dir/CMakeCCompilerABI.c.o] ==> ignore
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [CMakeFiles/cmTC_a9eb3.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
     arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
     arg [-ldl] ==> lib [dl]
     arg [-lc] ==> lib [c]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
     arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
     arg [-ldl] ==> lib [dl]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o] ==> obj [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-  remove lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
-  remove lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o] ==> obj [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+  remove lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+  remove lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
   implicit libs: [-l:libunwind.a;dl;c;-l:libunwind.a;dl]
-  implicit objs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-  implicit dirs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit objs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+  implicit dirs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
   implicit fwks: []
 
 
 Detecting CXX compiler ABI info compiled with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_0ea70 && [1/2] Building CXX object CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_63c8f && [1/2] Building CXX object CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o
 Android (10552028, based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)
 Target: i686-none-linux-android24
 Thread model: posix
-InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
+InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
 Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8, version 
  (in-process)
- "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -resource-dir D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_0ea70.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro -fdebug-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -x c++ D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections "-fcoverage-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -resource-dir C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_63c8f.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro "-fdebug-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -x c++ C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
 clang -cc1 version 17.0.2 based upon LLVM 17.0.2 default target x86_64-w64-windows-gnu
-ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"
-ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
+ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"
+ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"
 #include "..." search starts here:
 #include <...> search starts here:
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android
- D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android
+ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
 End of search list.
-[2/2] Linking CXX executable cmTC_0ea70
+[2/2] Linking CXX executable cmTC_63c8f
 Android (10552028, based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)
 Target: i686-none-linux-android24
 Thread model: posix
-InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
+InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin
 Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8, version 
- "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_0ea70 D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o
+ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_63c8f C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o
 
 
 
 Parsed CXX implicit include dir info from above output: rv=done
   found start of include info
   found start of implicit include info
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-    add: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+    add: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
   end of search list found
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-  collapse include dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
-  implicit include dirs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+  collapse include dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  implicit include dirs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
 
 
 Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld\.lld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
-  ignore line: [Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp]
+  ignore line: [Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_0ea70 && [1/2] Building CXX object CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_63c8f && [1/2] Building CXX object CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o]
   ignore line: [Android (10552028  based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)]
   ignore line: [Target: i686-none-linux-android24]
   ignore line: [Thread model: posix]
-  ignore line: [InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
+  ignore line: [InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
   ignore line: [Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8  version ]
   ignore line: [ (in-process)]
-  ignore line: [ "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections -fcoverage-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -resource-dir D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_0ea70.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro -fdebug-compilation-dir=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -x c++ D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe" -cc1 -triple i686-none-linux-android24 -emit-obj -mrelax-all -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu i686 -target-feature +ssse3 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb -v -ffunction-sections -fdata-sections "-fcoverage-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -resource-dir C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17 -dependency-file "CMakeFiles\\cmTC_63c8f.dir\\CMakeCXXCompilerABI.cpp.o.d" -MT CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -D ANDROID -D _FORTIFY_SOURCE=2 -isysroot C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1 -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include -internal-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include -internal-externc-isystem C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include -Wformat -fdeprecated-macro "-fdebug-compilation-dir=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp" -ferror-limit 19 -stack-protector 2 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -x c++ C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
   ignore line: [clang -cc1 version 17.0.2 based upon LLVM 17.0.2 default target x86_64-w64-windows-gnu]
-  ignore line: [ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"]
-  ignore line: [ignoring nonexistent directory "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
+  ignore line: [ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/local/include"]
+  ignore line: [ignoring nonexistent directory "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/include"]
   ignore line: [#include "..." search starts here:]
   ignore line: [#include <...> search starts here:]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
-  ignore line: [ D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/include]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/i686-linux-android]
+  ignore line: [ C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include]
   ignore line: [End of search list.]
-  ignore line: [[2/2] Linking CXX executable cmTC_0ea70]
+  ignore line: [[2/2] Linking CXX executable cmTC_63c8f]
   ignore line: [Android (10552028  based on r487747d) clang version 17.0.2 (https://android.googlesource.com/toolchain/llvm-project d9f89f4d16663d5012e5c09495f3b30ece3d2362)]
   ignore line: [Target: i686-none-linux-android24]
   ignore line: [Thread model: posix]
-  ignore line: [InstalledDir: D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
+  ignore line: [InstalledDir: C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin]
   ignore line: [Found CUDA installation: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8  version ]
-  link line: [ "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_0ea70 D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld] ==> ignore
-    arg [--sysroot=D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
+  link line: [ "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld" --sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot -pie -z now -z relro --hash-style=gnu --eh-frame-hdr -m elf_i386 -dynamic-linker /system/bin/linker -o cmTC_63c8f C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24 -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android -LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib --build-id=sha1 --no-rosegment --no-undefined-version --fatal-warnings --no-undefined CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lc++ -Bdynamic -lm C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl -lc C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a -l:libunwind.a -ldl C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld] ==> ignore
+    arg [--sysroot=C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot] ==> ignore
     arg [-pie] ==> ignore
     arg [-znow] ==> ignore
     arg [-zrelro] ==> ignore
@@ -228,487 +228,477 @@ Parsed CXX implicit link information from above output:
     arg [-dynamic-linker] ==> ignore
     arg [/system/bin/linker] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_0ea70] ==> ignore
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o] ==> obj [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
-    arg [-LD:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [cmTC_63c8f] ==> ignore
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o] ==> obj [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
+    arg [-LC:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
     arg [--build-id=sha1] ==> ignore
     arg [--no-rosegment] ==> ignore
     arg [--no-undefined-version] ==> ignore
     arg [--fatal-warnings] ==> ignore
     arg [--no-undefined] ==> ignore
-    arg [CMakeFiles/cmTC_0ea70.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_63c8f.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-Bstatic] ==> search static
     arg [-lc++] ==> lib [c++]
     arg [-Bdynamic] ==> search dynamic
     arg [-lm] ==> lib [m]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
     arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
     arg [-ldl] ==> lib [dl]
     arg [-lc] ==> lib [c]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a] ==> lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
     arg [-l:libunwind.a] ==> lib [-l:libunwind.a]
     arg [-ldl] ==> lib [dl]
-    arg [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o] ==> obj [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-  remove lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
-  remove lib [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
-  collapse library dir [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+    arg [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o] ==> obj [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+  remove lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+  remove lib [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/libclang_rt.builtins-i686-android.a]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android]
+  collapse library dir [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib] ==> [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
   implicit libs: [c++;m;-l:libunwind.a;dl;c;-l:libunwind.a;dl]
-  implicit objs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
-  implicit dirs: [D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android;D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
+  implicit objs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtbegin_dynamic.o;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24/crtend_android.o]
+  implicit dirs: [C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/lib/clang/17/lib/linux/i386;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android/24;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/i686-linux-android;C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib]
   implicit fwks: []
 
 
 Determining if the include file sys/types.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_11293 && [1/2] Building C object CMakeFiles/cmTC_11293.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_11293
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_bc362 && [1/2] Building C object CMakeFiles/cmTC_bc362.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_bc362
 
 
 
 Determining if the include file stdint.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_75ec4 && [1/2] Building C object CMakeFiles/cmTC_75ec4.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_75ec4
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_ddb84 && [1/2] Building C object CMakeFiles/cmTC_ddb84.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_ddb84
 
 
 
 Determining if the include file stddef.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_8a564 && [1/2] Building C object CMakeFiles/cmTC_8a564.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_8a564
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_753ba && [1/2] Building C object CMakeFiles/cmTC_753ba.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_753ba
 
 
 
 Determining size of size_t passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_535cc && [1/2] Building C object CMakeFiles/cmTC_535cc.dir/SIZE_T.c.o
-[2/2] Linking C executable cmTC_535cc
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_c9218 && [1/2] Building C object CMakeFiles/cmTC_c9218.dir/SIZE_T.c.o
+[2/2] Linking C executable cmTC_c9218
 
 
 
 Determining size of unsigned long passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_408c9 && [1/2] Building C object CMakeFiles/cmTC_408c9.dir/UNSIGNED_LONG.c.o
-[2/2] Linking C executable cmTC_408c9
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_f1620 && [1/2] Building C object CMakeFiles/cmTC_f1620.dir/UNSIGNED_LONG.c.o
+[2/2] Linking C executable cmTC_f1620
 
 
 
 Performing C SOURCE FILE Test HAVE_BUILTIN_CTZL succeeded with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_00b25 && [1/2] Building C object CMakeFiles/cmTC_00b25.dir/src.c.o
-[2/2] Linking C executable cmTC_00b25
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_dca4a && [1/2] Building C object CMakeFiles/cmTC_dca4a.dir/src.c.o
+[2/2] Linking C executable cmTC_dca4a
 
 
 Source file was:
 int main(int argc, char **argv) { unsigned long a = argc;  return __builtin_ctzl(a); }
 Performing C SOURCE FILE Test INLINE_WORKS succeeded with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_afa33 && [1/2] Building C object CMakeFiles/cmTC_afa33.dir/src.c.o
-[2/2] Linking C executable cmTC_afa33
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_bed49 && [1/2] Building C object CMakeFiles/cmTC_bed49.dir/src.c.o
+[2/2] Linking C executable cmTC_bed49
 
 
 Source file was:
 __inline__ __attribute__((always_inline)) static int foo(void) { return 0; } int main(void) { return foo(); }
 Performing C SOURCE FILE Test HAVE_THREAD_LOCAL succeeded with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_594e5 && [1/2] Building C object CMakeFiles/cmTC_594e5.dir/src.c.o
-[2/2] Linking C executable cmTC_594e5
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_005e4 && [1/2] Building C object CMakeFiles/cmTC_005e4.dir/src.c.o
+[2/2] Linking C executable cmTC_005e4
 
 
 Source file was:
 __thread int i;  int main(void) { i = 0;  return i; }
-Performing C SOURCE FILE Test HAVE_VERSION_SCRIPT succeeded with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
-
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d8c0a && [1/2] Building C object CMakeFiles/cmTC_d8c0a.dir/src.c.o
-clang: warning: -Wl,--version-script,D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/conftest.map: 'linker' input unused [-Wunused-command-line-argument]
-[2/2] Linking C executable cmTC_d8c0a
-
-
-Source file was:
-int main(void) { return 0; }
 Checking whether the ASM_NASM compiler is YASM using "--version" matched "(yasm)":
 yasm 1.3.0
 Compiled on Oct  5 2023.
 Copyright (c) 2001-2014 Peter Johnson and other Yasm developers.
 Run yasm --license for licensing overview and summary.
 Determining if the include file pthread.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_335ae && [1/2] Building C object CMakeFiles/cmTC_335ae.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_335ae
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_4c1fb && [1/2] Building C object CMakeFiles/cmTC_4c1fb.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_4c1fb
 
 
 
 Determining if the include file dirent.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_b0e8e && [1/2] Building C object CMakeFiles/cmTC_b0e8e.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_b0e8e
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_bbd74 && [1/2] Building C object CMakeFiles/cmTC_bbd74.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_bbd74
 
 
 
 Determining if the include file endian.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_b087d && [1/2] Building C object CMakeFiles/cmTC_b087d.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_b087d
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d0de0 && [1/2] Building C object CMakeFiles/cmTC_d0de0.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_d0de0
 
 
 
 Determining if the include file fcntl.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_56a3c && [1/2] Building C object CMakeFiles/cmTC_56a3c.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_56a3c
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_7e01d && [1/2] Building C object CMakeFiles/cmTC_7e01d.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_7e01d
 
 
 
 Determining if the include file netinet/in.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_81989 && [1/2] Building C object CMakeFiles/cmTC_81989.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_81989
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_cb696 && [1/2] Building C object CMakeFiles/cmTC_cb696.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_cb696
 
 
 
 Determining if the include file sys/endian.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_7c724 && [1/2] Building C object CMakeFiles/cmTC_7c724.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_7c724
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_4b938 && [1/2] Building C object CMakeFiles/cmTC_4b938.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_4b938
 
 
 
 Determining if the include file sys/socket.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_76dba && [1/2] Building C object CMakeFiles/cmTC_76dba.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_76dba
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_dbf21 && [1/2] Building C object CMakeFiles/cmTC_dbf21.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_dbf21
 
 
 
 Determining if the include file sys/stat.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_fe42b && [1/2] Building C object CMakeFiles/cmTC_fe42b.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_fe42b
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_11f77 && [1/2] Building C object CMakeFiles/cmTC_11f77.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_11f77
 
 
 
 Determining if the include file sys/time.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_3f14b && [1/2] Building C object CMakeFiles/cmTC_3f14b.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_3f14b
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_7d010 && [1/2] Building C object CMakeFiles/cmTC_7d010.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_7d010
 
 
 
 Determining if the include file sys/types.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a5607 && [1/2] Building C object CMakeFiles/cmTC_a5607.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_a5607
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a0fbf && [1/2] Building C object CMakeFiles/cmTC_a0fbf.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_a0fbf
 
 
 
 Determining if the include file sys/wait.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_95709 && [1/2] Building C object CMakeFiles/cmTC_95709.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_95709
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a4dbd && [1/2] Building C object CMakeFiles/cmTC_a4dbd.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_a4dbd
 
 
 
 Determining if the include file unistd.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_e81d5 && [1/2] Building C object CMakeFiles/cmTC_e81d5.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_e81d5
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_bdb02 && [1/2] Building C object CMakeFiles/cmTC_bdb02.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_bdb02
 
 
 
 Determining if the include file sys/resource.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_6eb1a && [1/2] Building C object CMakeFiles/cmTC_6eb1a.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_6eb1a
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_6e5ca && [1/2] Building C object CMakeFiles/cmTC_6e5ca.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_6e5ca
 
 
 
 Determining if the include file arpa/inet.h exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_42751 && [1/2] Building C object CMakeFiles/cmTC_42751.dir/CheckIncludeFile.c.o
-[2/2] Linking C executable cmTC_42751
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_12cd3 && [1/2] Building C object CMakeFiles/cmTC_12cd3.dir/CheckIncludeFile.c.o
+[2/2] Linking C executable cmTC_12cd3
 
 
 
 Determining if the function gettimeofday exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a7cf4 && [1/2] Building C object CMakeFiles/cmTC_a7cf4.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_a7cf4
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_1010b && [1/2] Building C object CMakeFiles/cmTC_1010b.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_1010b
 
 
 
 Determining if the function vfork exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_5e51a && [1/2] Building C object CMakeFiles/cmTC_5e51a.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'vfork' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_ffef0 && [1/2] Building C object CMakeFiles/cmTC_ffef0.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'vfork' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS vfork
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'vfork' is a builtin with type 'int (void)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'vfork' is a builtin with type 'int (void)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS vfork
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_5e51a
+[2/2] Linking C executable cmTC_ffef0
 
 
 
 Determining if the function vprintf exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_7127c && [1/2] Building C object CMakeFiles/cmTC_7127c.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'vprintf' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_b4612 && [1/2] Building C object CMakeFiles/cmTC_b4612.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'vprintf' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS vprintf
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'vprintf' is a builtin with type 'int (const char *, __builtin_va_list)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'vprintf' is a builtin with type 'int (const char *, __builtin_va_list)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS vprintf
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_7127c
+[2/2] Linking C executable cmTC_b4612
 
 
 
 Determining if the function mmap exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_21886 && [1/2] Building C object CMakeFiles/cmTC_21886.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_21886
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_4f33c && [1/2] Building C object CMakeFiles/cmTC_4f33c.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_4f33c
 
 
 
 Determining if the function fork exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_8532f && [1/2] Building C object CMakeFiles/cmTC_8532f.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_8532f
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_70bf1 && [1/2] Building C object CMakeFiles/cmTC_70bf1.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_70bf1
 
 
 
 Determining if the function gethostbyname exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a17bd && [1/2] Building C object CMakeFiles/cmTC_a17bd.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_a17bd
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_65629 && [1/2] Building C object CMakeFiles/cmTC_65629.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_65629
 
 
 
 Determining if the function gethostname exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a30d9 && [1/2] Building C object CMakeFiles/cmTC_a30d9.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_a30d9
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_6ea66 && [1/2] Building C object CMakeFiles/cmTC_6ea66.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_6ea66
 
 
 
 Determining if the function inet_ntoa exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_da9d6 && [1/2] Building C object CMakeFiles/cmTC_da9d6.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_da9d6
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_f4bbb && [1/2] Building C object CMakeFiles/cmTC_f4bbb.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_f4bbb
 
 
 
 Determining if the function memmove exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_ce4a2 && [1/2] Building C object CMakeFiles/cmTC_ce4a2.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'memmove' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_b417d && [1/2] Building C object CMakeFiles/cmTC_b417d.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'memmove' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS memmove
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'memmove' is a builtin with type 'void *(void *, const void *, unsigned int)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'memmove' is a builtin with type 'void *(void *, const void *, unsigned int)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS memmove
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_ce4a2
+[2/2] Linking C executable cmTC_b417d
 
 
 
 Determining if the function memset exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d05ef && [1/2] Building C object CMakeFiles/cmTC_d05ef.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'memset' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_67054 && [1/2] Building C object CMakeFiles/cmTC_67054.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'memset' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS memset
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'memset' is a builtin with type 'void *(void *, int, unsigned int)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'memset' is a builtin with type 'void *(void *, int, unsigned int)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS memset
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_d05ef
+[2/2] Linking C executable cmTC_67054
 
 
 
 Determining if the function mkfifo exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_dab04 && [1/2] Building C object CMakeFiles/cmTC_dab04.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_dab04
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_e43ff && [1/2] Building C object CMakeFiles/cmTC_e43ff.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_e43ff
 
 
 
 Determining if the function select exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_cb3e6 && [1/2] Building C object CMakeFiles/cmTC_cb3e6.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_cb3e6
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_941d9 && [1/2] Building C object CMakeFiles/cmTC_941d9.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_941d9
 
 
 
 Determining if the function socket exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_1f037 && [1/2] Building C object CMakeFiles/cmTC_1f037.dir/CheckFunctionExists.c.o
-[2/2] Linking C executable cmTC_1f037
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d500a && [1/2] Building C object CMakeFiles/cmTC_d500a.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_d500a
 
 
 
 Determining if the function strchr exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d590c && [1/2] Building C object CMakeFiles/cmTC_d590c.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strchr' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_22f7e && [1/2] Building C object CMakeFiles/cmTC_22f7e.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strchr' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strchr
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strchr' is a builtin with type 'char *(const char *, int)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strchr' is a builtin with type 'char *(const char *, int)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strchr
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_d590c
+[2/2] Linking C executable cmTC_22f7e
 
 
 
 Determining if the function strcspn exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_c6c4e && [1/2] Building C object CMakeFiles/cmTC_c6c4e.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strcspn' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d4fd3 && [1/2] Building C object CMakeFiles/cmTC_d4fd3.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strcspn' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strcspn
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strcspn' is a builtin with type 'unsigned int (const char *, const char *)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strcspn' is a builtin with type 'unsigned int (const char *, const char *)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strcspn
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_c6c4e
+[2/2] Linking C executable cmTC_d4fd3
 
 
 
 Determining if the function strdup exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_33f13 && [1/2] Building C object CMakeFiles/cmTC_33f13.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strdup' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_b95eb && [1/2] Building C object CMakeFiles/cmTC_b95eb.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strdup' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strdup
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strdup' is a builtin with type 'char *(const char *)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strdup' is a builtin with type 'char *(const char *)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strdup
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_33f13
+[2/2] Linking C executable cmTC_b95eb
 
 
 
 Determining if the function strerror exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_07271 && [1/2] Building C object CMakeFiles/cmTC_07271.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strerror' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_81120 && [1/2] Building C object CMakeFiles/cmTC_81120.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strerror' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strerror
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strerror' is a builtin with type 'char *(int)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strerror' is a builtin with type 'char *(int)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strerror
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_07271
+[2/2] Linking C executable cmTC_81120
 
 
 
 Determining if the function strstr exists passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_4cb10 && [1/2] Building C object CMakeFiles/cmTC_4cb10.dir/CheckFunctionExists.c.o
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strstr' [-Wincompatible-library-redeclaration]
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_07f30 && [1/2] Building C object CMakeFiles/cmTC_07f30.dir/CheckFunctionExists.c.o
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: warning: incompatible redeclaration of library function 'strstr' [-Wincompatible-library-redeclaration]
   CHECK_FUNCTION_EXISTS(void);
   ^
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strstr
                               ^
-D:/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strstr' is a builtin with type 'char *(const char *, const char *)'
+C:/Users/danve/AppData/Local/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: 'strstr' is a builtin with type 'char *(const char *, const char *)'
 <command line>:3:31: note: expanded from macro 'CHECK_FUNCTION_EXISTS'
 #define CHECK_FUNCTION_EXISTS strstr
                               ^
 1 warning generated.
-[2/2] Linking C executable cmTC_4cb10
+[2/2] Linking C executable cmTC_07f30
 
 
 
 Determining if the htobe64 exist passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_2b793 && [1/2] Building C object CMakeFiles/cmTC_2b793.dir/CheckSymbolExists.c.o
-[2/2] Linking C executable cmTC_2b793
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_da7e9 && [1/2] Building C object CMakeFiles/cmTC_da7e9.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_da7e9
 
 
-File D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+File E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
 /* */
 #include <endian.h>
 
@@ -723,34 +713,34 @@ int main(int argc, char** argv)
 #endif
 }
 Determining size of pid_t passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_a1a5c && [1/2] Building C object CMakeFiles/cmTC_a1a5c.dir/LIBVNCSERVER_PID_T.c.o
-[2/2] Linking C executable cmTC_a1a5c
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_65be2 && [1/2] Building C object CMakeFiles/cmTC_65be2.dir/LIBVNCSERVER_PID_T.c.o
+[2/2] Linking C executable cmTC_65be2
 
 
 
 Determining size of size_t passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_22727 && [1/2] Building C object CMakeFiles/cmTC_22727.dir/LIBVNCSERVER_SIZE_T.c.o
-[2/2] Linking C executable cmTC_22727
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_eb0c3 && [1/2] Building C object CMakeFiles/cmTC_eb0c3.dir/LIBVNCSERVER_SIZE_T.c.o
+[2/2] Linking C executable cmTC_eb0c3
 
 
 
 Determining size of socklen_t passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_d3019 && [1/2] Building C object CMakeFiles/cmTC_d3019.dir/LIBVNCSERVER_SOCKLEN_T.c.o
-[2/2] Linking C executable cmTC_d3019
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_bd4be && [1/2] Building C object CMakeFiles/cmTC_bd4be.dir/LIBVNCSERVER_SOCKLEN_T.c.o
+[2/2] Linking C executable cmTC_bd4be
 
 
 
 Determining size of in_addr_t passed with the following output:
-Change Dir: D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
+Change Dir: E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/CMakeFiles/CMakeTmp
 
-Run Build Command(s):D:\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_23119 && [1/2] Building C object CMakeFiles/cmTC_23119.dir/LIBVNCSERVER_IN_ADDR_T.c.o
-[2/2] Linking C executable cmTC_23119
+Run Build Command(s):C:\Users\danve\AppData\Local\Android\Sdk\cmake\3.22.1\bin\ninja.exe cmTC_97b85 && [1/2] Building C object CMakeFiles/cmTC_97b85.dir/LIBVNCSERVER_IN_ADDR_T.c.o
+[2/2] Linking C executable cmTC_97b85
 
 
 

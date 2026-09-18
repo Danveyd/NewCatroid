@@ -21,9 +21,9 @@ runme()
 
 EXT=bmp
 IMAGES="vgl_5674_0098.${EXT} vgl_6434_0018a.${EXT} vgl_6548_0026a.${EXT} nightshot_iso_100.${EXT}"
-IMGDIR=D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo/testimages
+IMGDIR=E:/Disk D/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo/testimages
 OUTDIR=`mktemp -d /tmp/__tjbenchtest_output.XXXXXX`
-EXEDIR=D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a/libjpeg-turbo
+EXEDIR=E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/arm64-v8a/libjpeg-turbo
 BMPARG=
 NSARG=
 YUVARG=

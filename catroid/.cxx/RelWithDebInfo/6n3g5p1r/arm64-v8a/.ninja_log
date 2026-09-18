@@ -1,5 +1,8 @@
 # ninja log v5
 1	22516	8068495172647299	CMakeFiles/example_core.dir/example_core.cpp.o	f6e99e32b7d2a0ec
+40624	42489	8068495366308427	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/arm64-v8a/libcatroid.so	d169e346ed6edb00
 22523	23051	8068495177351007	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/arm64-v8a/libexample_core.so	b3397fb2ea8e7389
 8	40619	8068495351281431	CMakeFiles/catroid.dir/catroid.cpp.o	187daa100bf6d54c
-40624	42489	8068495366308427	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/arm64-v8a/libcatroid.so	d169e346ed6edb00
+9	27960	8107292780120867	CMakeFiles/catroid.dir/mesh_lod_generator.cpp.o	8999cae01894372b
+3	31511	8107292816174365	CMakeFiles/catroid.dir/catroid.cpp.o	187daa100bf6d54c
+31512	44513	8107292945277638	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/arm64-v8a/libcatroid.so	8a61e75b026c0f23

@@ -73,7 +73,6 @@ class BrickEditDialogFragment : DialogFragment() {
     private fun addParamView(param: EditableParam? = null) {
         val paramView = inflater.inflate(R.layout.list_item_editable_param, paramsContainer, false)
 
-        // --- ИСПРАВЛЕНИЕ: Получаем ссылки на TextInputLayout ---
         val typeLayout: TextInputLayout = paramView.findViewById(R.id.param_name_layout)
         val nameLayout: TextInputLayout = paramView.findViewById(R.id.param_value_layout)
 
@@ -81,7 +80,6 @@ class BrickEditDialogFragment : DialogFragment() {
         val nameEdit: EditText = paramView.findViewById(R.id.param_value_edit)
         val deleteButton: ImageButton = paramView.findViewById(R.id.delete_param_button)
 
-        // --- ИСПРАВЛЕНИЕ: Устанавливаем hint для TextInputLayout, а не для EditText ---
         typeLayout.hint = getString(R.string.libs_type1)
         nameLayout.hint = getString(R.string.libs_cname)
 

@@ -1,4 +1,4 @@
-# Install script for directory: D:/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo
+# Install script for directory: E:/Disk D/Catroid-develop/vncclient/src/main/cpp/libjpeg-turbo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,13 +39,13 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "D:/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/danve/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/cmake_install.cmake")
-  include("D:/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/md5/cmake_install.cmake")
+  include("E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/simd/cmake_install.cmake")
+  include("E:/Disk D/Catroid-develop/vncclient/.cxx/Debug/305v1k2y/x86/libjpeg-turbo/md5/cmake_install.cmake")
 
 endif()
 

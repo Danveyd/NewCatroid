@@ -91,7 +91,7 @@ class LibraryEditorActivity : AppCompatActivity() {
     private fun triggerImport() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "*/*" // Разрешаем выбирать любой файл
+            type = "*/*"
         }
         importFileLauncher.launch(intent)
     }

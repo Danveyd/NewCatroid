@@ -129,6 +129,7 @@ import net.mgsx.gltf.scene3d.shaders.PBRShaderProvider;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.raptor.lod.LODMeshGroup;
 import org.catrobat.catroid.raptor.particles.ParticleSystem3DRuntime;
 import org.catrobat.catroid.raptor.postprocessing.AutoLensFlareEffect;
 import org.catrobat.catroid.raptor.postprocessing.CustomShaderAttribute;
@@ -272,6 +273,9 @@ public class ThreeDManager implements Disposable {
 
         if (realisticMode && sceneManager != null) {
             sceneManager.updateViewport(renderWidth, renderHeight);
+        }
+        if (render3Pipeline != null && render3Mode) {
+            render3Pipeline.resize(width, height);
         }
     }
 
@@ -540,6 +544,18 @@ public class ThreeDManager implements Disposable {
 
     private boolean disposed = false;
 
+    private boolean customDepthRequested = false;
+
+
+    // Render 3.0 only
+    private boolean render3Mode = false;
+    private org.catrobat.catroid.raptor.render3.Render3Pipeline render3Pipeline;
+
+    private final Map<String, LODMeshGroup> lodGroups = new HashMap<>();
+    private final Map<String, BoundingBox> cachedBounds = new HashMap<>();
+    private boolean autoLodEnabled = true;
+    private boolean frustumCullingEnabled = true;
+
     public boolean isDisposed() {
         return disposed;
     }
@@ -786,6 +802,35 @@ public class ThreeDManager implements Disposable {
         assetManager.setLoader(net.mgsx.gltf.scene3d.scene.SceneAsset.class, ".gltf", new net.mgsx.gltf.loaders.gltf.GLTFAssetLoader(resolver));
         assetManager.setLoader(net.mgsx.gltf.scene3d.scene.SceneAsset.class, ".glb", new net.mgsx.gltf.loaders.glb.GLBAssetLoader(resolver));
         assetManager.setLoader(Model.class, ".obj", new ObjLoader(resolver));
+
+        //enableRender3(true);
+    }
+
+    public void enableRender3(boolean enabled) {
+        if (this.render3Mode == enabled) return;
+        this.render3Mode = enabled;
+
+        if (enabled) {
+            this.realisticMode = true;
+
+            if (render3Pipeline == null) {
+                render3Pipeline = new org.catrobat.catroid.raptor.render3.Render3Pipeline(this);
+                render3Pipeline.init(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            }
+            for (Map.Entry<String, ModelInstance> entry : sceneObjects.entrySet()) {
+                render3Pipeline.registerObject(entry.getKey(), entry.getValue());
+            }
+            Gdx.app.log("ThreeDManager", "Render 3.0 (Next-Gen) ENABLED.");
+        } else {
+            if (render3Pipeline != null) {
+                render3Pipeline.restoreAllOriginalMeshes(sceneObjects);
+            }
+            Gdx.app.log("ThreeDManager", "Render 3.0 DISABLED. Reverted to Render 2.0 / 1.0.");
+        }
+    }
+
+    public boolean isRender3Enabled() {
+        return render3Mode;
     }
 
     public void createObjectAsync(final String objectId, final String modelPath, final Runnable onComplete) {
@@ -816,6 +861,19 @@ public class ThreeDManager implements Disposable {
                 assetManager.load(modelPath, Model.class);
             }
         }
+    }
+
+    public BoundingBox getObjectBounds(String objectId) {
+        BoundingBox box = cachedBounds.get(objectId);
+        if (box == null) {
+            ModelInstance instance = sceneObjects.get(objectId);
+            if (instance != null) {
+                box = new BoundingBox();
+                instance.calculateBoundingBox(box);
+                cachedBounds.put(objectId, box);
+            }
+        }
+        return box;
     }
 
     private void createObjectFromLoadedGltf(String objectId, net.mgsx.gltf.scene3d.scene.SceneAsset sceneAsset) {
@@ -3689,6 +3747,8 @@ public class ThreeDManager implements Disposable {
         }
     }
 
+    public net.mgsx.gltf.scene3d.scene.SceneManager getSceneManager() { return sceneManager; }
+
 
     public btRigidBody getPhysicsBody(String objectId) {
         return physicsBodies.get(objectId);
@@ -4186,6 +4246,12 @@ public class ThreeDManager implements Disposable {
             updateParticles3D(delta);
             camera.update();
 
+            if (render3Mode && render3Pipeline != null) {
+                renderDepthAndMaterial(camera, depthFbo, materialFbo);
+                render3Pipeline.render(camera, sceneManager, sceneObjects, inactiveRenderObjects, depthFbo, materialFbo);
+                return;
+            }
+
             boolean shouldRender = false;
             if (targetFps > 0) {
                 renderTimeAccumulator += delta;
@@ -4200,7 +4266,7 @@ public class ThreeDManager implements Disposable {
             }
 
             if (shouldRender) {
-                if (isDepthRenderEnabled) {
+                if (isDepthRenderEnabled || customDepthRequested) {
                     depthFbo.begin();
                     Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
                     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -4368,9 +4434,10 @@ public class ThreeDManager implements Disposable {
 
                     vfxManager.endInputCapture();
                     isVfxCapturing = false;
-                    vfxManager.applyEffects();
 
                     applyUniformsToScreenShader();
+
+                    vfxManager.applyEffects();
 
                     lastRenderedTexture = vfxManager.getResultBuffer().getTexture();
                 }
@@ -5566,6 +5633,12 @@ public class ThreeDManager implements Disposable {
         aiHasLostTarget.remove(objectId);
         aiSmoothedDirection.remove(objectId);
 
+        LODMeshGroup lg = lodGroups.remove(objectId);
+        if (lg != null) lg.dispose();
+        cachedBounds.remove(objectId);
+
+        if (render3Pipeline != null) render3Pipeline.unregisterObject(objectId, instance);
+
         if (instance != null) {
             if (realisticMode && sceneManager != null) {
                 com.badlogic.gdx.utils.Array<com.badlogic.gdx.graphics.g3d.RenderableProvider> providers = sceneManager.getRenderableProviders();
@@ -6576,9 +6649,14 @@ public class ThreeDManager implements Disposable {
 
 
     public void setShaderUniform(String name, float value) {
-        if (name != null && !name.isEmpty()) {
-            customUniforms.put("u_" + name, value);
+        if (name == null || name.isEmpty()) return;
+
+        if ("hasDepthBuffer".equalsIgnoreCase(name)) {
+            this.customDepthRequested = (value >= 0.5f);
+            return;
         }
+
+        customUniforms.put("u_" + name, value);
     }
 
 
@@ -6694,6 +6772,17 @@ public class ThreeDManager implements Disposable {
 
             if (program != null && program.isCompiled()) {
                 program.begin();
+
+                if ((customDepthRequested || isDepthRenderEnabled) && depthFbo != null) {
+                    depthFbo.getColorBufferTexture().bind(1);
+                    program.setUniformi("u_depthTexture", 1);
+
+                    Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+
+                    program.setUniformf("u_cameraNear", camera.near);
+                    program.setUniformf("u_cameraFar", camera.far);
+                }
+
                 for (Map.Entry<String, Object> entry : customUniforms.entrySet()) {
                     String name = entry.getKey();
                     Object value = entry.getValue();
@@ -6741,6 +6830,10 @@ public class ThreeDManager implements Disposable {
         }
         physicsBodies.clear();
         physicsResources.clear();
+
+        if (render3Pipeline != null) {
+            render3Pipeline.restoreAllOriginalMeshes(sceneObjects);
+        }
 
         for (ParticleSystem3DRuntime rt : activeParticleRuntimes3D.values()) rt.dispose();
         activeParticleRuntimes3D.clear();
@@ -6874,6 +6967,11 @@ public class ThreeDManager implements Disposable {
             isVfxCapturing = false;
         }
 
+        if (render3Pipeline != null) {
+            render3Pipeline.dispose();
+            render3Pipeline = null;
+        }
+
         if (ssaoEffect != null) { ssaoEffect.dispose(); ssaoEffect = null; }
         if (rayTracingEffect != null) { rayTracingEffect.dispose(); rayTracingEffect = null; }
         if (ssgiEffect != null) { ssgiEffect.dispose(); ssgiEffect = null; }
@@ -6943,6 +7041,11 @@ public class ThreeDManager implements Disposable {
         for (AudioAsset asset : loadedAudioAssets.values()) {
             if (asset != null) asset.dispose();
         }
+
+        for (LODMeshGroup lodMeshGroup : lodGroups.values()) {
+            if (lodMeshGroup != null) lodMeshGroup.dispose();
+        }
+        lodGroups.clear();
 
         managedBatches.clear();
         activeParticleEffects.clear();
@@ -7326,6 +7429,10 @@ public class ThreeDManager implements Disposable {
         return VoxelManager.Companion.getBlockInfo(worldId, (int)x, (int)y, (int)z);
     }
 
+    public btDiscreteDynamicsWorld getDynamicsWorld() {
+        return dynamicsWorld;
+    }
+
     public void applyShaderToImage(final String filename, final String vertexCode, final String fragmentCode) {
         Gdx.app.postRunnable(() -> {
             File file = ProjectManager.getInstance().getCurrentProject().getFile(filename);
@@ -7481,69 +7588,45 @@ class MaterialShaderProvider extends DefaultShaderProvider {
             prefix += "#define HAS_UV\n";
         }
 
-        if (renderable.bones != null) {
-            prefix += "#define numBones " + 110 + "\n";
-            prefix += "#define boneWeight0Flag\n";
-            prefix += "#define boneWeight1Flag\n";
-            prefix += "#define boneWeight2Flag\n";
-            prefix += "#define boneWeight3Flag\n";
-        }
-
         String vsh = prefix +
                 "attribute vec3 a_position;\n" +
                 "#ifdef HAS_UV\nattribute vec2 a_texCoord0;\nvarying vec2 v_uv;\n#endif\n" +
                 "uniform mat4 u_projViewTrans;\n" +
                 "uniform mat4 u_worldTrans;\n" +
                 "void main() {\n" +
-                "#ifdef HAS_UV\n    v_uv = a_texCoord0;\n#endif\n" +
-                "    gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);\n" +
+                "#ifdef HAS_UV\n v_uv = a_texCoord0;\n#endif\n" +
+                " gl_Position = u_projViewTrans * u_worldTrans * vec4(a_position, 1.0);\n" +
                 "}";
 
         String fsh = prefix +
                 "#ifdef GL_ES\nprecision mediump float;\n#endif\n" +
                 "#ifdef HAS_UV\nvarying vec2 v_uv;\n#endif\n" +
                 "uniform float u_metallic;\n" +
-                "uniform int u_hasTexture;\n" +
-                "uniform sampler2D u_texture;\n" +
+                "uniform float u_roughness;\n" +
                 "void main() {\n" +
-                "    float m = u_metallic;\n" +
-                "#ifdef HAS_UV\n" +
-
-                "    if (u_hasTexture == 1) m *= texture2D(u_texture, v_uv).b;\n" +
-                "#endif\n" +
-                "    gl_FragColor = vec4(m, 0.0, 0.0, 1.0);\n" +
+                " gl_FragColor = vec4(u_metallic, u_roughness, 0.0, 1.0);\n" +
                 "}";
 
         DefaultShader.Config config = new DefaultShader.Config(vsh, fsh);
-        config.numBones = 110;
 
         return new DefaultShader(renderable, config) {
             private final int u_metallic = register("u_metallic");
-            private final int u_hasTexture = register("u_hasTexture");
-            private final int u_texture = register("u_texture");
+            private final int u_roughness = register("u_roughness");
 
             @Override
             public void render(Renderable renderable) {
                 float metallic = 0.0f;
-                boolean hasTex = false;
-                Texture tex = null;
-
+                float roughness = 1.0f;
 
                 if (renderable.material.has(PBRFloatAttribute.Metallic)) {
                     metallic = ((PBRFloatAttribute) renderable.material.get(PBRFloatAttribute.Metallic)).value;
                 }
-
-
-                if (renderable.material.has(PBRTextureAttribute.MetallicRoughnessTexture)) {
-                    tex = ((PBRTextureAttribute) renderable.material.get(PBRTextureAttribute.MetallicRoughnessTexture)).textureDescription.texture;
-                    hasTex = true;
+                if (renderable.material.has(PBRFloatAttribute.Roughness)) {
+                    roughness = ((PBRFloatAttribute) renderable.material.get(PBRFloatAttribute.Roughness)).value;
                 }
 
                 set(u_metallic, metallic);
-                set(u_hasTexture, hasTex ? 1 : 0);
-                if (hasTex && tex != null) {
-                    set(u_texture, tex);
-                }
+                set(u_roughness, roughness);
 
                 super.render(renderable);
             }

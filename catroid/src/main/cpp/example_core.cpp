@@ -34,11 +34,9 @@ static GLuint particle_texture_id = 0;
 
 const char* VERTEX_SHADER = R"glsl(
 #version 300 es
-// 'in' вместо 'attribute' в GLES 3
 in vec2 a_position;
 void main() {
     gl_Position = vec4(a_position, 0.0, 1.0);
-    // Размер частиц теперь больше, чтобы текстура была видна
     gl_PointSize = 40.0;
 }
 )glsl";
@@ -46,13 +44,9 @@ void main() {
 const char* FRAGMENT_SHADER = R"glsl(
 #version 300 es
 precision mediump float;
-// uniform для передачи текстуры в шейдер
 uniform sampler2D u_texture;
-// 'out' вместо 'gl_FragColor' в GLES 3
 out vec4 fragColor;
 void main() {
-    // gl_PointCoord - специальная переменная, содержит UV-координаты внутри точки (0,0 - 1,1)
-    // Мы просто берем цвет из текстуры в этих координатах
     fragColor = texture(u_texture, gl_PointCoord);
 }
 )glsl";

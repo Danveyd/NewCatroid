@@ -1,54 +1,56 @@
-C/C++ Structured Log[
-Y
-WD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\additional_project_files.txtC
-A
-?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ƒç·‡4¸ ‚úºœú3X
-V
-TD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\android_gradle_build.json	„ç·‡4”’ „úºœú3]
-[
-YD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\android_gradle_build_mini.json	„ç·‡4±… ×ûºœú3J
-H
-FD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build.ninja	„ç·‡4Ç»( ƒôºœú3N
-L
-JD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build.ninja.txt	„ç·‡4S
-Q
-OD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build_file_index.txt	„ç·‡4ÿ Ùûºœú3T
-R
-PD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\compile_commands.json	„ç·‡4æà ‚ôºœú3X
-V
-TD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\compile_commands.json.bin	„ç·‡4	õ½ ‚ôºœú3^
-\
-ZD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\metadata_generation_command.txt	„ç·‡4
-Â Øûºœú3Q
-O
-MD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\prefab_config.json	„ç·‡4( Øûºœú3V
-T
-RD:\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\symbol_folder_index.txt	„ç·‡4Q Ùûºœú3<
+C/C++ Structured Log<
 :
-8D:\Catroid-develop\vncclient\src\main\cpp\CMakeLists.txt	„ç·‡4€ ¾ûŞá•3J
+8D:\Catroid-develop\vncclient\src\main\cpp\CMakeLists.txtC
+A
+?com.android.build.gradle.internal.cxx.io.EncodedFileFingerPrint	ä¶¾”‹4€ ¾ûŞá•3J
 H
-FD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\CMakeLists.txt	„ç·‡4áÿ “®ğß•3\
+FD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\CMakeLists.txt	å¶¾”‹4áÿ “®ğß•3\
 Z
-XD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\BuildPackages.cmake	„ç·‡4š. –®ğß•3]
+XD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\BuildPackages.cmake	å¶¾”‹4š. –®ğß•3]
 [
-YD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\GNUInstallDirs.cmake	„ç·‡4­ —®ğß•3Z
+YD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\GNUInstallDirs.cmake	å¶¾”‹4­ —®ğß•3Z
 X
-VD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\PackageInfo.cmake	„ç·‡4Ù —®ğß•3a
+VD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\PackageInfo.cmake	å¶¾”‹4Ù —®ğß•3a
 _
-]D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\cmake_uninstall.cmake.in	„ç·‡4æ —®ğß•3N
+]D:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\cmakescripts\cmake_uninstall.cmake.in	å¶¾”‹4æ —®ğß•3N
 L
-JD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\md5\CMakeLists.txt	„ç·‡4/ Î®ğß•3S
+JD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\md5\CMakeLists.txt	å¶¾”‹4/ Î®ğß•3S
 Q
-OD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\release\Config.cmake.in	„ç·‡4 Ñ®ğß•3O
+OD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\release\Config.cmake.in	å¶¾”‹4	 Ñ®ğß•3O
 M
-KD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\simd\CMakeLists.txt	„ç·‡4ù¤ Ô®ğß•3I
+KD:\Catroid-develop\vncclient\src\main\cpp\libjpeg-turbo\simd\CMakeLists.txt	å¶¾”‹4
+ù¤ Ô®ğß•3I
 G
-ED:\Catroid-develop\vncclient\src\main\cpp\libvncserver\CMakeLists.txt	„ç·‡4ëî Ô¯ğß•3Y
+ED:\Catroid-develop\vncclient\src\main\cpp\libvncserver\CMakeLists.txt	å¶¾”‹4ëî Ô¯ğß•3Y
 W
-UD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindFFMPEG.cmake	„ç·‡4Æ2 Û¯ğß•3V
+UD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindFFMPEG.cmake	å¶¾”‹4Æ2 Û¯ğß•3V
 T
-RD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindLZO.cmake	„ç·‡4“ Û¯ğß•3W
+RD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindLZO.cmake	å¶¾”‹4“ Û¯ğß•3W
 U
-SD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindSDL2.cmake	„ç·‡4ª2 Û¯ğß•3d
+SD:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\FindSDL2.cmake	å¶¾”‹4ª2 Û¯ğß•3d
 b
-`D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\LibVNCServerConfig.cmake.in	„ç·‡4 Û¯ğß•3
+`D:\Catroid-develop\vncclient\src\main\cpp\libvncserver\cmake\Modules\LibVNCServerConfig.cmake.in	å¶¾”‹4 Û¯ğß•3b
+`
+^E:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\additional_project_files.txt	å¶¾”‹4˜ ¶¾”‹4_
+]
+[E:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\android_gradle_build.json	å¶¾”‹4óy Ÿ¶¾”‹4d
+b
+`E:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\android_gradle_build_mini.json	å¶¾”‹4ôl Ü¶¾”‹4Q
+O
+ME:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build.ninja	å¶¾”‹4½õ) ½´¾”‹4U
+S
+QE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build.ninja.txt	å¶¾”‹4Z
+X
+VE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\build_file_index.txt	å¶¾”‹4á	 ß¶¾”‹4[
+Y
+WE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\compile_commands.json	å¶¾”‹4Ç£" º´¾”‹4_
+]
+[E:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\compile_commands.json.bin	å¶¾”‹4£Õ º´¾”‹4e
+c
+aE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\metadata_generation_command.txt	å¶¾”‹4 Ş¶¾”‹4X
+V
+TE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\prefab_config.json	å¶¾”‹4( Ş¶¾”‹4]
+[
+YE:\Disk D\Catroid-develop\vncclient\.cxx\Debug\305v1k2y\arm64-v8a\symbol_folder_index.txt	å¶¾”‹4X ß¶¾”‹4C
+A
+?E:\Disk D\Catroid-develop\vncclient\src\main\cpp\CMakeLists.txt	å¶¾”‹4€ ¾ûŞá•3

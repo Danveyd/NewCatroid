@@ -32,7 +32,7 @@ class BricksEditorFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.libraryDraft.observe(viewLifecycleOwner) { draft ->
-            adapter.submitList(draft.bricks.toList()) // Отправляем копию
+            adapter.submitList(draft.bricks.toList())
         }
 
         fab.setOnClickListener {

@@ -46,7 +46,6 @@ class FormulaEditDialogFragment : DialogFragment() {
         val addParamButton: Button = view.findViewById(R.id.add_param_button)
         paramsContainer = view.findViewById(R.id.params_container)
 
-        // Заполнение полей
         formulaToEdit?.let {
             idEdit.setText(it.id)
             displayNameEdit.setText(it.displayName)

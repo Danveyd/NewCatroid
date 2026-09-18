@@ -3,3 +3,6 @@
 16913	17165	8068496931686732	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/x86_64/libexample_core.so	6ce7969877639ec0
 17	25261	8068497009890395	CMakeFiles/catroid.dir/catroid.cpp.o	d9d82b30905d860f
 25262	27262	8068497032231204	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/x86_64/libcatroid.so	34a665c3c0de5aa9
+8	1042	8107293140052849	CMakeFiles/catroid.dir/mesh_lod_generator.cpp.o	16f8616c2cb53ac7
+2	6774	8107293197208508	CMakeFiles/catroid.dir/catroid.cpp.o	d9d82b30905d860f
+6774	8481	8107293214409083	D:/Catroid-develop/catroid/build/intermediates/cxx/RelWithDebInfo/6n3g5p1r/obj/x86_64/libcatroid.so	bd7265195b665f6
