@@ -77,28 +77,22 @@ public class StageDialog extends Dialog implements View.OnClickListener {
             return;
         }
 
-		getWindow().getAttributes();
-
-		getWindow().getAttributes();
-
-		int width = LayoutParams.MATCH_PARENT;
-		int height = LayoutParams.WRAP_CONTENT;
-
-		getWindow().setLayout(width, height);
+		android.view.WindowManager.LayoutParams params = getWindow().getAttributes();
+		params.width = LayoutParams.MATCH_PARENT;
+		params.height = LayoutParams.WRAP_CONTENT;
+		params.gravity = android.view.Gravity.BOTTOM;
+		getWindow().setAttributes(params);
 
         getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-		((Button) findViewById(R.id.stage_dialog_button_back)).setOnClickListener(this);
-		((Button) findViewById(R.id.stage_dialog_button_continue)).setOnClickListener(this);
-		((Button) findViewById(R.id.stage_dialog_button_restart)).setOnClickListener(this);
-		((Button) findViewById(R.id.stage_dialog_button_toggle_axes)).setOnClickListener(this);
-		((Button) findViewById(R.id.stage_dialog_button_screenshot)).setOnClickListener(this);
-		((Button) findViewById(R.id.stage_dialog_button_debug)).setOnClickListener(this);
-		if (stageActivity.isResizePossible()) {
-			((ImageButton) findViewById(R.id.stage_dialog_button_maximize)).setOnClickListener(this);
-		} else {
-			((ImageButton) findViewById(R.id.stage_dialog_button_maximize)).setVisibility(View.GONE);
-		}
+		((View) findViewById(R.id.stage_dialog_button_back)).setOnClickListener(this);
+		((View) findViewById(R.id.stage_dialog_button_continue)).setOnClickListener(this);
+		((View) findViewById(R.id.stage_dialog_button_restart)).setOnClickListener(this);
+		((View) findViewById(R.id.stage_dialog_button_toggle_axes)).setOnClickListener(this);
+		((View) findViewById(R.id.stage_dialog_button_screenshot)).setOnClickListener(this);
+		((View) findViewById(R.id.stage_dialog_button_debug)).setOnClickListener(this);
+
+		((ImageButton) findViewById(R.id.stage_dialog_button_maximize)).setOnClickListener(this);
 	}
 
 	@Override
@@ -240,7 +234,7 @@ public class StageDialog extends Dialog implements View.OnClickListener {
 	}
 
 	private void toggleAxes() {
-		Button axesToggleButton = (Button) findViewById(R.id.stage_dialog_button_toggle_axes);
+		android.widget.TextView axesToggleButton = (android.widget.TextView) findViewById(R.id.stage_dialog_button_toggle_axes);
 		if (stageListener.axesOn) {
 			stageListener.axesOn = false;
 			axesToggleButton.setText(R.string.stage_dialog_axes_on);
