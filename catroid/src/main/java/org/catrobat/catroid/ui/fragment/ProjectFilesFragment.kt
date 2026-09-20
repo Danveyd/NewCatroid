@@ -127,7 +127,7 @@ class ProjectFilesFragment : Fragment() {
             val dialog = CommandPromptDialogFragment.newInstance(projectPath)
             dialog.show(parentFragmentManager, CommandPromptDialogFragment.TAG)
         } ?: run {
-            Toast.makeText(requireContext(), "Ошибка: директория проекта не найдена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.pf_dir_not_found), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -151,7 +151,7 @@ class ProjectFilesFragment : Fragment() {
         }
 
         if (!file.exists()) {
-            Toast.makeText(requireContext(), "Файл не найден", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.common_file_not_found), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -173,16 +173,16 @@ class ProjectFilesFragment : Fragment() {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Toast.makeText(requireContext(), "Нечем открыть этот файл", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.pf_no_app_to_open), Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Ошибка открытия: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.pf_open_error, e.localizedMessage), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun copyFile(file: File) {
         copyToClipboard(file.name)
-        Toast.makeText(requireContext(), "Имя файла скопировано в буфер", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.pf_name_copied), Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteFile(file: File) {
@@ -194,9 +194,9 @@ class ProjectFilesFragment : Fragment() {
 
         if (success) {
             updateFilesList(currentDirectory)
-            Toast.makeText(requireContext(), "Удалено", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.pf_deleted), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "Ошибка при удалении", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.pf_delete_error), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -247,7 +247,7 @@ class ProjectFilesFragment : Fragment() {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(uri)
             if (inputStream == null) {
-                Toast.makeText(requireContext(), "Не удалось открыть файл", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.pf_open_failed), Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -261,7 +261,7 @@ class ProjectFilesFragment : Fragment() {
             Toast.makeText(requireContext(), getRandomMessage(), Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Log.e("ProjectFile", "Error saving file", e)
-            Toast.makeText(requireContext(), "Ошибка при сохранении: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.pf_save_error, e.localizedMessage), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -270,7 +270,7 @@ class ProjectFilesFragment : Fragment() {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
         }
-        val chooser = Intent.createChooser(intent, "Выберите файл")
+        val chooser = Intent.createChooser(intent, getString(R.string.common_choose_file))
         startActivityForResult(chooser, ADD_FILE_REQUEST)
     }
 
@@ -309,16 +309,12 @@ class ProjectFilesFragment : Fragment() {
     }
 
     fun getRandomMessage(): String {
-        val messages = listOf(
-            "Готово!", "Сделано!", "Успех!", "Завершено!", "Отличная работа!", "Все готово!"
-        )
+        val messages = resources.getStringArray(R.array.pf_success_messages)
         return messages[Random.nextInt(messages.size)]
     }
 
     fun getRandomError(): String {
-        val errorMessages = listOf(
-            "Произошла ошибка!", "Упс! Что-то пошло не так."
-        )
+        val errorMessages = resources.getStringArray(R.array.pf_error_messages)
         return errorMessages[Random.nextInt(errorMessages.size)]
     }
 
@@ -335,7 +331,7 @@ class ProjectFilesFragment : Fragment() {
         } else if (uri.scheme == "file") {
             fileName = File(uri.path).name
         }
-        return fileName.ifEmpty { "неизвестный_файл" }
+        return fileName.ifEmpty { getString(R.string.common_unknown_file) }
     }
 
     companion object {

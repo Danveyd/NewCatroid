@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.formulaeditor.UserVariable
@@ -60,13 +62,13 @@ class RunChip8Action : Action() {
         val file = scope?.project?.getFile(filename)
 
         if (file == null || !file.exists()) {
-            setConsole("Ошибка: Файл $filename не найден!")
+            setConsole(CatroidApplication.getAppContext().getString(R.string.chip8_file_not_found, filename))
             return
         }
 
 
         ensureVariable("chip8_key", -1)
-        ensureVariable("chip8_console", "Запуск...")
+        ensureVariable("chip8_console", CatroidApplication.getAppContext().getString(R.string.chip8_loading))
         ensureVariable("chip8_speed", 10)
         ensureVariable("chip8_x", -320)
         ensureVariable("chip8_y", -160)
@@ -88,7 +90,7 @@ class RunChip8Action : Action() {
         val stageListener = StageActivity.activeStageActivity.get()?.stageListener
         stageListener?.stage?.addActor(screenImage)
 
-        setConsole("Игра загружена. Инициализация завершена!")
+        setConsole(CatroidApplication.getAppContext().getString(R.string.chip8_loaded))
         initialized = true
     }
 

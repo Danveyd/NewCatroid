@@ -218,9 +218,9 @@ public class SpriteActivity extends BaseActivity {
             workspaceLayout.setVisibility(View.VISIBLE);
 
             java.util.Map<String, kotlin.Pair<String, kotlin.jvm.functions.Function0<Fragment>>> creators = new java.util.HashMap<>();
-            creators.put(ScriptFragment.TAG, new kotlin.Pair<>("Скрипты", ScriptFragment::new));
-            creators.put(LookListFragment.TAG, new kotlin.Pair<>("Образы", LookListFragment::new));
-            creators.put(SoundListFragment.TAG, new kotlin.Pair<>("Звуки", SoundListFragment::new));
+            creators.put(ScriptFragment.TAG, new kotlin.Pair<>(getString(R.string.tab_scripts), ScriptFragment::new));
+            creators.put(LookListFragment.TAG, new kotlin.Pair<>(getString(R.string.tab_looks), LookListFragment::new));
+            creators.put(SoundListFragment.TAG, new kotlin.Pair<>(getString(R.string.tab_sounds), SoundListFragment::new));
 
             workspaceLayout.restoreLayoutState(creators);
         } else {

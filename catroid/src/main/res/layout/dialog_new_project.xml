@@ -52,7 +52,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Ориентация проекта"
+                        android:text="@string/new_project_orientation"
                         android:textColor="@color/accent"
                         android:textSize="12sp"
                         android:textAllCaps="true"
@@ -106,7 +106,7 @@
                     android:id="@+id/git_clone_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Клонировать репозиторий Git"
+                    android:text="@string/new_project_clone_git"
                     android:textColor="@color/accent"
                     android:textStyle="bold"
                     app:thumbTint="@color/accent" />

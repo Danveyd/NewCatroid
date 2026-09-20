@@ -13,6 +13,7 @@ import com.android.tools.r8.OutputMode
 import com.android.tools.r8.R8
 import com.android.tools.r8.R8Command
 import dalvik.system.DexClassLoader
+import org.catrobat.catroid.R
 import java.io.*
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
@@ -258,7 +259,7 @@ object ScriptExecutor {
             var compileSrcDir = originalSrcDir
 
             if (config.isProtected) {
-                onStatus("Защита: Подготовка...")
+                onStatus(context.getString(R.string.se_protection_preparing))
                 val tempSrc = File(buildDir, "src_temp")
                 originalSrcDir.copyRecursively(tempSrc, true)
                 val mainFile = File(tempSrc, "game/Main.java")
@@ -277,9 +278,9 @@ object ScriptExecutor {
                 compileSrcDir = tempSrc
             }
 
-            onStatus("Компиляция...")
+            onStatus(context.getString(R.string.se_compiling))
             val classBytesMap = AndroidECJ.compileDirectory(compileSrcDir, libraries, bootJar, stubsJar)
-            if (classBytesMap.isEmpty()) throw RuntimeException("Нет скомпилированных классов")
+            if (classBytesMap.isEmpty()) throw RuntimeException(context.getString(R.string.se_no_compiled_classes))
 
             for ((name, bytes) in classBytesMap) {
                 val classFile = File(classesDir, name)
@@ -287,7 +288,7 @@ object ScriptExecutor {
                 classFile.writeBytes(bytes)
             }
 
-            onStatus("Генерация DEX (D8)...")
+            onStatus(context.getString(R.string.se_generating_dex))
             val userDexDir = File(buildDir, "user_dex")
             userDexDir.mkdirs()
             val classFiles = classesDir.walkTopDown().filter { it.extension == "class" }.toList()
@@ -295,7 +296,7 @@ object ScriptExecutor {
             val finalUserDexSource: File
 
             if (config.isObfuscated) {
-                onStatus("Обфускация (R8)...")
+                onStatus(context.getString(R.string.se_obfuscating))
 
                 val rulesFile = File(projectPath, "proguard-rules.pro")
                 if (!rulesFile.exists()) {
@@ -316,7 +317,7 @@ object ScriptExecutor {
                 public void onStart(...);
             }
                 """.trimIndent())
-                    onStatus("Создан proguard-rules.pro")
+                    onStatus(context.getString(R.string.se_proguard_created))
                 }
 
                 val command = R8Command.builder()
@@ -332,7 +333,7 @@ object ScriptExecutor {
                 R8.run(command)
 
             } else {
-                onStatus("Генерация DEX (D8)...")
+                onStatus(context.getString(R.string.se_generating_dex))
                 runD8(context, classFiles, libraries, userDexDir, minApi = 21, isRelease = true, targetApi = config.targetSdk)
             }
 
@@ -341,7 +342,7 @@ object ScriptExecutor {
 
 
             if (libraries.isNotEmpty()) {
-                onStatus("Обработка библиотек...")
+                onStatus(context.getString(R.string.se_processing_libs))
                 var dexCounter = 2
                 for (lib in libraries) {
                     try {
@@ -369,7 +370,7 @@ object ScriptExecutor {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            onStatus("Ошибка: ${e.message}")
+            onStatus(context.getString(R.string.common_error_with_message, e.message))
             return CompilationResult(emptyList(), emptyList(), e)
         }
     }
@@ -464,7 +465,7 @@ object ScriptExecutor {
         val jar = IdeSettings.getAndroidJar(context, targetApi)
 
         if (!jar.exists()) {
-            throw RuntimeException("Android SDK (android.jar) не найден! Скачайте API $targetApi в настройках.")
+            throw RuntimeException(context.getString(R.string.se_sdk_not_found, targetApi))
         }
         return jar
     }
@@ -477,7 +478,7 @@ object ScriptExecutor {
                     destFile.outputStream().use { output -> input.copyTo(output) }
                 }
             } catch (e: IOException) {
-                throw RuntimeException("Ошибка: core-lambda-stubs.jar не найден в assets!")
+                throw RuntimeException(context.getString(R.string.se_stubs_not_found))
             }
         }
         return destFile

@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.R;
 
 import java.util.LinkedList;
@@ -203,7 +204,7 @@ public class InternFormulaKeyboardAdapter {
 			case R.string.formula_editor_function_random_str:
 				return buildSingleParameterFunction(Functions.RANDOM_STR, NUMBER, "15");
 			case R.string.formula_editor_function_repeat:
-				return buildDoubleParameterFunction(Functions.REPEAT, STRING, "повторение - признак безумия ", NUMBER, "10");
+				return buildDoubleParameterFunction(Functions.REPEAT, STRING, CatroidApplication.getAppContext().getString(R.string.formula_repeat_example), NUMBER, "10");
 			case R.string.formula_editor_function_replace:
 				return buildTripleParameterFunction(Functions.REPLACE, STRING, "pandas love bamboo", STRING, "love",
 						STRING, "eat");

@@ -99,7 +99,7 @@ class ProjectLibsFragment : Fragment() {
 
     private fun openFile(file: File) {
         if (!file.exists()) {
-            Toast.makeText(requireContext(), "Файл не найден", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.common_file_not_found), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -114,7 +114,7 @@ class ProjectLibsFragment : Fragment() {
         try {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(requireContext(), "Не найдено приложений для открытия", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.lib_no_app_to_open), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -126,15 +126,15 @@ class ProjectLibsFragment : Fragment() {
 
     private fun copyFile(file: File) {
         copyToClipboard(file.name)
-        Toast.makeText(requireContext(), "Имя скопировано", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.lib_name_copied), Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteFile(file: File) {
         if (file.exists() && file.delete()) {
             updateFilesList(File(project!!.directory, "libs"))
-            Toast.makeText(requireContext(), "Библиотека удалена", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.lib_deleted), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(requireContext(), "Ошибка при удалении библиотеки", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.lib_delete_error), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -175,7 +175,7 @@ class ProjectLibsFragment : Fragment() {
             type = "*/*"
             addCategory(Intent.CATEGORY_OPENABLE)
         }
-        val chooser = Intent.createChooser(intent, "Выберите файл .newlib")
+        val chooser = Intent.createChooser(intent, getString(R.string.lib_choose_newlib_file))
         startActivityForResult(chooser, ADD_FILE_REQUEST)
     }
 
@@ -230,7 +230,7 @@ class ProjectLibsFragment : Fragment() {
         } else if (uri.scheme == "file") {
             fileName = File(uri.path).name
         }
-        return fileName.ifEmpty { "неизвестный_файл" }
+        return fileName.ifEmpty { getString(R.string.common_unknown_file) }
     }
 
     companion object {
