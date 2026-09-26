@@ -150,7 +150,7 @@ public class InternToExternGenerator {
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.F2D_CAM_X.name(), R.string.formula_f2d_cam_x);
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.F2D_CAM_Y.name(), R.string.formula_f2d_cam_y);
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.F2D_CAM_ZOOM.name(), R.string.formula_f2d_cam_zoom);
-        INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.PT_SHAPE.name(), R.string.pt_shape);
+        INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.PT_SHAPE.name(), R.string.formula_pt_shape);
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.PT_VALUEND.name(), R.string.formula_pt_valuend);
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.INTERSECT_LIST.name(), R.string.formula_intersect_list);
         INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.COLLISION_LIST.name(), R.string.formula_collision_list);

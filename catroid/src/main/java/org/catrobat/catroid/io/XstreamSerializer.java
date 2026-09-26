@@ -358,7 +358,7 @@ public final class XstreamSerializer {
         xstream.alias("brick", Fast2DSetZIndexBrick.class);
         xstream.alias("brick", Fast2DDeleteBrick.class);
         xstream.alias("brick", Fast2DCreateBrick.class);
-        xstream.alias("Fast2DSetGravityBrick", Fast2DSetGravityBrick.class);
+        xstream.alias("brick", Fast2DSetGravityBrick.class);
         xstream.alias("brick", Fast2DSetCollisionFilterBrick.class);
         xstream.alias("brick", Fast2DSetVelocityBrick.class);
         xstream.alias("brick", Fast2DMakePhysicsBrick.class);
@@ -416,7 +416,6 @@ public final class XstreamSerializer {
 		xstream.alias("brick", RunShellBrick.class);
 		xstream.alias("brick", ExportProjectFileBrick.class);
 		xstream.alias("brick", LoadNativeModuleBrick.class);
-		xstream.alias("brick", LoadPythonLibraryBrick.class);
 		xstream.alias("brick", LoadPythonLibraryBrick.class);
 		xstream.alias("brick", ClearPythonEnvironmentBrick.class);
 		xstream.alias("brick", Remove3dObjectBrick.class);
@@ -774,7 +773,6 @@ public final class XstreamSerializer {
 		xstream.alias("brick", UnzipBrick.class);
 		xstream.alias("brick", GetZipFileNamesBrick.class);
 		xstream.alias("brick", ShowText3Brick.class);
-		xstream.alias("brick", ShowTextFontAction.class);
 		xstream.alias("brick", HideText3Brick.class);
 		xstream.alias("brick", StitchBrick.class);
 		xstream.alias("brick", RunningStitchBrick.class);

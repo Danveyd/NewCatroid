@@ -62,8 +62,9 @@ class ChooseFileAction : Action() {
         }
 
         activity.runOnUiThread {
+            val safeType = if (fileType in MIME_TYPES.indices) fileType else MIME_TYPES.size - 1
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                type = MIME_TYPES[fileType]
+                type = MIME_TYPES[safeType]
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
 
@@ -87,7 +88,7 @@ class ChooseFileAction : Action() {
     private fun addSpriteObjectFromUri(uri: Uri?, extension: String = "png") {
         val contentResolver = CatroidApplication.getAppContext().contentResolver
         val resolvedFileName = StorageOperations.resolveFileName(contentResolver, uri)
-        val destFileName = resolvedFileName ?: ("file_" + System.currentTimeMillis() + extension)
+        val destFileName = resolvedFileName ?: ("file_" + System.currentTimeMillis() + "." + extension)
 
         try {
             val file = StorageOperations.copyUriToDir(contentResolver, uri, scope?.project?.getFilesDir(), destFileName)

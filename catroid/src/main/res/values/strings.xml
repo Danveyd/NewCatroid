@@ -2883,7 +2883,7 @@
     <string name="formula_vector_angle" formatted="false">angle from direction</string>
     <string name="formula_vector_dir_param" formatted="false">(60)</string>
     <string name="formula_vector_angle_param" formatted="false">(0.6, 1)</string>
-    <string name="formula_3d_pos_x" formatted="false">3D position z</string>
+    <string name="formula_3d_pos_x" formatted="false">3D position x</string>
     <string name="formula_pt_totalsize" formatted="false">PT length</string>
     <string name="formula_pt_dump" formatted="false">PT to string</string>
     <string name="formula_pt_valuend" formatted="false">PT value ND</string>
@@ -2896,7 +2896,7 @@
     <string name="formula_pt_shape_param" formatted="false">(\'tensor\')</string>
     <string name="formula_pt_value_param" formatted="false">(\'tensor\', index)</string>
     <string name="formula_pt_valuennd_param" formatted="false">(\'tensor\', \'10,2\')</string>
-    <string name="formula_intersect_list" formatted="false">object intercect list</string>
+    <string name="formula_intersect_list" formatted="false">object intersect list</string>
     <string name="formula_collision_list" formatted="false">object collision list</string>
     <string name="formula_delta" formatted="false">delta-time</string>
     <string name="formula_3d_pos_y" formatted="false">3D position y</string>

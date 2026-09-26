@@ -702,13 +702,17 @@ public class SceneManager {
 
 
     public boolean renameGameObject(GameObject go, String newName) {
-        if (go == null || newName == null || newName.isEmpty() || gameObjects.containsKey(newName)) {
+        if (go == null || newName == null || newName.isEmpty()) {
             return false;
         }
         String oldId = go.id;
 
         if (oldId.equals(newName)) {
             return true;
+        }
+
+        if (gameObjects.containsKey(newName)) {
+            return false;
         }
 
         if (go.parentId != null) {
