@@ -136,3 +136,10 @@ cd NewCatroid
 # License #
 [Лицензия](https://github.com/Danveyd/NewCatroid/blob/main/LICENSE) нашего проекта наследуется от Catrobat (AGPL v3).
 [Ссылка на нее же на сайте Catrobat](https://developer.catrobat.org/pages/legal/licenses/)
+
+
+
+<p align="center">
+  <img src="assets/nk_avatarka_da.png" alt="NewCatroid Art" width="256"/>
+</p>
+
