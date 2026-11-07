@@ -119,7 +119,7 @@ class SoundFilesWaitAction : TemporalAction() {
         inputName?.let { inname ->
             var name = inname.interpretString(scope)
             val lastDotIndex = name.lastIndexOf('.')
-            if(lastDotIndex <= 0 && lastDotIndex >= name.length - 1) {
+            if(lastDotIndex <= 0 || lastDotIndex >= name.length - 1) {
                 name += ".png"
             }
             return name

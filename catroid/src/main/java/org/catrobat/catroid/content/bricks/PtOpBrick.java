@@ -34,7 +34,11 @@ public class PtOpBrick extends FormulaBrick {
                 R.array.pt_ops_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(opSelection);
+        int safeSelection = opSelection;
+        if (safeSelection < 0 || safeSelection >= adapter.getCount()) {
+            safeSelection = 0;
+        }
+        spinner.setSelection(safeSelection);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -49,11 +53,15 @@ public class PtOpBrick extends FormulaBrick {
     @Override
     public void addActionToSequence(Sprite sprite, ScriptSequenceAction sequence) {
         String[] ops = CatroidApplication.getAppContext().getResources().getStringArray(R.array.pt_ops_array);
+        int safeSelection = opSelection;
+        if (safeSelection < 0 || safeSelection >= ops.length) {
+            safeSelection = 0;
+        }
         sequence.addAction(sprite.getActionFactory().createPtOpAction( sprite, sequence,
                 getFormulaWithBrickField(BrickField.VALUE_1),
                 getFormulaWithBrickField(BrickField.VALUE_2),
                 getFormulaWithBrickField(BrickField.VALUE_3),
-                ops[opSelection]
+                ops[safeSelection]
         ));
     }
 }
