@@ -154,7 +154,7 @@ object KoveManager {
                 val url = URL(currentUrl)
                 connection = (url.openConnection() as HttpURLConnection).apply {
                     instanceFollowRedirects = true
-                    setRequestProperty("User-Agent", "NewCatroid-App")
+                    setRequestProperty("User-Agent", "ChEngine-App")
                     connectTimeout = 15000
                     readTimeout = 30000
                 }

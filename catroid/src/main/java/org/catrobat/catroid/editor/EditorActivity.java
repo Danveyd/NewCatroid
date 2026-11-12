@@ -399,7 +399,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             container.setPadding(paddingPx, paddingPx / 2, paddingPx, 0);
             container.addView(input);
 
-            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+            new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                     .setTitle(R.string.editor_3d_grid_snap_dialog_title)
                     .setMessage(R.string.editor_3d_grid_snap_dialog_msg)
                     .setView(container)
@@ -432,7 +432,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             String query = ((EditText)findViewById(R.id.hierarchy_search)).getText().toString().trim();
             if (query.isEmpty()) return;
 
-            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+            new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                     .setTitle(R.string.editor_3d_mass_delete_title)
                     .setMessage(getString(R.string.editor_3d_mass_delete_msg, query))
                     .setPositiveButton(R.string.editor_3d_delete_all, (dialog, which) -> {
@@ -505,7 +505,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinAxis.setAdapter(spinAdapter);
 
-            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+            new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                     .setView(viewDialog)
                     .setPositiveButton(R.string.editor_3d_clone, (dialog, which) -> {
                         try {
@@ -766,7 +766,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             showSceneSettingsDialog();
             return true;
         } else if (id == R.id.action_clear_scene) {
-            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+            new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                     .setTitle(R.string.editor_3d_clear_scene_title)
                     .setMessage(R.string.editor_3d_clear_scene_msg)
                     .setPositiveButton(R.string.editor_3d_clear_btn, (dialog, which) -> {
@@ -968,7 +968,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
         dirLightsEditor.setText(String.valueOf(currentSettings.numDirectionalLights));
         bonesEditor.setText(String.valueOf(currentSettings.numBones));
 
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                 .setTitle("Scene Settings")
                 .setView(dialogView)
                 .setPositiveButton("Close", null)
@@ -982,7 +982,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
                 newSettings.numDirectionalLights = Integer.parseInt(dirLightsEditor.getText().toString());
                 newSettings.numBones = Math.min(110, Integer.parseInt(bonesEditor.getText().toString()));
 
-                new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+                new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                         .setTitle("Restart 3D Engine")
                         .setMessage("Applying these settings requires reloading the 3D editor. Unsaved changes might be lost. Continue?")
                         .setPositiveButton("Restart", (d, which) -> {
@@ -1024,7 +1024,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             return;
         }
 
-        new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+        new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                 .setTitle("Select Skybox Texture")
                 .setItems(textureFiles.toArray(new String[0]), (dialog, which) -> {
                     String selectedFile = textureFiles.get(which);
@@ -1037,7 +1037,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
     }
 
     private void showExitConfirmationDialog() {
-        new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+        new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.editor_3d_exit_title)
                 .setMessage(R.string.editor_3d_exit_msg)
                 .setPositiveButton(R.string.editor_3d_save_exit, (dialog, which) -> {
@@ -1051,7 +1051,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
     }
 
     private void showSaveSceneDialog(Runnable onSaveComplete) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog);
 
         final EditText input = new EditText(builder.getContext());
         input.setHint("my_level_1");
@@ -1095,7 +1095,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
             sceneNames[i] = allFiles[i].getName();
         }
 
-        new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+        new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.editor_3d_load_scene)
                 .setItems(sceneNames, (dialog, which) -> {
                     File selectedFile = allFiles[which];
@@ -1134,7 +1134,7 @@ public class EditorActivity extends AppCompatActivity implements AndroidFragment
         File recoveryFile = new File(projectDir, AUTOSAVE_FILE_NAME);
 
         if (recoveryFile.exists()) {
-            new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+            new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                     .setTitle(R.string.editor_3d_crash_recovery_title)
                     .setMessage(R.string.editor_3d_crash_recovery_msg)
                     .setCancelable(false)

@@ -8,7 +8,7 @@ class NotificationPublisherReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getStringExtra("id") ?: return
 
-        val state = NewCatroidNotificationManager.NotificationState(id)
+        val state = ChEngineNotificationManager.NotificationState(id)
         state.channelName = intent.getStringExtra("channelName") ?: "App Notifications"
         state.title = intent.getStringExtra("title") ?: ""
         state.text = intent.getStringExtra("text") ?: ""
@@ -16,6 +16,6 @@ class NotificationPublisherReceiver : BroadcastReceiver() {
         state.importance = intent.getIntExtra("importance", 1)
         state.isOngoing = intent.getBooleanExtra("isOngoing", false)
 
-        NewCatroidNotificationManager.buildAndShow(context, state)
+        ChEngineNotificationManager.buildAndShow(context, state)
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.NewCatroid.LibraryEditor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ChEngine.LibraryEditor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="colorPrimary">@color/toolbar_background</item>
         <item name="colorPrimaryVariant">@color/toolbar_background</item>
@@ -18,38 +18,38 @@
         <item name="colorSecondary">@color/accent</item>
 
 
-        <item name="toolbarStyle">@style/Widget.NewCatroid.Toolbar</item>
-        <item name="tabStyle">@style/Widget.NewCatroid.TabLayout</item>
-        <item name="materialCardViewStyle">@style/Widget.NewCatroid.CardView</item>
-        <item name="textInputStyle">@style/Widget.NewCatroid.TextInputLayout</item>
-        <item name="alertDialogTheme">@style/Theme.NewCatroid.Dialog</item>
+        <item name="toolbarStyle">@style/Widget.ChEngine.Toolbar</item>
+        <item name="tabStyle">@style/Widget.ChEngine.TabLayout</item>
+        <item name="materialCardViewStyle">@style/Widget.ChEngine.CardView</item>
+        <item name="textInputStyle">@style/Widget.ChEngine.TextInputLayout</item>
+        <item name="alertDialogTheme">@style/Theme.ChEngine.Dialog</item>
     </style>
 
 
-    <style name="Widget.NewCatroid.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+    <style name="Widget.ChEngine.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/toolbar_background</item>
         <item name="titleTextColor">@color/toolbar_title</item>
     </style>
 
-    <style name="Widget.NewCatroid.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+    <style name="Widget.ChEngine.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="android:background">@color/toolbar_background</item>
         <item name="tabIndicatorColor">@color/accent</item>
         <item name="tabTextColor">@color/spinner_icon_and_inactive_elements</item>
         <item name="tabSelectedTextColor">@color/solid_white</item>
     </style>
 
-    <style name="Widget.NewCatroid.CardView" parent="Widget.MaterialComponents.CardView">
+    <style name="Widget.ChEngine.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/button_background</item>
     </style>
 
-    <style name="Widget.NewCatroid.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="Widget.ChEngine.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textColorHint">@color/spinner_icon_and_inactive_elements</item>
         <item name="boxStrokeColor">@color/accent</item>
         <item name="hintTextColor">@color/accent</item>
     </style>
 
 
-    <style name="Theme.NewCatroid.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+    <style name="Theme.ChEngine.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
         <item name="android:colorBackground">@color/surface_card</item>
         <item name="android:textColor">@color/solid_white</item>
         <item name="android:textColorPrimary">@color/solid_white</item>
@@ -69,8 +69,8 @@
         <item name="colorSecondary">@color/accent</item>
         <item name="colorControlActivated">@color/accent</item>
 
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.NewCatroid.DialogButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.NewCatroid.DialogButton</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.ChEngine.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.ChEngine.DialogButton</item>
         <item name="android:textColorHint">@color/spinner_icon_and_inactive_elements</item>
         <item name="android:editTextColor">@color/solid_white</item>
 
@@ -78,7 +78,7 @@
         <item name="android:textColorAlertDialogListItem">@color/solid_white</item>
     </style>
 
-    <style name="Widget.NewCatroid.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <style name="Widget.ChEngine.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/accent</item>
     </style>
 
@@ -108,12 +108,12 @@
 
     </style>
 
-    <style name="ShapeAppearance.NewCatroid.FAB" parent="">
+    <style name="ShapeAppearance.ChEngine.FAB" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>
 
-    <style name="Theme.NewCatroid.Stage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ChEngine.Stage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/app_background</item>
@@ -134,7 +134,7 @@
 
         <item name="editTextStyle">@style/Widget.AppCompat.EditText</item>
         <item name="colorControlActivated">@color/accent</item>
-        <item name="alertDialogTheme">@style/Theme.NewCatroid.Dialog</item>
+        <item name="alertDialogTheme">@style/Theme.ChEngine.Dialog</item>
     </style>
 
 </resources>

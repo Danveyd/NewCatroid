@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.common.NewCatroidHttpManager
+import org.catrobat.catroid.common.ChEngineHttpManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 
@@ -17,7 +17,7 @@ class HttpBodyAction : TemporalAction() {
         val typeStr = contentType?.interpretString(scope) ?: "application/json"
 
         if (idStr.isNotEmpty()) {
-            NewCatroidHttpManager.setBodyText(idStr, textStr, typeStr)
+            ChEngineHttpManager.setBodyText(idStr, textStr, typeStr)
         }
     }
 }

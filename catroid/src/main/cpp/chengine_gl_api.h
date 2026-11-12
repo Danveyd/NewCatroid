@@ -1,5 +1,5 @@
-#ifndef NEWCATROID_GL_API_H
-#define NEWCATROID_GL_API_H
+#ifndef CHENGINE_GL_API_H
+#define CHENGINE_GL_API_H
 
 #include <android/native_window.h>
 

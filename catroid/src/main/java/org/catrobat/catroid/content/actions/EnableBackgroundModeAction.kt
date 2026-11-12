@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Build
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.CatroidApplication
-import org.catrobat.catroid.common.NewCatroidBackgroundService
+import org.catrobat.catroid.common.ChEngineBackgroundService
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.stage.StageActivity
@@ -22,7 +22,7 @@ class EnableBackgroundModeAction : TemporalAction() {
 
         StageActivity.getActiveStageListener()?.isBackgroundModeEnabled = true
 
-        val intent = Intent(context, NewCatroidBackgroundService::class.java).apply {
+        val intent = Intent(context, ChEngineBackgroundService::class.java).apply {
             putExtra("TITLE", titleStr)
             putExtra("TEXT", textStr)
         }

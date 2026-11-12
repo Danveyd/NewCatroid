@@ -35,7 +35,7 @@ import static org.catrobat.catroid.common.Constants.UPLOAD_URL;
 public final class FlavoredConstants {
 	// Web:
 
-	public static final String COMMUNITY_URL = "https://newcatroid.mindpy.dev/";
+	public static final String COMMUNITY_URL = "https://chengine.mindpy.dev/";
 	public static final String BASE_URL_HTTPS = MAIN_URL_HTTPS;
 
 	public static final String BASE_UPLOAD_URL = UPLOAD_URL + "/pocketcode/";
@@ -60,7 +60,7 @@ public final class FlavoredConstants {
 	public static final String LIBRARY_BACKGROUNDS_URL_PORTRAIT = BASE_URL_HTTPS + "media-library/backgrounds-portrait";
 	public static final String LIBRARY_BACKGROUNDS_URL_LANDSCAPE = BASE_URL_HTTPS + "media-library/backgrounds-landscape";
 	public static final String LIBRARY_SOUNDS_URL = BASE_URL_HTTPS + "media-library/sounds";
-	public static final String PRIVACY_POLICY_URL = "http://e95814zx.beget.tech/newcatroid/policy.html"; //https://catrob.at/privacypolicy";
+	public static final String PRIVACY_POLICY_URL = "http://e95814zx.beget.tech/chengine/policy.html"; //https://catrob.at/privacypolicy";
 
 	private FlavoredConstants() {
 		throw new AssertionError("No.");

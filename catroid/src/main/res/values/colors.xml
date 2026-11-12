@@ -113,31 +113,32 @@
     <color name="no_internet_color">#606060</color>
 
     <!-- bricks -->
+    <!-- Pastel palette: softened, desaturated tones; keeps white brick text readable -->
     <!-- NOTE: for SDK 23 & SDK 24 (Android 6.0 & Android 7.0) pngs are needed, see values/styles.xml
         For SDK 25 and up (Android 7.1 and up) no pngs are needed, see values-v25/styles.xml
         If minSDK is increased to 25 or up, values-25/syles.xml can be moved to values/ and
         pngs should be removed (revert https://github.com/Catrobat/Catroid/pull/4259) -->
-     <color name="brick_color_darkblue">#395cab</color>
-     <color name="brick_color_blue">#408ac5</color>
-     <color name="brick_color_cyan">#26a6ae</color>
-     <color name="brick_color_brightgreen">#00FF00</color>
-     <color name="brick_color_green">#6b9c49</color>
-     <color name="brick_color_darkgreen">#305716</color>
-     <color name="brick_color_olive">#aea626</color>
-     <color name="brick_color_yellow">#fccb41</color>
-     <color name="brick_color_gold">#95750C</color>
-     <color name="brick_color_brown">#866A4E</color>
-     <color name="brick_color_red">#f24e50</color>
-     <color name="brick_color_orange">#cf5717</color>
-     <color name="brick_color_lightorange">#f99761</color>
-     <color name="brick_color_pink">#cf7aa6</color>
-     <color name="brick_color_violet">#8f4cba</color>
-     <color name="brick_color_grey">#AAAAAA</color>
+     <color name="brick_color_darkblue">#6F86C9</color>
+     <color name="brick_color_blue">#6F9CC0</color>
+     <color name="brick_color_cyan">#63B5AE</color>
+     <color name="brick_color_brightgreen">#7FCC96</color>
+     <color name="brick_color_green">#94B77F</color>
+     <color name="brick_color_darkgreen">#628C68</color>
+     <color name="brick_color_olive">#B0A96A</color>
+     <color name="brick_color_yellow">#DCC069</color>
+     <color name="brick_color_gold">#AD9054</color>
+     <color name="brick_color_brown">#9E8770</color>
+     <color name="brick_color_red">#D98585</color>
+     <color name="brick_color_orange">#CE9265</color>
+     <color name="brick_color_lightorange">#E5AC85</color>
+     <color name="brick_color_pink">#CE93B4</color>
+     <color name="brick_color_violet">#A083C2</color>
+     <color name="brick_color_grey">#B4B8BE</color>
      <color name="brick_color_white">#FFFFFF</color>
-     <color name="brick_color_black">#323331</color>
-     <color name="brick_color_winered">#910D06</color>
-     <color name="brick_color_neural">#5771f7</color>
-    <color name="brick_color_threed">#fccb41</color>
+     <color name="brick_color_black">#5A5D64</color>
+     <color name="brick_color_winered">#A55F5A</color>
+     <color name="brick_color_neural">#8493E0</color>
+    <color name="brick_color_threed">#BFA9D8</color>
 
     <color name="surface_card">#003554</color>
     <color name="surface_card_pressed">#004E7A</color>

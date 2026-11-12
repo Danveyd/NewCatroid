@@ -442,7 +442,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 		File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		if (downloadsDir.canWrite() && NativeBridge.INSTANCE.isWorking()) {
-			File logFile = new File(downloadsDir, "NewCatroid_CPP_CrashLog.txt");
+			File logFile = new File(downloadsDir, "ChEngine_CPP_CrashLog.txt");
 			NativeBridge.INSTANCE.setCrashLogPath(logFile.getAbsolutePath());
 		}
 		checkAndRequestPermissions();
@@ -481,7 +481,7 @@ public class StageActivity extends AndroidApplication implements ContextProvider
             if (remoteInput != null) {
                 CharSequence replyText = remoteInput.getCharSequence("KEY_REPLY");
                 if (replyText != null) {
-                    org.catrobat.catroid.utils.NewCatroidNotificationManager.INSTANCE
+                    org.catrobat.catroid.utils.ChEngineNotificationManager.INSTANCE
                             .getSavedReplies().put(actionId, replyText.toString());
                 }
             }
@@ -492,10 +492,10 @@ public class StageActivity extends AndroidApplication implements ContextProvider
                     nm.cancel(notifId);
                 }
             } else {
-                org.catrobat.catroid.utils.NewCatroidNotificationManager.NotificationState state =
-                        org.catrobat.catroid.utils.NewCatroidNotificationManager.INSTANCE.getActiveDrafts().get(draftId);
+                org.catrobat.catroid.utils.ChEngineNotificationManager.NotificationState state =
+                        org.catrobat.catroid.utils.ChEngineNotificationManager.INSTANCE.getActiveDrafts().get(draftId);
                 if (state != null) {
-                    org.catrobat.catroid.utils.NewCatroidNotificationManager.INSTANCE.buildAndShow(this, state);
+                    org.catrobat.catroid.utils.ChEngineNotificationManager.INSTANCE.buildAndShow(this, state);
                 }
             }
 

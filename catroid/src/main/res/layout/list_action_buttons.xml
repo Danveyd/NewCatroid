@@ -59,7 +59,7 @@
         android:contentDescription="@string/main_menu_new"
         app:tint="@color/solid_white"
         app:backgroundTint="@color/button_background"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.NewCatroid.FAB"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.ChEngine.FAB"
         app:fabCustomSize="65dp"
         app:elevation="6dp" />
 
@@ -77,7 +77,7 @@
         android:contentDescription="@string/main_menu_new"
         app:tint="@color/solid_white"
         app:backgroundTint="@color/button_background"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.NewCatroid.FAB"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.ChEngine.FAB"
         app:fabCustomSize="65dp"
         app:elevation="6dp" />
 

@@ -162,7 +162,7 @@ public class SettingsFragment extends PreferenceFragment {
 	public static final String SETTINGS_USE_CATBLOCKS = "settings_use_catblocks";
 
 	private static final String GITHUB_CLIENT_ID = "Ov23liKoq3h0cTgAbVYA";
-	private static final String GITHUB_REDIRECT_URI = "newcatroid://github-callback";
+	private static final String GITHUB_REDIRECT_URI = "chengine://github-callback";
     public static final String SETTINGS_RECOVER_PROJECTS = "setting_recover_projects";
 
 	private Preference githubPreference;
@@ -421,7 +421,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void showCommunityLogoutDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Выйти из сообщества?")
-                .setMessage("Вы уверены, что хотите выйти из своего аккаунта сообщества NewCatroid?")
+                .setMessage("Вы уверены, что хотите выйти из своего аккаунта сообщества Ch-engine?")
                 .setPositiveButton("Выйти", (dialog, which) -> {
                     org.catrobat.catroid.utils.community.CommunityTokenManager.clearSession(getActivity());
                     updateCommunityPreference();

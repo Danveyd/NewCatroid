@@ -357,11 +357,11 @@ android {
 
     productFlavors {
         danvex {
-            applicationId "org.DanVexTeam.NewCatroid"
+            applicationId "org.DanVexTeam.ChEngine"
             isDefault.set(true)
         }
         apktemplate {
-            applicationId "org.DanVexTeam.NewCatroidApkTemplate"
+            applicationId "org.DanVexTeam.ChEngineApkTemplate"
 
             versionCode 1
             versionName '1.0'
@@ -382,7 +382,7 @@ android {
 
             resValue "string", "FEATURE_APK_GENERATOR_ENABLED", "true"
             buildConfigField "boolean", "FEATURE_APK_GENERATOR_ENABLED", "true"
-            manifestPlaceholders = [appName: "NewCatroid (APK Template)"]
+            manifestPlaceholders = [appName: "Ch-engine (APK Template)"]
         }
         catroid {
 

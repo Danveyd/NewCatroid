@@ -26,7 +26,7 @@
 
 #include <android/log.h>
 
-#include "newcatroid_gl_api.h"
+#include "chengine_gl_api.h"
 
 struct CatroidTensor {
     std::string name;

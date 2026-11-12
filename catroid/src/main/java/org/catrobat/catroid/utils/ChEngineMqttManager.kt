@@ -8,7 +8,7 @@ import org.catrobat.catroid.stage.StageActivity
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-object NewCatroidMqttManager {
+object ChEngineMqttManager {
 
     private val clients = ConcurrentHashMap<String, Mqtt3AsyncClient>()
     private val latestMessages = ConcurrentHashMap<String, String>()
@@ -23,7 +23,7 @@ object NewCatroidMqttManager {
         try {
             val client = MqttClient.builder()
                 .useMqttVersion3()
-                .identifier("newcatroid_${UUID.randomUUID().toString().take(8)}")
+                .identifier("chengine_${UUID.randomUUID().toString().take(8)}")
                 .serverHost(host)
                 .serverPort(port)
                 .buildAsync()
@@ -97,7 +97,7 @@ object NewCatroidMqttManager {
     private fun getSaltedTopic(roomId: String, salt: String): String {
         val cleanSalt = salt.trim().replace(" ", "_")
         val prefix = cleanSalt.ifEmpty { "public" }
-        return "newcatroid/$prefix/rooms/$roomId"
+        return "chengine/$prefix/rooms/$roomId"
     }
 
     private fun triggerMqttEvent(roomId: String) {

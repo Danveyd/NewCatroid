@@ -1842,8 +1842,8 @@ void main() {
                 val deviceBrickList: MutableList<Brick> = ArrayList()
                 deviceBrickList.add(ShowToastBlock("Hello World"))
                 deviceBrickList.add(CopyTextBrick("Котлета"))
-                deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
-                deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
+                deviceBrickList.add(ShowNotificationBrick("123456", "Ch-engine", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
+                deviceBrickList.add(NotificationCreateBrick("123456", "Ch-engine", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
                 deviceBrickList.add(NotificationAddButtonBrick("123456", "123", "CLICK ME", "none.png", "Enter any text..."))
                 deviceBrickList.add(NotificationShowBrick("123456", 60.0))
                 deviceBrickList.add(NotificationCancelBrick("123456"))
@@ -1865,7 +1865,7 @@ void main() {
                         Formula("classes.dex, libs.jar"),
                         Formula("game.Main"),
                         Formula("onStart"),
-                        Formula("Hello from NewCatroid!")
+                        Formula("Hello from Ch-engine!")
                     )
                 )
                 deviceBrickList.add(
@@ -2016,7 +2016,7 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(HideStatusBarBrick())
                 deviceBrickList.add(ChooseFileBrick())
                 deviceBrickList.add(ExportProjectFileBrick("file.txt"))
-                deviceBrickList.add(ShareBrick("Привет из NewCatroid!"));
+                deviceBrickList.add(ShareBrick("Привет из Ch-engine!"));
                 deviceBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
                 deviceBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
                 deviceBrickList.add(ApplyShaderToImageBrick("image.png", """attribute vec4 a_position;
@@ -2114,7 +2114,7 @@ void main() {
                 Formula("classes.dex, libs.jar"),
                 Formula("game.Main"),
                 Formula("onStart"),
-                Formula("Hello from NewCatroid!")
+                Formula("Hello from Ch-engine!")
             )
         )
         deviceBrickList.add(
@@ -2251,7 +2251,7 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(MoveDownloadsBrick("variable.txt"))
         deviceBrickList.add(CopyProjectFileBrick("variable.txt", "copy_variable.txt"))
         deviceBrickList.add(ExportProjectFileBrick("file.txt"))
-        deviceBrickList.add(ShareBrick("Привет из NewCatroid!"));
+        deviceBrickList.add(ShareBrick("Привет из Ch-engine!"));
         deviceBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
         deviceBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
         deviceBrickList.add(WriteVariableOnDeviceBrick())
@@ -2276,8 +2276,8 @@ bot.polling()""", "myVar"))
         deviceBrickList.add(SubCategoryHeaderBrick(context.getString(R.string.subcategory_device_speech), template))
         deviceBrickList.add(ShowToastBlock("Hello World"))
         deviceBrickList.add(CopyTextBrick("Котлета"))
-        deviceBrickList.add(ShowNotificationBrick("123456", "NewCatroid", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
-        deviceBrickList.add(NotificationCreateBrick("123456", "NewCatroid", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
+        deviceBrickList.add(ShowNotificationBrick("123456", "Ch-engine", "Привееет", "Это уведомление (точнее, его текст)", "icon.png"))
+        deviceBrickList.add(NotificationCreateBrick("123456", "Ch-engine", "Привееет опять", "Это уже сложное уведомление", "icon.png"))
         deviceBrickList.add(NotificationAddButtonBrick("123456", "123", "CLICK ME", "none.png", "Enter any text..."))
         deviceBrickList.add(NotificationShowBrick("123456", 60.0))
         deviceBrickList.add(NotificationCancelBrick("123456"))
@@ -2644,7 +2644,7 @@ void main() {
         fileBrickList.add(CopyProjectFileBrick("variable.txt", "copy_variable.txt"))
         fileBrickList.add(ChooseFileBrick())
         fileBrickList.add(ExportProjectFileBrick("file.txt"))
-        fileBrickList.add(ShareBrick("Привет из NewCatroid!"));
+        fileBrickList.add(ShareBrick("Привет из Ch-engine!"));
         fileBrickList.add(SaveToInternalStorageBrick("file.txt", "myAwesomeApp/file.txt"))
         fileBrickList.add(LoadFromInternalStorageBrick("myAwesomeApp/file.txt"))
         fileBrickList.add(SaveLookBrick("my_actor.png"))
@@ -3039,7 +3039,7 @@ void main() {
             "Content-Type:application/json",
             "{\nusername=password\n}"))
         internetBrickList.add(HttpCreateBrick("my_request", "GET", "https://api.example.com/data"))
-        internetBrickList.add(HttpConfigBrick("my_request", 0, "User-Agent", "NewCatroidClient"))
+        internetBrickList.add(HttpConfigBrick("my_request", 0, "User-Agent", "ChEngineClient"))
         internetBrickList.add(
             HttpBodyBrick(
                 "my_request",

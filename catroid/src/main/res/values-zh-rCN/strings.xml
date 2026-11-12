@@ -265,7 +265,7 @@
     <string name="community_download_title">正在下载项目</string>
     <string name="community_downloading_files">正在下载文件...</string>
     <string name="community_saving_to_cache">正在将存档保存到缓存...</string>
-    <string name="community_importing_files">正在将文件导入到NewCatroid...</string>
+    <string name="community_importing_files">正在将文件导入到Ch-engine...</string>
     <string name="community_import_completed">导入完成</string>
     <string name="community_project_ready">项目已准备就绪。</string>
     <string name="community_open_btn">打开</string>
@@ -302,9 +302,9 @@
     <string name="community_import_failed">解压/导入项目失败</string>
     <string name="community_load_project_failed">打开项目失败</string>
 
-    <string name="acc_title">NewCatroid账户</string>
+    <string name="acc_title">Ch-engine账户</string>
     <string name="acc_desc">登录以发布项目和撰写评论</string>
-    <string name="community_title">NewCatroid社区</string>
+    <string name="community_title">Ch-engine社区</string>
 
     <string name="code_analysis_title">实时代码分析</string>
     <string name="code_analysis_desc">自动检查脚本中潜在的问题和错误</string>
@@ -1745,7 +1745,7 @@
     <string formatted="false" name="recovery_btn">恢复丢失的项目</string>
     <string formatted="false" name="recovery">恢复</string>
     <string formatted="false" name="plugins_desc">控制已安装的插件</string>
-    <string formatted="false" name="ide_desc">NewCatroid的开发环境</string>
+    <string formatted="false" name="ide_desc">Ch-engine的开发环境</string>
     <string formatted="false" name="additions">附加</string>
     <string formatted="false" name="plugins">插件</string>
     <string formatted="false" name="brick_shadows_label">设置阴影启用</string>
@@ -2084,11 +2084,11 @@
         <item>1956年制造的第一个硬盘只能存储5MB的数据。</item>
         <item>平均而言，程序员每天编写大约10-12行最终进入产品的代码。</item>
         <item>Android最初是为数码相机开发的操作系统。</item>
-        <item>NewCatroid使用原生库加速物理和3D图形。</item>
+        <item>Ch-engine使用原生库加速物理和3D图形。</item>
         <item>世界上第一条短信于1992年发送，内容为“圣诞快乐”。</item>
-        <item>NewCatroid创建于2024年11月25日。</item>
-        <item>NewCatroid的第一个版本是2.0.0，很奇怪吧？。</item>
-        <item>NewCatroid在2024年元旦（12月31日）发布。</item>
+        <item>Ch-engine创建于2024年11月25日。</item>
+        <item>Ch-engine的第一个版本是2.0.0，很奇怪吧？。</item>
+        <item>Ch-engine在2024年元旦（12月31日）发布。</item>
         <item>我不知道我们是怎么有巴西社区的，但我不反对 :)</item>
         <item>戴眼镜的聪明人下载壁纸。</item>
         <item>大城市...</item>
@@ -2204,13 +2204,13 @@
         <item>听到你了亲爱的... :)</item>
         <item>CHIPI CHIPI CHAPA CHAPA RUVY RUVY RAVA RAVA...</item>
         <item>每一个面包都是渴望成为啤酒但未能如愿的谷物的悲剧故事....</item>
-        <item>下注吧，NewCatroid什么时候会被俄罗斯通信监管局封禁？</item>
-        <item>聪明人不会上山 - 聪明人会删除NewCatroid</item>
+        <item>下注吧，Ch-engine什么时候会被俄罗斯通信监管局封禁？</item>
+        <item>聪明人不会上山 - 聪明人会删除Ch-engine</item>
         <item>2.2... 永远不会发布... 因为Danveyd一如既往地懒...</item>
         <item>自赞是成功的保证</item>
         <item>他们让我告诉你，mestiqll 非常酷</item>
         <item>黎曼和实际上只是对积分更严格的定义</item>
-        <item>这个应用程序叫NewCatroid。挺酷的，对吧？</item>
+        <item>这个应用程序叫Ch-engine。挺酷的，对吧？</item>
         <item>如果你看到这个 - 羊的名字（给能理解的人 :> ）</item>
         <item>顺便说一句，2.1.3（或者说2.2.0）已经做了4个月了... 虽然我计划在4月1日发布它</item>
         <item>有趣的事实：3D支持光线追踪。（即使在屏幕空间）</item>
@@ -2229,7 +2229,7 @@
         <item>谁在资源里找到所有彩蛋，谁就能获得抓饭的食谱</item>
         <item>你说Verity？Geometry Dash里有个关卡叫这个，怎么了？</item>
         <item>有趣的事实：原来你可以出门去摸草</item>
-        <item>顺便说一句，补充我之前给另一个人的消息。NewCatroid网站已经被俄罗斯通信监管局封锁了... 感谢你们保护公民，俄罗斯通信监管局...</item>
+        <item>顺便说一句，补充我之前给另一个人的消息。Ch-engine网站已经被俄罗斯通信监管局封锁了... 感谢你们保护公民，俄罗斯通信监管局...</item>
         <item>Ch 和我的burmaldikhi</item>
         <item>我5天没来，为什么我们的聊天变成了1400个毛茸茸的聚会，这是什么</item>
         <item>\@cypkot 专门给你的：嗨</item>
@@ -2238,7 +2238,7 @@
         <item>我的猫叫Musti。记住这个 :]</item>
         <item>我们像Roblox一样通过TechAI对公式进行审查，只是反过来怎么样？</item>
         <item>如果你没读到这个 - 我会生气的。我在这里为谁写所有这些提示</item>
-        <item>有趣事实：NewCatroid网站上有积木文档</item>
+        <item>有趣事实：Ch-engine网站上有积木文档</item>
         <item>请在设置中启用“1 APRIL”plsplsplsplspls</item>
         <item>你和我.. 你和我.. 我们是朋友啊啊啊...</item>
         <item>最重要的是我们都喜欢（放我出去）</item>
@@ -2903,7 +2903,7 @@
     <string formatted="false" name="main_menu_programs">设备上的项目</string>
     <string formatted="false" name="main_menu_help">帮助</string>
     <string formatted="false" name="main_menu_web">开发者电报群</string>
-    <string formatted="false" name="main_menu_community">NewCatroid网站</string>
+    <string formatted="false" name="main_menu_community">Ch-engine网站</string>
     <string formatted="false" name="main_menu_upload">上传项目</string>
     <string formatted="false" name="main_menu_play">播放项目</string>
 
@@ -3518,7 +3518,7 @@
     <!-- 关于对话框 -->
     <string formatted="false" name="dialog_about_title">关于此应用</string>
     <string formatted="false" name="dialog_about_license_info">此应用程序为可视化编程语言Catrobat提供了编码环境和解释器。\n
-此应用程序是Catrobat/Catroid的一个分支，也是开源的（Danveyd/NewCatroid）。\n
+此应用程序是Catrobat/Catroid的一个分支，也是开源的（Danveyd/ChEngine）。\n
 源代码主要根据GNU AGPL v3许可。（这与原始项目相同。）\n
 有关详细的许可信息，请参阅以下链接。\n</string>
     <string formatted="false" name="dialog_about_license_link_text">源代码许可</string>

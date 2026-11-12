@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            style="@style/Widget.NewCatroid.Toolbar" />
+            style="@style/Widget.ChEngine.Toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -21,7 +21,7 @@
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.NewCatroid.TabLayout"/>
+        style="@style/Widget.ChEngine.TabLayout"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"

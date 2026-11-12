@@ -8,7 +8,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 
-public interface NewCatroidApi {
+public interface ChEngineApi {
 
     @POST("/api/authentication")
     Call<Object> login(@retrofit2.http.Body Object loginRequest);

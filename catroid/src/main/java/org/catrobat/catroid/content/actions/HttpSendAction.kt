@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.Action
-import org.catrobat.catroid.common.NewCatroidHttpManager
+import org.catrobat.catroid.common.ChEngineHttpManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import kotlin.concurrent.thread
@@ -26,7 +26,7 @@ class HttpSendAction : Action() {
             try {
                 val idStr = requestId?.interpretString(scope) ?: ""
                 if (idStr.isNotEmpty()) {
-                    NewCatroidHttpManager.executeRequest(idStr) {
+                    ChEngineHttpManager.executeRequest(idStr) {
                         finished = true
                     }
                 } else {

@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.common.NewCatroidHttpManager
+import org.catrobat.catroid.common.ChEngineHttpManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 
@@ -17,6 +17,6 @@ class HttpSaveFileAction : TemporalAction() {
         if (idStr.isEmpty() || destStr.isEmpty()) return
 
         val destFile = scope?.project?.getFile(destStr) ?: return
-        NewCatroidHttpManager.saveResponseToFile(idStr, destFile)
+        ChEngineHttpManager.saveResponseToFile(idStr, destFile)
     }
 }

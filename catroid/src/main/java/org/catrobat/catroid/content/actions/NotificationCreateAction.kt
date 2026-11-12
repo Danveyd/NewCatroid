@@ -3,7 +3,7 @@ package org.catrobat.catroid.content.actions
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
-import org.catrobat.catroid.utils.NewCatroidNotificationManager
+import org.catrobat.catroid.utils.ChEngineNotificationManager
 
 class NotificationCreateAction : TemporalAction() {
     var scope: Scope? = null
@@ -16,7 +16,7 @@ class NotificationCreateAction : TemporalAction() {
     var isOngoing: Boolean = false
 
     override fun update(percent: Float) {
-        val idStr = NewCatroidNotificationManager.cleanStringId(notifId?.interpretString(scope) ?: "")
+        val idStr = ChEngineNotificationManager.cleanStringId(notifId?.interpretString(scope) ?: "")
         if (idStr.isEmpty()) return
 
         val chanStr = channelName?.interpretString(scope) ?: "App Notifications"
@@ -28,7 +28,7 @@ class NotificationCreateAction : TemporalAction() {
             scope?.project?.getFile(iconName)?.absolutePath ?: ""
         } else ""
 
-        NewCatroidNotificationManager.configureDraft(
+        ChEngineNotificationManager.configureDraft(
             idStr, chanStr, titleStr, textStr, iconPath, importanceSelection, isOngoing
         )
     }

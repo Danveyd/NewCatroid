@@ -54,7 +54,7 @@ class CommunityWebViewActivity : AppCompatActivity(), ProjectLoader.ProjectLoadL
         setupWebView()
         setupNotificationListeners()
 
-        webView.loadUrl("https://newcatroid.mindpy.dev")
+        webView.loadUrl("https://chengine.mindpy.dev")
     }
 
     @SuppressLint("SetJavaScriptEnabled")

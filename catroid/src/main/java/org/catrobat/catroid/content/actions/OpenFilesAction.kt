@@ -151,13 +151,13 @@ class OpenFilesAction() : TemporalAction() {
         }
     }
 
-    private fun copyFileToNewCatroidDir(file: File): File {
-        val newCatroidDir = File(Environment.getExternalStorageDirectory(), "NewCatroid")
-        if (!newCatroidDir.exists()) {
-            newCatroidDir.mkdirs()
+    private fun copyFileToChEngineDir(file: File): File {
+        val chEngineDir = File(Environment.getExternalStorageDirectory(), "ChEngine")
+        if (!chEngineDir.exists()) {
+            chEngineDir.mkdirs()
         }
 
-        val newFile = File(newCatroidDir, file.name)
+        val newFile = File(chEngineDir, file.name)
         file.copyTo(newFile)
         return newFile
     }

@@ -36,8 +36,8 @@ jobs:
 
       - name: Настраиваем проект (applicationId, Firebase)
         run: |
-          sed -i 's/applicationId "org.DanVexTeam.NewCatroid"/applicationId "org.DanVexTeam.NewCatroid.aitest"/g' catroid/build.gradle
-          find . -name "google-services*.json" -exec sed -i 's/"org.DanVexTeam.NewCatroid"/"org.DanVexTeam.NewCatroid.aitest"/g' {} +
+          sed -i 's/applicationId "org.DanVexTeam.ChEngine"/applicationId "org.DanVexTeam.ChEngine.aitest"/g' catroid/build.gradle
+          find . -name "google-services*.json" -exec sed -i 's/"org.DanVexTeam.ChEngine"/"org.DanVexTeam.ChEngine.aitest"/g' {} +
           find catroid/src -type f -name "*.java" -exec sed -i 's/com.pdrogfer.mididroid/com.leff.midi/g' {} +
           find catroid/src -type f -name "*.java" -exec sed -i 's/com.oliewa92.mididroid/com.leff.midi/g' {} +
           echo "Пакет и зависимости настроены"
@@ -52,6 +52,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: NewCatroid-${{ github.event.inputs.feature_name }}
+          name: ChEngine-${{ github.event.inputs.feature_name }}
           path: '**/build/outputs/apk/danvex/debug/*.apk'
           retention-days: 7

@@ -20,7 +20,7 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
-object NewCatroidNotificationManager {
+object ChEngineNotificationManager {
 
     val savedReplies = ConcurrentHashMap<String, String>()
 

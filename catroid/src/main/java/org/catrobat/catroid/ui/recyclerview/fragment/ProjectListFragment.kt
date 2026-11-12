@@ -262,7 +262,7 @@ class ProjectListFragment : RecyclerViewFragment<ProjectData?>(), ProjectLoadLis
         markwon.setMarkdown(markdownView, resolveImagePaths(markdownText))
 
         AlertDialog.Builder(
-            android.view.ContextThemeWrapper(context, R.style.Theme_NewCatroid_Dialog)
+            android.view.ContextThemeWrapper(context, R.style.Theme_ChEngine_Dialog)
         )
             .setTitle("Сведения о проекте: ${project.name}")
             .setView(markdownView)

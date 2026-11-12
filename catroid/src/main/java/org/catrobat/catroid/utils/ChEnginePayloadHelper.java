@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class NewCatroidPayloadHelper {
-    private static final byte[] MAGIC_MARKER = "NEWCATROID_MAGIC_PAYLOAD_V1".getBytes();
+public class ChEnginePayloadHelper {
+    private static final byte[] MAGIC_MARKER = "CHENGINE_MAGIC_PAYLOAD_V1".getBytes();
 
 
     public static void hideZipInAudio(File realAudio, File zipPayload, File output) throws IOException {

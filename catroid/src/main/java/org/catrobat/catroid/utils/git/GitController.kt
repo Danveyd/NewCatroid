@@ -401,7 +401,7 @@ class GitController(private val projectDir: File) {
             git.add().addFilepattern(".").call()
             git.commit()
                 .setMessage("Initial state from ZIP")
-                .setAuthor("NewCatroid IDE", "ide@newcatroid.org")
+                .setAuthor("Ch-engine IDE", "ide@chengine.org")
                 .call()
         }
 
@@ -450,7 +450,7 @@ class GitController(private val projectDir: File) {
                 android.util.Log.d("GIT_DEBUG", "4. COMMIT...")
                 git.commit()
                     .setMessage(message)
-                    .setAuthor("AI Developer", "ai@newcatroid.com")
+                    .setAuthor("AI Developer", "ai@chengine.com")
                     .call()
 
                 android.util.Log.d("GIT_DEBUG", "5. PUSH...")

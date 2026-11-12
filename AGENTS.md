@@ -1,14 +1,14 @@
-Данный проект - NewCatroid. Форк Catrobat/Catroid
+Данный проект - Ch-engine. Форк Catrobat/Catroid
 
 Это универсальный конструктор приложений / игр с визуальным программированием через блоки
 
 Вот основной Readme с описанием проекта:
 
 <p align="center">
-  <img src="assets/logo.jpg" alt="NewCatroid Logo" width="128"/>
+  <img src="assets/logo.jpg" alt="Ch-engine Logo" width="128"/>
 </p>
 
-<h1 align="center">NewCatroid</h1>
+<h1 align="center">Ch-engine</h1>
 
 <p align="center">
   Расширенная версия <a href="https://github.com/Catrobat/Catroid">Catrobat/Catroid</a> — с поддержкой 3D, AI, Qemu, Python и др.
@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://t.me/New_Catroid">Telegram</a> • 
-  <a href="https://apps.rustore.ru/app/org.DanVexTeam.NewCatroid">RuStore</a>  • 
+  <a href="https://apps.rustore.ru/app/org.DanVexTeam.ChEngine">RuStore</a>  • 
   <a href="#license">License</a>
 </p>
 

@@ -30,7 +30,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input"
-                    style="@style/NewCatroid.TextInputLayout"
+                    style="@style/ChEngine.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintEnabled="true">
@@ -69,7 +69,7 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_portrait"
-                            style="@style/Widget.NewCatroid.ToggleButton"
+                            style="@style/Widget.ChEngine.ToggleButton"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="54dp"
@@ -78,7 +78,7 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_landscape"
-                            style="@style/Widget.NewCatroid.ToggleButton"
+                            style="@style/Widget.ChEngine.ToggleButton"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="54dp"
@@ -120,7 +120,7 @@
                     android:layout_marginTop="8dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/NewCatroid.TextInputLayout"
+                        style="@style/ChEngine.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Remote URL">
@@ -132,7 +132,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/NewCatroid.TextInputLayout"
+                        style="@style/ChEngine.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"

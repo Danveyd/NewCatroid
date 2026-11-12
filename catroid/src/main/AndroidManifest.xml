@@ -186,7 +186,7 @@
             android:name=".stage.StageActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/stage"
-            android:theme="@style/Theme.NewCatroid.Stage" />
+            android:theme="@style/Theme.ChEngine.Stage" />
 
         <activity
             android:name=".stage.StageWorkspaceActivity"
@@ -321,11 +321,11 @@
 
         <activity
             android:name="org.catrobat.catroid.ui.CommunityWebViewActivity"
-            android:theme="@style/Theme.NewCatroid.LibraryEditor" />
+            android:theme="@style/Theme.ChEngine.LibraryEditor" />
 
         <activity
             android:name="org.catrobat.catroid.ui.CommunityLoginActivity"
-            android:theme="@style/Theme.NewCatroid.LibraryEditor" />
+            android:theme="@style/Theme.ChEngine.LibraryEditor" />
 
         <activity
             android:name=".visualplacement.VisualPlacementActivity"/>
@@ -348,7 +348,7 @@
         <activity
             android:name=".libraryeditor.data.LibraryEditorActivity"
             android:exported="false"
-            android:theme="@style/Theme.NewCatroid.LibraryEditor"
+            android:theme="@style/Theme.ChEngine.LibraryEditor"
             android:windowSoftInputMode="adjustResize" />
 
         <service
@@ -376,7 +376,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="github-callback"
-                    android:scheme="newcatroid" />
+                    android:scheme="chengine" />
             </intent-filter>
         </activity>
 
@@ -397,7 +397,7 @@
             android:foregroundServiceType="dataSync" />
         <service android:name=".transfers.MediaDownloadService" />
         <service android:name=".utils.notifications.StatusBarNotificationManager$NotificationActionService" />
-        <service android:name="org.catrobat.catroid.common.NewCatroidBackgroundService" android:exported="false" android:foregroundServiceType="dataSync" />
+        <service android:name="org.catrobat.catroid.common.ChEngineBackgroundService" android:exported="false" android:foregroundServiceType="dataSync" />
 
         <service
             android:name=".cast.CastService"

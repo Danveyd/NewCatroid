@@ -1780,7 +1780,7 @@ public class ScriptFragment extends ListFragment implements
 
         scrollView.addView(container);
 
-        dialogHolder[0] = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        dialogHolder[0] = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.analysis_dialog_title)
                 .setView(scrollView)
                 .setPositiveButton("OK", null)

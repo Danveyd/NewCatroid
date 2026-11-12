@@ -561,7 +561,7 @@
     <string name="community_download_title">Downloading Project</string>
     <string name="community_downloading_files">Downloading files...</string>
     <string name="community_saving_to_cache">Saving archive to cache...</string>
-    <string name="community_importing_files">Importing files to NewCatroid...</string>
+    <string name="community_importing_files">Importing files to Ch-engine...</string>
     <string name="community_import_completed">Import Completed</string>
     <string name="community_project_ready">Project is ready to use.</string>
     <string name="community_open_btn">Open</string>
@@ -598,9 +598,9 @@
     <string name="community_import_failed">Failed to unzip/import project</string>
     <string name="community_load_project_failed">Failed to open project</string>
 
-    <string name="acc_title">NewCatroid Account</string>
+    <string name="acc_title">Ch-engine Account</string>
     <string name="acc_desc">Sign in to publish projects and write comments</string>
-    <string name="community_title">NewCatroid Community</string>
+    <string name="community_title">Ch-engine Community</string>
 
     <string name="code_analysis_title">Real-time code analysis</string>
     <string name="code_analysis_desc">Automatically check scripts for potential problems and errors</string>
@@ -2085,7 +2085,7 @@
     <string formatted="false" name="recovery_btn">Recover lost projects</string>
     <string formatted="false" name="recovery">Recovery</string>
     <string formatted="false" name="plugins_desc">Control installed plugins</string>
-    <string formatted="false" name="ide_desc">Develop environment of NewCatroid</string>
+    <string formatted="false" name="ide_desc">Develop environment of Ch-engine</string>
     <string formatted="false" name="additions">Additions</string>
     <string formatted="false" name="plugins">Plugins</string>
     <string formatted="false" name="brick_shadows_label">Set shadows enabled</string>
@@ -2424,11 +2424,11 @@
         <item>Первый жесткий диск, созданный в 1956 году, мог хранить всего 5 мегабайт данных.</item>
         <item>В среднем, программист пишет около 10-12 строк кода в день, которые попадают в финальный продукт.</item>
         <item>Изначально Android разрабатывался как операционная система для цифровых камер.</item>
-        <item>NewCatroid использует нативные библиотеки для ускорения физики и 3D-графики.</item>
+        <item>Ch-engine использует нативные библиотеки для ускорения физики и 3D-графики.</item>
         <item>Первая в мире SMS была отправлена в 1992 году с текстом \"Счастливого Рождества\".</item>
-        <item>NewCatroid был создан 25 ноября 2024 года.</item>
-        <item>Первая версия NewCatroid была 2.0.0 странно, правда?.</item>
-        <item>NewCatroid вышел под новый год 2024 (31 декабря).</item>
+        <item>Ch-engine был создан 25 ноября 2024 года.</item>
+        <item>Первая версия Ch-engine была 2.0.0 странно, правда?.</item>
+        <item>Ch-engine вышел под новый год 2024 (31 декабря).</item>
         <item>Я хз как у нас появилось бразильское комьюнити, но я не против :)</item>
         <item>Умный человек в очках скачать обои.</item>
         <item>Большие города...</item>
@@ -2544,13 +2544,13 @@
         <item>Услышал тебя родной... :)</item>
         <item>ЧИПИ ЧИПИ ЧАПА ЧАПА РУВИ РУВИ РАВА РАВА...</item>
         <item>каждая буханка хлеба - трагическая история зерен, которые мечтали стать пивом, но не стали....</item>
-        <item>Ставим ставки, когда NewCatroid забанит РКН?</item>
+        <item>Ставим ставки, когда Ch-engine забанит РКН?</item>
         <item>Умный в гору не пойдет - умный удалит невкатроид</item>
         <item>2.2... не выйдет никогда... потому что данвейд ленивый как всегда...</item>
         <item>Самолайк залог успеха</item>
         <item>мне сказали написать вам, что mestiqll очень крутой</item>
         <item>Сумма Римана на самом деле просто более строгое определение интеграла</item>
-        <item>Это приложение называется NewCatroid. Прикольно, правда?</item>
+        <item>Это приложение называется Ch-engine. Прикольно, правда?</item>
         <item>Если ты это видишь - имя овцы (адрессовано тому, кто поймет :> )</item>
         <item>Кстати 2.1.3 (или же 2.2.0) делается уже 4 месяца... Хотя я планировал выпустить ее 1 апреля</item>
         <item>Интересный факт: в 3D поддерживается трассировка лучей. (хоть и в экранном пространстве)</item>
@@ -2569,7 +2569,7 @@
         <item>кто найдет в ассетах все пасхалки получит рецепт плова</item>
         <item>Верити говорите? Уровень в гдшке такой есть, а что?</item>
         <item>Интересный факт: оказывается можно выходить на улицу и трогать траву</item>
-        <item>Кстати дополнение к моему сообщению другому. Сайт NewCatroid уже блокирует ТСПУ... Спасибо за защиту граждан, ркн...</item>
+        <item>Кстати дополнение к моему сообщению другому. Сайт Ch-engine уже блокирует ТСПУ... Спасибо за защиту граждан, ркн...</item>
         <item>Ч и мои бурмалдихи</item>
         <item>МЕНЯ НЕБЫЛО 5 ДНЕЙ, ПОЧЕМУ У НАС ЧАТ ПРЕВРАТИЛСЯ В СХОДКУ 1400 ФУРРИ, ЭТО ЧТО</item>
         <item>\@cypkot специально для тебя: привет</item>
@@ -2578,7 +2578,7 @@
         <item>А у меня кошку зовут Мусти. Знайте это :]</item>
         <item>Давайте сделаем цензуру формул через TechAI как в роблоксе, только наоборот?</item>
         <item>Если ты это не читаешь - я обижусь. Я тут для кого все эти подсказки пишу</item>
-        <item>Фанфакт: на сайте NewCatroid есть документация по блокам</item>
+        <item>Фанфакт: на сайте Ch-engine есть документация по блокам</item>
         <item>включите в настройках \"1 APRIL\" пжпжпжпжпж</item>
         <item>Ты и я.. ты и я.. мы с тобой друзья а-а-а...</item>
         <item>Главное что нам все нравится (ВЫПУСТИТЕ ОТСЮДА)</item>
@@ -3260,7 +3260,7 @@
     <string formatted="false" name="main_menu_programs">Projects on device</string>
     <string formatted="false" name="main_menu_help">Help</string>
     <string formatted="false" name="main_menu_web">Dev\'s Telegram</string>
-    <string formatted="false" name="main_menu_community">NewCatroid site</string>
+    <string formatted="false" name="main_menu_community">Ch-engine site</string>
     <string formatted="false" name="main_menu_upload">Upload project</string>
     <string formatted="false" name="main_menu_play">Play project</string>
 
@@ -3916,7 +3916,7 @@
     <!-- About Dialog -->
     <string formatted="false" name="dialog_about_title">About this App</string>
     <string formatted="false" name="dialog_about_license_info">This application offers a coding environment and an interpreter for the visual programming language Catrobat.\n
-THIS APPLICATION IS A FORK OF Catrobat/Catroid, and is also open source (Danveyd/NewCatroid).\n
+THIS APPLICATION IS A FORK OF Catrobat/Catroid, and is also open source (Danveyd/ChEngine).\n
 The source code is primarily licensed under the GNU AGPL v3. (This is the same as the original project.)\n
 For detailed license information, see the link below.\n</string>
     <string formatted="false" name="dialog_about_license_link_text">Source code license</string>

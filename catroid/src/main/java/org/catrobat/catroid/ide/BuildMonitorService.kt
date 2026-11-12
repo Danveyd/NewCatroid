@@ -59,7 +59,7 @@ class BuildMonitorService : Service() {
 
         delay(5000)
 
-        val runsUrl = "https://api.github.com/repos/$login/NewCatroid/actions/runs?branch=$branch"
+        val runsUrl = "https://api.github.com/repos/$login/ChEngine/actions/runs?branch=$branch"
 
         android.util.Log.d("IDE_SERVICE", "Начинаем поиск активной сборки...")
 
@@ -99,7 +99,7 @@ class BuildMonitorService : Service() {
         var isCompleted = false
         var isSuccess = false
         while (!isCompleted) {
-            val checkReq = Request.Builder().url("https://api.github.com/repos/$login/NewCatroid/actions/runs/$runId")
+            val checkReq = Request.Builder().url("https://api.github.com/repos/$login/ChEngine/actions/runs/$runId")
                 .header("Authorization", "Bearer $token").build()
 
             client.newCall(checkReq).execute().use { response ->
@@ -126,7 +126,7 @@ class BuildMonitorService : Service() {
 
 
         updateProgress("Сборка успешна!", "Ищем готовый файл...")
-        val artUrl = "https://api.github.com/repos/$login/NewCatroid/actions/runs/$runId/artifacts"
+        val artUrl = "https://api.github.com/repos/$login/ChEngine/actions/runs/$runId/artifacts"
         var downloadUrl: String? = null
 
         client.newCall(Request.Builder().url(artUrl).header("Authorization", "Bearer $token").build()).execute().use {
@@ -186,7 +186,7 @@ class BuildMonitorService : Service() {
     }
 
     private fun saveApkToDownloads(zipFile: File, featureName: String): Uri? {
-        val fileName = "NewCatroid_${featureName}_${System.currentTimeMillis() / 1000}.apk"
+        val fileName = "ChEngine_${featureName}_${System.currentTimeMillis() / 1000}.apk"
         val resolver = contentResolver
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

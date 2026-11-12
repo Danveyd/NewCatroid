@@ -77,7 +77,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilAppName"
-                        style="@style/Widget.NewCatroid.TextInputLayout"
+                        style="@style/Widget.ChEngine.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
@@ -91,7 +91,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilPackageName"
-                        style="@style/Widget.NewCatroid.TextInputLayout"
+                        style="@style/Widget.ChEngine.TextInputLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
@@ -112,7 +112,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/tilVersionName"
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -127,7 +127,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/tilVersionCode"
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -479,7 +479,7 @@
                         android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -492,7 +492,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -506,7 +506,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="12dp"
@@ -556,7 +556,7 @@
                             android:text="@string/no_file_selected" />
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
@@ -569,7 +569,7 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.NewCatroid.TextInputLayout"
+                            style="@style/Widget.ChEngine.TextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/build_key_pass">

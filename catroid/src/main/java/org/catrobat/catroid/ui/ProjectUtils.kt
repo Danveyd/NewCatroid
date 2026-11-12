@@ -162,7 +162,7 @@ fun showWarningForSuspiciousBricksOnce(context: Context) {
 
     if (isDownloadedProject && currentProject.shouldDisplaySuspiciousBricksWarning() && showForFirstTime) {
         AlertDialog.Builder(
-            android.view.ContextThemeWrapper(context, R.style.Theme_NewCatroid_Dialog)
+            android.view.ContextThemeWrapper(context, R.style.Theme_ChEngine_Dialog)
         )
             .setTitle(context.resources.getString(R.string.warning))
             .setMessage(context.resources.getString(R.string.security_warning_dialog_msg))

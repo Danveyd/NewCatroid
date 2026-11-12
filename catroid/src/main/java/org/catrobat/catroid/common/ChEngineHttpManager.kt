@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
-object NewCatroidHttpManager {
+object ChEngineHttpManager {
 
     private val baseClient = OkHttpClient()
 

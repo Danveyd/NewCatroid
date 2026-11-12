@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.common.NewCatroidBroadcastManager
+import org.catrobat.catroid.common.ChEngineBroadcastManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.content.EventWrapper
 import org.catrobat.catroid.content.eventids.BroadcastEventId
@@ -17,7 +17,7 @@ class BroadcastWithParamsAction : TemporalAction() {
         val paramsStr = params?.interpretString(scope) ?: ""
 
         if (signalStr.isNotEmpty()) {
-            NewCatroidBroadcastManager.setParams(signalStr, paramsStr)
+            ChEngineBroadcastManager.setParams(signalStr, paramsStr)
 
             val eventId = BroadcastEventId(signalStr)
             val eventWrapper = EventWrapper(eventId, false)

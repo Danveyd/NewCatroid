@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "org.DanVexTeam.NewCatroid",
+  "applicationId": "org.DanVexTeam.ChEngine",
   "variantName": "danvexSignedRelease",
   "elements": [
     {

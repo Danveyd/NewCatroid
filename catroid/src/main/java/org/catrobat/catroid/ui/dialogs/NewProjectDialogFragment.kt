@@ -58,7 +58,7 @@ class NewProjectDialogFragment : DialogFragment() {
         if (!isPcMode) {
             setStyle(STYLE_NORMAL, Window.FEATURE_NO_TITLE)
         } else {
-            setStyle(STYLE_NO_TITLE, R.style.NewCatroid_Dialog_Pc)
+            setStyle(STYLE_NO_TITLE, R.style.ChEngine_Dialog_Pc)
         }
     }
 

@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.common.NewCatroidBroadcastManager
+import org.catrobat.catroid.common.ChEngineBroadcastManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.UserVariable
 
@@ -13,7 +13,7 @@ class SaveBroadcastParamsAction : TemporalAction() {
     override fun update(percent: Float) {
         val signal = signalName ?: return
 
-        val paramsJson = NewCatroidBroadcastManager.getParams(signal)
+        val paramsJson = ChEngineBroadcastManager.getParams(signal)
         userVariable?.value = paramsJson
     }
 

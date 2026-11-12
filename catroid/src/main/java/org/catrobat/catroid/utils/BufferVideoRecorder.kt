@@ -73,7 +73,7 @@ object BufferVideoRecorder {
             return
         }
 
-        thread(start = true, name = "NewCatroidVideoEncoder") {
+        thread(start = true, name = "ChEngineVideoEncoder") {
             runEncoderLoop()
         }
     }

@@ -14,7 +14,7 @@ import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import org.catrobat.catroid.stage.StageActivity
 import org.catrobat.catroid.stage.StageWorkspaceActivity
-import org.catrobat.catroid.utils.NewCatroidNotificationManager
+import org.catrobat.catroid.utils.ChEngineNotificationManager
 
 class ShowNotificationAction : TemporalAction() {
     var scope: Scope? = null
@@ -30,11 +30,11 @@ class ShowNotificationAction : TemporalAction() {
     override fun update(percent: Float) {
         val context = CatroidApplication.getAppContext() ?: return
 
-        val idStr = NewCatroidNotificationManager.cleanStringId(notificationId?.interpretString(scope) ?: "")
+        val idStr = ChEngineNotificationManager.cleanStringId(notificationId?.interpretString(scope) ?: "")
         val notifyId = idStr.hashCode()
 
         val chanName = channelName?.interpretString(scope) ?: "App Notifications"
-        val chanId = "newcatroid_chan_" + chanName.hashCode()
+        val chanId = "chengine_chan_" + chanName.hashCode()
 
         val titleStr = title?.interpretString(scope) ?: ""
         val textStr = text?.interpretString(scope) ?: ""
@@ -49,7 +49,7 @@ class ShowNotificationAction : TemporalAction() {
                 else -> NotificationManager.IMPORTANCE_DEFAULT
             }
             val channel = NotificationChannel(chanId, chanName, importance).apply {
-                description = "Notifications triggered from NewCatroid"
+                description = "Notifications triggered from Ch-engine"
             }
             notificationManager.createNotificationChannel(channel)
         }
