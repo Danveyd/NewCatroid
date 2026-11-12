@@ -556,7 +556,7 @@
     <string name="community_download_title">Baixando projeto</string>
     <string name="community_downloading_files">Baixando arquivos...</string>
     <string name="community_saving_to_cache">Salvando arquivo no cache...</string>
-    <string name="community_importing_files">Importando arquivos para o NewCatroid...</string>
+    <string name="community_importing_files">Importando arquivos para o Ch-engine...</string>
     <string name="community_import_completed">Importação concluída</string>
     <string name="community_project_ready">O projeto está pronto.</string>
     <string name="community_open_btn">Abrir</string>
@@ -593,9 +593,9 @@
     <string name="community_load_project_failed">Não foi possível abrir o projeto</string>
 
     <!-- Account Details -->
-    <string name="acc_title">Conta NewCatroid</string>
+    <string name="acc_title">Conta Ch-engine</string>
     <string name="acc_desc">Entre para publicar projetos e escrever comentários</string>
-    <string name="community_title">Comunidade NewCatroid</string>
+    <string name="community_title">Comunidade Ch-engine</string>
 
     <!-- Code Analysis & 3D Easing -->
     <string name="code_analysis_title">Análise de código em tempo real</string>
@@ -2163,7 +2163,7 @@
     <string formatted="false" name="recovery_btn">Buscar projetos perdidos</string>
     <string formatted="false" name="recovery">Recuperação</string>
     <string formatted="false" name="plugins_desc">Gerenciar plugins instalados</string>
-    <string formatted="false" name="ide_desc">Ambiente de desenvolvimento NewCatroid</string>
+    <string formatted="false" name="ide_desc">Ambiente de desenvolvimento Ch-engine</string>
     <string formatted="false" name="additions">Adições</string>
     <string formatted="false" name="plugins">Plugins</string>
 

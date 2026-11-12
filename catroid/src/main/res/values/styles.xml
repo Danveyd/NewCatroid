@@ -24,8 +24,8 @@
 
     <style name="Catroid" parent="Theme.MaterialComponents.NoActionBar.Bridge">
 
-        <item name="alertDialogTheme">@style/Theme.NewCatroid.Dialog</item>
-        <item name="materialAlertDialogTheme">@style/Theme.NewCatroid.Dialog</item>
+        <item name="alertDialogTheme">@style/Theme.ChEngine.Dialog</item>
+        <item name="materialAlertDialogTheme">@style/Theme.ChEngine.Dialog</item>
 
         <!-- Colors -->
         <item name="android:windowBackground">@color/app_background</item>
@@ -926,7 +926,7 @@
         <item name="android:layout_marginBottom">4dp</item>
     </style>
 
-    <style name="NewCatroid.Dialog.Pc" parent="Theme.MaterialComponents.DayNight.Dialog">
+    <style name="ChEngine.Dialog.Pc" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="android:windowBackground">@color/transparent</item>
 
         <item name="android:textColor">@color/solid_white</item>
@@ -941,7 +941,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="NewCatroid.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+    <style name="ChEngine.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:textColorHint">@color/spinner_icon_and_inactive_elements</item>
         <item name="hintTextColor">@color/accent</item>
         <item name="boxStrokeColor">@color/accent</item>
@@ -949,7 +949,7 @@
         <item name="errorTextColor">#FF5252</item>
     </style>
 
-    <style name="Widget.NewCatroid.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="Widget.ChEngine.ToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/white_selector</item>
         <item name="backgroundTint">@color/toggle_button_background_selector</item>
         <item name="strokeColor">@color/accent</item>

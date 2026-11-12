@@ -3,7 +3,7 @@ package org.catrobat.catroid.content.actions
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
-import org.catrobat.catroid.utils.NewCatroidNotificationManager
+import org.catrobat.catroid.utils.ChEngineNotificationManager
 
 class NotificationAddButtonAction : TemporalAction() {
     var scope: Scope? = null
@@ -18,8 +18,8 @@ class NotificationAddButtonAction : TemporalAction() {
     var autoClose: Boolean = false
 
     override fun update(percent: Float) {
-        val idStr = NewCatroidNotificationManager.cleanStringId(notifId?.interpretString(scope) ?: "")
-        val actIdStr = NewCatroidNotificationManager.cleanStringId(actionId?.interpretString(scope) ?: "")
+        val idStr = ChEngineNotificationManager.cleanStringId(notifId?.interpretString(scope) ?: "")
+        val actIdStr = ChEngineNotificationManager.cleanStringId(actionId?.interpretString(scope) ?: "")
         if (idStr.isEmpty() || actIdStr.isEmpty()) return
 
         val textStr = text?.interpretString(scope) ?: ""
@@ -28,7 +28,7 @@ class NotificationAddButtonAction : TemporalAction() {
 
         val iconPath = if (iconName.isNotEmpty()) scope?.project?.getFile(iconName)?.absolutePath ?: "" else ""
 
-        NewCatroidNotificationManager.addActionButton(
+        ChEngineNotificationManager.addActionButton(
             idStr, actIdStr, textStr, iconPath, behavior, hasInput, hintStr, autoClose
         )
     }

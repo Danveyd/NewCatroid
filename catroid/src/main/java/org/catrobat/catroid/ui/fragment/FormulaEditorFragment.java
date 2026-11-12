@@ -739,7 +739,7 @@ public class FormulaEditorFragment extends Fragment implements ViewTreeObserver.
         FileAdapter adapter = new FileAdapter(context, fileList);
         listView.setAdapter(adapter);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.dialog_project_files_title)
                 .setView(dialogView)
                 .setNegativeButton(R.string.cancel, null)

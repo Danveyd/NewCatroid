@@ -436,7 +436,7 @@ public class DebugMenuView extends FrameLayout {
     }
 
     private void showEditVariableDialog(UserVariable var) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.Theme_NewCatroid_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.Theme_ChEngine_Dialog);
         builder.setTitle(String.format(getContext().getString(R.string.debug_menu_edit_variable), var.getName()));
 
         View container = createStyledInputContainer(String.valueOf(var.getValue()));
@@ -453,7 +453,7 @@ public class DebugMenuView extends FrameLayout {
     }
 
     private void showEditListItemDialog(UserList list, int index, String currentValue) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.Theme_NewCatroid_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.Theme_ChEngine_Dialog);
         builder.setTitle(String.format(getContext().getString(R.string.debug_menu_edit_list_item), index + 1, list.getName()));
 
         View container = createStyledInputContainer(currentValue);
@@ -697,7 +697,7 @@ public class DebugMenuView extends FrameLayout {
         private String generateReport(Context context) {
             StringBuilder sb = new StringBuilder();
             sb.append("=========================================\n");
-            sb.append("         NEWCATROID DEBUG REPORT         \n");
+            sb.append("         CHENGINE DEBUG REPORT         \n");
             sb.append("=========================================\n\n");
 
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault());
@@ -763,7 +763,7 @@ public class DebugMenuView extends FrameLayout {
 
         private File saveReportToCache(Context context, String reportText) {
             try {
-                File cacheFile = new File(context.getCacheDir(), "newcatroid_debug_report.txt");
+                File cacheFile = new File(context.getCacheDir(), "chengine_debug_report.txt");
                 if (cacheFile.exists()) cacheFile.delete();
 
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(cacheFile);
@@ -788,7 +788,7 @@ public class DebugMenuView extends FrameLayout {
                 intent.setType("text/plain");
                 intent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
                 intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "NewCatroid Debug Report");
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ch-engine Debug Report");
 
                 android.content.Intent chooser = android.content.Intent.createChooser(intent, context.getString(R.string.share_report_title));
                 chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);

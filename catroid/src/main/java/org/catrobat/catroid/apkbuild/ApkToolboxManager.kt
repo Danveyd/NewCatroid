@@ -622,9 +622,9 @@ object ApkToolboxManager {
 
     private fun renameAppIdentityPrefixes(value: String, newPkg: String): String {
         val prefixes = listOf(
-            "org.DanVexTeam.NewCatroid",
-            "org.danvexteam.newcatroid",
-            "newcatroid",
+            "org.DanVexTeam.ChEngine",
+            "org.danvexteam.chengine",
+            "chengine",
             "org.catrobat.catroid"
         )
         var result = value
@@ -690,7 +690,7 @@ object ApkToolboxManager {
             val notBefore = Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24)
             val notAfter = Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365 * 25)
             val serialNumber = BigInteger.valueOf(System.currentTimeMillis())
-            val owner = X500Principal("CN=$commonName, OU=CatroidBuilder, O=NewCatroid, C=WW")
+            val owner = X500Principal("CN=$commonName, OU=CatroidBuilder, O=ChEngine, C=WW")
 
             val certBuilder = JcaX509v3CertificateBuilder(
                 owner,

@@ -29,7 +29,7 @@ object TemplateManager {
 
     suspend fun fetchAvailableTemplates(): List<TemplateRelease> = withContext(Dispatchers.IO) {
         val request = Request.Builder()
-            .url("https://raw.githubusercontent.com/Danveyd/NewCatroid-Templates/main/releases.json")
+            .url("https://raw.githubusercontent.com/Danveyd/ChEngine-Templates/main/releases.json")
             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
             .header("Accept", "application/json")
             .build()

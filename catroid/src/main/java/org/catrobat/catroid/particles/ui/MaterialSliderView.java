@@ -164,7 +164,7 @@ public class MaterialSliderView extends View {
         layout.addView(etMin);
         layout.addView(etMax);
 
-        AlertDialog dialog = new AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        AlertDialog dialog = new AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.particle_slider_bounds_title)
                 .setView(layout)
                 .setPositiveButton(R.string.particle_ok, (d, which) -> {
@@ -219,7 +219,7 @@ public class MaterialSliderView extends View {
         layout.addView(tvInfo);
         layout.addView(etValue);
 
-        AlertDialog dialog = new AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        AlertDialog dialog = new AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
                 .setTitle("Точный ввод")
                 .setView(layout)
                 .setPositiveButton(R.string.particle_ok, (d, which) -> {

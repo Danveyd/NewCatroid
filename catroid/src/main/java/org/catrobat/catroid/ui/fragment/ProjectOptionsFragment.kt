@@ -283,7 +283,7 @@ class ProjectOptionsFragment : Fragment() {
         if (cleanProjName.isNotEmpty() && cleanProjName[0].isDigit()) {
             cleanProjName = "project_$cleanProjName"
         }
-        etPackageName.setText("com.newcatroid.$cleanProjName")
+        etPackageName.setText("com.chengine.$cleanProjName")
         etVersionName.setText("1.0.0")
         etVersionCode.setText("1")
 
@@ -473,7 +473,7 @@ class ProjectOptionsFragment : Fragment() {
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "application/x-pkcs12"
-                putExtra(Intent.EXTRA_TITLE, "newcatroid_release_key.p12")
+                putExtra(Intent.EXTRA_TITLE, "chengine_release_key.p12")
             }
             startActivityForResult(intent, REQUEST_CODE_GENERATE_KEYSTORE)
         }
@@ -487,7 +487,7 @@ class ProjectOptionsFragment : Fragment() {
         }
         tvSelectedKeystorePathTag = tvSelectedKeystorePath
 
-        val builder = AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        val builder = AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
             .setView(dialogView)
         val dialog = builder.create()
 
@@ -958,7 +958,7 @@ class ProjectOptionsFragment : Fragment() {
 
         val iconFile = getProjectIconFile(currentProject.directory)
         if (iconFile == null) {
-            AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+            AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.community_publish_error_no_cover_title)
                 .setMessage(R.string.community_publish_error_no_cover)
                 .setPositiveButton(R.string.ok, null)
@@ -971,7 +971,7 @@ class ProjectOptionsFragment : Fragment() {
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_publish_preparation, null)
 
-        val dialog = AlertDialog.Builder(context, R.style.Theme_NewCatroid_Dialog)
+        val dialog = AlertDialog.Builder(context, R.style.Theme_ChEngine_Dialog)
             .setView(dialogView)
             .create()
 
@@ -985,7 +985,7 @@ class ProjectOptionsFragment : Fragment() {
         etDesc.setText(cleanDescription)
 
         tvRulesLink.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://newcatroid.mindpy.dev/market/documents"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://chengine.mindpy.dev/market/documents"))
             startActivity(browserIntent)
         }
 
@@ -1732,7 +1732,7 @@ class ProjectOptionsFragment : Fragment() {
         showProgressDialog("Синхронизация и публикация...")
         lifecycleScope.launch(Dispatchers.IO) {
             saveProject()
-            val result = gitController.commitAndPush(commitMessage, "NewCatroid_user", "nc_user@email.com", token)
+            val result = gitController.commitAndPush(commitMessage, "ChEngine_user", "nc_user@email.com", token)
             withContext(Dispatchers.Main) {
                 hideProgressDialog()
                 when (result) {
@@ -2627,7 +2627,7 @@ class ProjectOptionsFragment : Fragment() {
             val destinationUri = data.data ?: return
             val alias = tempGenAlias ?: "debug"
             val pass = tempGenPass ?: "android"
-            val ownerName = tempGenOwner ?: "NewCatroid Owner"
+            val ownerName = tempGenOwner ?: "ChEngine Owner"
 
             try {
                 val tempGeneratedKeystore = File(requireContext().cacheDir, "user_generated_keystore.p12")

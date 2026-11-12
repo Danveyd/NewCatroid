@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.Action
-import org.catrobat.catroid.utils.NewCatroidMqttManager
+import org.catrobat.catroid.utils.ChEngineMqttManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import kotlin.concurrent.thread
@@ -31,7 +31,7 @@ class MqttConnectAction : Action() {
                 val portInt = port?.interpretInteger(scope) ?: 1883
 
                 if (idStr.isNotEmpty() && hostStr.isNotEmpty()) {
-                    NewCatroidMqttManager.connect(idStr, hostStr, portInt) { success ->
+                    ChEngineMqttManager.connect(idStr, hostStr, portInt) { success ->
                         finished = true
                     }
                 } else {

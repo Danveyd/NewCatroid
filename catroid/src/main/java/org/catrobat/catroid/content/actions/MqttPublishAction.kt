@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.utils.NewCatroidMqttManager
+import org.catrobat.catroid.utils.ChEngineMqttManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 
@@ -19,7 +19,7 @@ class MqttPublishAction : TemporalAction() {
         val msgStr = message?.interpretString(scope) ?: ""
 
         if (clientStr.isNotEmpty() && roomStr.isNotEmpty()) {
-            NewCatroidMqttManager.publishMessage(clientStr, roomStr, saltStr, msgStr)
+            ChEngineMqttManager.publishMessage(clientStr, roomStr, saltStr, msgStr)
         }
     }
 }

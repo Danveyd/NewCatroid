@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.Action
-import org.catrobat.catroid.utils.NewCatroidMqttManager
+import org.catrobat.catroid.utils.ChEngineMqttManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 import kotlin.concurrent.thread
@@ -31,7 +31,7 @@ class MqttJoinRoomAction : Action() {
                 val saltStr = salt?.interpretString(scope) ?: "my_project"
 
                 if (clientStr.isNotEmpty() && roomStr.isNotEmpty()) {
-                    NewCatroidMqttManager.joinRoom(clientStr, roomStr, saltStr) { success ->
+                    ChEngineMqttManager.joinRoom(clientStr, roomStr, saltStr) { success ->
                         finished = true
                     }
                 } else {

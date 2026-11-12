@@ -58,7 +58,7 @@ class HuaweiTextToSpeechHolder {
                     stageResourceHolder.resourceInitialized()
                 } else {
                     val builder = AlertDialog.Builder(
-                        ContextThemeWrapper(stageActivity, R.style.Theme_NewCatroid_Dialog)
+                        ContextThemeWrapper(stageActivity, R.style.Theme_ChEngine_Dialog)
                     )
                     builder.setMessage(R.string.prestage_text_to_speech_engine_not_installed)
                         .setCancelable(false)

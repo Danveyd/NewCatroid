@@ -581,7 +581,7 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse("https://www.rustore.ru/catalog/app/org.DanVexTeam.NewCatroid")
+                            Uri.parse("https://www.rustore.ru/catalog/app/org.DanVexTeam.ChEngine")
                         )
                     )
                 } catch (e: ActivityNotFoundException) {

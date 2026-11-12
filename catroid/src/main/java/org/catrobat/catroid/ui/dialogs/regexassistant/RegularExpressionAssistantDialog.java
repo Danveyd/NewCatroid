@@ -50,7 +50,7 @@ public class RegularExpressionAssistantDialog {
 
 	public void createAssistant() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
-                new ContextThemeWrapper(context, R.style.Theme_NewCatroid_Dialog)
+                new ContextThemeWrapper(context, R.style.Theme_ChEngine_Dialog)
         );
 
 		builder.setTitle(R.string.formula_editor_dialog_regular_expression_assistant_title);

@@ -1,7 +1,7 @@
 package org.catrobat.catroid.content.actions
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
-import org.catrobat.catroid.common.NewCatroidHttpManager
+import org.catrobat.catroid.common.ChEngineHttpManager
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
 
@@ -17,7 +17,7 @@ class HttpCreateAction : TemporalAction() {
         val urlStr = url?.interpretString(scope) ?: ""
 
         if (idStr.isNotEmpty() && urlStr.isNotEmpty()) {
-            NewCatroidHttpManager.createRequest(idStr, methodStr, urlStr)
+            ChEngineHttpManager.createRequest(idStr, methodStr, urlStr)
         }
     }
 }

@@ -7,7 +7,7 @@ import javax.crypto.spec.SecretKeySpec
 
 object LunoSecurity {
 
-    private const val KEY_RAW = "NewCatroidSecure"
+    private const val KEY_RAW = "ChEngineSecure"
     private const val ALGORITHM = "AES"
 
     private val secretKey: SecretKeySpec by lazy {

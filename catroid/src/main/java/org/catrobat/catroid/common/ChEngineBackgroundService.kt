@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import org.catrobat.catroid.stage.StageActivity
 import kotlin.concurrent.thread
 
-class NewCatroidBackgroundService : Service() {
+class ChEngineBackgroundService : Service() {
 
     private var isTicking = false
     private var tickThread: Thread? = null

@@ -16,7 +16,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         val remoteInput = RemoteInput.getResultsFromIntent(intent)
         val replyText = remoteInput?.getCharSequence("KEY_REPLY")?.toString() ?: ""
 
-        NewCatroidNotificationManager.savedReplies[actionId] = replyText
+        ChEngineNotificationManager.savedReplies[actionId] = replyText
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -25,14 +25,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 notificationManager.cancel(notifId)
             }
         } else {
-            val state = NewCatroidNotificationManager.activeDrafts[draftId]
+            val state = ChEngineNotificationManager.activeDrafts[draftId]
             if (state != null) {
-                NewCatroidNotificationManager.buildAndShow(context, state)
+                ChEngineNotificationManager.buildAndShow(context, state)
             } else {
                 if (notifId != -1) notificationManager.cancel(notifId)
             }
         }
 
-        NewCatroidNotificationManager.pendingActions.add(actionId)
+        ChEngineNotificationManager.pendingActions.add(actionId)
     }
 }

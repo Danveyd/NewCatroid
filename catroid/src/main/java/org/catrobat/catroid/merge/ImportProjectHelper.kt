@@ -178,7 +178,7 @@ class ImportProjectHelper(
 
             context.runOnUiThread {
                 val alertDialog: AlertDialog = AlertDialog.Builder(
-                    android.view.ContextThemeWrapper(context, R.style.Theme_NewCatroid_Dialog)
+                    android.view.ContextThemeWrapper(context, R.style.Theme_ChEngine_Dialog)
                 )
                     .setTitle(R.string.warning)
                     .setView(view)

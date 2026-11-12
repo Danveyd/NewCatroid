@@ -2,7 +2,7 @@ package org.catrobat.catroid.common
 
 import java.util.concurrent.ConcurrentHashMap
 
-object NewCatroidBroadcastManager {
+object ChEngineBroadcastManager {
     private val lastParams = ConcurrentHashMap<String, String>()
 
     fun setParams(signal: String, params: String) {

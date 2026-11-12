@@ -237,7 +237,7 @@ public final class BrickInfo {
         add(ShowToastBlock.class, "Показывает сообщение снизу");
         add(CopyTextBrick.class, "Копирует текст в буфер обмена");
         add(RunJSBrick.class, "Выполняет JavaScript и сохраняет результат");
-        add(RunLuaBrick.class, "Выполняет ЧИСТЫЙ Lua и сохраняет результат ВАЖНО: Lua в Pocket Up и CCode и Lua в NewCatroid - НЕ ОДНО И ТО ЖЕ! в NewCatroid он не умеет отрисовывать что-то");
+        add(RunLuaBrick.class, "Выполняет ЧИСТЫЙ Lua и сохраняет результат ВАЖНО: Lua в Pocket Up и CCode и Lua в Ch-engine - НЕ ОДНО И ТО ЖЕ! в Ch-engine он не умеет отрисовывать что-то");
         add(LunoScriptBrick.class, "Выполняет LunoScript, это один из самых мощных инструментов, позволяет выполнять почти любой Java код внутри приложения. Документация есть на GitHub: Danveyd/LunoScript");
         add(ClearPythonEnvironmentBrick.class, "Очищает окружение Python");
         add(LoadNativeModuleBrick.class, "Загружает нативный модуль (.so), нужно для некоторых Python библиотек");
@@ -268,7 +268,7 @@ public final class BrickInfo {
         add(OrientationBrick.class, "Меняет ориентацию проекта ВАЖНО: блок тут вообще по приколу и работает плохо");
         add(CreateWebFileBrick.class, "Создает WebView из HTML кода");
         add(CreateWebUrlBrick.class, "Создает WebView по ссылке");
-        add(SetWebBrick.class, "Задает callback к WebView, чтобы из WebView можно было отправить значение в переменную NewCatroid, через Android.postMessage(\"Значение\");");
+        add(SetWebBrick.class, "Задает callback к WebView, чтобы из WebView можно было отправить значение в переменную Ch-engine, через Android.postMessage(\"Значение\");");
         add(EvalWebBrick.class, "Выполняет JavaScript в контексте WebView");
         add(CreateVideoBrick.class, "Создает VideoPlayer, который позволяет просматривать видео из файлов проекта");
         add(CreateTextFieldBrick.class, "Создает TextField (текстовое поле), которое позволяет вводить текст");
@@ -406,7 +406,7 @@ public final class BrickInfo {
         add(SetTextBufferOnlyBrick.class, "Скрыть текст или переменную с основного экрана, оставив его видимым только внутри указанного буфера.");
         add(StartBufferRecordingBrick.class, "Начать запись указанного графического буфера в MP4 видеофайл с выбором FPS и битрейта.");
         add(StopBufferRecordingBrick.class, "Остановить запись видео из буфера и ожидать завершения сохранения видеофайла в проект.");
-        add(JavaCompileBrick.class, "Компилирует выбранные файлы .java проекта (или все .java файлы, если поле пустое) в запускаемый .dex файл. Поддерживает автоимпорт внутренних классов NewCatroid и LibGDX. Ошибки компиляции записывает в выбранную переменную.");
+        add(JavaCompileBrick.class, "Компилирует выбранные файлы .java проекта (или все .java файлы, если поле пустое) в запускаемый .dex файл. Поддерживает автоимпорт внутренних классов Ch-engine и LibGDX. Ошибки компиляции записывает в выбранную переменную.");
         add(JavaLoadAndRunBrick.class, "Загружает один или несколько .dex/.jar файлов (через запятую для поддержки MultiDEX) и выполняет метод выбранного класса. Передает в Java-код Context, Activity или ViewGroup для отрисовки нативного UI.");
         add(JavaDownloadDepBrick.class, "Скачивает библиотеку Maven/Gradle со всеми её зависимостями или без в папку 'libs' проекта. Возвращает список имен скачанных JAR-файлов через запятую.");
         add(OpenAppBrick.class, "Открыть установленное приложение по его имени пакета (напр. com.google.android.youtube).");
@@ -686,7 +686,7 @@ public final class BrickInfo {
         add(ShowToastBlock.class, "Shows a toast message at the bottom.");
         add(CopyTextBrick.class, "Copies text to the clipboard.");
         add(RunJSBrick.class, "Executes JavaScript and saves the result.");
-        add(RunLuaBrick.class, "Executes PURE Lua and saves the result. IMPORTANT: Lua in Pocket Up / CCode and Lua in NewCatroid are NOT the same! In NewCatroid, it cannot draw anything.");
+        add(RunLuaBrick.class, "Executes PURE Lua and saves the result. IMPORTANT: Lua in Pocket Up / CCode and Lua in Ch-engine are NOT the same! In Ch-engine, it cannot draw anything.");
         add(LunoScriptBrick.class, "Executes LunoScript, one of the most powerful tools, allowing you to run almost any Java code inside the app. Documentation is on GitHub: Danveyd/LunoScript");
         add(ClearPythonEnvironmentBrick.class, "Clears the Python environment.");
         add(LoadNativeModuleBrick.class, "Loads a native module (.so), required for certain Python libraries.");
@@ -713,7 +713,7 @@ public final class BrickInfo {
         add(OrientationBrick.class, "Changes project orientation. IMPORTANT: this block is mostly just for fun and doesn't work very well.");
         add(CreateWebFileBrick.class, "Creates a WebView from HTML code.");
         add(CreateWebUrlBrick.class, "Creates a WebView from a URL.");
-        add(SetWebBrick.class, "Sets a callback for WebView, so you can send a value from the WebView to a NewCatroid variable via Android.postMessage(\"Value\");");
+        add(SetWebBrick.class, "Sets a callback for WebView, so you can send a value from the WebView to a Ch-engine variable via Android.postMessage(\"Value\");");
         add(EvalWebBrick.class, "Executes JavaScript in the WebView context.");
         add(CreateVideoBrick.class, "Creates a VideoPlayer, allowing you to watch videos from project files.");
         add(CreateTextFieldBrick.class, "Creates a TextField (text field), allowing users to type text.");
@@ -838,7 +838,7 @@ public final class BrickInfo {
         add(SetTextBufferOnlyBrick.class, "Hides text or a variable from the main screen, leaving it visible only inside the specified buffer.");
         add(StartBufferRecordingBrick.class, "Starts recording the specified graphical buffer into an MP4 video file with custom FPS and bitrate configurations.");
         add(StopBufferRecordingBrick.class, "Stops video recording from the buffer and waits for the video file saving process to complete.");
-        add(JavaCompileBrick.class, "Compiles chosen project .java files (or all .java files if left empty) into a runnable .dex file. Supports auto-import of internal NewCatroid and LibGDX classes. Saves compilation errors to the selected variable.");
+        add(JavaCompileBrick.class, "Compiles chosen project .java files (or all .java files if left empty) into a runnable .dex file. Supports auto-import of internal Ch-engine and LibGDX classes. Saves compilation errors to the selected variable.");
         add(JavaLoadAndRunBrick.class, "Loads one or more .dex/.jar files (comma-separated for MultiDEX support) and executes a method from the selected class. Passes Context, Activity, or ViewGroup to Java code to draw native UI.");
         add(JavaDownloadDepBrick.class, "Downloads a Maven/Gradle library with or without all of its dependencies to the project's 'libs' folder. Returns a comma-separated list of downloaded JAR file names.");
         add(OpenAppBrick.class, "Opens an installed app using its package name (e.g., com.google.android.youtube).");
@@ -1114,7 +1114,7 @@ public final class BrickInfo {
         add(ShowToastBlock.class, "Mostra uma mensagem toast na parte inferior.");
         add(CopyTextBrick.class, "Copia texto para a área de transferência.");
         add(RunJSBrick.class, "Executa JavaScript e salva o resultado.");
-        add(RunLuaBrick.class, "Executa Lua PURO e salva o resultado. IMPORTANTE: Lua no Pocket Up / CCode e Lua no NewCatroid NÃO são iguais! No NewCatroid, ele não pode desenhar nada.");
+        add(RunLuaBrick.class, "Executa Lua PURO e salva o resultado. IMPORTANTE: Lua no Pocket Up / CCode e Lua no Ch-engine NÃO são iguais! No Ch-engine, ele não pode desenhar nada.");
         add(LunoScriptBrick.class, "Executa LunoScript, uma das ferramentas mais poderosas, permitindo rodar quase qualquer código Java no app. Documentação no GitHub: Danveyd/LunoScript");
         add(ClearPythonEnvironmentBrick.class, "Limpa o ambiente Python.");
         add(LoadNativeModuleBrick.class, "Carrega um módulo nativo (.so), necessário para algumas bibliotecas Python.");
@@ -1141,7 +1141,7 @@ public final class BrickInfo {
         add(OrientationBrick.class, "Muda a orientação do projeto. IMPORTANTE: este bloco serve mais para brincar e não funciona muito bem.");
         add(CreateWebFileBrick.class, "Cria um WebView a partir de um código HTML.");
         add(CreateWebUrlBrick.class, "Cria um WebView a partir de um link URL.");
-        add(SetWebBrick.class, "Define um callback para o WebView, permitindo enviar um valor do WebView para uma variável do NewCatroid via Android.postMessage(\"Valor\");");
+        add(SetWebBrick.class, "Define um callback para o WebView, permitindo enviar um valor do WebView para uma variável do Ch-engine via Android.postMessage(\"Valor\");");
         add(EvalWebBrick.class, "Executa JavaScript no contexto do WebView.");
         add(CreateVideoBrick.class, "Cria um VideoPlayer, permitindo assistir a vídeos dos arquivos do projeto.");
         add(CreateTextFieldBrick.class, "Cria um TextField (campo de entrada de texto), permitindo digitar textos.");
@@ -1266,7 +1266,7 @@ public final class BrickInfo {
         add(SetTextBufferOnlyBrick.class, "Oculta o texto ou uma variável da tela principal, deixando-os visíveis apenas dentro do buffer especificado.");
         add(StartBufferRecordingBrick.class, "Inicia a gravação do buffer gráfico especificado em um arquivo de vídeo MP4 com configurações personalizadas de FPS e bitrate.");
         add(StopBufferRecordingBrick.class, "Interrompe a gravação de vídeo do buffer e aguarda a conclusão do processo de salvamento do arquivo nos arquivos do projeto.");
-        add(JavaCompileBrick.class, "Compila os arquivos .java do projeto selecionados (ou todos os arquivos .java se deixado vazio) em um arquivo .dex executável. Suporta importação automática de classes internas do NewCatroid e LibGDX. Grava erros de compilação na variável selecionada.");
+        add(JavaCompileBrick.class, "Compila os arquivos .java do projeto selecionados (ou todos os arquivos .java se deixado vazio) em um arquivo .dex executável. Suporta importação automática de classes internas do Ch-engine e LibGDX. Grava erros de compilação na variável selecionada.");
         add(JavaLoadAndRunBrick.class, "Carrega um ou mais arquivos .dex/.jar (separados por vírgula para suporte a MultiDEX) e executa um método da classe selecionada. Passa Context, Activity ou ViewGroup ao código Java para renderizar interface nativa.");
         add(JavaDownloadDepBrick.class, "Baixa uma biblioteca Maven/Gradle com ou sem todas as suas dependências para a pasta 'libs' do projeto. Retorna uma lista separada por vírgulas dos nomes dos arquivos JAR baixados.");
         add(OpenAppBrick.class, "Abre um aplicativo instalado usando o nome do seu pacote (ex: com.google.android.youtube).");
@@ -1526,7 +1526,7 @@ public final class BrickInfo {
         add(ShowToastBlock.class, "在底部显示一条 Toast 消息。");
         add(CopyTextBrick.class, "将文本复制到剪贴板。");
         add(RunJSBrick.class, "执行 JavaScript 并保存结果。");
-        add(RunLuaBrick.class, "执行纯 Lua 并保存结果。重要提示：Pocket Up/CCode 中的 Lua 和 NewCatroid 中的 Lua 是不一样的！在 NewCatroid 中，它无法绘制任何东西。");
+        add(RunLuaBrick.class, "执行纯 Lua 并保存结果。重要提示：Pocket Up/CCode 中的 Lua 和 Ch-engine 中的 Lua 是不一样的！在 Ch-engine 中，它无法绘制任何东西。");
         add(LunoScriptBrick.class, "执行 LunoScript，这是最强大的工具之一，允许您在应用内运行几乎任何 Java 代码。文档在 GitHub 上：Danveyd/LunoScript");
         add(ClearPythonEnvironmentBrick.class, "清除 Python 环境。");
         add(LoadNativeModuleBrick.class, "加载本地模块 (.so)，某些 Python 库需要。");
@@ -1553,7 +1553,7 @@ public final class BrickInfo {
         add(OrientationBrick.class, "更改项目方向。重要提示：此积木主要是为了好玩，效果不佳。");
         add(CreateWebFileBrick.class, "从 HTML 代码创建一个 WebView。");
         add(CreateWebUrlBrick.class, "从 URL 创建一个 WebView。");
-        add(SetWebBrick.class, "为 WebView 设置回调，以便您可以从 WebView 通过 Android.postMessage(\"值\") 将值发送到 NewCatroid 变量。");
+        add(SetWebBrick.class, "为 WebView 设置回调，以便您可以从 WebView 通过 Android.postMessage(\"值\") 将值发送到 Ch-engine 变量。");
         add(EvalWebBrick.class, "在 WebView 上下文中执行 JavaScript。");
         add(CreateVideoBrick.class, "创建一个 VideoPlayer，允许您观看项目文件中的视频。");
         add(CreateTextFieldBrick.class, "创建一个 TextField（文本字段），允许用户输入文本。");
@@ -1678,7 +1678,7 @@ public final class BrickInfo {
         add(SetTextBufferOnlyBrick.class, "从主屏幕隐藏文本或变量，使其仅对指定的缓冲区可见。");
         add(StartBufferRecordingBrick.class, "开始将指定的图形缓冲区录制为 MP4 视频文件，具有自定义 FPS 和比特率配置。");
         add(StopBufferRecordingBrick.class, "停止从缓冲区录制视频，并等待视频文件保存完成。");
-        add(JavaCompileBrick.class, "编译选定的项目 .java 文件（如果留空则编译所有 .java 文件）为可运行的 .dex 文件。支持自动导入 NewCatroid 和 LibGDX 内部类。将编译错误保存到所选变量。");
+        add(JavaCompileBrick.class, "编译选定的项目 .java 文件（如果留空则编译所有 .java 文件）为可运行的 .dex 文件。支持自动导入 Ch-engine 和 LibGDX 内部类。将编译错误保存到所选变量。");
         add(JavaLoadAndRunBrick.class, "加载一个或多个 .dex/.jar 文件（逗号分隔以支持 MultiDEX）并执行所选类的方法。将 Context、Activity 或 ViewGroup 传递给 Java 代码以绘制本地 UI。");
         add(JavaDownloadDepBrick.class, "将 Maven/Gradle 库（带或不带所有依赖项）下载到项目的‘libs’文件夹。返回逗号分隔的下载 JAR 文件名列表。");
         add(OpenAppBrick.class, "使用包名打开已安装的应用（例如 com.google.android.youtube）。");

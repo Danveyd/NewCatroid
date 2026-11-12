@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 object CommunityTokenManager {
-    private const val PREFS_NAME = "newcatroid_community_prefs"
+    private const val PREFS_NAME = "chengine_community_prefs"
     private const val KEY_TOKEN = "jwt_token"
     private const val KEY_USERNAME = "username"
     private const val KEY_USER_JSON = "user_json"

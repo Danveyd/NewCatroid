@@ -32,8 +32,8 @@ import org.catrobat.catroid.sensing.ColorCollisionDetection;
 import org.catrobat.catroid.sensing.ColorEqualsColor;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.stage.StageListener;
-import org.catrobat.catroid.utils.NewCatroidMqttManager;
-import org.catrobat.catroid.utils.NewCatroidNotificationManager;
+import org.catrobat.catroid.utils.ChEngineMqttManager;
+import org.catrobat.catroid.utils.ChEngineNotificationManager;
 import org.catrobat.catroid.utils.lunoscript.Interpreter;
 import org.catrobat.catroid.utils.lunoscript.LunoRuntimeError;
 import org.catrobat.catroid.utils.lunoscript.LunoValue;
@@ -884,20 +884,20 @@ public class FormulaElement implements Serializable {
             }
             case HTTP_RESPONSE_TEXT: {
                 String id = String.valueOf(arg0);
-                return org.catrobat.catroid.common.NewCatroidHttpManager.INSTANCE.getResponseText(id);
+                return org.catrobat.catroid.common.ChEngineHttpManager.INSTANCE.getResponseText(id);
             }
             case HTTP_RESPONSE_CODE: {
                 String id = String.valueOf(arg0);
-                return (double) org.catrobat.catroid.common.NewCatroidHttpManager.INSTANCE.getResponseCode(id);
+                return (double) org.catrobat.catroid.common.ChEngineHttpManager.INSTANCE.getResponseCode(id);
             }
             case HTTP_RESPONSE_HEADER: {
                 String id = String.valueOf(arg0);
                 String headerName = String.valueOf(arg1);
-                return org.catrobat.catroid.common.NewCatroidHttpManager.INSTANCE.getResponseHeader(id, headerName);
+                return org.catrobat.catroid.common.ChEngineHttpManager.INSTANCE.getResponseHeader(id, headerName);
             }
             case MQTT_MESSAGE: {
                 String roomId = String.valueOf(arg0);
-                return NewCatroidMqttManager.INSTANCE.getLatestMessage(roomId);
+                return ChEngineMqttManager.INSTANCE.getLatestMessage(roomId);
             }
             case PT_SAMPLE: {
                 String tensorName = String.valueOf(arg0);
@@ -1228,8 +1228,8 @@ public class FormulaElement implements Serializable {
             case DISTANCE:
                 return interpretFunctionDistance(scope, arg0, arg1);
             case NOTIFICATION_REPLY: {
-                String actionId = NewCatroidNotificationManager.cleanStringId(String.valueOf(arg0));
-                return NewCatroidNotificationManager.INSTANCE.getSavedReplies().getOrDefault(actionId, "");
+                String actionId = ChEngineNotificationManager.cleanStringId(String.valueOf(arg0));
+                return ChEngineNotificationManager.INSTANCE.getSavedReplies().getOrDefault(actionId, "");
             }
             case JOINNUMBER:
                 return interpretFunctionJoinNumber(scope, leftChild, rightChild);

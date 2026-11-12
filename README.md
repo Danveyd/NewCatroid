@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/logo.jpg" alt="NewCatroid Logo" width="128"/>
+  <img src="assets/logo.jpg" alt="Ch-engine Logo" width="128"/>
 </p>
 
-<h1 align="center">NewCatroid</h1>
+<h1 align="center">Ch-engine</h1>
 
 <p align="center">
   Расширенная версия <a href="https://github.com/Catrobat/Catroid">Catrobat/Catroid</a> — с поддержкой 3D, AI, Qemu, Python и др.
@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://t.me/New_Catroid">Telegram</a> • 
-  <a href="https://apps.rustore.ru/app/org.DanVexTeam.NewCatroid">RuStore</a>  • 
+  <a href="https://apps.rustore.ru/app/org.DanVexTeam.ChEngine">RuStore</a>  • 
   <a href="#license">License</a>
 </p>
 
@@ -27,7 +27,7 @@
 *   **LunoScript:** Собственный язык, похожий на **Kotlin**, который дает огромный функционал (работа с Java обьектами, наследование от них и это все в рантайме). <a href="https://github.com/Danveyd/LunoScript">Документация LunoScript</a>
 *   **Файлы проекта:** Каждый проект имеет свое изолированное хранилище для ресурсов.
 *   **Сборщик APK:** Встроенный сборщик собирающий любой проект в APK!
-*   **Сообщество NewCatroid:** Интеграция с [собственным сайтом комьюнити](https://newcatroid.mindpy.dev)
+*   **Сообщество Ch-engine:** Интеграция с [собственным сайтом комьюнити](https://chengine.mindpy.dev)
 *   ...и множество других улучшений! (ОГРОООМНОЕ МНОЖЕСТВО, я просто не напишу столько)
 
 **Еще, что может быть интересно:**
@@ -63,12 +63,12 @@
 **2. Клонирование и запуск**
 Клонируем репозиторий
 ```bash
-git clone https://github.com/Danveyd/NewCatroid.git
+git clone https://github.com/Danveyd/ChEngine.git
 ```
 
 Переходим в директорию проекта
 ```bash
-cd NewCatroid
+cd ChEngine
 ```
 
 После этого откройте проект в Android Studio. Она должна автоматически подтянуть все зависимости с помощью Gradle. (Но могут быть и ошибки)
@@ -134,5 +134,5 @@ cd NewCatroid
 
 
 # License #
-[Лицензия](https://github.com/Danveyd/NewCatroid/blob/main/LICENSE) нашего проекта наследуется от Catrobat (AGPL v3).
+[Лицензия](https://github.com/Danveyd/ChEngine/blob/main/LICENSE) нашего проекта наследуется от Catrobat (AGPL v3).
 [Ссылка на нее же на сайте Catrobat](https://developer.catrobat.org/pages/legal/licenses/)

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/app_background"> <!-- Темно-синий фон NewCatroid -->
+    android:background="@color/app_background"> <!-- Темно-синий фон ChEngine -->
 
     <!-- Область вывода текста -->
     <androidx.core.widget.NestedScrollView

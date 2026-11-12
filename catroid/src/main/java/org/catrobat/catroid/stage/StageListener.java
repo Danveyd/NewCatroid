@@ -137,7 +137,7 @@ import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.recyclerview.controller.SpriteController;
 import org.catrobat.catroid.utils.GlobalShaderManager;
 import org.catrobat.catroid.utils.ModelPathProcessor;
-import org.catrobat.catroid.utils.NewCatroidNotificationManager;
+import org.catrobat.catroid.utils.ChEngineNotificationManager;
 import org.catrobat.catroid.utils.PerformanceTracker;
 import org.catrobat.catroid.utils.Resolution;
 import org.catrobat.catroid.utils.TouchUtil;
@@ -547,7 +547,7 @@ public class StageListener implements ApplicationListener {
     }
 
     private void processPendingNotificationActions() {
-        java.util.concurrent.ConcurrentLinkedQueue<String> pending = NewCatroidNotificationManager.INSTANCE.getPendingActions();
+        java.util.concurrent.ConcurrentLinkedQueue<String> pending = ChEngineNotificationManager.INSTANCE.getPendingActions();
 
         while (!pending.isEmpty()) {
             String actionId = pending.poll();
@@ -1392,7 +1392,7 @@ public class StageListener implements ApplicationListener {
 		removeAllClonedSpritesFromStage();
 
 		UserDataWrapper.resetAllUserData(ProjectManager.getInstance().getCurrentProject());
-        org.catrobat.catroid.utils.NewCatroidMqttManager.INSTANCE.disconnectAll();
+        org.catrobat.catroid.utils.ChEngineMqttManager.INSTANCE.disconnectAll();
 
 		for (Scene scene : ProjectManager.getInstance().getCurrentProject().getSceneList()) {
 			scene.firstStart = true;
@@ -2099,7 +2099,7 @@ public class StageListener implements ApplicationListener {
             isBackgroundModeEnabled = false;
             Context context = CatroidApplication.getAppContext();
             if (context != null) {
-                Intent intent = new Intent(context, org.catrobat.catroid.common.NewCatroidBackgroundService.class);
+                Intent intent = new Intent(context, org.catrobat.catroid.common.ChEngineBackgroundService.class);
                 context.stopService(intent);
             }
         }
@@ -2172,7 +2172,7 @@ public class StageListener implements ApplicationListener {
         }
 
 		RenderManager.INSTANCE.dispose();
-        org.catrobat.catroid.utils.NewCatroidMqttManager.INSTANCE.disconnectAll();
+        org.catrobat.catroid.utils.ChEngineMqttManager.INSTANCE.disconnectAll();
         MLBridge.nativeResetEngine();
 
         try {

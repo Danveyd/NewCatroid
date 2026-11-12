@@ -129,7 +129,7 @@ public final class Constants {
 	public static final String TEXT_TO_SPEECH_TMP_PATH = TMP_PATH + "/textToSpeech";
 
 	// Web:
-	private static final String MAIN_URL_PRODUCTION = "https://t.me/NewCatroidDevs";
+	private static final String MAIN_URL_PRODUCTION = "https://t.me/ChEngineDevs";
 	public static final String UPLOAD_URL = "https://upload.catrob.at";
 	private static final String WEB_TEST_URL = BuildConfig.WEB_TEST_URL;
 	public static final String MAIN_URL_HTTPS = BuildConfig.WEB_TEST_FLAG ? WEB_TEST_URL : MAIN_URL_PRODUCTION;
@@ -139,7 +139,7 @@ public final class Constants {
 
 	public static final String SHARE_PROJECT_URL = BASE_URL_HTTPS + "/project/";
 
-	public static final String CATROBAT_ABOUT_URL = "https://t.me/NewCatroidDevs";
+	public static final String CATROBAT_ABOUT_URL = "https://t.me/ChEngineDevs";
 	public static final String CATROBAT_FORMULA_WIKI_URL = "https://wiki.catrobat.org/bin/view/Documentation/FormulaEditor";
 	public static final String ABOUT_POCKETCODE_LICENSE_URL = "https://catrob.at/licenses";
 	public static final String WEB_REQUEST_WIKI_URL = "https://catrob.at/webbricks";

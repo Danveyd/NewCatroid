@@ -1,196 +1,68 @@
-name: Build CH-Engine (APK + EXE)
+name: Build Ch-engine APK
 
 on:
   push:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  build-pc:
-    name: Build Windows .exe (PC version)
-    runs-on: ubuntu-24.04
-
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: '3.11'
-
-      - name: Install Zig
-        run: pip install ziglang
-
-      - name: Build CubicBattle4.exe
-        run: python3 tools/build_pc.py --windows
-
-      - name: Stage Windows package
-        run: |
-          set -euo pipefail
-          mkdir -p build/pc/dist
-          cp build/pc/CubicBattle4.exe build/pc/dist/
-          cp -r build/pc/assets build/pc/dist/assets
-          test -f build/pc/dist/assets/grass.png
-          test -f build/pc/dist/assets/fonts/ComicRelief-Regular.ttf
-          test -f build/pc/dist/assets/sounds/lobbymusic.wav
-          (cd build/pc/dist && zip -qr "$GITHUB_WORKSPACE/CubicBattle4-Windows.zip" CubicBattle4.exe assets)
-
-      - name: Publish Windows .exe to Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          TAG="latest-build"
-          if ! gh release view "$TAG" >/dev/null 2>&1; then
-            gh release create "$TAG" \
-              --target "${{ github.sha }}" \
-              --title "Latest Build (APK + EXE)" \
-              --notes "Automated Android APK and Windows EXE build (${{ github.sha }})." \
-              --prerelease || true
-          fi
-          for attempt in 1 2 3; do
-            if gh release upload "$TAG" CubicBattle4-Windows.zip build/pc/CubicBattle4.exe --clobber; then
-              break
-            fi
-            [ "$attempt" -lt 3 ] && sleep 2
-          done
-          gh release edit "$TAG" \
-            --notes "Automated Android APK and Windows EXE build (${{ github.sha }})." >/dev/null 2>&1 || true
-          echo "### Windows Build Ready" >> "$GITHUB_STEP_SUMMARY"
-          echo "- [CubicBattle4-Windows.zip (EXE + assets)](https://github.com/${{ github.repository }}/releases/download/$TAG/CubicBattle4-Windows.zip)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- [CubicBattle4.exe](https://github.com/${{ github.repository }}/releases/download/$TAG/CubicBattle4.exe)" >> "$GITHUB_STEP_SUMMARY"
-
   build-android:
     name: Build Android APK (Android 8-15)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+
     env:
-      CC: clang
+      _JAVA_OPTIONS: "-Xmx5g"
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx5g -Dorg.gradle.workers.max=4 -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
 
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Setup Java for Android build tools
-        uses: actions/setup-java@v6
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          distribution: temurin
+          submodules: recursive
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
           java-version: '17'
 
-      - name: Prepare Android SDK and NDK
-        id: android-tools
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Accept Android SDK licenses
         run: |
           set -euo pipefail
           SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
-          if [ ! -f "$ANDROID_HOME/platforms/android-35/android.jar" ] || [ ! -x "$ANDROID_HOME/build-tools/34.0.0/aapt" ]; then
-            if [ ! -x "$SDKM" ]; then
-              TMP="$(mktemp -d)"
-              curl -fsSL -o "$TMP/tools.zip" \
-                https://dl.google.com/android/repository/commandlinetools-linux-12266719_latest.zip
-              unzip -q "$TMP/tools.zip" -d "$TMP"
-              mkdir -p "$ANDROID_HOME/cmdline-tools"
-              rm -rf "$ANDROID_HOME/cmdline-tools/latest"
-              mv "$TMP/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
-              rm -rf "$TMP"
-            fi
-            yes | "$SDKM" --licenses > /dev/null || true
-            "$SDKM" "platforms;android-35" "build-tools;34.0.0"
+          if [ ! -x "$SDKM" ]; then
+            SDKM="$(ls -1d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1)"
           fi
-          NDK_PATH=""
-          if [ -d "$ANDROID_HOME/ndk" ]; then
-            for cand in $(ls -1d "$ANDROID_HOME"/ndk/* 2>/dev/null | sort -V -r); do
-              if [ -x "$cand/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang" ] && \
-                 [ -f "$cand/sources/android/native_app_glue/android_native_app_glue.c" ]; then
-                NDK_PATH="$cand"
-                break
-              fi
-            done
-          fi
-          if [ -z "$NDK_PATH" ]; then
-            yes | "$SDKM" --licenses > /dev/null || true
-            "$SDKM" "ndk;25.2.9519653"
-            NDK_PATH="$ANDROID_HOME/ndk/25.2.9519653"
-          fi
-          echo "Using NDK: $NDK_PATH"
-          echo "ndk-path=$NDK_PATH" >> "$GITHUB_OUTPUT"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-34" "build-tools;34.0.0" "cmake;3.22.1" > /dev/null || true
 
-      - name: Stage assets
-        run: python3 stage_assets.py assets staging/assets
-
-      - name: Build native libraries
-        env:
-          NDK_ROOT: ${{ steps.android-tools.outputs.ndk-path }}
+      - name: Patch broken MIDI imports
         run: |
           set -euo pipefail
-          TOOLCHAIN="$NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin"
-          GLUE="$NDK_ROOT/sources/android/native_app_glue"
-          C_SOURCES=(src/game/game.c src/engine/runtime.c src/platform/android/android_main.c "$GLUE/android_native_app_glue.c")
-          CPP_SOURCE=src/game/cpp/ui_fx.cpp
-          C_OPTS=(-std=c99 -O3 -s -fPIC -shared -Isrc -I. -I"$GLUE" -landroid -llog -ldl -lm -lvulkan)
-          CPP_OPTS=(-std=c++17 -fno-exceptions -fno-rtti -O3 -s -fPIC -Isrc)
-          mkdir -p staging/lib/arm64-v8a staging/lib/armeabi-v7a staging/lib/x86_64
-          pids=()
-          for ABI in arm64-v8a armeabi-v7a x86_64; do
-            case "$ABI" in
-              arm64-v8a) TRIPLE=aarch64-linux-android26;;
-              armeabi-v7a) TRIPLE=armv7a-linux-androideabi26;;
-              x86_64) TRIPLE=x86_64-linux-android26;;
-            esac
-            (
-              "$TOOLCHAIN/$TRIPLE-clang++" "${CPP_OPTS[@]}" -c "$CPP_SOURCE" -o "staging/ui_fx_$ABI.o"
-              "$TOOLCHAIN/$TRIPLE-clang" "${C_OPTS[@]}" "${C_SOURCES[@]}" "staging/ui_fx_$ABI.o" \
-                -o "staging/lib/$ABI/libcb_game.so"
-            ) &
-            pids+=("$!")
-          done
-          for pid in "${pids[@]}"; do
-            wait "$pid"
-          done
+          find catroid/src -type f -name "*.java" -exec sed -i 's/com.pdrogfer.mididroid/com.leff.midi/g' {} +
+          find catroid/src -type f -name "*.java" -exec sed -i 's/com.oliewa92.mididroid/com.leff.midi/g' {} +
 
-      - name: Package and sign APK
+      - name: Build debug APK (danvex)
         run: |
           set -euo pipefail
-          BT="$ANDROID_HOME/build-tools/34.0.0"
-          "$BT/aapt" package -f \
-            -M platform/android/AndroidManifest.xml \
-            -S platform/android/res \
-            -I "$ANDROID_HOME/platforms/android-35/android.jar" \
-            -F unsigned.apk ./staging/
-          "$BT/zipalign" -v 4 unsigned.apk aligned.apk
-          "$BT/apksigner" sign \
-            --ks platform/android/debug.keystore --ks-type PKCS12 \
-            --ks-pass pass:android --ks-key-alias androiddebugkey --key-pass pass:android \
-            --out Game.apk aligned.apk
-          "$BT/apksigner" verify --verbose --print-certs Game.apk
-          cp Game.apk CubicBattle4.apk
+          chmod +x ./gradlew
+          ./gradlew assembleDanvexDebug --build-cache --parallel -x lint -x test --stacktrace
 
-      - name: Publish Android APK to Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          TAG="latest-build"
-          if ! gh release view "$TAG" >/dev/null 2>&1; then
-            gh release create "$TAG" \
-              --target "${{ github.sha }}" \
-              --title "Latest Build (APK + EXE)" \
-              --notes "Automated Android APK and Windows EXE build (${{ github.sha }})." \
-              --prerelease || true
-          fi
-          for attempt in 1 2 3; do
-            if gh release upload "$TAG" CubicBattle4.apk --clobber; then
-              break
-            fi
-            [ "$attempt" -lt 3 ] && sleep 2
-          done
-          gh release edit "$TAG" \
-            --notes "Automated Android APK and Windows EXE build (${{ github.sha }})." >/dev/null 2>&1 || true
-          echo "### Android APK Ready" >> "$GITHUB_STEP_SUMMARY"
-          echo "- [CubicBattle4.apk](https://github.com/${{ github.repository }}/releases/download/$TAG/CubicBattle4.apk)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ChEngine-debug-apk
+          path: '**/build/outputs/apk/danvex/debug/*.apk'
+          retention-days: 14

@@ -70,7 +70,7 @@ public class MatryoshkaManager {
 
         String xml = sb.toString()
                 .replace("###PROJECT_NAME###", escapeXml(realProject.getName()))
-                .replace("###DESCRIPTION###", escapeXml("Made with NewCatroid and some love :3 \n" + realProject.getDescription()));
+                .replace("###DESCRIPTION###", escapeXml("Made with Ch-engine and some love :3 \n" + realProject.getDescription()));
 
         try (FileOutputStream fos = new FileOutputStream(xmlFile)) {
             fos.write(xml.getBytes(StandardCharsets.UTF_8));
@@ -91,7 +91,7 @@ public class MatryoshkaManager {
         for (File wavFile : wavFiles) {
             File extractedZip = new File(projectDir.getParent(), "payload_extract_" + UUID.randomUUID() + ".zip");
             try {
-                if (NewCatroidPayloadHelper.extractPayloadFromAudio(wavFile, extractedZip)) {
+                if (ChEnginePayloadHelper.extractPayloadFromAudio(wavFile, extractedZip)) {
                     StorageOperations.deleteDir(projectDir);
                     projectDir.mkdirs();
                     new ZipArchiver().unzip(extractedZip, projectDir);

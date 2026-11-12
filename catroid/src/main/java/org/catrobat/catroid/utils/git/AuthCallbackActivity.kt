@@ -21,7 +21,7 @@ class AuthCallbackActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val uri = intent.data
-        if (uri != null && uri.toString().startsWith("newcatroid://github-callback")) {
+        if (uri != null && uri.toString().startsWith("chengine://github-callback")) {
             val code = uri.getQueryParameter("code")
             if (code != null) {
                 lifecycleScope.launch {

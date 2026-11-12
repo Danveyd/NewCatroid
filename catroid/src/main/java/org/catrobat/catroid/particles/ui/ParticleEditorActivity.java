@@ -147,7 +147,7 @@ public class ParticleEditorActivity extends AppCompatActivity implements Android
             return;
         }
 
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_NewCatroid_Dialog)
+        AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_ChEngine_Dialog)
                 .setTitle(R.string.particle_exit_dialog_title)
                 .setMessage(R.string.particle_exit_dialog_msg)
                 .setPositiveButton(R.string.particle_exit_save, (d, which) -> {
