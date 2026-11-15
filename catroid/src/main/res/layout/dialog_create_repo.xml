@@ -7,7 +7,7 @@
         android:id="@+id/repo_name_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Имя репозитория">
+        android:hint="@string/create_repo_name_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/repo_name_edit_text"
@@ -21,5 +21,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Приватный репозиторий" />
+        android:text="@string/create_repo_private_repo" />
 </LinearLayout>

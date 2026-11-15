@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction
 import org.catrobat.catroid.CatroidApplication
+import org.catrobat.catroid.R
 import org.catrobat.catroid.common.NewCatroidBackgroundService
 import org.catrobat.catroid.content.Scope
 import org.catrobat.catroid.formulaeditor.Formula
@@ -17,8 +18,8 @@ class EnableBackgroundModeAction : TemporalAction() {
 
     override fun update(percent: Float) {
         val context = CatroidApplication.getAppContext() ?: return
-        val titleStr = title?.interpretString(scope) ?: "Работа в фоне"
-        val textStr = text?.interpretString(scope) ?: "Скрипты активны"
+        val titleStr = title?.interpretString(scope) ?: context.getString(R.string.bgm_default_title)
+        val textStr = text?.interpretString(scope) ?: context.getString(R.string.bgm_default_text)
 
         StageActivity.getActiveStageListener()?.isBackgroundModeEnabled = true
 

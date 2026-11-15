@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:backgroundTint="#6200EE"
-                    android:text="Чат с ИИ"
+                    android:text="@string/ide_chat_ai"
                     android:textColor="#FFFFFF" />
 
                 <Button
@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:backgroundTint="#555555"
-                    android:text="Проверить (Локально)"
+                    android:text="@string/ide_check_locally"
                     android:textColor="#FFFFFF" />
 
                 <Button
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:backgroundTint="#4CAF50"
-                    android:text="Build (Облако)"
+                    android:text="@string/ide_build_cloud"
                     android:textColor="#FFFFFF" />
 
                 <Button
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:backgroundTint="#03A9F4"
-                    android:text="Отправить PR"
+                    android:text="@string/ide_send_pr"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
         </HorizontalScrollView>
@@ -101,7 +101,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Ассистент ИИ / Консоль"
+                    android:text="@string/ide_ai_assistant_console"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"/>
                 <ImageButton
@@ -131,7 +131,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Попроси добавить фичу..."
+                    android:hint="@string/ide_feature_request_hint"
                     android:textColorHint="#888888"
                     android:textColor="#FFFFFF"
                     android:background="@android:color/transparent"
@@ -158,7 +158,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Файлы проекта"
+            android:text="@string/project_files"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"

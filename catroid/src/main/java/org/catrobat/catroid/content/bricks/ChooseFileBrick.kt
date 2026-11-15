@@ -39,7 +39,13 @@ class ChooseFileBrick : UserVariableBrickWithFormula() {
     }
 
     private fun createFileTypeAdapter(context: Context): ArrayAdapter<String?> {
-        val spinnerValues = arrayOf("Изображение", "Видео", "Аудио", "Документ", "Другое")
+        val spinnerValues = arrayOf(
+            context.getString(R.string.cfb_type_image),
+            context.getString(R.string.cfb_type_video),
+            context.getString(R.string.cfb_type_audio),
+            context.getString(R.string.cfb_type_document),
+            context.getString(R.string.cfb_type_other)
+        )
         return ArrayAdapter(context, android.R.layout.simple_spinner_item, spinnerValues).apply {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }

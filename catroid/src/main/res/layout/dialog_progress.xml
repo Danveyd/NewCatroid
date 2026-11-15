@@ -12,5 +12,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="16dp"
-        android:text="Загрузка..." />
+        android:text="@string/loading" />
 </LinearLayout>

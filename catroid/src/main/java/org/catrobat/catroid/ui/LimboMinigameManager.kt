@@ -302,7 +302,7 @@ object LimboMinigameManager {
 
                 mediaPlayer?.apply { stop(); release() }
 
-                if (keys[i] == keys[0]) Toast.makeText(activity, "FOCUS: УСПЕХ", Toast.LENGTH_SHORT).show()
+                if (keys[i] == keys[0]) Toast.makeText(activity, activity.getString(R.string.lmm_focus_success), Toast.LENGTH_SHORT).show()
 
                 val postClickFlash = View(activity).apply {
                     setBackgroundColor(Color.WHITE)

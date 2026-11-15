@@ -84,17 +84,15 @@ class WorkspaceLayout @JvmOverloads constructor(
     }
 
     private fun getLocalizedString(key: String): String {
-        @Suppress("DEPRECATION")
-        val isRussian = context.resources.configuration.locale.language == "ru"
         return when (key) {
-            "workspace_title" -> if (isRussian) "ИНСТРУМЕНТЫ" else "WORKSPACE TOOLS"
-            "scripts" -> if (isRussian) "Скрипты" else "Scripts"
-            "looks" -> if (isRussian) "Образы" else "Looks"
-            "sounds" -> if (isRussian) "Звуки" else "Sounds"
-            "categories" -> if (isRussian) "Категории блоков" else "Block Categories"
-            "add_brick" -> if (isRussian) "Добавить блок" else "Add Block"
-            "data_selection" -> if (isRussian) "Выбор данных" else "Select Data"
-            "formula_editor" -> if (isRussian) "Редактор формул" else "Formula Editor"
+            "workspace_title" -> context.getString(R.string.ws_tools)
+            "scripts" -> context.getString(R.string.tab_scripts)
+            "looks" -> context.getString(R.string.tab_looks)
+            "sounds" -> context.getString(R.string.tab_sounds)
+            "categories" -> context.getString(R.string.ws_categories)
+            "add_brick" -> context.getString(R.string.ws_add_brick)
+            "data_selection" -> context.getString(R.string.ws_data_selection)
+            "formula_editor" -> context.getString(R.string.ws_formula_editor)
             else -> key
         }
     }
@@ -199,10 +197,10 @@ class WorkspaceLayout @JvmOverloads constructor(
         val isProjectLevel = context.javaClass.simpleName == "ProjectActivity"
 
         if (isProjectLevel) {
-            addStyledSidebarRow("Сцены", SceneListFragment.TAG, R.drawable.landscape_2_24px) {
+            addStyledSidebarRow(context.getString(R.string.tab_scenes), SceneListFragment.TAG, R.drawable.landscape_2_24px) {
                 SceneListFragment()
             }
-            addStyledSidebarRow("Спрайты", SpriteListFragment.TAG, R.drawable.ic_stat) {
+            addStyledSidebarRow(context.getString(R.string.tab_sprites), SpriteListFragment.TAG, R.drawable.ic_stat) {
                 SpriteListFragment()
             }
 

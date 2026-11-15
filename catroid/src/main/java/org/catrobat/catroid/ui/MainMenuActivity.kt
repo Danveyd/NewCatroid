@@ -132,8 +132,8 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
 
             if (errorText.isNotEmpty()) {
                 AlertDialog.Builder(this)
-                    .setTitle("Аварийное завершение / Crash Log")
-                    .setMessage("В прошлый раз приложение закрылось с ошибкой. Пожалуйста, отправьте этот текст разработчику:\n\n$errorText")
+                    .setTitle(getString(R.string.crash_dialog_title))
+                    .setMessage(getString(R.string.crash_dialog_msg, errorText))
                     .setPositiveButton("OK", null)
                     .show()
             }
@@ -424,7 +424,7 @@ class MainMenuActivity : BaseCastActivity(), ProjectLoadListener {
                 if (currentProject != null) {
                     StageActivity.handlePlayButton(projectManager, this)
                 } else {
-                    Toast.makeText(this, "Нет активного проекта для запуска", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.crash_no_active_project), Toast.LENGTH_SHORT).show()
                 }
                 return true
             }

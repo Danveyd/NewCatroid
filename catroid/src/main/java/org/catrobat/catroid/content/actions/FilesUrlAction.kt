@@ -115,7 +115,7 @@ class FilesUrlAction() : TemporalAction() {
 
                 if (connection.responseCode != HttpURLConnection.HTTP_OK) {
                     Log.e("DownloadFile", "Ошибка: ${connection.responseCode}")
-                    showToast("Ошибка: ${connection.responseCode}")
+                    showToast(CatroidApplication.getAppContext().getString(R.string.fu_download_error_code, connection.responseCode))
                     return@launch
                 }
 

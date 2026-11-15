@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import org.catrobat.catroid.R
 import android.os.Build
 import android.os.IBinder
 import android.provider.MediaStore
@@ -37,14 +38,14 @@ class BuildMonitorService : Service() {
         val featureName = intent.getStringExtra("FEATURE_NAME") ?: "Feature"
 
         createNotificationChannel()
-        startForeground(PROGRESS_NOTIFY_ID, createProgressNotification("Связь с сервером...", 0))
+        startForeground(PROGRESS_NOTIFY_ID, createProgressNotification(getString(R.string.build_connecting), 0))
 
         serviceScope.launch {
             try {
                 monitorBuild(token, login, branch, featureName)
             } catch (e: Exception) {
                 e.printStackTrace()
-                showFinalNotification("Ошибка сборки", e.message ?: "Неизвестная ошибка", null)
+                showFinalNotification(getString(R.string.build_failed_title), e.message ?: getString(R.string.build_unknown_error), null)
                 stopForeground(true)
                 stopSelf()
             }
@@ -90,7 +91,7 @@ class BuildMonitorService : Service() {
         }
 
         if (runId == null) {
-            showFinalNotification("Ошибка", "GitHub не запустил сборку вовремя. Попробуй еще раз.", null)
+            showFinalNotification(getString(R.string.error), getString(R.string.build_github_timeout), null)
             stopForeground(true)
             stopSelf()
             return
@@ -107,7 +108,7 @@ class BuildMonitorService : Service() {
                 val status = json.getString("status")
                 val progress = json.optInt("progress", 0)
 
-                updateProgress("Сборка на GitHub...", "Статус: $status")
+                updateProgress(getString(R.string.build_on_github), getString(R.string.build_status_prefix, status))
 
                 if (status == "completed") {
                     isCompleted = true
@@ -118,14 +119,14 @@ class BuildMonitorService : Service() {
         }
 
         if (!isSuccess) {
-            showFinalNotification("Сборка провалена", "Проверьте синтаксис в редакторе.", null)
+            showFinalNotification(getString(R.string.build_failed_title), getString(R.string.build_check_syntax), null)
             stopForeground(true)
             stopSelf()
             return
         }
 
 
-        updateProgress("Сборка успешна!", "Ищем готовый файл...")
+        updateProgress(getString(R.string.build_success), getString(R.string.build_looking_for_artifact))
         val artUrl = "https://api.github.com/repos/$login/NewCatroid/actions/runs/$runId/artifacts"
         var downloadUrl: String? = null
 
@@ -140,7 +141,7 @@ class BuildMonitorService : Service() {
         if (downloadUrl != null) {
             downloadWithProgress(client, downloadUrl!!, token, featureName)
         } else {
-            showFinalNotification("Ошибка", "Артефакт не найден.", null)
+            showFinalNotification(getString(R.string.error), getString(R.string.build_artifact_not_found), null)
             stopForeground(true)
             stopSelf()
         }
@@ -165,19 +166,19 @@ class BuildMonitorService : Service() {
                 outputStream.write(buffer, 0, read)
                 bytesRead += read
                 val percent = ((bytesRead * 100) / totalBytes).toInt()
-                updateProgress("Скачивание APK...", "$percent%", percent)
+                updateProgress(getString(R.string.build_downloading_apk), "$percent%", percent)
             }
             outputStream.close()
 
 
-            updateProgress("Распаковка...", "Пожалуйста, подождите")
+            updateProgress(getString(R.string.build_unpacking), getString(R.string.please_wait))
             val apkUri = saveApkToDownloads(tempZip, featureName)
             tempZip.delete()
 
             if (apkUri != null) {
-                showFinalNotification("Билд готов!", "Нажмите, чтобы отправить или установить APK", apkUri)
+                showFinalNotification(getString(R.string.build_ready_title), getString(R.string.build_tap_to_send), apkUri)
             } else {
-                showFinalNotification("Ошибка", "Не удалось сохранить файл в Загрузки", null)
+                showFinalNotification(getString(R.string.error), getString(R.string.build_save_to_downloads_failed), null)
             }
 
             stopForeground(true)
@@ -243,7 +244,7 @@ class BuildMonitorService : Service() {
         } else null
 
         val pendingIntent = if (intent != null) {
-            val chooser = Intent.createChooser(intent, "Открыть APK")
+            val chooser = Intent.createChooser(intent, getString(R.string.build_open_apk))
             PendingIntent.getActivity(this, 0, chooser, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         } else null
 

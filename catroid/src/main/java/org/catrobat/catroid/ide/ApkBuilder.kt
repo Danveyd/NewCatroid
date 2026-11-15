@@ -1,6 +1,7 @@
 package org.catrobat.catroid.ide
 
 import android.content.Context
+import org.catrobat.catroid.R
 import com.android.apksig.ApkSigner
 import com.reandroid.apk.ApkModule
 import com.reandroid.archive.FileInputSource
@@ -56,7 +57,7 @@ object ApkBuilder {
 
         try {
 
-            onProgress("Подготовка шаблона...")
+            onProgress(context.getString(R.string.apk_preparing_template))
             context.assets.open("template.apk").use { input ->
                 FileOutputStream(tempApk).use { output -> input.copyTo(output) }
             }
@@ -64,7 +65,7 @@ object ApkBuilder {
             apkModule = ApkModule.loadApkFile(tempApk)
 
 
-            onProgress("Внедрение кода...")
+            onProgress(context.getString(R.string.apk_injecting_code))
 
 
             val existingDexFiles = apkModule!!.listDexFiles()
@@ -103,7 +104,7 @@ object ApkBuilder {
 
 
 
-            onProgress("Настройка манифеста...")
+            onProgress(context.getString(R.string.apk_configuring_manifest))
             val manifest = apkModule!!.androidManifestBlock
             manifest.packageName = config.packageName
             manifest.versionName = config.versionName
@@ -200,7 +201,7 @@ object ApkBuilder {
 
             val androidNameId = 0x01010003
 
-            onProgress("Настройка SDK версий...")
+            onProgress(context.getString(R.string.apk_configuring_sdk))
 
             var usesSdk = manifest.manifestElement.getElement("uses-sdk")
             if (usesSdk == null) {
@@ -215,7 +216,7 @@ object ApkBuilder {
 
             manifest.refresh()
 
-            onProgress("Оптимизация манифеста...")
+            onProgress(context.getString(R.string.apk_optimizing_manifest))
 
             val elementsToRemove = ArrayList<ResXmlElement>()
 
@@ -258,7 +259,7 @@ object ApkBuilder {
             }
 
             if (config.iconFile != null && config.iconFile.exists()) {
-                onProgress("Обновление графики...")
+                onProgress(context.getString(R.string.apk_updating_graphics))
                 try {
                     val tableBlock = apkModule!!.tableBlock
                     val iconPathsToReplace = mutableListOf<String>()
@@ -266,7 +267,7 @@ object ApkBuilder {
 
 
                     if (config.iconFile != null && config.iconFile.exists()) {
-                        onProgress("Обновление графики...")
+                        onProgress(context.getString(R.string.apk_updating_graphics))
                         try {
                             val tableBlock = apkModule!!.tableBlock
                             val iconPathsToReplace = mutableListOf<String>()
@@ -345,7 +346,7 @@ object ApkBuilder {
             }
 
             // --- ASSETS ---
-            onProgress("Упаковка ресурсов...")
+            onProgress(context.getString(R.string.apk_packing_resources))
 
             if (extraAssets.isNotEmpty()) {
                 for (file in extraAssets) {
@@ -359,7 +360,7 @@ object ApkBuilder {
             }
 
             // --- NATIVE LIBS (.so) ---
-            onProgress("Упаковка библиотек (Native)...")
+            onProgress(context.getString(R.string.apk_packing_native_libs))
             val libsDir = File(projectPath, "libs")
 
             if (libsDir.exists()) {
@@ -430,12 +431,12 @@ object ApkBuilder {
             }
 
             // --- BUILD ---
-            onProgress("Сборка APK...")
+            onProgress(context.getString(R.string.apk_building))
             apkModule!!.writeApk(unsignedApk)
             apkModule!!.close()
 
             // --- SIGN ---
-            onProgress("Подпись...")
+            onProgress(context.getString(R.string.apk_signing))
 
             try {
                 val signing = config.signing
@@ -454,7 +455,7 @@ object ApkBuilder {
 
 
 
-                    throw RuntimeException("Для Target SDK 30+ нужна настройка Keystore!")
+                    throw RuntimeException(context.getString(R.string.apk_keystore_required))
                 }
 
 
@@ -473,11 +474,11 @@ object ApkBuilder {
 
                 signer.sign()
 
-                onProgress("Готово! V2 Signature OK.")
+                onProgress(context.getString(R.string.apk_done_v2))
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                onProgress("Ошибка подписи: ${e.message}")
+                onProgress(context.getString(R.string.apk_signing_error, e.message))
                 return BuildResult(null, e)
             } finally {
                 unsignedApk.delete()
@@ -486,7 +487,7 @@ object ApkBuilder {
             return BuildResult(finalApk)
         } catch (e: Exception) {
             e.printStackTrace()
-            onProgress("Ошибка: ${e.message}")
+            onProgress(context.getString(R.string.common_error_with_message, e.message))
             try { apkModule?.close() } catch(ex: Exception){}
             return BuildResult(null, e)
         }

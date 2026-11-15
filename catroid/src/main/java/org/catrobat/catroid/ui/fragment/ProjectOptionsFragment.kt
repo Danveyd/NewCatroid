@@ -937,12 +937,12 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     private fun parseServerError(errorJson: String?): String {
-        if (errorJson.isNullOrEmpty()) return "Неизвестная ошибка сервера"
+        if (errorJson.isNullOrEmpty()) return getString(R.string.po_unknown_server_error)
         return try {
             val json = JSONObject(errorJson)
-            json.optString("detail", json.optString("message", "Ошибка сервера"))
+            json.optString("detail", json.optString("message", getString(R.string.po_server_error)))
         } catch (e: Exception) {
-            "Ошибка разбора ответа сервера"
+            getString(R.string.po_server_parse_error)
         }
     }
 
@@ -1011,19 +1011,19 @@ class ProjectOptionsFragment : Fragment() {
             val desc = etDesc.text.toString().trim()
 
             if (title.isEmpty()) {
-                ToastUtil.showError(context, "Название проекта не может быть пустым")
+                ToastUtil.showError(context, getString(R.string.po_title_empty))
                 return@setOnClickListener
             }
             if (title.length > 30) {
-                ToastUtil.showError(context, "Название проекта слишком длинное (макс. 30 символов)")
+                ToastUtil.showError(context, getString(R.string.po_title_too_long))
                 return@setOnClickListener
             }
             if (desc.isEmpty()) {
-                ToastUtil.showError(context, "Описание проекта не может быть пустым")
+                ToastUtil.showError(context, getString(R.string.po_desc_empty))
                 return@setOnClickListener
             }
             if (desc.length > 400) {
-                ToastUtil.showError(context, "Описание слишком длинное (макс. 400 символов)")
+                ToastUtil.showError(context, getString(R.string.po_desc_too_long))
                 return@setOnClickListener
             }
 
@@ -1046,7 +1046,7 @@ class ProjectOptionsFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.community_publish_auth_required)
             .setMessage(R.string.community_publish_auth_desc)
-            .setPositiveButton("Вход") { _, _ ->
+            .setPositiveButton(R.string.login) { _, _ ->
                 startActivity(Intent(requireContext(), org.catrobat.catroid.ui.CommunityLoginActivity::class.java))
             }
             .setNegativeButton(android.R.string.cancel, null)
@@ -1072,7 +1072,7 @@ class ProjectOptionsFragment : Fragment() {
                 Log.d("UploadCommunity", "Создан ZIP архив публикации. Путь: ${tempZipFile.absolutePath} | Размер: ${tempZipFile.length()} байт")
 
                 if (tempZipFile.length() <= 0L) {
-                    throw IOException("Размер файла проекта равен 0 байт. Ошибка архивации.")
+                    throw IOException(getString(R.string.po_zero_byte_archive))
                 }
 
                 updatePublishPillStatus(getString(R.string.community_stage_captcha))
@@ -1096,7 +1096,7 @@ class ProjectOptionsFragment : Fragment() {
 
             } catch (e: Exception) {
                 hidePublishPill()
-                ToastUtil.showError(requireContext(), "Ошибка упаковки: ${e.message}")
+                ToastUtil.showError(requireContext(), getString(R.string.po_packaging_error, e.message))
             }
         }
     }
@@ -1211,7 +1211,7 @@ class ProjectOptionsFragment : Fragment() {
                 zipFile.delete()
                 withContext(Dispatchers.Main) {
                     hidePublishPill()
-                    ToastUtil.showError(requireContext(), "Ошибка: ${e.message}")
+                    ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, e.message))
                 }
             }
         }
@@ -1271,7 +1271,7 @@ class ProjectOptionsFragment : Fragment() {
                 val responseBody = response.body?.string()
                 if (!response.isSuccessful) {
                     val serverMessage = parseServerError(responseBody)
-                    throw IOException("Чанк №$chunkIndex: $serverMessage")
+                    throw IOException(getString(R.string.po_chunk_error, chunkIndex, serverMessage))
                 }
             }
         }
@@ -1279,7 +1279,7 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun showPublishPill(status: String) {
         activity?.runOnUiThread {
-            binding.tvPublishProgressTitle.text = "Публикация проекта"
+            binding.tvPublishProgressTitle.text = getString(R.string.po_publishing_project)
             binding.tvPublishProgressStatus.text = status
             binding.publishProgressBar.visibility = View.VISIBLE
             binding.publishProgressBar.isIndeterminate = true
@@ -1380,7 +1380,7 @@ class ProjectOptionsFragment : Fragment() {
         saveProject()
         project ?: return
 
-        showProgressDialog("Запекание проекта...")
+        showProgressDialog(getString(R.string.po_baking_project))
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -1449,7 +1449,7 @@ class ProjectOptionsFragment : Fragment() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     hideProgressDialog()
-                    ToastUtil.showError(requireContext(), "Ошибка: ${e.message}")
+                    ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, e.message))
                     e.printStackTrace()
                 }
             }
@@ -1466,7 +1466,7 @@ class ProjectOptionsFragment : Fragment() {
         intent.type = "application/zip"
         intent.putExtra(Intent.EXTRA_STREAM, uri)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivity(Intent.createChooser(intent, "Сохранить запеченный проект"))
+        startActivity(Intent.createChooser(intent, getString(R.string.po_save_baked)))
     }
 
     private fun setupRebuildCache() {
@@ -1477,12 +1477,12 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun showRebuildConfirmationDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Обновить кэш физики?")
-            .setMessage("Это может занять некоторое время, но исправит проблемы с хитбоксами в старых проектах. Продолжить?")
-            .setPositiveButton("Да") { _, _ ->
+            .setTitle(R.string.po_rebuild_physics_title)
+            .setMessage(R.string.po_rebuild_physics_msg)
+            .setPositiveButton(R.string.yes) { _, _ ->
                 startCacheRebuilding()
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -1497,13 +1497,13 @@ class ProjectOptionsFragment : Fragment() {
         }
 
         if (allLooks.isEmpty()) {
-            ToastUtil.showInfoLong(requireContext(), "В проекте нет образов для обработки.")
+            ToastUtil.showInfoLong(requireContext(), getString(R.string.po_no_looks_to_process))
             return
         }
 
         val progressDialog = ProgressDialog(requireContext()).apply {
-            setTitle("Обновление кэша")
-            setMessage("Обработка образов...")
+            setTitle(R.string.po_cache_update_title)
+            setMessage(getString(R.string.po_processing_images))
             setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
             max = allLooks.size
             progress = 0
@@ -1515,7 +1515,7 @@ class ProjectOptionsFragment : Fragment() {
             var successCount = 0
             allLooks.forEachIndexed { index, lookData ->
                 withContext(Dispatchers.Main) {
-                    progressDialog.setMessage("Обработка: ${lookData.name}")
+                    progressDialog.setMessage(getString(R.string.po_processing_look, lookData.name))
                 }
 
                 val success = lookData.collisionInformation.forceRecalculateAndSave()
@@ -1530,7 +1530,7 @@ class ProjectOptionsFragment : Fragment() {
 
             withContext(Dispatchers.Main) {
                 progressDialog.dismiss()
-                ToastUtil.showSuccess(requireContext(), "Готово! Обработано $successCount из ${allLooks.size} образов.")
+                ToastUtil.showSuccess(requireContext(), getString(R.string.po_processing_done, successCount, allLooks.size))
             }
         }
     }
@@ -1562,19 +1562,19 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun showLoginRequiredDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Требуется вход")
-            .setMessage("Для подключения проекта к Git необходимо войти в свой аккаунт GitHub в настройках приложения.")
-            .setPositiveButton("В настройки") { _, _ ->
+            .setTitle(R.string.po_login_required)
+            .setMessage(R.string.po_login_required_msg)
+            .setPositiveButton(R.string.po_go_to_settings) { _, _ ->
                 startActivity(Intent(requireContext(), SettingsActivity::class.java))
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
     private fun showGitConnectDialog() {
-        val options = arrayOf("Создать новый репозиторий", "Подключиться к существующему")
+        val options = arrayOf(getString(R.string.po_create_new_repo), getString(R.string.po_connect_existing_repo))
         AlertDialog.Builder(requireContext())
-            .setTitle("Подключение к Git")
+            .setTitle(R.string.po_connect_git_title)
             .setItems(options) { _, which ->
                 if (which == 0) {
                     showCreateRepoDialog()
@@ -1591,36 +1591,36 @@ class ProjectOptionsFragment : Fragment() {
         val privateSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.repo_private_switch)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Создание нового репозитория")
+            .setTitle(R.string.po_create_repo_title)
             .setView(dialogView)
-            .setPositiveButton("Создать") { _, _ ->
+            .setPositiveButton(R.string.common_create) { _, _ ->
                 val repoName = repoNameEditText.text.toString().trim()
                 if (repoName.isEmpty()) {
-                    ToastUtil.showError(requireContext(), "Имя репозитория не может быть пустым")
+                    ToastUtil.showError(requireContext(), getString(R.string.po_repo_name_empty))
                     return@setPositiveButton
                 }
                 val isPrivate = privateSwitch.isChecked
                 val token = TokenManager.getToken(requireContext()) ?: return@setPositiveButton
 
-                showProgressDialog("Создание репозитория...")
+                showProgressDialog(getString(R.string.po_creating_repo))
                 lifecycleScope.launch(Dispatchers.IO) {
                     val result = gitController.initializeAndPushNewRepository(token, repoName, isPrivate)
                     withContext(Dispatchers.Main) {
                         hideProgressDialog()
                         when (result) {
                             is GitResult.Success -> {
-                                ToastUtil.showSuccess(requireContext(), "Проект успешно опубликован!")
+                                ToastUtil.showSuccess(requireContext(), getString(R.string.po_project_published))
                                 project?.xmlHeader?.gitRemoteUrl = result.data
                                 saveProject()
                                 updateGitButtonsVisibility()
                             }
-                            is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                            is GitResult.Error -> ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, result.message))
                             else -> {}
                         }
                     }
                 }
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -1629,13 +1629,13 @@ class ProjectOptionsFragment : Fragment() {
         val repoUrlEditText = dialogView.findViewById<TextInputEditText>(R.id.repo_url_edit_text)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Подключение к репозиторию")
+            .setTitle(R.string.po_connect_repo_title)
             .setView(dialogView)
-            .setMessage("Внимание! Текущие файлы проекта будут ЗАМЕНЕНЫ файлами из удаленного репозитория. Это действие необратимо.")
-            .setPositiveButton("Подключить") { _, _ ->
+            .setMessage(R.string.po_connect_repo_warning)
+            .setPositiveButton(R.string.po_connect) { _, _ ->
                 val repoUrl = repoUrlEditText.text.toString().trim()
                 if (!repoUrl.startsWith("https://") || !repoUrl.endsWith(".git")) {
-                    ToastUtil.showError(requireContext(), "Введите корректный HTTPS URL репозитория")
+                    ToastUtil.showError(requireContext(), getString(R.string.po_invalid_repo_url))
                     return@setPositiveButton
                 }
                 val token = TokenManager.getToken(requireContext()) ?: return@setPositiveButton
@@ -1644,7 +1644,7 @@ class ProjectOptionsFragment : Fragment() {
                 val tempDir = File(requireContext().cacheDir, "git_clone_temp_${System.currentTimeMillis()}")
                 tempDir.mkdirs()
 
-                showProgressDialog("Клонирование проекта...")
+                showProgressDialog(getString(R.string.po_cloning_project))
                 lifecycleScope.launch(Dispatchers.IO) {
 
                     val result = gitController.cloneRepository(repoUrl, token, tempDir)
@@ -1688,7 +1688,7 @@ class ProjectOptionsFragment : Fragment() {
                         hideProgressDialog()
                         when (finalResult) {
                             is GitResult.Success -> {
-                                ToastUtil.showSuccess(requireContext(), "Проект успешно склонирован!")
+                                ToastUtil.showSuccess(requireContext(), getString(R.string.po_project_cloned))
                                 projectManager.loadProject(originalProjectDir)
 
 
@@ -1700,28 +1700,28 @@ class ProjectOptionsFragment : Fragment() {
                             }
                             is GitResult.Error -> {
                                 tempDir.deleteRecursively()
-                                ToastUtil.showError(requireContext(), "Ошибка: ${finalResult.message}")
+                                ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, finalResult.message))
                             }
                             else -> {}
                         }
                     }
                 }
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
     private fun showCommitMessageDialog() {
         val editText = TextInputEditText(requireContext())
         AlertDialog.Builder(requireContext())
-            .setTitle("Синхронизировать")
-            .setMessage("Введите краткое описание сделанных изменений (коммит):")
+            .setTitle(R.string.po_sync_title)
+            .setMessage(R.string.po_commit_msg_hint)
             .setView(editText)
-            .setPositiveButton("Начать") { _, _ ->
+            .setPositiveButton(R.string.common_start) { _, _ ->
                 val commitMessage = editText.text.toString().ifEmpty { "Update project" }
                 handleGitPublish(commitMessage)
             }
-            .setNegativeButton("Отмена", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -1729,15 +1729,15 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun handleGitPublish(commitMessage: String) {
         val token = TokenManager.getToken(requireContext()) ?: return
-        showProgressDialog("Синхронизация и публикация...")
+        showProgressDialog(getString(R.string.po_sync_and_publish))
         lifecycleScope.launch(Dispatchers.IO) {
             saveProject()
             val result = gitController.commitAndPush(commitMessage, "NewCatroid_user", "nc_user@email.com", token)
             withContext(Dispatchers.Main) {
                 hideProgressDialog()
                 when (result) {
-                    is GitResult.Success -> ToastUtil.showSuccess(requireContext(), "Синхронизация завершена!")
-                    is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                    is GitResult.Success -> ToastUtil.showSuccess(requireContext(), getString(R.string.po_sync_done))
+                    is GitResult.Error -> ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, result.message))
                     else -> {}
                 }
             }
@@ -1746,14 +1746,14 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun handleGitUpdate() {
         val token = TokenManager.getToken(requireContext()) ?: return
-        showProgressDialog("Обновление проекта...")
+        showProgressDialog(getString(R.string.po_updating_project))
         lifecycleScope.launch(Dispatchers.IO) {
             val result = gitController.pullAndMerge(token)
             withContext(Dispatchers.Main) {
                 hideProgressDialog()
                 when (result) {
                     is GitResult.Success -> {
-                        ToastUtil.showSuccess(requireContext(), "Проект обновлен!")
+                        ToastUtil.showSuccess(requireContext(), getString(R.string.po_project_updated))
                         shouldSaveOnPause = false
 
 
@@ -1767,8 +1767,8 @@ class ProjectOptionsFragment : Fragment() {
                         if (result.data.conflicts.isNotEmpty()) {
                             val conflictsString = result.data.conflicts.joinToString("\n") { "- ${it.path}" }
                             AlertDialog.Builder(requireContext())
-                                .setTitle("Обнаружены конфликты")
-                                .setMessage("Система обнаружила конфликты, думайте сами какой вариант оставить. Конфликты:\n$conflictsString")
+                                .setTitle(R.string.po_conflicts_detected_title)
+                                .setMessage(getString(R.string.po_conflicts_detected_msg, conflictsString))
                                 .setPositiveButton("OK") { _, _ ->
                                     showProjectReloadDialog()
                                 }
@@ -1777,12 +1777,12 @@ class ProjectOptionsFragment : Fragment() {
                             showProjectReloadDialog()
                         }
                     }
-                    is GitResult.Error -> ToastUtil.showError(requireContext(), "Ошибка: ${result.message}")
+                    is GitResult.Error -> ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, result.message))
                     is GitResult.MergeConflict -> {
                         val conflictsString = result.conflicts.joinToString("\n") { "- ${it.fieldName}" }
                         AlertDialog.Builder(requireContext())
-                            .setTitle("Конфликты слияния!")
-                            .setMessage("Не удалось автоматически обновить проект. Конфликты:\n$conflictsString")
+                            .setTitle(R.string.po_merge_conflicts_title)
+                            .setMessage(getString(R.string.po_merge_conflicts_msg, conflictsString))
                             .setPositiveButton("OK", null)
                             .show()
                     }
@@ -1805,9 +1805,9 @@ class ProjectOptionsFragment : Fragment() {
 
     private fun showProjectReloadDialog() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Требуется перезагрузка")
-            .setMessage("Проект был изменен. Чтобы увидеть изменения, необходимо его перезапустить.")
-            .setPositiveButton("Перезапустить") { _, _ ->
+            .setTitle(R.string.po_restart_required_title)
+            .setMessage(R.string.po_restart_required_msg)
+            .setPositiveButton(R.string.button_restart) { _, _ ->
 
                 requireActivity().finish()
             }
@@ -1879,14 +1879,14 @@ class ProjectOptionsFragment : Fragment() {
         }
 
         if (imageFiles.isNullOrEmpty()) {
-            ToastUtil.showInfoLong(requireContext(), "В проекте нет изображений.")
+            ToastUtil.showInfoLong(requireContext(), getString(R.string.po_no_images_in_project))
             return
         }
 
         val imageFileNames = imageFiles.map { it.name }.toTypedArray()
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Вставить изображение")
+            .setTitle(R.string.po_insert_image)
             .setItems(imageFileNames) { _, which ->
                 val selectedFileName = imageFileNames[which]
                 insertImageMarkdown(selectedFileName)
@@ -1952,7 +1952,7 @@ class ProjectOptionsFragment : Fragment() {
         saveProject()
         val currentProject = project ?: return
 
-        showProgressDialog("Сборка матрешки для сервера...")
+        showProgressDialog(getString(R.string.po_build_matryoshka))
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -1960,13 +1960,13 @@ class ProjectOptionsFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     hideProgressDialog()
-                    ToastUtil.showSuccess(requireContext(), "Матрешка собрана!")
+                    ToastUtil.showSuccess(requireContext(), getString(R.string.po_matryoshka_done))
                     shareFile(readyToUploadZip)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     hideProgressDialog()
-                    ToastUtil.showError(requireContext(), "Ошибка: ${e.message}")
+                    ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, e.message))
                     e.printStackTrace()
                 }
             }
@@ -2237,7 +2237,7 @@ class ProjectOptionsFragment : Fragment() {
                 .build()
                 .sign()
         } catch (e: Exception) {
-            throw RuntimeException("Ошибка при подписании APK: ${e.message}", e)
+            throw RuntimeException(getString(R.string.po_apk_signing_error, e.message), e)
         }
     }
 
@@ -2308,71 +2308,14 @@ class ProjectOptionsFragment : Fragment() {
     }
 
     fun getRandomMessage(): String {
-        val messages = listOf(
-            "Готово!",
-            "Сделано!",
-            "Успех!",
-            "Завершено!",
-            "Готово к использованию!",
-            "Задача выполнена!",
-            "Отличная работа!",
-            "Все готово!",
-            "Яйцо или курица..?",
-            "Готово! Проверяй!",
-            "Поехали!",
-            "Вроде сделано..",
-            "Проверяй, начальник э!",
-            "Готово. Удачи с проектом!",
-            "Работа завершена, как кофе на утро!",
-            "Готово! Как будто я маг, а не программист!",
-            "Все сделано! Как раз вовремя перед обедом.",
-            "Все завершено! Можно идти за пирожками!",
-            "Задача выполнена! Теперь можно отдохнуть и посмотреть котиков.",
-            "Готово! Даже не успел заметить, как это произошло.",
-            "Сделано! Осталось только отпраздновать с танцами.",
-            "Готово! Минутка успокоения перед новыми приключениями.",
-            "Отличная работа! Ты как супергерой, только без плаща.",
-            "Готово! Наконец-то смогу отвлечься на онлайн-шопинг.",
-            "Как сказать: «Сделай это» и получить: «Сделано!»? Вот так!",
-            "Все готово! Теперь можем заниматься более важными делами.",
-            "Задача выполнена! Как хорошая книга – не отпускает до последней страницы.",
-            "Готово! Можно отдыхать, как будто мы все это сделали за пятюню.",
-            "Сделано! Готовы к новым подвигам?"
-        )
-
-
+        val messages = resources.getStringArray(R.array.po_success_messages)
         val randomIndex = Random.nextInt(messages.size)
-
         return messages[randomIndex]
     }
 
     fun getRandomError(): String {
-        val errorMessages = listOf(
-            "Произошла ошибка! Кажется, я не тот алгоритм заказывал.",
-            "Упс! Что-то пошло не так. Как будто кошка пробежала по клавиатуре.",
-            "Произошла ошибка! Может, система решила немного отдохнуть?",
-            "Ой! Похоже, произошла ошибка. Возможно, это программистская шутка?",
-            "Произошла ошибка! Да кто придумал обновлять программу перед дедлайном?",
-            "Упс! Ошибка. Наверное, мой код тоже решил поспать.",
-            "Произошла ошибка! Как бы я ни старался, выводы не совпали.",
-            "Ой-ой! Ошибка! Это как раз то, что нам нужно было избежать.",
-            "Произошла ошибка! По всей видимости, сервер тоже устал.",
-            "Упс! Ошибка. Это как забыть о важной встрече.",
-            "Произошла ошибка! Может, стоит заказывать пиццу вместо кода?",
-            "Ой! Ошибка. Обычно говорят, что все дороги ведут к Риму, но не сегодня.",
-            "Произошла ошибка! Это не то, что я хотел об этом напомнить.",
-            "Упс! Ошибка! Возможно, машина решила, что у нее выходной.",
-            "Произошла ошибка! Я попытался угостить код печеньками и вот что вышло!",
-            "Ой-ой! Ошибка. Наверное, в коде слишком много любопытных переменных.",
-            "Произошла ошибка! Извините, не я такой - жизнь такая!",
-            "Упс! Произошла ошибка. Код сам по себе иногда делает капризы.",
-            "Ой! Произошла ошибка! Как будто интернет пошел на пикник без меня.",
-            "Произошла ошибка! И тут, конечно, глюк всегда оказывается виноват.",
-            "Упс! Ошибка. Вы знаете, прощать - это тоже искусство."
-        )
-
+        val errorMessages = resources.getStringArray(R.array.po_error_messages)
         val randomIndex = Random.nextInt(errorMessages.size)
-
         return errorMessages[randomIndex]
     }
 
@@ -2597,7 +2540,7 @@ class ProjectOptionsFragment : Fragment() {
 
                     showToast(getRandomMessage())
                 } catch (e: Exception) {
-                    showToast("Ошибка при сохранении изображения: ${e.message}")
+                    showToast(getString(R.string.po_image_save_error, e.message))
                 }
             } ?: showToast(getRandomError())
         }
@@ -2668,7 +2611,7 @@ class ProjectOptionsFragment : Fragment() {
                     ToastUtil.showError(requireContext(), getString(R.string.error_key_failed))
                 }
             } catch (e: Exception) {
-                ToastUtil.showError(requireContext(), "Ошибка: ${e.message}")
+                ToastUtil.showError(requireContext(), getString(R.string.common_error_with_message, e.message))
             } finally {
                 tempGenAlias = null
                 tempGenPass = null

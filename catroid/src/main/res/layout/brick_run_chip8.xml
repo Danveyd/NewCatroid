@@ -20,7 +20,7 @@
 
         <TextView
             style="@style/BrickText.SingleLine"
-            android:text="Запустить CHIP-8:" />
+            android:text="@string/brick_run_chip8_label" />
 
         <TextView
             android:id="@+id/brick_chip8_edit_file"
