@@ -313,6 +313,24 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 
 	@NonNull
 	public static Object getSensorValue(Sensors sensor) {
+        if (sensor == Sensors.CAMERA_CUTOUT_HEIGHT
+                || sensor == Sensors.REAL_SCREEN_WIDTH
+                || sensor == Sensors.REAL_SCREEN_HEIGHT) {
+            org.catrobat.catroid.stage.StageActivity activity =
+                    org.catrobat.catroid.stage.StageActivity.activeStageActivity == null
+                            ? null : org.catrobat.catroid.stage.StageActivity.activeStageActivity.get();
+            if (activity == null) {
+                return 0d;
+            }
+            if (sensor == Sensors.CAMERA_CUTOUT_HEIGHT) {
+                return (double) activity.getCameraCutoutHeightPx();
+            }
+            if (sensor == Sensors.REAL_SCREEN_WIDTH) {
+                return (double) activity.getRealScreenWidthPx();
+            }
+            return (double) activity.getRealScreenHeightPx();
+        }
+
 		if (instance.sensorManager == null) {
 			return 0d;
 		}
