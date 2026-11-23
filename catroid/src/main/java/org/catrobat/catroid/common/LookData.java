@@ -189,7 +189,14 @@ public class LookData implements Cloneable, Nameable, Serializable {
 
 	public TextureRegion getTextureRegion() {
 		if (textureRegion == null) {
-			textureRegion = new TextureRegion(new Texture(getPixmap()));
+            Texture texture = new Texture(getPixmap());
+            org.catrobat.catroid.content.Project project =
+                    org.catrobat.catroid.ProjectManager.getInstance().getCurrentProject();
+            if (project != null && project.getXmlHeader().fullDisplayEnabled
+                    && project.getXmlHeader().linearTextureFiltering) {
+                texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            }
+			textureRegion = new TextureRegion(texture);
 		}
 		return textureRegion;
 	}
