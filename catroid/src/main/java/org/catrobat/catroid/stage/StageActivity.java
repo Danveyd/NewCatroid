@@ -35,6 +35,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -151,6 +153,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.idling.CountingIdlingResource;
 
@@ -266,6 +270,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
     private org.catrobat.catroid.ui.workspace.WindowContainer window;
 
+    private volatile int realScreenWidthPx;
+    private volatile int realScreenHeightPx;
+    private boolean statusBarVisible = true;
+    private boolean navigationBarVisible = true;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		if (getIntent().hasExtra(EXTRA_PROJECT_PATH)) {
@@ -316,6 +325,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 		super.onCreate(savedInstanceState);
 
+        configureAdvancedDisplayWindow();
+        refreshRealScreenMetrics();
 
 		rootLayout = new FrameLayout(this);
 		cameraContainer = new FrameLayout(this);
@@ -334,6 +345,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
         configuration.g = 8;
         configuration.b = 8;
         configuration.a = 8;
+        Project activeProjectForDisplay = ProjectManager.getInstance().getCurrentProject();
+        if (activeProjectForDisplay != null && activeProjectForDisplay.getXmlHeader().fullDisplayEnabled
+                && activeProjectForDisplay.getXmlHeader().disableMsaa) {
+            configuration.numSamples = 0;
+        }
 
         gameView = initializeForView(getApplicationListener(), configuration);
 
@@ -1958,17 +1974,23 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	}
 
     void calculateScreenSizes() {
-        ScreenValueHandler.updateScreenWidthAndHeight(getContext());
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        boolean useFullDisplay = currentProject != null && currentProject.getXmlHeader().fullDisplayEnabled;
+        ScreenValueHandler.updateScreenWidthAndHeight(getContext(), useFullDisplay);
+        refreshRealScreenMetrics();
 
         Resolution projectResolution = new Resolution(
-                ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth(),
-                ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight());
+                currentProject.getXmlHeader().getVirtualScreenWidth(),
+                currentProject.getXmlHeader().getVirtualScreenHeight());
 
-        ScreenValues.currentScreenResolution =
-                ScreenValues.currentScreenResolution.flipToFit(projectResolution);
+        if (!useFullDisplay) {
+            ScreenValues.currentScreenResolution =
+                    ScreenValues.currentScreenResolution.flipToFit(projectResolution);
+        }
 
-        resizePossible = !ScreenValues.currentScreenResolution.sameRatioOrMeasurements(projectResolution) &&
-                !ProjectManager.getInstance().getCurrentProject().isCastProject();
+        resizePossible = !useFullDisplay
+                && !ScreenValues.currentScreenResolution.sameRatioOrMeasurements(projectResolution)
+                && !currentProject.isCastProject();
 
         if (resizePossible) {
             stageListener.setMaxViewPort(projectResolution.resizeToFit(ScreenValues.currentScreenResolution));
@@ -1977,6 +1999,115 @@ public class StageActivity extends AndroidApplication implements ContextProvider
         }
     }
 
+    private boolean isAdvancedDisplayEnabled() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        return currentProject != null && currentProject.getXmlHeader().fullDisplayEnabled;
+    }
+
+    private void configureAdvancedDisplayWindow() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        if (currentProject == null || !currentProject.getXmlHeader().fullDisplayEnabled) {
+            return;
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowManager.LayoutParams attributes = getWindow().getAttributes();
+            attributes.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(attributes);
+        }
+
+        statusBarVisible = currentProject.getXmlHeader().showStatusBar;
+        navigationBarVisible = currentProject.getXmlHeader().showNavigationBar;
+        applySystemUiVisibility(statusBarVisible, 0);
+        applySystemUiVisibility(navigationBarVisible, 1);
+    }
+
+    public void applySystemUiVisibility(boolean show, int target) {
+        runOnUiThread(() -> {
+            if (target == 0 || target == 2) {
+                statusBarVisible = show;
+            }
+            if (target == 1 || target == 2) {
+                navigationBarVisible = show;
+            }
+
+            View decorView = getWindow().getDecorView();
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            if (isAdvancedDisplayEnabled()) {
+                flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            } else {
+                if (!statusBarVisible) {
+                    flags |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+                }
+                if (!navigationBarVisible) {
+                    flags |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                }
+            }
+            if (!statusBarVisible || !navigationBarVisible) {
+                flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            }
+            decorView.setSystemUiVisibility(flags);
+
+            WindowInsetsControllerCompat controller =
+                    WindowCompat.getInsetsController(getWindow(), decorView);
+            controller.setSystemBarsBehavior(
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            if (statusBarVisible) {
+                controller.show(androidx.core.view.WindowInsetsCompat.Type.statusBars());
+            } else {
+                controller.hide(androidx.core.view.WindowInsetsCompat.Type.statusBars());
+            }
+            if (navigationBarVisible) {
+                controller.show(androidx.core.view.WindowInsetsCompat.Type.navigationBars());
+            } else {
+                controller.hide(androidx.core.view.WindowInsetsCompat.Type.navigationBars());
+            }
+        });
+    }
+
+    public void refreshRealScreenMetrics() {
+        Resolution realResolution = ScreenValueHandler.getRealScreenResolution(this);
+        realScreenWidthPx = realResolution.getWidth();
+        realScreenHeightPx = realResolution.getHeight();
+    }
+
+    public int getRealScreenWidthPx() {
+        if (realScreenWidthPx <= 0) {
+            refreshRealScreenMetrics();
+        }
+        return realScreenWidthPx;
+    }
+
+    public int getRealScreenHeightPx() {
+        if (realScreenHeightPx <= 0) {
+            refreshRealScreenMetrics();
+        }
+        return realScreenHeightPx;
+    }
+
+    public int getCameraCutoutHeightPx() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return 0;
+        }
+        WindowInsets insets = getWindow().getDecorView().getRootWindowInsets();
+        if (insets == null || insets.getDisplayCutout() == null) {
+            return 0;
+        }
+        return insets.getDisplayCutout().getSafeInsetTop();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isAdvancedDisplayEnabled()) {
+            refreshRealScreenMetrics();
+            applySystemUiVisibility(statusBarVisible, 0);
+            applySystemUiVisibility(navigationBarVisible, 1);
+        }
+    }
     @Override
 	public ApplicationListener getApplicationListener() {
 

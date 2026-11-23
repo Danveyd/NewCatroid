@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="screen_viewport_modes">
+        <item>Catroid по умолчанию</item>
+        <item>1:1 (пиксель-в-пиксель)</item>
+        <item>Растянуть на весь экран</item>
+        <item>Подогнать по ширине</item>
+        <item>Подогнать по высоте</item>
+    </string-array>
+    <string-array name="screen_fps_setting_limits">
+        <item>По умолчанию</item>
+        <item>30 FPS</item>
+        <item>60 FPS</item>
+        <item>120 FPS</item>
+        <item>Без лимита</item>
+    </string-array>
+    <string-array name="screen_fps_limits_brick">
+        <item>30 FPS</item>
+        <item>60 FPS</item>
+        <item>120 FPS</item>
+        <item>Без лимита</item>
+    </string-array>
+    <string-array name="screen_ui_actions">
+        <item>Показать</item>
+        <item>Скрыть</item>
+    </string-array>
+    <string-array name="screen_ui_targets">
+        <item>Статус-бар</item>
+        <item>Панель навигации</item>
+        <item>Весь системный интерфейс</item>
+    </string-array>
+    <string-array name="screen_orientations">
+        <item>Альбомная (камера слева)</item>
+        <item>Альбомная (камера справа)</item>
+        <item>Портретная (камера сверху)</item>
+        <item>Портретная (камера снизу)</item>
+    </string-array>
+</resources>

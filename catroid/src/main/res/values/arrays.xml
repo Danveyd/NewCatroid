@@ -435,6 +435,9 @@
         <item>@string/formula_editor_sensor_time_second</item>
         <item>@string/formula_editor_sensor_timer</item>
         <item>@string/formula_editor_sensor_user_language</item>
+        <item>@string/formula_editor_sensor_camera_cutout_height</item>
+        <item>@string/formula_editor_sensor_real_screen_width</item>
+        <item>@string/formula_editor_sensor_real_screen_height</item>
         <item>@string/formula_editor_sensor_x_acceleration</item>
         <item>@string/formula_editor_sensor_x_inclination</item>
         <item>@string/formula_editor_sensor_y_acceleration</item>

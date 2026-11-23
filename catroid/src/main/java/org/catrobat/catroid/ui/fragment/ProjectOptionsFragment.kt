@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
@@ -169,6 +170,7 @@ class ProjectOptionsFragment : Fragment() {
         addTags()
         setupProjectAspectRatio()
         setupCustomResolution()
+        setupAdvancedScreenSettings()
         setupDisableScientificNotation()
 
         binding.projectOptionsUpload.visibility = View.VISIBLE
@@ -201,6 +203,74 @@ class ProjectOptionsFragment : Fragment() {
         activeDialogView = null
         _binding = null
         super.onDestroyView()
+    }
+
+    private fun setupAdvancedScreenSettings() {
+        val header = project?.xmlHeader ?: return
+        val context = requireContext()
+
+        val enabledSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_full_display_enabled)
+        val viewportSpinner = binding.root.findViewById<Spinner>(R.id.screen_viewport_mode)
+        val statusBarSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_show_status_bar)
+        val navigationBarSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_show_navigation_bar)
+        val filteringSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_linear_filtering)
+        val msaaSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_disable_msaa)
+        val fpsSpinner = binding.root.findViewById<Spinner>(R.id.screen_fps_limit)
+        val debugSwitch = binding.root.findViewById<SwitchMaterial>(R.id.screen_debug_overlay)
+
+        enabledSwitch.isChecked = header.fullDisplayEnabled
+        statusBarSwitch.isChecked = header.showStatusBar
+        navigationBarSwitch.isChecked = header.showNavigationBar
+        filteringSwitch.isChecked = header.linearTextureFiltering
+        msaaSwitch.isChecked = header.disableMsaa
+        debugSwitch.isChecked = header.screenDebugOverlay
+
+        val viewportAdapter = ArrayAdapter.createFromResource(
+            context, R.array.screen_viewport_modes, android.R.layout.simple_spinner_item
+        ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+        viewportSpinner.adapter = viewportAdapter
+        viewportSpinner.setSelection(header.viewportMode.coerceIn(0, 4))
+        viewportSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                project?.xmlHeader?.viewportMode = position.coerceIn(0, 4)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+
+        val fpsAdapter = ArrayAdapter.createFromResource(
+            context, R.array.screen_fps_setting_limits, android.R.layout.simple_spinner_item
+        ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+        fpsSpinner.adapter = fpsAdapter
+        val fpsOptions = intArrayOf(0, 30, 60, 120, -1)
+        val selectedFpsIndex = fpsOptions.indexOf(header.screenFpsLimit).let { if (it < 0) 0 else it }
+        fpsSpinner.setSelection(selectedFpsIndex)
+        fpsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                project?.xmlHeader?.screenFpsLimit = fpsOptions.getOrElse(position) { 0 }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+
+        enabledSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.fullDisplayEnabled = checked
+        }
+        statusBarSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.showStatusBar = checked
+        }
+        navigationBarSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.showNavigationBar = checked
+        }
+        filteringSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.linearTextureFiltering = checked
+        }
+        msaaSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.disableMsaa = checked
+        }
+        debugSwitch.setOnCheckedChangeListener { _, checked ->
+            project?.xmlHeader?.screenDebugOverlay = checked
+        }
     }
 
     private fun setupDisableScientificNotation() {

@@ -175,6 +175,8 @@ public class StageListener implements ApplicationListener {
 	private static final float AXIS_FONT_SIZE_SCALE_FACTOR = 0.025f;
 
 	private float deltaActionTimeDivisor = 10f;
+    private volatile int targetFps;
+    private long nextFrameRenderNanos;
 
 	private Stage stage = null;
 	private Stage uiStage = null;
@@ -198,6 +200,8 @@ public class StageListener implements ApplicationListener {
 	private OrthographicCamera uiCamera;
 	private Batch batch = null;
 	private BitmapFont font;
+    private SpriteBatch debugOverlayBatch;
+    private BitmapFont debugOverlayFont;
 	private Passepartout passepartout;
 	private Viewport viewPort;
 	public ShapeRenderer shapeRenderer;
@@ -372,6 +376,9 @@ public class StageListener implements ApplicationListener {
 
 		project = ProjectManager.getInstance().getCurrentProject();
 		scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+        targetFps = project != null && project.getXmlHeader().fullDisplayEnabled
+                ? project.getXmlHeader().screenFpsLimit : 0;
+        nextFrameRenderNanos = 0L;
 
 		threeDManager = new ThreeDManager();
 		threeDManager.init();
@@ -393,6 +400,15 @@ public class StageListener implements ApplicationListener {
 				screenshotHeight);
 
 		font = getLabelFont(project);
+
+        if (project != null && project.getXmlHeader().fullDisplayEnabled) {
+            int configuredFps = project.getXmlHeader().screenFpsLimit;
+            if (configuredFps > 0) {
+                Gdx.graphics.setForegroundFPS(configuredFps);
+            } else if (configuredFps < 0) {
+                Gdx.graphics.setForegroundFPS(0);
+            }
+        }
 
 		physicsWorld = scene.resetPhysicsWorld();
 		sprites = new ArrayList<>(scene.getSpriteList());
@@ -1559,6 +1575,14 @@ public class StageListener implements ApplicationListener {
 		this.captureNextFrame = true;
 	}
 
+    public void setTargetFps(int fps) {
+        targetFps = Math.max(0, fps);
+        nextFrameRenderNanos = 0L;
+        if (threeDManager != null) {
+            threeDManager.setTargetFps(fps);
+        }
+    }
+
 	public float getVirtualWidth() { return virtualWidth; }
 	public float getVirtualHeight() { return virtualHeight; }
 	public int getVmWidth() { return (int) vmWidth; }
@@ -1575,6 +1599,18 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void render() {
+        int fpsLimit = targetFps;
+        if (fpsLimit > 0) {
+            long now = System.nanoTime();
+            long frameIntervalNanos = 1_000_000_000L / fpsLimit;
+            if (nextFrameRenderNanos != 0L && now < nextFrameRenderNanos) {
+                return;
+            }
+            nextFrameRenderNanos = now + frameIntervalNanos;
+        } else {
+            nextFrameRenderNanos = 0L;
+        }
+
         processPendingNotificationActions();
 
         long framePhysicsTime = 0;
@@ -1767,6 +1803,8 @@ public class StageListener implements ApplicationListener {
                 firstFrameDrawn = true;
             }
 
+            drawScreenDebugOverlay();
+
             if (makeScreenshot) {
                 Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
                 String manualScreenshotPath = scene.getDirectory()
@@ -1932,7 +1970,9 @@ public class StageListener implements ApplicationListener {
         boolean isScreenLandscape = width > height;
         boolean isVirtualLandscape = virtualWidth > virtualHeight;
 
-        if (!isFreeStageEnabled && isScreenLandscape != isVirtualLandscape) {
+        boolean useAdvancedViewport = project != null && project.getXmlHeader().fullDisplayEnabled
+                && project.getXmlHeader().viewportMode != 0;
+        if (!isFreeStageEnabled && !useAdvancedViewport && isScreenLandscape != isVirtualLandscape) {
             float temp = virtualWidth;
             virtualWidth = virtualHeight;
             virtualHeight = temp;
@@ -1969,14 +2009,23 @@ public class StageListener implements ApplicationListener {
                         virtualWidth, virtualHeight);
             }
         }
+        if (useAdvancedViewport) {
+            StageActivity currentActivity = StageActivity.activeStageActivity.get();
+            if (currentActivity != null) {
+                currentActivity.refreshRealScreenMetrics();
+            }
+            initScreenMode();
+        }
         if (stage != null && viewPort != null) {
             stage.setViewport(viewPort);
         }
         if (uiStage != null && uiViewPort != null) {
             uiStage.setViewport(uiViewPort);
         }
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
+        if (!useAdvancedViewport) {
+            camera.viewportWidth = width;
+            camera.viewportHeight = height;
+        }
 
         if (viewPort != null) {
             viewPort.update(width, height, false);
@@ -2187,6 +2236,14 @@ public class StageListener implements ApplicationListener {
         org.catrobat.catroid.common.NativeViewBindingManager.clearAll();
 		disposeStageButKeepActors();
 		font.dispose();
+        if (debugOverlayFont != null) {
+            debugOverlayFont.dispose();
+            debugOverlayFont = null;
+        }
+        if (debugOverlayBatch != null) {
+            debugOverlayBatch.dispose();
+            debugOverlayBatch = null;
+        }
 		axes.dispose();
 		ColorAtXYDetection.Companion.disposeShared();
 
@@ -2291,6 +2348,35 @@ public class StageListener implements ApplicationListener {
         screenshotWidth = ScreenValues.getResolutionForProject(project).getWidth();
         screenshotHeight = ScreenValues.getResolutionForProject(project).getHeight();
 
+        boolean useAdvancedViewport = project.getXmlHeader().fullDisplayEnabled
+                && project.getXmlHeader().viewportMode != 0;
+        if (useAdvancedViewport) {
+            int mode = project.getXmlHeader().viewportMode;
+            screenshotX = 0;
+            screenshotY = 0;
+            shapeRenderer.identity();
+            switch (mode) {
+                case 1: // 1:1: preserve project pixel dimensions and crop around the center.
+                    viewPort = new ScalingViewport(Scaling.none, virtualWidth, virtualHeight, camera);
+                    break;
+                case 2: // Stretch the project independently along both axes.
+                    viewPort = new ScalingViewport(Scaling.stretch, virtualWidth, virtualHeight, camera);
+                    break;
+                case 3: // Fit width, preserving the source aspect ratio.
+                    float worldHeightForWidth = virtualWidth * currentHeight / (float) currentWidth;
+                    viewPort = new ScalingViewport(Scaling.stretch, virtualWidth, worldHeightForWidth, camera);
+                    break;
+                case 4: // Fit height, preserving the source aspect ratio.
+                    float worldWidthForHeight = virtualHeight * currentWidth / (float) currentHeight;
+                    viewPort = new ScalingViewport(Scaling.stretch, worldWidthForHeight, virtualHeight, camera);
+                    break;
+                default:
+                    useAdvancedViewport = false;
+                    break;
+            }
+        }
+
+        if (!useAdvancedViewport) {
 		switch (project.getScreenMode()) {
 			case STRETCH:
 				screenshotX = 0;
@@ -2319,6 +2405,7 @@ public class StageListener implements ApplicationListener {
 			default:
 				break;
 		}
+        }
 
         if (stage != null) {
             stage.setViewport(viewPort);
@@ -2330,6 +2417,34 @@ public class StageListener implements ApplicationListener {
         shapeRenderer.updateMatrices();
 	}
 
+    private void drawScreenDebugOverlay() {
+        if (project == null || !project.getXmlHeader().fullDisplayEnabled
+                || !project.getXmlHeader().screenDebugOverlay || uiCamera == null) {
+            return;
+        }
+        StageActivity activity = StageActivity.activeStageActivity == null
+                ? null : StageActivity.activeStageActivity.get();
+        if (activity == null) {
+            return;
+        }
+        if (debugOverlayBatch == null) {
+            debugOverlayBatch = new SpriteBatch();
+        }
+        if (debugOverlayFont == null) {
+            debugOverlayFont = new BitmapFont();
+            debugOverlayFont.getData().setScale(0.75f);
+        }
+
+        String debugText = "Экран: " + activity.getRealScreenWidthPx() + " × "
+                + activity.getRealScreenHeightPx() + " px"
+                + " | Вырез: " + activity.getCameraCutoutHeightPx() + " px"
+                + " | Сцена: " + Math.round(virtualWidth) + " × " + Math.round(virtualHeight)
+                + " | FPS: " + Gdx.graphics.getFramesPerSecond();
+        debugOverlayBatch.setProjectionMatrix(uiCamera.combined);
+        debugOverlayBatch.begin();
+        debugOverlayFont.draw(debugOverlayBatch, debugText, 10f, Gdx.graphics.getHeight() - 10f);
+        debugOverlayBatch.end();
+    }
 	private void disposeTextures() {
 		for (Scene scene : project.getSceneList()) {
 			for (Sprite sprite : scene.getSpriteList()) {

@@ -221,6 +221,9 @@ import org.catrobat.catroid.content.bricks.GoToBrick
 import org.catrobat.catroid.content.bricks.GrayscaleImgBrick
 import org.catrobat.catroid.content.bricks.HideBrick
 import org.catrobat.catroid.content.bricks.HideStatusBarBrick
+import org.catrobat.catroid.content.bricks.ScreenSystemUiBrick
+import org.catrobat.catroid.content.bricks.SetScreenOrientationBrick
+import org.catrobat.catroid.content.bricks.SetScreenFpsBrick
 import org.catrobat.catroid.content.bricks.HideText3Brick
 import org.catrobat.catroid.content.bricks.HideTextBrick
 import org.catrobat.catroid.content.bricks.HttpAttachFileBrick
@@ -2014,6 +2017,12 @@ print("Bot has stopped.")""", "myVar"))
                 deviceBrickList.add(ResetTimerBrick())
                 deviceBrickList.add(TestBrick())
                 deviceBrickList.add(HideStatusBarBrick())
+        deviceBrickList.add(ScreenSystemUiBrick())
+        deviceBrickList.add(SetScreenOrientationBrick())
+        deviceBrickList.add(SetScreenFpsBrick())
+                deviceBrickList.add(ScreenSystemUiBrick())
+                deviceBrickList.add(SetScreenOrientationBrick())
+                deviceBrickList.add(SetScreenFpsBrick())
                 deviceBrickList.add(ChooseFileBrick())
                 deviceBrickList.add(ExportProjectFileBrick("file.txt"))
                 deviceBrickList.add(ShareBrick("Привет из NewCatroid!"));

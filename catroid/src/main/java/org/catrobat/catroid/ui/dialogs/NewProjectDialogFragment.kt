@@ -25,6 +25,7 @@ import org.catrobat.catroid.common.DefaultProjectHandler
 import org.catrobat.catroid.common.FlavoredConstants
 import org.catrobat.catroid.common.Nameable
 import org.catrobat.catroid.databinding.DialogNewProjectBinding
+import org.catrobat.catroid.io.XstreamSerializer
 import org.catrobat.catroid.merge.NewProjectNameTextWatcher
 import org.catrobat.catroid.ui.ProjectActivity
 import org.catrobat.catroid.ui.recyclerview.dialog.ReplaceExistingProjectDialogFragment.projectExistsInDirectory
@@ -164,6 +165,10 @@ class NewProjectDialogFragment : DialogFragment() {
             when (binding.exampleProjectSwitch.isChecked) {
                 true -> projectManager.createNewExampleProject(projectName, projectCreatorType, landscapeMode)
                 false -> projectManager.createNewEmptyProject(projectName, landscapeMode, false)
+            }
+            projectManager.currentProject?.let { createdProject ->
+                createdProject.xmlHeader.fullDisplayEnabled = binding.fullDisplaySwitch.isChecked
+                XstreamSerializer.getInstance().saveProject(createdProject)
             }
             activity?.startActivity(Intent(activity, ProjectActivity::class.java))
         } catch (_: IOException) {

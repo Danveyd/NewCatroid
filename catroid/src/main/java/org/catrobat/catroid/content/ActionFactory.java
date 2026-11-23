@@ -1903,6 +1903,30 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
+    public Action createScreenSystemUiAction(Sprite sprite, SequenceAction sequence,
+                                             boolean show, int target) {
+        ScreenSystemUiAction action = action(ScreenSystemUiAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setShow(show);
+        action.setTarget(target);
+        return action;
+    }
+
+    public Action createSetScreenOrientationAction(Sprite sprite, SequenceAction sequence,
+                                                   int orientation) {
+        SetScreenOrientationAction action = action(SetScreenOrientationAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setOrientation(orientation);
+        return action;
+    }
+
+    public Action createSetScreenFpsAction(Sprite sprite, SequenceAction sequence, int fps) {
+        SetScreenFpsAction action = action(SetScreenFpsAction.class);
+        action.setScope(new Scope(ProjectManager.getInstance().getCurrentProject(), sprite, sequence));
+        action.setFps(fps);
+        return action;
+    }
+
 	public Action createSetStopSoundsAction(Sprite sprite, SequenceAction sequence,
 										Formula formula) {
 		SetStopSoundsAction action = action(SetStopSoundsAction.class);

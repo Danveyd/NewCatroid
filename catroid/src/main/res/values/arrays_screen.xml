@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="screen_viewport_modes">
+        <item>Catroid default</item>
+        <item>1:1 (pixel-to-pixel)</item>
+        <item>Stretch to screen</item>
+        <item>Fit width</item>
+        <item>Fit height</item>
+    </string-array>
+    <string-array name="screen_fps_setting_limits">
+        <item>Default</item>
+        <item>30 FPS</item>
+        <item>60 FPS</item>
+        <item>120 FPS</item>
+        <item>Unlimited</item>
+    </string-array>
+    <string-array name="screen_fps_limits_brick">
+        <item>30 FPS</item>
+        <item>60 FPS</item>
+        <item>120 FPS</item>
+        <item>Unlimited</item>
+    </string-array>
+    <string-array name="screen_ui_actions">
+        <item>Show</item>
+        <item>Hide</item>
+    </string-array>
+    <string-array name="screen_ui_targets">
+        <item>Status bar</item>
+        <item>Navigation bar</item>
+        <item>All system UI</item>
+    </string-array>
+    <string-array name="screen_orientations">
+        <item>Landscape (camera left)</item>
+        <item>Landscape (camera right)</item>
+        <item>Portrait (camera top)</item>
+        <item>Portrait (camera bottom)</item>
+    </string-array>
+</resources>
