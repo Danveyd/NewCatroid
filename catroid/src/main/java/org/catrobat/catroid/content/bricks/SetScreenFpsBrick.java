@@ -12,7 +12,7 @@ import org.catrobat.catroid.content.actions.ScriptSequenceAction;
 
 public class SetScreenFpsBrick extends BrickBaseType {
     private static final long serialVersionUID = 1L;
-    private static final int[] FPS_VALUES = {30, 60, 120, 0};
+    private static final int[] FPS_VALUES = {30, 60, 120, -1};
 
     private int selectedLimit = 1;
 
