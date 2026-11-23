@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="screen_advanced_title">Дополнительные параметры экрана, выреза, и системного интерфейса</string>
+    <string name="screen_full_display_enabled">Использовать всю область экрана, включая вырез</string>
+    <string name="screen_viewport_mode">Режим масштабирования холста</string>
+    <string name="screen_show_status_bar">Показывать статус-бар</string>
+    <string name="screen_show_navigation_bar">Показывать панель навигации</string>
+    <string name="screen_linear_filtering">Линейная фильтрация текстур (Linear)</string>
+    <string name="screen_disable_msaa">Отключить MSAA для производительности</string>
+    <string name="screen_fps_limit">Лимит FPS</string>
+    <string name="screen_debug_overlay">Отладка экрана (Debug Overlay)</string>
+    <string name="brick_screen_system_ui">Системный интерфейс</string>
+    <string name="brick_screen_orientation">Повернуть экран в</string>
+    <string name="brick_screen_fps">Установить лимит FPS</string>
+    <string name="formula_editor_sensor_camera_cutout_height">высота выреза камеры</string>
+    <string name="formula_editor_sensor_real_screen_width">реальная ширина экрана</string>
+    <string name="formula_editor_sensor_real_screen_height">реальная высота экрана</string>
+</resources>
