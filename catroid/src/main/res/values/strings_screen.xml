@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="screen_advanced_title">Advanced screen, cutout and system UI options</string>
+    <string name="screen_full_display_enabled">Use the full display area, including the cutout</string>
+    <string name="screen_viewport_mode">Canvas scaling mode</string>
+    <string name="screen_show_status_bar">Show status bar</string>
+    <string name="screen_show_navigation_bar">Show navigation bar</string>
+    <string name="screen_linear_filtering">Linear texture filtering</string>
+    <string name="screen_disable_msaa">Disable MSAA for performance</string>
+    <string name="screen_fps_limit">FPS limit</string>
+    <string name="screen_debug_overlay">Screen debug overlay</string>
+    <string name="brick_screen_system_ui">System UI</string>
+    <string name="brick_screen_orientation">Rotate screen to</string>
+    <string name="brick_screen_fps">Set FPS limit</string>
+    <string name="formula_editor_sensor_camera_cutout_height">camera cutout height</string>
+    <string name="formula_editor_sensor_real_screen_width">real screen width</string>
+    <string name="formula_editor_sensor_real_screen_height">real screen height</string>
+</resources>
