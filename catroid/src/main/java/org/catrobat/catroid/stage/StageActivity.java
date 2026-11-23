@@ -35,6 +35,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -151,6 +153,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.idling.CountingIdlingResource;
 
@@ -266,6 +270,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
     private org.catrobat.catroid.ui.workspace.WindowContainer window;
 
+    private volatile int realScreenWidthPx;
+    private volatile int realScreenHeightPx;
+    private boolean statusBarVisible = true;
+    private boolean navigationBarVisible = true;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		if (getIntent().hasExtra(EXTRA_PROJECT_PATH)) {
@@ -316,6 +325,8 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 
 		super.onCreate(savedInstanceState);
 
+        configureAdvancedDisplayWindow();
+        refreshRealScreenMetrics();
 
 		rootLayout = new FrameLayout(this);
 		cameraContainer = new FrameLayout(this);
@@ -334,6 +345,11 @@ public class StageActivity extends AndroidApplication implements ContextProvider
         configuration.g = 8;
         configuration.b = 8;
         configuration.a = 8;
+        Project activeProjectForDisplay = ProjectManager.getInstance().getCurrentProject();
+        if (activeProjectForDisplay != null && activeProjectForDisplay.getXmlHeader().fullDisplayEnabled
+                && activeProjectForDisplay.getXmlHeader().disableMsaa) {
+            configuration.numSamples = 0;
+        }
 
         gameView = initializeForView(getApplicationListener(), configuration);
 
