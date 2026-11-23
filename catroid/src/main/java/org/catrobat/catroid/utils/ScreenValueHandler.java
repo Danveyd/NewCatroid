@@ -23,8 +23,12 @@
 package org.catrobat.catroid.utils;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
 
 import org.catrobat.catroid.common.ScreenValues;
 
@@ -44,4 +48,34 @@ public final class ScreenValueHandler {
 			ScreenValues.setToDefaultScreenSize();
 		}
 	}
+
+    /**
+     * Returns the physical display bounds without subtracting status/navigation bars.
+     * On Android 11+ WindowMetrics reflects the current activity window, which is configured
+     * edge-to-edge before this method is called for advanced-display projects.
+     */
+    @NonNull
+    public static Resolution getRealScreenResolution(Context context) {
+        if (context == null) {
+            return ScreenValues.DEFAULT_SCREEN_RESOLUTION;
+        }
+
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Rect bounds = windowManager.getCurrentWindowMetrics().getBounds();
+            return new Resolution(bounds.width(), bounds.height());
+        }
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+        return new Resolution(displayMetrics.widthPixels, displayMetrics.heightPixels);
+    }
+
+    public static void updateScreenWidthAndHeight(Context context, boolean useRealMetrics) {
+        if (useRealMetrics) {
+            ScreenValues.currentScreenResolution = getRealScreenResolution(context);
+        } else {
+            updateScreenWidthAndHeight(context);
+        }
+    }
 }
