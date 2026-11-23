@@ -86,6 +86,16 @@ public class XmlHeader implements Serializable {
 
 	@XStreamAlias("gitRemoteUrl")
 	private String gitRemoteUrl = "";
+
+    // Optional screen configuration. Defaults preserve the classic Catroid renderer.
+    public boolean fullDisplayEnabled = false;
+    public int viewportMode = 0;
+    public boolean showStatusBar = true;
+    public boolean showNavigationBar = true;
+    public boolean linearTextureFiltering = false;
+    public boolean disableMsaa = false;
+    public int screenFpsLimit = 0;
+    public boolean screenDebugOverlay = false;
 	//----------------------------------------------------------------------------------------------
 
 	//==============================================================================================
