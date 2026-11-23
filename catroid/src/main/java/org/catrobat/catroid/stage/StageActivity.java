@@ -1999,6 +1999,115 @@ public class StageActivity extends AndroidApplication implements ContextProvider
         }
     }
 
+    private boolean isAdvancedDisplayEnabled() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        return currentProject != null && currentProject.getXmlHeader().fullDisplayEnabled;
+    }
+
+    private void configureAdvancedDisplayWindow() {
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        if (currentProject == null || !currentProject.getXmlHeader().fullDisplayEnabled) {
+            return;
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowManager.LayoutParams attributes = getWindow().getAttributes();
+            attributes.layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(attributes);
+        }
+
+        statusBarVisible = currentProject.getXmlHeader().showStatusBar;
+        navigationBarVisible = currentProject.getXmlHeader().showNavigationBar;
+        applySystemUiVisibility(statusBarVisible, 0);
+        applySystemUiVisibility(navigationBarVisible, 1);
+    }
+
+    public void applySystemUiVisibility(boolean show, int target) {
+        runOnUiThread(() -> {
+            if (target == 0 || target == 2) {
+                statusBarVisible = show;
+            }
+            if (target == 1 || target == 2) {
+                navigationBarVisible = show;
+            }
+
+            View decorView = getWindow().getDecorView();
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            if (isAdvancedDisplayEnabled()) {
+                flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            } else {
+                if (!statusBarVisible) {
+                    flags |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+                }
+                if (!navigationBarVisible) {
+                    flags |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                }
+            }
+            if (!statusBarVisible || !navigationBarVisible) {
+                flags |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            }
+            decorView.setSystemUiVisibility(flags);
+
+            WindowInsetsControllerCompat controller =
+                    WindowCompat.getInsetsController(getWindow(), decorView);
+            controller.setSystemBarsBehavior(
+                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            if (statusBarVisible) {
+                controller.show(androidx.core.view.WindowInsetsCompat.Type.statusBars());
+            } else {
+                controller.hide(androidx.core.view.WindowInsetsCompat.Type.statusBars());
+            }
+            if (navigationBarVisible) {
+                controller.show(androidx.core.view.WindowInsetsCompat.Type.navigationBars());
+            } else {
+                controller.hide(androidx.core.view.WindowInsetsCompat.Type.navigationBars());
+            }
+        });
+    }
+
+    public void refreshRealScreenMetrics() {
+        Resolution realResolution = ScreenValueHandler.getRealScreenResolution(this);
+        realScreenWidthPx = realResolution.getWidth();
+        realScreenHeightPx = realResolution.getHeight();
+    }
+
+    public int getRealScreenWidthPx() {
+        if (realScreenWidthPx <= 0) {
+            refreshRealScreenMetrics();
+        }
+        return realScreenWidthPx;
+    }
+
+    public int getRealScreenHeightPx() {
+        if (realScreenHeightPx <= 0) {
+            refreshRealScreenMetrics();
+        }
+        return realScreenHeightPx;
+    }
+
+    public int getCameraCutoutHeightPx() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return 0;
+        }
+        WindowInsets insets = getWindow().getDecorView().getRootWindowInsets();
+        if (insets == null || insets.getDisplayCutout() == null) {
+            return 0;
+        }
+        return insets.getDisplayCutout().getSafeInsetTop();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isAdvancedDisplayEnabled()) {
+            refreshRealScreenMetrics();
+            applySystemUiVisibility(statusBarVisible, 0);
+            applySystemUiVisibility(navigationBarVisible, 1);
+        }
+    }
     @Override
 	public ApplicationListener getApplicationListener() {
 
