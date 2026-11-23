@@ -198,6 +198,8 @@ public class StageListener implements ApplicationListener {
 	private OrthographicCamera uiCamera;
 	private Batch batch = null;
 	private BitmapFont font;
+    private SpriteBatch debugOverlayBatch;
+    private BitmapFont debugOverlayFont;
 	private Passepartout passepartout;
 	private Viewport viewPort;
 	public ShapeRenderer shapeRenderer;
@@ -1932,7 +1934,9 @@ public class StageListener implements ApplicationListener {
         boolean isScreenLandscape = width > height;
         boolean isVirtualLandscape = virtualWidth > virtualHeight;
 
-        if (!isFreeStageEnabled && isScreenLandscape != isVirtualLandscape) {
+        boolean useAdvancedViewport = project != null && project.getXmlHeader().fullDisplayEnabled
+                && project.getXmlHeader().viewportMode != 0;
+        if (!isFreeStageEnabled && !useAdvancedViewport && isScreenLandscape != isVirtualLandscape) {
             float temp = virtualWidth;
             virtualWidth = virtualHeight;
             virtualHeight = temp;
@@ -1975,8 +1979,10 @@ public class StageListener implements ApplicationListener {
         if (uiStage != null && uiViewPort != null) {
             uiStage.setViewport(uiViewPort);
         }
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
+        if (!useAdvancedViewport) {
+            camera.viewportWidth = width;
+            camera.viewportHeight = height;
+        }
 
         if (viewPort != null) {
             viewPort.update(width, height, false);
@@ -2291,6 +2297,35 @@ public class StageListener implements ApplicationListener {
         screenshotWidth = ScreenValues.getResolutionForProject(project).getWidth();
         screenshotHeight = ScreenValues.getResolutionForProject(project).getHeight();
 
+        boolean useAdvancedViewport = project.getXmlHeader().fullDisplayEnabled
+                && project.getXmlHeader().viewportMode != 0;
+        if (useAdvancedViewport) {
+            int mode = project.getXmlHeader().viewportMode;
+            screenshotX = 0;
+            screenshotY = 0;
+            shapeRenderer.identity();
+            switch (mode) {
+                case 1: // 1:1: preserve project pixel dimensions and crop around the center.
+                    viewPort = new ScalingViewport(Scaling.none, virtualWidth, virtualHeight, camera);
+                    break;
+                case 2: // Stretch the project independently along both axes.
+                    viewPort = new ScalingViewport(Scaling.stretch, virtualWidth, virtualHeight, camera);
+                    break;
+                case 3: // Fit width, preserving the source aspect ratio.
+                    float worldHeightForWidth = virtualWidth * currentHeight / (float) currentWidth;
+                    viewPort = new ScalingViewport(Scaling.stretch, virtualWidth, worldHeightForWidth, camera);
+                    break;
+                case 4: // Fit height, preserving the source aspect ratio.
+                    float worldWidthForHeight = virtualHeight * currentWidth / (float) currentHeight;
+                    viewPort = new ScalingViewport(Scaling.stretch, worldWidthForHeight, virtualHeight, camera);
+                    break;
+                default:
+                    useAdvancedViewport = false;
+                    break;
+            }
+        }
+
+        if (!useAdvancedViewport) {
 		switch (project.getScreenMode()) {
 			case STRETCH:
 				screenshotX = 0;
@@ -2319,6 +2354,7 @@ public class StageListener implements ApplicationListener {
 			default:
 				break;
 		}
+        }
 
         if (stage != null) {
             stage.setViewport(viewPort);
