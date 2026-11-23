@@ -87,6 +87,15 @@
                     </com.google.android.material.button.MaterialButtonToggleGroup>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/full_display_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/solid_white"
+                        android:text="@string/screen_full_display_enabled"
+                        app:thumbTint="@color/accent" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/example_project_switch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
