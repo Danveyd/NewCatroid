@@ -396,6 +396,15 @@ public class StageListener implements ApplicationListener {
 
 		font = getLabelFont(project);
 
+        if (project != null && project.getXmlHeader().fullDisplayEnabled) {
+            int configuredFps = project.getXmlHeader().screenFpsLimit;
+            if (configuredFps > 0) {
+                Gdx.graphics.setForegroundFPS(configuredFps);
+            } else if (configuredFps < 0) {
+                Gdx.graphics.setForegroundFPS(0);
+            }
+        }
+
 		physicsWorld = scene.resetPhysicsWorld();
 		sprites = new ArrayList<>(scene.getSpriteList());
 
@@ -1769,6 +1778,8 @@ public class StageListener implements ApplicationListener {
                 firstFrameDrawn = true;
             }
 
+            drawScreenDebugOverlay();
+
             if (makeScreenshot) {
                 Scene scene = ProjectManager.getInstance().getCurrentlyEditedScene();
                 String manualScreenshotPath = scene.getDirectory()
@@ -1972,6 +1983,13 @@ public class StageListener implements ApplicationListener {
                         maxViewPort.getWidth(), maxViewPort.getHeight(),
                         virtualWidth, virtualHeight);
             }
+        }
+        if (useAdvancedViewport) {
+            StageActivity currentActivity = StageActivity.activeStageActivity.get();
+            if (currentActivity != null) {
+                currentActivity.refreshRealScreenMetrics();
+            }
+            initScreenMode();
         }
         if (stage != null && viewPort != null) {
             stage.setViewport(viewPort);
@@ -2193,6 +2211,14 @@ public class StageListener implements ApplicationListener {
         org.catrobat.catroid.common.NativeViewBindingManager.clearAll();
 		disposeStageButKeepActors();
 		font.dispose();
+        if (debugOverlayFont != null) {
+            debugOverlayFont.dispose();
+            debugOverlayFont = null;
+        }
+        if (debugOverlayBatch != null) {
+            debugOverlayBatch.dispose();
+            debugOverlayBatch = null;
+        }
 		axes.dispose();
 		ColorAtXYDetection.Companion.disposeShared();
 
@@ -2366,6 +2392,34 @@ public class StageListener implements ApplicationListener {
         shapeRenderer.updateMatrices();
 	}
 
+    private void drawScreenDebugOverlay() {
+        if (project == null || !project.getXmlHeader().fullDisplayEnabled
+                || !project.getXmlHeader().screenDebugOverlay || uiCamera == null) {
+            return;
+        }
+        StageActivity activity = StageActivity.activeStageActivity == null
+                ? null : StageActivity.activeStageActivity.get();
+        if (activity == null) {
+            return;
+        }
+        if (debugOverlayBatch == null) {
+            debugOverlayBatch = new SpriteBatch();
+        }
+        if (debugOverlayFont == null) {
+            debugOverlayFont = new BitmapFont();
+            debugOverlayFont.getData().setScale(0.75f);
+        }
+
+        String debugText = "Экран: " + activity.getRealScreenWidthPx() + " × "
+                + activity.getRealScreenHeightPx() + " px"
+                + " | Вырез: " + activity.getCameraCutoutHeightPx() + " px"
+                + " | Сцена: " + Math.round(virtualWidth) + " × " + Math.round(virtualHeight)
+                + " | FPS: " + Gdx.graphics.getFramesPerSecond();
+        debugOverlayBatch.setProjectionMatrix(uiCamera.combined);
+        debugOverlayBatch.begin();
+        debugOverlayFont.draw(debugOverlayBatch, debugText, 10f, Gdx.graphics.getHeight() - 10f);
+        debugOverlayBatch.end();
+    }
 	private void disposeTextures() {
 		for (Scene scene : project.getSceneList()) {
 			for (Sprite sprite : scene.getSpriteList()) {
