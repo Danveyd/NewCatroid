@@ -175,6 +175,8 @@ public class StageListener implements ApplicationListener {
 	private static final float AXIS_FONT_SIZE_SCALE_FACTOR = 0.025f;
 
 	private float deltaActionTimeDivisor = 10f;
+    private volatile int targetFps;
+    private long nextFrameRenderNanos;
 
 	private Stage stage = null;
 	private Stage uiStage = null;
@@ -374,6 +376,9 @@ public class StageListener implements ApplicationListener {
 
 		project = ProjectManager.getInstance().getCurrentProject();
 		scene = ProjectManager.getInstance().getCurrentlyPlayingScene();
+        targetFps = project != null && project.getXmlHeader().fullDisplayEnabled
+                ? project.getXmlHeader().screenFpsLimit : 0;
+        nextFrameRenderNanos = 0L;
 
 		threeDManager = new ThreeDManager();
 		threeDManager.init();
@@ -1570,6 +1575,14 @@ public class StageListener implements ApplicationListener {
 		this.captureNextFrame = true;
 	}
 
+    public void setTargetFps(int fps) {
+        targetFps = Math.max(0, fps);
+        nextFrameRenderNanos = 0L;
+        if (threeDManager != null) {
+            threeDManager.setTargetFps(fps);
+        }
+    }
+
 	public float getVirtualWidth() { return virtualWidth; }
 	public float getVirtualHeight() { return virtualHeight; }
 	public int getVmWidth() { return (int) vmWidth; }
@@ -1586,6 +1599,18 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void render() {
+        int fpsLimit = targetFps;
+        if (fpsLimit > 0) {
+            long now = System.nanoTime();
+            long frameIntervalNanos = 1_000_000_000L / fpsLimit;
+            if (nextFrameRenderNanos != 0L && now < nextFrameRenderNanos) {
+                return;
+            }
+            nextFrameRenderNanos = now + frameIntervalNanos;
+        } else {
+            nextFrameRenderNanos = 0L;
+        }
+
         processPendingNotificationActions();
 
         long framePhysicsTime = 0;
