@@ -1974,17 +1974,23 @@ public class StageActivity extends AndroidApplication implements ContextProvider
 	}
 
     void calculateScreenSizes() {
-        ScreenValueHandler.updateScreenWidthAndHeight(getContext());
+        Project currentProject = ProjectManager.getInstance().getCurrentProject();
+        boolean useFullDisplay = currentProject != null && currentProject.getXmlHeader().fullDisplayEnabled;
+        ScreenValueHandler.updateScreenWidthAndHeight(getContext(), useFullDisplay);
+        refreshRealScreenMetrics();
 
         Resolution projectResolution = new Resolution(
-                ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenWidth(),
-                ProjectManager.getInstance().getCurrentProject().getXmlHeader().getVirtualScreenHeight());
+                currentProject.getXmlHeader().getVirtualScreenWidth(),
+                currentProject.getXmlHeader().getVirtualScreenHeight());
 
-        ScreenValues.currentScreenResolution =
-                ScreenValues.currentScreenResolution.flipToFit(projectResolution);
+        if (!useFullDisplay) {
+            ScreenValues.currentScreenResolution =
+                    ScreenValues.currentScreenResolution.flipToFit(projectResolution);
+        }
 
-        resizePossible = !ScreenValues.currentScreenResolution.sameRatioOrMeasurements(projectResolution) &&
-                !ProjectManager.getInstance().getCurrentProject().isCastProject();
+        resizePossible = !useFullDisplay
+                && !ScreenValues.currentScreenResolution.sameRatioOrMeasurements(projectResolution)
+                && !currentProject.isCastProject();
 
         if (resizePossible) {
             stageListener.setMaxViewPort(projectResolution.resizeToFit(ScreenValues.currentScreenResolution));
